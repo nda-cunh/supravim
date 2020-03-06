@@ -1,0 +1,5 @@
+--excmd=pattern
+--fields=nks
+--sort=no
+--kinds-SQL=cdfElLPprstTvieURDVnxy
+--extras=+q

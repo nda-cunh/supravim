@@ -1,0 +1,2 @@
+ajaxData	input.mxml	/^		id="ajaxData"$/;"	x	mxtag:HTTPService
+dateToYYYYMMDD	input.mxml	/^	public function dateToYYYYMMDD(aDate:Date):String {$/;"	f
