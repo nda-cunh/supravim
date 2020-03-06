@@ -1,0 +1,3 @@
+--kinds-c++=*
+--sort=no
+--fields=+{end}

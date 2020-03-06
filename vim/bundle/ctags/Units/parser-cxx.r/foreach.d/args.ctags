@@ -1,0 +1,2 @@
+--kinds-c++=+pxl
+-D foreach(arg1,...)=for(arg1;;)

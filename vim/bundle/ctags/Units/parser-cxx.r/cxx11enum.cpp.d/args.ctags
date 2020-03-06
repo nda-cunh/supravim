@@ -1,0 +1,5 @@
+--kinds-c++=*
+--sort=no
+--fields=+{end}
+--fields-c++=+{properties}
+--fields-c=+{properties}
