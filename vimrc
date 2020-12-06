@@ -48,7 +48,7 @@ set t_Co=256
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-let g:clang_library_path='/usr/lib/llvm-10/lib/libclang-10.so.1'
+let g:clang_library_path='/usr/lib/libclang.so.11'
 let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
 "
