@@ -1,8 +1,7 @@
 "============================================================================
-"File:        stylelint.vim
-"Description: Syntax checking plugin for syntastic using `stylelint`
-"             (https://github.com/stylelint/stylelint).
-"Maintainer:  Tim Carry <tim at pixelastic dot com>
+"File:        twigcs.vim
+"Description: Syntax checking plugin for syntastic
+"Maintainer:  Ciloe <escrichjimmy at yahoo dot fr>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
@@ -11,40 +10,32 @@
 "
 "============================================================================
 
-if exists('g:loaded_syntastic_css_stylelint_checker')
+if exists('g:loaded_syntastic_twig_twigcs_checker')
     finish
 endif
-let g:loaded_syntastic_css_stylelint_checker = 1
+let g:loaded_syntastic_twig_twigcs_checker = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:args_after = {
-    \ 'css':  '-f json',
-    \ 'html': '-f json',
-    \ 'vue':  '-f json',
-    \ 'less': '-f json -s less',
-    \ 'scss': '-f json -s scss' }
+function! SyntaxCheckers_twig_twigcs_GetLocList() dict
+    let makeprg = self.makeprgBuild({ 'args_after': '--reporter=emacs' })
 
-function! SyntaxCheckers_css_stylelint_GetLocList() dict
-    let makeprg = self.makeprgBuild({ 'args_after': get(s:args_after, self.getFiletype(), '') })
-
-    let errorformat = '%t:%f:%l:%c:%m'
+    let errorformat =
+        \ '%f:%l:%c: %trror - %m,' .
+        \ '%f:%l:%c: %tarning - %m'
 
     return SyntasticMake({
         \ 'makeprg': makeprg,
         \ 'errorformat': errorformat,
-        \ 'subtype': 'Style',
-        \ 'preprocess': 'stylelint',
-        \ 'returns': [0, 1, 2] })
+        \ 'subtype': 'Style' })
 endfunction
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'css',
-    \ 'name': 'stylelint'})
+    \ 'filetype': 'twig',
+    \ 'name': 'twigcs' })
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
 " vim: set sw=4 sts=4 et fdm=marker:
-

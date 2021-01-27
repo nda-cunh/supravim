@@ -39,6 +39,9 @@ set shiftround
 set showmode
 set backspace=indent,eol,start
 set pumheight=50
+set encoding=utf-8
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
 
 "--------------- jeu de couleur ---------------"
 colorscheme molokai
@@ -54,7 +57,7 @@ let g:mucomplete#enable_auto_at_startup = 1
 "
 " "--------------- TAGBAR ---------------"
 " "let g:tagbar_ctags_bin="~/.vim/bundle/ctags/ctags"
-" "autocmd VimEnter * TagbarToggle
+autocmd VimEnter * TagbarToggle
 "
 " "--------------- SYNTASTIC ---------------"
 let current_compiler = "gcc"
