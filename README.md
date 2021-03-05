@@ -1,4 +1,4 @@
-****SupraVim****
+#SupraVim
 une amelioration de l'editeur de texte vim.
 
 <img src="readme.png"/>
