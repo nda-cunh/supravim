@@ -20,7 +20,7 @@ noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
-noremap <C-k>				:!(make  && ./APP)<CR>
+noremap <C-k>				:!(make run)<CR>
 noremap <C-e>				:!(clang *.c && ./a.out)<CR>
 noremap <C-b>				:r ~/main.test <CR>
 imap <C-g> <esc>:NERDTreeToggle<CR>
