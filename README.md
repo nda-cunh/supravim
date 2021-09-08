@@ -16,7 +16,7 @@ une amelioration de l'editeur de texte vim.
 **Installation**
 
 ```bash
-curl https://raw.githubusercontent.com/hydrasho/SupraVim/master/installer.sh | sh
+curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
 note: je n'ai pas tester sous MAC (mais devrait fonctionné)
 
