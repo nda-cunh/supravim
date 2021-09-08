@@ -13,7 +13,7 @@ if [ -d $HOME/.SupraVim ]; then
 	(cd .SupraVim && null git stash && null git pull &)
 else
 	echo "Clone du depot"
-	git clone https://github.com/hydrasho/SupraVim .SupraVim --progress
+	git clone https://gitlab.com/hydrasho/SupraVim .SupraVim --progress
 
 	if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
 		echo "Sauvegarde de vos anciennes configurations Vim : ~/old-conf-vim.tar"
