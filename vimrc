@@ -13,6 +13,9 @@ noremap <c-w>	<esc>:w!<CR>
 noremap <c-q>	<esc>:q!<CR>
 noremap <c-s>	<esc>:w!<CR>
 nmap <F8> :TagbarToggle<CR>
+noremap <S-o>				:Stdheader<CR>
+noremap <S-n>				:!(norminette)<CR>
+noremap <S-m>				:r $HOME/main.template<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split 
 noremap <S-Right>			<C-w><Right>
@@ -51,7 +54,7 @@ set t_Co=256
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-let g:clang_library_path='/usr/lib/libclang.so'
+let g:clang_library_path='/usr/lib/llvm-12/lib/libclang.so.1'
 let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
 "
