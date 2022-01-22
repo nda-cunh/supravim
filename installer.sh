@@ -1,5 +1,4 @@
 #!/bin/sh
-#based on sublivim 
 SV_VERSION="0"
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
 
@@ -21,9 +20,15 @@ else
 		rm -rf .vim .vimrc
 	fi
 
+	echo "Suppresion de l'ancien vim"
+	rm -rf ~/.vim
+	rm -rf ~/.vimrc
 	echo "Installation du SupraVim"
 	ln -s .SupraVim/vimrc $HOME/.vimrc
 	ln -s .SupraVim/vim $HOME/.vim
 	echo "stty stop undef" >> ~/.zshrc
 	echo "stty start undef" >> ~/.zshrc
+	echo "Debloquage de Ctrl -S/Q"
+	stty stop undef
+	stty start undef
 fi
