@@ -12,7 +12,7 @@ inoremap <c-s>	<esc>:w!<CR>
 noremap <c-w>	<esc>:w!<CR>
 noremap <c-q>	<esc>:q!<CR>
 noremap <c-s>	<esc>:w!<CR>
-nmap <F8> :TagbarToggle<CR>
+nmap <F8>					:TagbarToggle<CR>
 noremap <S-o>				:Stdheader<CR>
 noremap <S-n>				:!(norminette)<CR>
 noremap <S-m>				:r $HOME/main.template<CR>
@@ -23,11 +23,11 @@ noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
-noremap <C-k>				:!(make run)<CR>
-noremap <C-e>				:!(clang *.c && ./a.out)<CR>
+noremap <C-k>				:!make ; (make run)<CR>
+noremap <C-e>				:!(cc *.c -lbsd && ./a.out)<CR>
 noremap <C-b>				:r ~/main.test <CR>
-imap <C-g> <esc>:NERDTreeToggle<CR>
-map <C-g> :NERDTreeToggle<CR>
+imap <C-g>					<esc>:NERDTreeToggle<CR>
+map <C-g>					:NERDTreeToggle<CR>
 
 "--------------- utilitaire basique	---------------"
 syntax on
@@ -45,7 +45,6 @@ set pumheight=50
 set encoding=utf-8
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-
 "--------------- jeu de couleur ---------------"
 colorscheme molokai
 set t_Co=256
@@ -60,7 +59,7 @@ let g:mucomplete#enable_auto_at_startup = 1
 "
 " "--------------- TAGBAR ---------------"
 " "let g:tagbar_ctags_bin="~/.vim/bundle/ctags/ctags"
-autocmd VimEnter * TagbarToggle
+"autocmd VimEnter * TagbarToggle
 "
 " "--------------- SYNTASTIC ---------------"
 let current_compiler = "gcc"
