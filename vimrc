@@ -5,13 +5,24 @@ call pathogen#infect()
 call pathogen#helptags()
 
 filetype plugin indent on
-"--------------- Les racourcit ---------------"
+
+"-------------- Ctrl-Z persistant ------------"
+try
+    set undodir=~/.vim/undodir
+    set undofile
+catch
+endtry
+
+"--------------- Les racourcis ---------------"
 inoremap <c-w>	<esc>:w!<CR>
 inoremap <c-q>	<esc>:q!<CR>
 inoremap <c-s>	<esc>:w!<CR>
 noremap <c-w>	<esc>:w!<CR>
 noremap <c-q>	<esc>:q!<CR>
 noremap <c-s>	<esc>:w!<CR>
+map <F5> 					:call CompileRun()<CR>
+imap <F5>				 	<Esc>:call CompileRun()<CR>
+vmap <F5> 					<Esc>:call CompileRun()<CR>
 nmap <F8>					:TagbarToggle<CR>
 noremap <S-o>				:Stdheader<CR>
 noremap <S-n>				:!(norminette)<CR>
@@ -29,7 +40,7 @@ noremap <C-b>				:r ~/main.test <CR>
 imap <C-g>					<esc>:NERDTreeToggle<CR>
 map <C-g>					:NERDTreeToggle<CR>
 
-"--------------- utilitaire basique	---------------"
+"--------------- utilitaires basiques ---------------"
 syntax on
 set mouse=a
 set cursorline
@@ -45,8 +56,15 @@ set pumheight=50
 set encoding=utf-8
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+
+"---------- Qui utilise la scrollbar -----------"
+set guioptions-=r
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+
 "--------------- jeu de couleur ---------------"
-colorscheme molokai
+colorscheme gruvbox
 set t_Co=256
 
 "--------------- CLANG COMPLETER ---------------"
@@ -114,3 +132,28 @@ function! s:CloseIfOnlyNerdTreeLeft()
 		endif
 	endif
 endfunction
+
+func! CompileRun()
+exec "w"
+if &filetype == 'c'
+    exec "!gcc % -o %<"
+    exec "!time ./%<"
+elseif &filetype == 'cpp'
+    exec "!g++ % -o %<"
+    exec "!time ./%<"
+elseif &filetype == 'java'
+    exec "!javac %"
+    exec "!time java %"
+elseif &filetype == 'sh'
+    exec "!time bash %"
+elseif &filetype == 'python'
+    exec "!time python3 %"
+elseif &filetype == 'html'
+    exec "!google-chrome % &"
+elseif &filetype == 'go'
+    exec "!go build %<"
+    exec "!time go run %"
+elseif &filetype == 'matlab'
+    exec "!time octave %"
+endif
+endfunc
