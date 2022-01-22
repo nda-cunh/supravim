@@ -23,7 +23,7 @@ if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
 fi
 
 echo "Clone du depot"
-git clone https://gitlab.com/hydrasho/SupraVim .SupraVim --progress
+git clone https://gitlab.com/Pixailz/SupraVim .SupraVim --progress
 
 echo "Installation du SupraVim"
 if [ -f $HOME/.vimrc]; then
