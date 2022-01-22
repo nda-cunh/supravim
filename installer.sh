@@ -18,6 +18,11 @@ else
 		echo "Sauvegarde de vos anciennes configurations Vim : ~/old-conf-vim.tar"
 		tar -cf old-conf-vim.tar .vim .vimrc .vim*
 		rm -rf .vim .vimrc .vim*
+		echo "Suppresion de l'ancien vim"
+		mv ~/.vim ~/.vimold
+		mv ~/.vimrc ~/.vimrcold
+		rm -rf ~/.vim
+		rm -rf ~/.vimrc
 	fi
 
 	echo "Suppresion de l'ancien vim"
