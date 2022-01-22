@@ -19,8 +19,10 @@ else
 		tar -cf old-conf-vim.tar .vim .vimrc .vim*
 		rm -rf .vim .vimrc .vim*
 	fi
+	
 
 	echo "Suppresion de l'ancien vim"
+	rm -rf ~/.SupraVim
 	mv ~/.vim ~/.vimold
 	mv ~/.vimrc ~/.vimrcold
 	rm -rf ~/.vim
