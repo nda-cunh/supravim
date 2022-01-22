@@ -23,6 +23,8 @@ else
 	echo "Suppresion de l'ancien vim"
 	mv ~/.vim ~/.vimold
 	mv ~/.vimrc ~/.vimrcold
+	rm -rf ~/.vim
+	rm -rf ~/.vimrc
 	echo "Installation du SupraVim"
 	ln -s .SupraVim/vimrc $HOME/.vimrc
 	ln -s .SupraVim/vim $HOME/.vim
