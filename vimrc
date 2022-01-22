@@ -137,8 +137,7 @@ endfunction
 func! CompileRun()
 exec "w"
 if &filetype == 'c'
-    exec "!gcc % -o %<"
-    exec "!time ./%<"
+	exec "!gcc % -o %< && time ./%<"
 elseif &filetype == 'cpp'
     exec "!g++ % -o %<"
     exec "!time ./%<"
@@ -159,6 +158,6 @@ elseif &filetype == 'matlab'
 elseif &filetype == 'vala'
 	exec "!valac %"
 elseif &filetype == 'vapi'
-	exec "!valac %"
+	exec "!valac % -o %< && time ./%<"
 endif
 endfunc
