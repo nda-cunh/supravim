@@ -155,5 +155,9 @@ elseif &filetype == 'go'
     exec "!time go run %"
 elseif &filetype == 'matlab'
     exec "!time octave %"
+elseif &filetype == 'vala'
+	exec "!valac %"
+elseif &filetype == 'vapi'
+	exec "!valac %"
 endif
 endfunc
