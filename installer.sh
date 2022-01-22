@@ -16,8 +16,8 @@ else
 
 	if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
 		echo "Sauvegarde de vos anciennes configurations Vim : ~/old-conf-vim.tar"
-		tar -cf old-conf-vim.tar .vim .vimrc
-		rm -rf .vim .vimrc
+		tar -cf old-conf-vim.tar .vim .vimrc .vim*
+		rm -rf .vim .vimrc .vim*
 	fi
 
 	echo "Suppresion de l'ancien vim"
@@ -30,5 +30,5 @@ else
 	ln -s .SupraVim/vim $HOME/.vim
 	echo "stty stop undef" >> ~/.zshrc
 	echo "stty start undef" >> ~/.zshrc
-	echo "Redemarrer votre terminal ;)"
+	echo "Redemarrez votre terminal ;)"
 fi
