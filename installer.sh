@@ -26,18 +26,19 @@ echo "Clone du depot"
 git clone https://gitlab.com/Pixailz/SupraVim .SupraVim --progress
 
 echo "Installation du SupraVim"
-if [ -f $HOME/.vimrc]; then
+if [ -f $HOME/.vimrc ]; then
 	rm -f $HOME/.vimrc
 fi
-if [ -f $HOME/.vim]; then
+if [ -f $HOME/.vim ]; then
 	rm -rf $HOME/.vim
 fi
 ln -s .SupraVim/vimrc $HOME/.vimrc
 ln -s .SupraVim/vim $HOME/.vim
-if [ -z $(cat ${SHELL_ACTIVE} | grep "stty stop undef") ]; then
+
+if /bin/grep "stty stop undef" ${HOME}/.zshrc 1>/dev/null; then
 	echo "stty stop undef" >> ~/.zshrc
 fi
-if [ -z $(cat ${SHELL_ACTIVE} | grep "stty start undef") ]; then
+if /bin/grep "stty start undef" ${HOME}/.zshrc 1>/dev/null; then
 	echo "stty start undef" >> ~/.zshrc
 fi
 echo "Redemarrez votre terminal ;)"
