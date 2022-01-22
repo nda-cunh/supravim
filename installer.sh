@@ -6,11 +6,11 @@ null() {
 	"$@" >/dev/null 2>&1
 }
 
-cd ~
+cd $HOME
 if [ -d $HOME/.SupraVim ]; then
-	#	echo "Update Supravim"
-	(cd .SupraVim && null git stash && null git pull &)
-else	
+	rm -rf $HOME/.SupraVim
+fi
+
 if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
 		echo "Sauvegarde de vos anciennes configurations Vim : ~/old-conf-vim.tar"
 		tar -cf old-conf-vim.tar .vim .vimrc .vim*
@@ -21,14 +21,15 @@ if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
 		rm -rf ~/.vim
 		rm -rf ~/.vimrc
 		
-	fi
-    echo "Clone du depot"
-	git clone https://gitlab.com/hydrasho/SupraVim .SupraVim --progress
-
-	echo "Installation du SupraVim"
-	ln -s .SupraVim/vimrc $HOME/.vimrc
-	ln -s .SupraVim/vim $HOME/.vim
-	echo "stty stop undef" >> ~/.zshrc
-	echo "stty start undef" >> ~/.zshrc
-	echo "Redemarrez votre terminal ;)"
 fi
+
+echo "Clone du depot"
+git clone https://gitlab.com/hydrasho/SupraVim .SupraVim --progress
+
+echo "Installation du SupraVim"
+ln -s .SupraVim/vimrc $HOME/.vimrc
+ln -s .SupraVim/vim $HOME/.vim
+echo "stty stop undef" >> ~/.zshrc
+echo "stty start undef" >> ~/.zshrc
+echo "Redemarrez votre terminal ;)"
+
