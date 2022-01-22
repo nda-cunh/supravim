@@ -11,7 +11,7 @@ if [ -d $HOME/.SupraVim ]; then
 	rm -rf $HOME/.SupraVim
 fi
 
-if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
+if [ -d $HOME/.vim ] || [ -f $HOME/.vimrc ]; then
 		echo "Sauvegarde de vos anciennes configurations Vim : ~/old-conf-vim.tar"
 		tar -cf old-conf-vim.tar .vim .vimrc .vim*
 		rm -rf .vim .vimrc .vim*
