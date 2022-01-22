@@ -21,14 +21,12 @@ else
 	fi
 
 	echo "Suppresion de l'ancien vim"
-	rm -rf ~/.vim
-	rm -rf ~/.vimrc
+	mv ~/.vim ~/.vimold
+	mv ~/.vimrc ~/.vimrcold
 	echo "Installation du SupraVim"
 	ln -s .SupraVim/vimrc $HOME/.vimrc
 	ln -s .SupraVim/vim $HOME/.vim
 	echo "stty stop undef" >> ~/.zshrc
 	echo "stty start undef" >> ~/.zshrc
-	echo "Debloquage de Ctrl -S/Q"
-	stty stop undef
-	stty start undef
+	echo "Redemarrer votre terminal ;)"
 fi
