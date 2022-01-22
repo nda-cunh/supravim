@@ -20,16 +20,25 @@ if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
 		mv ~/.vimrc ~/.vimrcold
 		rm -rf ~/.vim
 		rm -rf ~/.vimrc
-		
 fi
 
 echo "Clone du depot"
 git clone https://gitlab.com/hydrasho/SupraVim .SupraVim --progress
 
 echo "Installation du SupraVim"
+if [ -f $HOME/.vimrc]; then
+	rm -f $HOME/.vimrc
+fi
+if [ -f $HOME/.vim]; then
+	rm -rf $HOME/.vim
+fi
 ln -s .SupraVim/vimrc $HOME/.vimrc
 ln -s .SupraVim/vim $HOME/.vim
-echo "stty stop undef" >> ~/.zshrc
-echo "stty start undef" >> ~/.zshrc
+if [ -z $(cat ${SHELL_ACTIVE} | grep "stty stop undef") ]; then
+	echo "stty stop undef" >> ~/.zshrc
+fi
+if [ -z $(cat ${SHELL_ACTIVE} | grep "stty start undef") ]; then
+	echo "stty start undef" >> ~/.zshrc
+fi
 echo "Redemarrez votre terminal ;)"
 
