@@ -1,35 +1,95 @@
 #!/bin/sh
-SV_VERSION="0"
-SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
 
-null() {
-	"$@" >/dev/null 2>&1
+SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
+BACKUP_FILE="old_conf_vim_$(date +'%Y-%m-%d-%H%M%S').tar"
+SUPRA_LINK="https://gitlab.com/Pixailz/SupraVim"
+INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
+
+############################################################
+# Bash Color
+warning='\033[1;5;31m'
+blue='\e[34m'
+red='\e[31m'
+download='\e[1;93m'
+restore='\e[0m'
+reset='\e[0m'
+############################################################
+
+############################################################
+# Utils function for printing
+status() {
+	printf "${blue}[ INFOS ]${reset} $1\n"
 }
 
-cd $HOME
-if [ -d $HOME/.SupraVim ]; then
-	rm -rf $HOME/.SupraVim
-fi
+download() {
+	printf "${download}[GETTING]${reset} $1\n"
+}
 
-if [ -d $HOME/.vim ] && [ -f $HOME/.vimrc ]; then
-		echo "Sauvegarde de vos anciennes configurations Vim : ~/old-conf-vim.tar"
-		tar -cf old-conf-vim.tar .vim .vimrc .vim*
-		rm -rf .vim .vimrc .vim*
-		echo "Suppresion de l'ancien vim"
-		mv ~/.vim ~/.vimold
-		mv ~/.vimrc ~/.vimrcold
-		rm -rf ~/.vim
-		rm -rf ~/.vimrc
-		
-fi
+warning() {
+	printf "${warning}[WARNING]${reset} $1\n"
+}
 
-echo "Clone du depot"
-git clone https://gitlab.com/hydrasho/SupraVim .SupraVim --progress
+error() {
+	printf "${red}[ ERROR ]${reset} $1\n"
+	exit
+}
+############################################################
 
-echo "Installation du SupraVim"
-ln -s .SupraVim/vimrc $HOME/.vimrc
-ln -s .SupraVim/vim $HOME/.vim
-echo "stty stop undef" >> ~/.zshrc
-echo "stty start undef" >> ~/.zshrc
-echo "Redemarrez votre terminal ;)"
+############################################################
+# backup function
+backup_vim_folder() {
+	status "Adding old vim folder to ${BACKUP_FILE}"
+	tar -cvf ${BACKUP_FILE} --absolute-names ~/.vim
+	rm -rf ~/.vim
+}
 
+backup_vimrc() {
+	status "Adding old vimrc to ${BACKUP_FILE}"
+	if [ -f ~/${BACKUP_FILE} ]; then
+		tar -cvf ${BACKUP_FILE} ~/.vim 2>/dev/null
+	else
+		tar -rvf ${BACKUP_FILE} ~/.vim 2>/dev/null
+	fi
+	rm -f ~/.vimrc
+}
+
+############################################################
+# main
+
+add_config_rc(){
+	if ! grep -qe "^stty stop undef" ${SHELL_ACTIVE}; then
+		echo "stty stop undef" >> ${SHELL_ACTIVE}
+	fi
+	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE}; then
+		echo "stty start undef" >> ${SHELL_ACTIVE}
+	fi
+}
+
+install_SupraVim(){
+	download "Cloning repo to ${INSTALL_DIRECTORY}"
+	git clone ${SUPRA_LINK} ${INSTALL_DIRECTORY} --progress
+	status "Installing SupraVim"
+	[ -f ~/.vimrc ] && rm -f ~/.vimrc
+	ln -s ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
+	[ -f ~/.vimrc ] && rm -f ~/.vim
+	ln -s ${INSTALL_DIRECTORY}/vim ~/.vim
+	add_config_rc
+}
+############################################################
+
+############################################################
+# main
+
+main() {
+	#	clean previous run, update SupraVim in the same way
+	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
+
+	# backup if needed
+	[ -d ~/.vim ] && backup_vim_folder
+	[ -f ~/.vimrc ] && backup_vimrc
+
+	install_SupraVim
+}
+
+main
+############################################################
