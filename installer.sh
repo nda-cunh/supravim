@@ -2,7 +2,11 @@
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
 BACKUP_FILE="old_conf_vim_$(date +'%Y-%m-%d-%H%M%S').tar"
+<<<<<<< HEAD
 SUPRA_LINK="https://gitlab.com/hydrasho/SupraVim"
+=======
+SUPRA_LINK="https://gitlab.com/Hydrasho/SupraVim"
+>>>>>>> Pixailz/SupraVim-master
 INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
 
 ############################################################
@@ -10,6 +14,10 @@ INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
 warning='\033[1;5;31m'
 blue='\e[34m'
 red='\e[31m'
+orange='\e[38;5;166m'
+yellow='\e[33m'
+green='\e[32m'
+purple='\e[35m'
 download='\e[1;93m'
 restore='\e[0m'
 reset='\e[0m'
@@ -54,7 +62,7 @@ backup_vimrc() {
 }
 
 ############################################################
-# main
+# Installation
 
 add_config_rc(){
 	if ! grep -qe "^stty stop undef" ${SHELL_ACTIVE}; then
@@ -78,6 +86,21 @@ install_SupraVim(){
 ############################################################
 
 ############################################################
+# print ascii line by line wiht rainbow colors
+
+print_ascii_line() {
+	echo "$2$1 ${reset}" 
+}
+
+print_ascii() {
+	print_ascii_line " ____                      __     ___" ${red}
+	print_ascii_line "/ ___| _   _ _ __  _ __ __ \ \   / (_)_ __ ___" ${orange}
+	print_ascii_line "\\___ \\| | | | '_ \\| '__/ _\` \\ \\ / /| | '_ \` _ \\" ${yellow}
+	print_ascii_line " ___) | |_| | |_) | | | (_| |\\ V / | | | | | | |" ${green}
+	print_ascii_line "|____/ \\__,_| .__/|_|  \\__,_| \\_/  |_|_| |_| |_|" ${blue}
+	print_ascii_line "            |_|" ${purple}
+}
+############################################################
 # main
 
 main() {
@@ -93,3 +116,4 @@ main() {
 
 main
 ############################################################
+
