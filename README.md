@@ -1,34 +1,44 @@
 **SupraVim**
 
-une amelioration de l'editeur de texte vim.
+L'editeur de texte vim pour 42 Angoulême.
 
 <img src="readme.png"/>
 
+| Dépendance |
+| ------ |
+| ZSH |
+| clang |
+| Vim 8 |
 
-**dépendance**
-
-- ZSH
-- clang
-- ctags
-- zsh
-- vim 8 or  +
-
-**Installation**
+**Installation:**
 
 ```bash
 curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
-note: je n'ai pas tester sous MAC (mais devrait fonctionné)
+
+**Désinstallation:**
+
+```bash
+    rm -rf ~/.local/bin/SupraVim
+```
 
 
-il implemente:
-- le CTRL+E pour compiler et executer directement les fichier C
-- une autocompletion avec parametre des fonctions (selon les includes)
-- la fenetre de Ctags a droite qui peut etre fermee avec <F8>
-- gestionnaire de fichier NEARDTREE a gauche Shift arrow pour se deplacer
-- <Ctrl + S> et <Ctrl + Q> pour sauvegarder et fermer rapidement.
-- <ctrl+k> pour make run
-- coloration syntaxique du vala, C++, C, python
-- Et divers plugins !
+| Nom | Raccourcis |
+| ------ | ------ |
+| Compilation | **F5**  ou Ctrl+E|
+| Norminette | **F3**  ou shift-N|
+| HEADER 42| **F1**|
+| Deplacement | Shift - flèche|
+| Sauvegarde | Ctrl + S ou Ctrl + W |
+| Quitter | Ctrl + Q |
+| Fermer la fenêtre des dossiers | Ctrl +G |
+| MakeFile| Ctrl+K (lance make et make run)|
+| scinder la fenetre horizontalement | Ctrl + D|
+| scinder la fenetre verticalement | Shift + D|
 
-
+Prend en charge la coloration de:
+- python
+- vala
+- C
+- C++
+- Shell
