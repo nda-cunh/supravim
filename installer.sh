@@ -108,6 +108,7 @@ main() {
 	[ -f ~/.vimrc ] && backup_vimrc
 
 	install_SupraVim
+	print_ascii
 }
 
 main
