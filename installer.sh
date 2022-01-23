@@ -2,11 +2,7 @@
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
 BACKUP_FILE="old_conf_vim_$(date +'%Y-%m-%d-%H%M%S').tar"
-<<<<<<< HEAD
-SUPRA_LINK="https://gitlab.com/hydrasho/SupraVim"
-=======
 SUPRA_LINK="https://gitlab.com/Hydrasho/SupraVim"
->>>>>>> Pixailz/SupraVim-master
 INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
 
 ############################################################
