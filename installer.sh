@@ -64,7 +64,7 @@ add_config_rc(){
 	if ! grep -qe "^stty stop undef" ${SHELL_ACTIVE}; then
 		echo "stty stop undef" >> ${SHELL_ACTIVE}
 	fi
-	if x! grep -qe "^stty start undef" ${SHELL_ACTIVE}; then
+	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE}; then
 		echo "stty start undef" >> ${SHELL_ACTIVE}
 	fi
 }
