@@ -28,7 +28,8 @@ noremap <S-o>				:Stdheader<CR>
 noremap <S-n>				:!(norminette)<CR>
 noremap <S-m>				:r $HOME/main.template<CR>
 noremap <C-d>				:vs 
-noremap <S-d>				:split 
+noremap <S-d>				:split
+noremap <F3>				<Esc>:call Norminette()<CR>
 noremap <S-Right>			<C-w><Right>
 noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
@@ -101,6 +102,9 @@ autocmd VimEnter * call s:actionForOpen(sbv_open_nerdtree_to_start)
 autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 
 "--------------- FONCTION ---------------"
+func! Norminette()
+	exec "!echo Norminette de % && norminette %"
+endfunc
 
 function! s:actionForOpen(openNerdTree)
 	let filename = expand('%:t')
