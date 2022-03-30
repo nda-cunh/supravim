@@ -56,7 +56,7 @@ set backspace=indent,eol,start
 set pumheight=50
 set encoding=utf-8
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-let g:UltiSnipsExpandTrigger="<F2>"
+let g:UltiSnipsExpandTrigger="<Tab>"
 
 "---------- Qui utilise la scrollbar -----------"
 set guioptions-=r
