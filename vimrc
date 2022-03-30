@@ -101,7 +101,15 @@ autocmd BufCreate * call s:addingNewTab(sbv_open_nerdtree_with_new_tab)
 autocmd VimEnter * call s:actionForOpen(sbv_open_nerdtree_to_start)
 autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
 
+"---------------- AUTO LOAD---------------"
+autocmd VimEnter call Pause()
+
 "--------------- FONCTION ---------------"
+                  
+func! Pause()                                  
+    exec "!stty start undef && stty stop undef"
+endfunc                                        
+
 func! Norminette()
 	exec "!echo Norminette de % && norminette %"
 endfunc
