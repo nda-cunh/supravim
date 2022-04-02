@@ -2,10 +2,11 @@
 " Filename: autoload/lightline/colorscheme/seoul256.vim
 " Author: atweiden
 " License: MIT License
-" Last Change: 2015/11/02 08:23:27.
+" Last Change: 2022/03/15 23:58:59.
 " =============================================================================
+
 let s:base03 = [ '#151513', 233 ]
-let s:base02 = [ '#30302c ', 236 ]
+let s:base02 = [ '#30302c', 236 ]
 let s:base01 = [ '#4e4e43', 239 ]
 let s:base00 = [ '#666656', 242  ]
 let s:base0 = [ '#808070', 244 ]

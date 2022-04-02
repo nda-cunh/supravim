@@ -16,41 +16,45 @@
 
 ![lightline.vim - OldHope](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/OldHope.png)
 
-### PaperColor dark
+### PaperColor (`background=dark`)
 
-![lightline.vim - PaperColor dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor_dark.png)
+![lightline.vim - PaperColor_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor_dark.png)
 
-### PaperColor light
+### PaperColor (`background=light`)
 
-![lightline.vim - PaperColor light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor.png)
+![lightline.vim - PaperColor_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor_light.png)
 
 ### Tomorrow
 
 ![lightline.vim - Tomorrow](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow.png)
 
-### Tomorrow Night
+### Tomorrow_Night
 
-![lightline.vim - Tomorrow Night](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night.png)
+![lightline.vim - Tomorrow_Night](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night.png)
 
-### Tomorrow Night Blue
+### Tomorrow_Night_Blue
 
-![lightline.vim - Tomorrow Night Blue](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night_Blue.png)
+![lightline.vim_- Tomorrow_Night_Blue](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night_Blue.png)
 
-### Tomorrow Night Bright
+### Tomorrow_Night_Bright
 
-![lightline.vim - Tomorrow Night Bright](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night_Bright.png)
+![lightline.vim - Tomorrow_Night_Bright](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night_Bright.png)
 
-### Tomorrow Night Eighties
+### Tomorrow_Night_Eighties
 
-![lightline.vim - Tomorrow Night Eighties](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night_Eighties.png)
+![lightline.vim - Tomorrow_Night_Eighties](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/Tomorrow_Night_Eighties.png)
 
 ### ayu_mirage
 
-![lightline.vim - ayu mirage](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/ayu_mirage.png)
+![lightline.vim - ayu_mirage](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/ayu_mirage.png)
 
 ### ayu_light
 
-![lightline.vim - ayu light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/ayu_light.png)
+![lightline.vim - ayu_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/ayu_light.png)
+
+### ayu_dark
+
+![lightline.vim - ayu_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/ayu_dark.png)
 
 ### darcula
 
@@ -64,15 +68,27 @@
 
 ![lightline.vim - jellybeans](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/jellybeans.png)
 
-### selenized dark
+### selenized_dark
 
-![lightline.vim - selenized dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/selenized_dark.png)
+![lightline.vim - selenized_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/selenized_dark.png)
 
-### solarized dark
+### selenized_black
+
+![lightline.vim - selenized_black](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/selenized_black.png)
+
+### selenized_light
+
+![lightline.vim - selenized_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/selenized_light.png)
+
+### selenized_white
+
+![lightline.vim - selenized_white](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/selenized_white.png)
+
+### solarized (`background=dark`)
 
 ![lightline.vim - solarized_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/solarized_dark.png)
 
-### solarized light
+### solarized (`background=light`)
 
 ![lightline.vim - solarized_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/solarized_light.png)
 
@@ -96,9 +112,21 @@
 
 ![lightline.vim - seoul256](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/seoul256.png)
 
-### one
+### one (`background=dark`)
 
-![lightline.vim - one](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/one.png)
+![lightline.vim - one_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/one_dark.png)
+
+### one (`background=light`)
+
+![lightline.vim - one_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/one_light.png)
+
+### rosepine (`background=dark`)
+
+![lightline.vim - rosepine_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/rosepine_dark.png)
+
+### rosepine (`background=light`)
+
+![lightline.vim - rosepine_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/rosepine_light.png)
 
 ### srcery_drk
 
@@ -108,10 +136,18 @@
 
 ![lightline.vim - simpleblack](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/simpleblack.png)
 
+### apprentice
+
+![lightline.vim - apprentice](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/apprentice.png)
+
 ### landscape
 
 ![lightline.vim - landscape](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/landscape.png)
 
-### 16color
+### 16color (`background=dark`)
 
-![lightline.vim - 16color](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/16color.png)
+![lightline.vim - 16color_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/16color_dark.png)
+
+### 16color (`background=light`)
+
+![lightline.vim - 16color_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/16color_light.png)

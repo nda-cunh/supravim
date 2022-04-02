@@ -27,7 +27,9 @@ function! s:NERDTree.changeRoot(node)
     call self.render()
     call self.root.putCursorHere(0, 0)
 
-    silent doautocmd User NERDTreeNewRoot
+    if exists('#User#NERDTreeNewRoot')
+        doautocmd User NERDTreeNewRoot
+    endif
 endfunction
 
 "FUNCTION: s:NERDTree.Close() {{{1
@@ -63,14 +65,6 @@ function! s:NERDTree.Close()
     endif
 endfunction
 
-"FUNCTION: s:NERDTree.CloseIfQuitOnOpen() {{{1
-"Closes the NERD tree window if the close on open option is set
-function! s:NERDTree.CloseIfQuitOnOpen()
-    if nerdtree#and(g:NERDTreeQuitOnOpen,1) && s:NERDTree.IsOpen()
-        call s:NERDTree.Close()
-    endif
-endfunction
-
 "FUNCTION: s:NERDTree.CursorToBookmarkTable(){{{1
 "Places the cursor at the top of the bookmarks table
 function! s:NERDTree.CursorToBookmarkTable()
@@ -96,9 +90,9 @@ endfunction
 
 "FUNCTION: s:NERDTree.CursorToTreeWin(){{{1
 "Places the cursor in the nerd tree window
-function! s:NERDTree.CursorToTreeWin()
+function! s:NERDTree.CursorToTreeWin(...)
     call g:NERDTree.MustBeOpen()
-    call nerdtree#exec(g:NERDTree.GetWinNum() . 'wincmd w', 1)
+    call nerdtree#exec(g:NERDTree.GetWinNum() . 'wincmd w', a:0 >0 ? a:1 : 1)
 endfunction
 
 " Function: s:NERDTree.ExistsForBuffer()   {{{1

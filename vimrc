@@ -5,6 +5,11 @@ call pathogen#infect()
 call pathogen#helptags()
 
 filetype plugin indent on
+"--------------- jeu de couleur ---------------"
+colorscheme gruvbox
+set background=dark
+set t_Co=256
+" gruvbox / molokai / dracula
 
 "-------------- Ctrl-Z persistant ------------"
 try
@@ -63,11 +68,6 @@ set guioptions-=r
 set guioptions-=R
 set guioptions-=l
 set guioptions-=L
-
-"--------------- jeu de couleur ---------------"
-colorscheme gruvbox
-set background=dark
-set t_Co=256
 
 "--------------- CLANG COMPLETER ---------------"
 set noinfercase
