@@ -11,36 +11,29 @@ https://github.com/itchyny/lightline.vim
 
 ![lightline.vim - wombat](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/wombat.png)
 
-### jellybeans
-
-![lightline.vim - jellybeans](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/jellybeans.png)
-
-### solarized dark
+### solarized (`background=dark`)
 
 ![lightline.vim - solarized_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/solarized_dark.png)
 
-### solarized light
+### solarized (`background=light`)
 
 ![lightline.vim - solarized_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/solarized_light.png)
 
-### PaperColor light
+### PaperColor (`background=dark`)
 
-![lightline.vim - PaperColor](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor.png)
+![lightline.vim - PaperColor_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor_dark.png)
 
-### seoul256
+### PaperColor (`background=light`)
 
-![lightline.vim - seoul256](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/seoul256.png)
+![lightline.vim - PaperColor_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/PaperColor_light.png)
 
-### one
+### one (`background=dark`)
 
-![lightline.vim - one](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/one.png)
+![lightline.vim - one_dark](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/one_dark.png)
 
-### landscape
+### one (`background=light`)
 
-![lightline.vim - landscape](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/landscape.png)
-
-landscape is my colorscheme, which is a high-contrast cterm-supported colorscheme, available at https://github.com/itchyny/landscape.vim
-
+![lightline.vim - one_light](https://raw.githubusercontent.com/wiki/itchyny/lightline.vim/image/one_light.png)
 
 For screenshots of all available colorshemes, see [this file](colorscheme.md).
 
@@ -55,7 +48,8 @@ For screenshots of all available colorshemes, see [this file](colorscheme.md).
 + Orthogonality. The plugin does not rely on the implementation of other plugins. Such plugin crossing settings should be configured by users.
 
 ## Installation
-### [Vim packages](http://vimhelp.appspot.com/repeat.txt.html#packages) (since Vim 7.4.1528)
+### [Vim packages](https://vimhelp.org/repeat.txt.html#packages) (since Vim 7.4.1528)
+1. Clone the plugin with the following command.
 
         git clone https://github.com/itchyny/lightline.vim ~/.vim/pack/plugins/start/lightline
 
