@@ -17,6 +17,12 @@ try
     set undofile
 catch
 endtry
+"-------------- Auto Pairs ---------------------"
+let g:AutoPairsFlyMode 			= 0
+let g:AutoPairsMapCR 			= 0
+let g:AutoPairsWildClosedPair 	= ''
+let g:AutoPairsMultilineClose 	= 0
+imap <silent><CR>				<CR><Plug>AutoPairsReturn
 
 "--------------- Les racourcis ---------------"
 inoremap <c-w>	<esc>:w!<CR>
