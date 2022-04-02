@@ -1,6 +1,10 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
 
 jobs:
   test:
@@ -9,6 +13,7 @@ jobs:
     strategy:
       matrix:
         vim:
+        - v8.2.1000
         - v8.2.0000
         - v8.1.0000
         - v8.0.0000
@@ -16,12 +21,13 @@ jobs:
         - v7.3
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
+      uses: actions/checkout@v3
     - name: Checkout vim-themis
-      uses: actions/checkout@master
+      uses: actions/checkout@v3
       with:
         repository: thinca/vim-themis
         path: vim-themis
+        ref: v1.6.0
     - name: Setup Vim
       uses: rhysd/action-setup-vim@v1
       id: vim
