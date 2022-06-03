@@ -13,10 +13,10 @@ set t_Co=256
 
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
-    call mkdir($HOME."/.vim", "", 0770)
+	call mkdir($HOME."/.vim", "", 0770)
 endif
 if !isdirectory($HOME."/.vim/undo-dir")
-    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+	call mkdir($HOME."/.vim/undo-dir", "", 0700)
 endif
 set undodir=~/.vim/undo-dir
 set undofile
@@ -110,9 +110,10 @@ let g:nerdtree_tabs_open_on_console_startup=1
 autocmd VimEnter call Pause()
 
 "--------------- FONCTION ---------------"
-                  
+
+
 func! Pause()                                  
-    exec "!stty start undef && stty stop undef"
+	exec "!stty start undef && stty stop undef"
 endfunc                                        
 
 func! Norminette()
@@ -120,33 +121,33 @@ func! Norminette()
 endfunc
 
 func! CompileRun()
-exec "w"
-if &filetype == 'c' || &filetype == 'make'
-	if filereadable("Makefile")
-		exec "!make -C %:p:h && make -C %:p:h run"
-	else
-		exec "!gcc %:p:h/*.c -o a.out && ./a.out"
+	exec "w"
+	if &filetype == 'c' || &filetype == 'make'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h && make -C %:p:h run"
+		else
+			exec "!gcc -g %:p:h/*.c -o a.out && ./a.out"
+		endif
+	elseif &filetype == 'cpp'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %"
+	elseif &filetype == 'sh'
+		exec "!time bash %"
+	elseif &filetype == 'python'
+		exec "!time python3 %"
+	elseif &filetype == 'html'
+		exec "!google-chrome % &"
+	elseif &filetype == 'go'
+		exec "!go build %<"
+		exec "!time go run %"
+	elseif &filetype == 'matlab'
+		exec "!time octave %"
+	elseif &filetype == 'vala'
+		exec "!valac %"
+	elseif &filetype == 'vapi'
+		exec "!valac % -o %< && time ./%<"
 	endif
-elseif &filetype == 'cpp'
-    exec "!g++ % -o %<"
-    exec "!time ./%<"
-elseif &filetype == 'java'
-    exec "!javac %"
-    exec "!time java %"
-elseif &filetype == 'sh'
-    exec "!time bash %"
-elseif &filetype == 'python'
-    exec "!time python3 %"
-elseif &filetype == 'html'
-    exec "!google-chrome % &"
-elseif &filetype == 'go'
-    exec "!go build %<"
-    exec "!time go run %"
-elseif &filetype == 'matlab'
-    exec "!time octave %"
-elseif &filetype == 'vala'
-	exec "!valac %"
-elseif &filetype == 'vapi'
-	exec "!valac % -o %< && time ./%<"
-endif
 endfunc
