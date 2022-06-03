@@ -20,6 +20,10 @@ if !isdirectory($HOME."/.vim/undo-dir")
 endif
 set undodir=~/.vim/undo-dir
 set undofile
+" -------------  DBG integration  --------------"
+
+packadd! termdebug
+let g:termdebug_wide=1
 
 "-------------- Auto Pairs ---------------------"
 let g:AutoPairsFlyMode 			= 0
@@ -28,6 +32,13 @@ let g:AutoPairsWildClosedPair 	= ''
 let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
 
+"--------------- Onglets ---------------------"
+noremap <c-n>	<esc>:tabnew 
+noremap <C-Right>				:tabnext<CR>
+noremap <C-Left>				:tabprevious<CR>
+inoremap <C-Right>				<esc>:tabnext<CR>
+inoremap <C-Left>				<esc>:tabprevious<CR>
+
 "--------------- Les racourcis ---------------"
 inoremap <c-w>				<esc>:w!<CR>
 inoremap <c-q>				<esc>:q!<CR>
@@ -35,6 +46,7 @@ inoremap <c-s>				<esc>:w!<CR>
 noremap <c-w>				<esc>:w!<CR>
 noremap <c-q>				<esc>:q!<CR>
 noremap <c-s>				<esc>:w!<CR>
+map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
 vmap <F5> 					<Esc>:call CompileRun()<CR>
@@ -49,8 +61,8 @@ noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
 noremap <C-k>				:!make ; (make run)<CR>
 noremap <C-e>				:!(cc *.c -lbsd && ./a.out)<CR>
-imap <C-g>					<esc>:NERDTreeToggle<CR>
-map <C-g>					:NERDTreeToggle<CR>
+imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
+map <C-g>					:NERDTreeTabsToggle<CR>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
@@ -97,12 +109,7 @@ let g:syntastic_c_remove_include_errors = 1
 let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include']
 
 "--------------- PL NERDTREE ---------------"
-let sbv_open_nerdtree_to_start=1
-let sbv_open_nerdtree_with_new_tab=1
-autocmd BufCreate * call s:addingNewTab(sbv_open_nerdtree_with_new_tab)
-autocmd VimEnter * call s:actionForOpen(sbv_open_nerdtree_to_start)
-autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
-
+let g:nerdtree_tabs_open_on_console_startup=1
 "---------------- AUTO LOAD---------------"
 autocmd VimEnter call Pause()
 
@@ -115,38 +122,6 @@ endfunc
 func! Norminette()
 	exec "!echo Norminette de % && norminette %"
 endfunc
-
-function! s:actionForOpen(openNerdTree)
-	let filename = expand('%:t')
-	if !empty(a:openNerdTree)
-		NERDTree
-	endif
-	if !empty(filename)
-		wincmd l
-	endif
-endfunction
-
-function! s:addingNewTab(openNerdTree)
-	let filename = expand('%:t')
-	if winnr('$') < 2 && exists('t:NERDTreeBufName') == 0
-		if !empty(a:openNerdTree)
-			NERDTree
-		endif
-		if !empty(filename)
-			wincmd l
-		endif
-	endif
-endfunction
-
-function! s:CloseIfOnlyNerdTreeLeft()
-	if exists("t:NERDTreeBufName")
-		if bufwinnr(t:NERDTreeBufName) != -1
-			if winnr("$") == 1
-				q
-			endif
-		endif
-	endif
-endfunction
 
 func! CompileRun()
 exec "w"
