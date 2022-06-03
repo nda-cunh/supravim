@@ -124,8 +124,12 @@ endfunc
 
 func! CompileRun()
 exec "w"
-if &filetype == 'c'
-	exec "!gcc % -o %< && time ./%<"
+if &filetype == 'c' || &filetype == 'make'
+	if filereadable("Makefile")
+		exec "!make -C %:p:h && make -C %:p:h run"
+	else
+		exec "!gcc %:p:h/*.c -o a.out && ./a.out"
+	endif
 elseif &filetype == 'cpp'
     exec "!g++ % -o %<"
     exec "!time ./%<"
