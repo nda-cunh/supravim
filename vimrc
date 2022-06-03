@@ -50,7 +50,6 @@ map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
 vmap <F5> 					<Esc>:call CompileRun()<CR>
-noremap <S-n>				:!(norminette)<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split
 noremap <F3>				<Esc>:call Norminette()<CR>
