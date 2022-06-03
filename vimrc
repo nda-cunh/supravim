@@ -111,6 +111,23 @@ autocmd VimEnter call Pause()
 
 "--------------- FONCTION ---------------"
 
+imap <C-F5>		<esc>:Gdb<CR>
+map <C-F5>		<esc>:Gdb<CR>
+
+command -nargs=0 -bar Gdb :call Gdb()
+func! Gdb()
+	if &filetype == 'c'
+		exec ":NERDTreeTabsClose"
+		if !filereadable("Makefile")
+			exec ":Termdebug ./a.out"
+		else
+			exec ":Termdebug"
+		endif
+	else
+		echo "Fichier non supporter !"
+	endif
+endfunc               
+
 command -nargs=+ -bar FctToHeader :call FctsToHeader( split('<args>') )
 
 func! FctsToHeader(...)
