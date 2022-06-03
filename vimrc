@@ -11,12 +11,16 @@ set background=dark
 set t_Co=256
 " gruvbox / molokai / dracula
 
-"-------------- Ctrl-Z persistant ------------"
-try
-    set undodir=~/.SupraVim/undodir
-    set undofile
-catch
-endtry
+"-------------- Save Undo  ------------"
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undodir=~/.vim/undo-dir
+set undofile
+
 "-------------- Auto Pairs ---------------------"
 let g:AutoPairsFlyMode 			= 0
 let g:AutoPairsMapCR 			= 0
@@ -25,19 +29,16 @@ let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
 
 "--------------- Les racourcis ---------------"
-inoremap <c-w>	<esc>:w!<CR>
-inoremap <c-q>	<esc>:q!<CR>
-inoremap <c-s>	<esc>:w!<CR>
-noremap <c-w>	<esc>:w!<CR>
-noremap <c-q>	<esc>:q!<CR>
-noremap <c-s>	<esc>:w!<CR>
+inoremap <c-w>				<esc>:w!<CR>
+inoremap <c-q>				<esc>:q!<CR>
+inoremap <c-s>				<esc>:w!<CR>
+noremap <c-w>				<esc>:w!<CR>
+noremap <c-q>				<esc>:q!<CR>
+noremap <c-s>				<esc>:w!<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
 vmap <F5> 					<Esc>:call CompileRun()<CR>
-nmap <F8>					:TagbarToggle<CR>
-noremap <S-o>				:Stdheader<CR>
 noremap <S-n>				:!(norminette)<CR>
-noremap <S-m>				:r $HOME/main.template<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split
 noremap <F3>				<Esc>:call Norminette()<CR>
@@ -48,7 +49,6 @@ noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
 noremap <C-k>				:!make ; (make run)<CR>
 noremap <C-e>				:!(cc *.c -lbsd && ./a.out)<CR>
-noremap <C-b>				:r ~/main.test <CR>
 imap <C-g>					<esc>:NERDTreeToggle<CR>
 map <C-g>					:NERDTreeToggle<CR>
 
@@ -82,17 +82,13 @@ set completeopt+=menuone,noselect
 let g:clang_library_path='/usr/lib/llvm-12/lib/libclang.so.1'
 let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
-"
-" "--------------- TAGBAR ---------------"
-" "let g:tagbar_ctags_bin="~/.vim/bundle/ctags/ctags"
-"autocmd VimEnter * TagbarToggle
-"
-" "--------------- SYNTASTIC ---------------"
+
+"--------------- SYNTASTIC ---------------"
 let current_compiler = "gcc"
 let g:rainbow_active = 1
 
 let g:syntastic_cpp_compiler = 'gcc'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall-Werror -Wextra'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall -Werror -Wextra'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
 let g:syntastic_cpp_check_header = 1
