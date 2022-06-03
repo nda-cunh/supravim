@@ -49,17 +49,14 @@ noremap <c-s>				<esc>:w!<CR>
 map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
-vmap <F5> 					<Esc>:call CompileRun()<CR>
-noremap <C-d>				:vs 
-noremap <S-d>				:split
+noremap <C-d>				:vs <CR> 
+noremap <S-d>				:split <CR>
 noremap <F3>				<Esc>:call Norminette()<CR>
 noremap <S-Right>			<C-w><Right>
 noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
-noremap <C-k>				:!make ; (make run)<CR>
-noremap <C-e>				:!(cc *.c -lbsd && ./a.out)<CR>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
 
