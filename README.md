@@ -25,16 +25,17 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 
 | Nom | Raccourcis |
 | ------ | ------ |
-| Compilation | **F5**  ou Ctrl+E|
-| Norminette | **F3**  ou shift-N|
-| HEADER 42| **F1**|
-| Deplacement | Shift - flèche|
-| Sauvegarde | Ctrl + S ou Ctrl + W |
 | Quitter | Ctrl + Q |
-| Fermer la fenêtre des dossiers | Ctrl +G |
-| MakeFile| Ctrl+K (lance make et make run)|
+| Sauvegarde | Ctrl + S ou Ctrl + W |
+| HEADER 42| **F1**|
+| Norminette | **F3**|
+| Compilation | **F5**|
+| Deplacement | Shift - flèche|
+| Fermer/Ouvrir la fenêtre des dossiers | Ctrl +G |
 | scinder la fenetre horizontalement | Ctrl + D|
 | scinder la fenetre verticalement | Shift + D|
+
+Compilation
 
 Prend en charge la coloration de:
 - python
