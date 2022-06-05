@@ -9,7 +9,9 @@ filetype plugin indent on
 colorscheme gruvbox
 set background=dark
 set t_Co=256
-" gruvbox / molokai / dracula
+" 1: gruvbox
+" 2: molokai
+" 3: dracula
 
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
