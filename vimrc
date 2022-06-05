@@ -22,6 +22,7 @@ if !isdirectory($HOME."/.vim/undo-dir")
 endif
 set undodir=~/.vim/undo-dir
 set undofile
+
 " -------------  DBG integration  --------------"
 
 packadd! termdebug
@@ -33,6 +34,7 @@ let g:AutoPairsMapCR 			= 0
 let g:AutoPairsWildClosedPair 	= ''
 let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
+let g:AutoPairs = {}
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
@@ -108,16 +110,17 @@ let g:syntastic_c_include_dirs = ['../../../include','../../include','../include
 
 "--------------- PL NERDTREE ---------------"
 let g:nerdtree_tabs_open_on_console_startup=1
+
 "---------------- AUTO LOAD---------------"
 autocmd VimEnter call Pause()
 
 "--------------- FONCTION ---------------"
 
-imap <C-F5>		<esc>:Gdb<CR>
-map <C-F5>		<esc>:Gdb<CR>
+imap <C-F5>		<esc>:Gdbs<CR>
+map <C-F5>		<esc>:Gdbs<CR>
 
-command -nargs=0 -bar Gdb :call Gdb()
-func! Gdb()
+command -nargs=0 -bar Gdbs :call Gdbf()
+func! Gdbf()
 	if &filetype == 'c'
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
@@ -133,10 +136,10 @@ endfunc
 command -nargs=+ -bar FctToHeader :call FctsToHeader( split('<args>') )
 
 func! FctsToHeader(...)
-    for files_input in a:000[0]
-        let $f=files_input
-        exec ":r !IFS=$'\\n'; for fct in $(cat $f | grep -Eo \"^[a-z\\_]+.+[a-z\\_\\*]+\\(.*\\)$\" | grep -vE \"[^a-z\\_\\*]main\\(\"); do echo \"$fct;\"; done"
-    endfor
+	for files_input in a:000[0]
+		let $f=files_input
+		exec ":r !IFS=$'\\n'; for fct in $(cat $f | grep -Eo \"^[a-z\\_]+.+[a-z\\_\\*]+\\(.*\\)$\" | grep -vE \"[^a-z\\_\\*]main\\(\"); do echo \"$fct;\"; done"
+	endfor
 endfunc
 
 func! Pause()                                  
