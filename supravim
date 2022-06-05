@@ -1,0 +1,113 @@
+#!/bin/bash
+
+enable_fct(){
+	case $next_param in
+		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "\033[1;92m[$next_param]\033[0m correctly enabled";;
+		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "\033[1;92m[$next_param]\033[0m correctly enabled";;
+		nerdtree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "\033[1;92m[$next_param]\033[0m correctly enabled";;
+		"") echo "Please enter something to enable.";;
+		*) echo "[$next_param] : cannot enable."
+	esac
+}
+
+disable_fct(){
+    case $next_param in
+        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "\033[1;91m[$next_param]\033[0m correctly disabled";;
+        mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "\033[1;91m[$next_param]\033[0m correctly disabled";;
+        nerdtree) sed -i 's/^[^\"].*nerdtree.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "\033[1;91m[$next_param]\033[0m correctly disabled";;
+		"") echo "Please enter something to disable.";;
+        *) echo "[$next_param] : cannot enable."
+    esac
+}
+
+theme_fct(){
+	case $next_param in
+		1 | gruvbox) sed -i 's/^colorscheme .*$/colorscheme gruvbox/' ~/.vimrc; echo -e "Vim theme set to \033[1mgruvbox\033[0m.";;
+		2 | molokai) sed -i 's/^colorscheme .*$/colorscheme molokai/' ~/.vimrc; echo -e "Vim theme set to \033[1mmolokai\033[0m.";;
+		3 | dracula) sed -i 's/^colorscheme .*$/colorscheme dracula/' ~/.vimrc; echo -e "Vim theme set to \033[1mdracula\033[0m.";;
+		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to \033[1;47;30mlight\033[0m background.";;
+		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to \033[1;40mdark\033[0m background.";;
+		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
+		*) echo "Theme name didn't match with any, please try with one of these."; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo -e "light:	for light background"; echo "dark:	for dark background";;
+	esac
+}
+
+status_fct(){
+	echo -e "\033[1m-- Options --\033[0m"
+
+	if [[ $(grep -c "\"\*autopairs\* " ~/.vimrc) == 0 ]]
+	then
+		echo -e "\033[1;91mautopairs\033[0m"
+	else
+		echo -e "\033[1;92mautopairs\033[0m "
+	fi
+
+	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]
+	then
+		echo -e "\033[1;92mmouse\033[0m "
+	else
+		echo -e "\033[1;91mmouse\033[0m"
+	fi
+
+	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]
+	then
+		echo -e "\033[1;92mnerdtree\033[0m "
+	else
+		echo -e "\033[1;91mnerdtree\033[0m"
+	fi
+
+	echo -e "\n\033[1m-- Theme --\033[0m"
+	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
+}
+
+help_fct(){
+	echo -e "\033[1m#### SUPRAVIM EDITOR ####\033[0m
+	You are able to configure your supravim as wished: enable/ disable tools, edit theme.
+
+	\033[1mENABLE/ DISABLE\033[0m
+		supravim <\033[1;92menable\033[0m | -e> <option>
+		supravim <\033[1;91mdisable\033[0m | -d> <option>
+		
+		<options>:
+		autopairs		put automatically a closed bracket ('}', ']', ')'), when add an opened bracket.
+		mouse			use of mouse to move/ copy and paste in your file.
+		nerdtree		left window automatically opened with files in the current directory.
+
+	\033[1mTHEME CHOOSING\033[0m
+		supravim <theme | -t> <name_theme> <background>
+		
+		<name_theme>:
+		1 | gruvbox		(default) set to gruvbox theme
+		2 | molokai		set to molokai theme
+		3 | dracula		set to dracula theme
+
+		<background>:
+		\033[1;40mdark\033[0m			(default) set the background color to black/ darker color
+		\033[0;47;30mlight\033[0m			set the beckground color to white/ lighter colors
+		"
+}
+
+if [ $# -eq 0 ]
+then
+	help_fct
+fi
+
+for (( i=1; i<=$#; i++)); do
+	option=${!i}
+	next_param=$(($i + 1))
+	export next_param="${!next_param}"
+	case $option in 
+		-e | enable) enable_fct; i=$(($i + 1));;
+		-d | disable) disable_fct; i=$(($i + 1));;
+		-t | theme) theme_fct; i=$(($i + 1)); 
+			for next in "white" "black" "light" "dark"; do
+				j=$((i + 1))
+				if [[ "${!j}" = "$next" ]]; then
+					export next_param="${!j}"; theme_fct; i=$((i + 1))
+				fi
+			done;;
+		-s | status) status_fct;;
+		-h | --help) help_fct;;
+		*) echo "Uncorrect argument: '$option' (--help option can help you maybe?)"; exit;;
+	esac
+done
