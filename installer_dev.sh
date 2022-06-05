@@ -67,6 +67,10 @@ add_config_rc(){
 	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE}; then
 		echo "stty start undef" >> ${SHELL_ACTIVE}
 	fi
+	if ! grep -qe "^export PATH=$PATH:$HOME/.local/bin" ${SHELL_ACTIVE}; then
+		echo "export PATH=$PATH:$HOME/.local/bin" >> ${SHELL_ACTIVE}
+	fi
+	
 }
 
 install_SupraVim(){
