@@ -135,7 +135,7 @@ command -nargs=+ -bar FctToHeader :call FctsToHeader( split('<args>') )
 func! FctsToHeader(...)
     for files_input in a:000[0]
         let $f=files_input
-        exec ":r !IFS=$'\\n'; for fct in $(cat $f | grep -Eo \"[a-z\\_]+.+[a-z\\_\\*]+\\(.*\\)$\" | grep -vE \"[^a-z\\_\\*]main\\(\"); do echo \"$fct;\"; done"
+        exec ":r !IFS=$'\\n'; for fct in $(cat $f | grep -Eo \"^[a-z\\_]+.+[a-z\\_\\*]+\\(.*\\)$\" | grep -vE \"[^a-z\\_\\*]main\\(\"); do echo \"$fct;\"; done"
     endfor
 endfunc
 
