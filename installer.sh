@@ -71,12 +71,14 @@ add_config_rc(){
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
+
 }
 
 config_supravim_editor() {
-	cp "$INSTALL_DIRECTORY/supravim" "$HOME/.local/bin/"
+	ln -s "$INSTALL_DIRECTORY/supravim" "$HOME/.local/bin/"
     chmod +x $HOME/.local/bin/supravim
 }
+
 
 install_SupraVim(){
 	download "Cloning repo to ${INSTALL_DIRECTORY}"
