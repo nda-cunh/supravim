@@ -9,36 +9,51 @@ filetype plugin indent on
 colorscheme gruvbox
 set background=dark
 set t_Co=256
-" gruvbox / molokai / dracula
+" 1: gruvbox
+" 2: molokai
+" 3: dracula
 
-"-------------- Ctrl-Z persistant ------------"
-try
-    set undodir=~/.SupraVim/undodir
-    set undofile
-catch
-endtry
+"-------------- Save Undo  ------------"
+if !isdirectory($HOME."/.vim")
+	call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+	call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undodir=~/.vim/undo-dir
+set undofile
+
+" -------------  DBG integration  --------------"
+
+packadd! termdebug
+let g:termdebug_wide=1
+
 "-------------- Auto Pairs ---------------------"
 let g:AutoPairsFlyMode 			= 0
 let g:AutoPairsMapCR 			= 0
 let g:AutoPairsWildClosedPair 	= ''
 let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
+let g:AutoPairs = {}
+
+"--------------- Onglets ---------------------"
+noremap <c-n>	<esc>:tabnew 
+noremap <C-Right>				:tabnext<CR>
+noremap <C-Left>				:tabprevious<CR>
+inoremap <C-Right>				<esc>:tabnext<CR>
+inoremap <C-Left>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
-inoremap <c-w>	<esc>:w!<CR>
-inoremap <c-q>	<esc>:q!<CR>
-inoremap <c-s>	<esc>:w!<CR>
-noremap <c-w>	<esc>:w!<CR>
-noremap <c-q>	<esc>:q!<CR>
-noremap <c-s>	<esc>:w!<CR>
+inoremap <c-w>				<esc>:w!<CR>
+inoremap <c-q>				<esc>:q!<CR>
+inoremap <c-s>				<esc>:w!<CR>
+noremap <c-w>				<esc>:w!<CR>
+noremap <c-q>				<esc>:q!<CR>
+noremap <c-s>				<esc>:w!<CR>
+map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
-vmap <F5> 					<Esc>:call CompileRun()<CR>
-nmap <F8>					:TagbarToggle<CR>
-noremap <S-o>				:Stdheader<CR>
-noremap <S-n>				:!(norminette)<CR>
-noremap <S-m>				:r $HOME/main.template<CR>
-noremap <C-d>				:vs 
+noremap <C-d>				:vs
 noremap <S-d>				:split
 noremap <F3>				<Esc>:call Norminette()<CR>
 noremap <S-Right>			<C-w><Right>
@@ -46,11 +61,8 @@ noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
-noremap <C-k>				:!make ; (make run)<CR>
-noremap <C-e>				:!(cc *.c -lbsd && ./a.out)<CR>
-noremap <C-b>				:r ~/main.test <CR>
-imap <C-g>					<esc>:NERDTreeToggle<CR>
-map <C-g>					:NERDTreeToggle<CR>
+imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
+map <C-g>					:NERDTreeTabsToggle<CR>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
@@ -82,17 +94,13 @@ set completeopt+=menuone,noselect
 let g:clang_library_path='/usr/lib/llvm-12/lib/libclang.so.1'
 let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
-"
-" "--------------- TAGBAR ---------------"
-" "let g:tagbar_ctags_bin="~/.vim/bundle/ctags/ctags"
-"autocmd VimEnter * TagbarToggle
-"
-" "--------------- SYNTASTIC ---------------"
+
+"--------------- SYNTASTIC ---------------"
 let current_compiler = "gcc"
 let g:rainbow_active = 1
 
 let g:syntastic_cpp_compiler = 'gcc'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall-Werror -Wextra'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall -Werror -Wextra'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
 let g:syntastic_cpp_check_header = 1
@@ -101,81 +109,75 @@ let g:syntastic_c_remove_include_errors = 1
 let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include']
 
 "--------------- PL NERDTREE ---------------"
-let sbv_open_nerdtree_to_start=1
-let sbv_open_nerdtree_with_new_tab=1
-autocmd BufCreate * call s:addingNewTab(sbv_open_nerdtree_with_new_tab)
-autocmd VimEnter * call s:actionForOpen(sbv_open_nerdtree_to_start)
-autocmd WinEnter * call s:CloseIfOnlyNerdTreeLeft()
+let g:nerdtree_tabs_open_on_console_startup=1
 
 "---------------- AUTO LOAD---------------"
 autocmd VimEnter call Pause()
 
 "--------------- FONCTION ---------------"
-                  
+
+imap <C-F5>		<esc>:Gdbs<CR>
+map <C-F5>		<esc>:Gdbs<CR>
+
+command -nargs=0 -bar Gdbs :call Gdbf()
+func! Gdbf()
+	if &filetype == 'c'
+		exec ":NERDTreeTabsClose"
+		if !filereadable("Makefile")
+			exec ":Termdebug ./a.out"
+		else
+			exec ":Termdebug"
+		endif
+	else
+		echo "Fichier non supporter !"
+	endif
+endfunc               
+
+command -nargs=+ -bar FctToHeader :call FctsToHeader( split('<args>') )
+
+func! FctsToHeader(...)
+	for files_input in a:000[0]
+		let $f=files_input
+		exec ":r !IFS=$'\\n'; for fct in $(cat $f | grep -Eo \"^[a-z\\_]+.+[a-z\\_\\*]+\\(.*\\)$\" | grep -vE \"[^a-z\\_\\*]main\\(\"); do echo \"$fct;\"; done"
+	endfor
+endfunc
+
 func! Pause()                                  
-    exec "!stty start undef && stty stop undef"
+	exec "!stty start undef && stty stop undef"
 endfunc                                        
 
 func! Norminette()
 	exec "!echo Norminette de % && norminette %"
 endfunc
 
-function! s:actionForOpen(openNerdTree)
-	let filename = expand('%:t')
-	if !empty(a:openNerdTree)
-		NERDTree
-	endif
-	if !empty(filename)
-		wincmd l
-	endif
-endfunction
-
-function! s:addingNewTab(openNerdTree)
-	let filename = expand('%:t')
-	if winnr('$') < 2 && exists('t:NERDTreeBufName') == 0
-		if !empty(a:openNerdTree)
-			NERDTree
-		endif
-		if !empty(filename)
-			wincmd l
-		endif
-	endif
-endfunction
-
-function! s:CloseIfOnlyNerdTreeLeft()
-	if exists("t:NERDTreeBufName")
-		if bufwinnr(t:NERDTreeBufName) != -1
-			if winnr("$") == 1
-				q
-			endif
-		endif
-	endif
-endfunction
-
 func! CompileRun()
-exec "w"
-if &filetype == 'c'
-	exec "!gcc % -o %< && time ./%<"
-elseif &filetype == 'cpp'
-    exec "!g++ % -o %<"
-    exec "!time ./%<"
-elseif &filetype == 'java'
-    exec "!javac %"
-    exec "!time java %"
-elseif &filetype == 'sh'
-    exec "!time bash %"
-elseif &filetype == 'python'
-    exec "!time python3 %"
-elseif &filetype == 'html'
-    exec "!google-chrome % &"
-elseif &filetype == 'go'
-    exec "!go build %<"
-    exec "!time go run %"
-elseif &filetype == 'matlab'
-    exec "!time octave %"
-elseif &filetype == 'vala'
-	exec "!valac %"
-elseif &filetype == 'vapi'
-	exec "!valac % -o %< && time ./%<"
-endif
+	exec "w"
+	if &filetype == 'c' || &filetype == 'make'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h && make -C %:p:h run"
+		else
+			exec "!gcc -g %:p:h/*.c -o a.out && ./a.out"
+		endif
+	elseif &filetype == 'cpp'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %"
+	elseif &filetype == 'sh'
+		exec "!time bash %"
+	elseif &filetype == 'python'
+		exec "!time python3 %"
+	elseif &filetype == 'html'
+		exec "!google-chrome % &"
+	elseif &filetype == 'go'
+		exec "!go build %<"
+		exec "!time go run %"
+	elseif &filetype == 'matlab'
+		exec "!time octave %"
+	elseif &filetype == 'vala'
+		exec "!valac %"
+	elseif &filetype == 'vapi'
+		exec "!valac % -o %< && time ./%<"
+	endif
 endfunc

@@ -67,7 +67,20 @@ add_config_rc(){
 	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE}; then
 		echo "stty start undef" >> ${SHELL_ACTIVE}
 	fi
+	if ! grep -qE "^export PATH=.*[\$]HOME/\.local/bin.*$" ${SHELL_ACTIVE}; then
+		status "Adding path ($HOME/.local/bin)"
+		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
+	fi
+
 }
+
+config_supravim_editor() {
+	echo "COUCOU LINSTALLATION"
+	cp $(INSTALL_DIRECTORY)/supravim $HOME/.local/bin/
+    chmod +x $HOME/.local/bin/supravim
+	#ln -s ${INSTALL_DIRECTORY}/supravim $HOME/.local/bin
+}
+
 
 install_SupraVim(){
 	download "Cloning repo to ${INSTALL_DIRECTORY}"
@@ -108,6 +121,7 @@ main() {
 	[ -f ~/.vimrc ] && backup_vimrc
 
 	install_SupraVim
+	config_supravim_editor
 	print_ascii
 }
 
