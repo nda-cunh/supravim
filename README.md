@@ -20,7 +20,7 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ## Désinstallation
 
 ```bash
-    rm -rf ~/.local/bin/SupraVim
+    supravim uninstall
 ```
 ## Utilisation
 
@@ -52,6 +52,9 @@ il compilera tout les fichier C present ensemble et executera le a.out généré
 
 - supports des onglets
 - Ajout de l'intégration GDB
-- UNDO infinit ! (se sauvegarde même après la fermeture)
+- UNDO infini! (se sauvegarde même après la fermeture)
 - Generateur de prototype pour les headers C
-- Commenter , Decommenter en selectionnant ou une ligne
+- Commenter , Decommenter en selectionnant une ou plusieurs lignes
+- Creation d'un mini logiciel supravim (`supravim -h` pour plus de details)
+    * Customiser le theme de vim et les options
+    * Desinstaller ou mettre à jour supravim
