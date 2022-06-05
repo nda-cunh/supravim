@@ -57,4 +57,4 @@ il compilera tout les fichier C present ensemble et executera le a.out généré
 - Commenter , Decommenter en selectionnant une ou plusieurs lignes
 - Creation d'un mini logiciel supravim (`supravim -h` pour plus de details)
     * Customiser le theme de vim et les options
-    * Desinstaller, mettre à jour supravim
+    * Desinstaller ou mettre à jour supravim
