@@ -76,7 +76,7 @@ add_config_rc(){
 
 config_supravim_editor() {
 	echo "COUCOU LINSTALLATION"
-	cp "$INSTALL_DIRECTORY/supravim" $HOME/.local/bin/
+	cp "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
     chmod +x $HOME/.local/bin/supravim
 	#ln -s ${INSTALL_DIRECTORY}/supravim $HOME/.local/bin
 }
