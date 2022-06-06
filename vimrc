@@ -34,7 +34,8 @@ let g:AutoPairsMapCR 			= 0
 let g:AutoPairsWildClosedPair 	= ''
 let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
-let g:AutoPairs = {}
+"*autopairs* let g:AutoPairs = {}
+
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
@@ -53,8 +54,8 @@ noremap <c-s>				<esc>:w!<CR>
 map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
-noremap <C-d>				:vs
-noremap <S-d>				:split
+noremap <C-d>				:vs 
+noremap <S-d>				:split 
 noremap <F3>				<Esc>:call Norminette()<CR>
 noremap <S-Right>			<C-w><Right>
 noremap <S-Left>			<C-w><Left>
