@@ -71,7 +71,7 @@ add_config_rc(){
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
-
+	source ${SHELL_ACTIVE}
 }
 
 config_supravim_editor() {
