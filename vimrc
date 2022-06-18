@@ -79,7 +79,6 @@ set showmode
 set backspace=indent,eol,start
 set pumheight=50
 set encoding=utf-8
-set visualbell
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
