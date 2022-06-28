@@ -156,7 +156,7 @@ func! CompileRun()
 	exec "w"
 	if &filetype == 'c' || &filetype == 'make'
 		if filereadable("Makefile")
-			exec "!make -C %:p:h && make -C %:p:h run"
+			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
 		else
 			exec "!gcc -g %:p:h/*.c -o a.out && ./a.out"
 		endif
@@ -178,7 +178,7 @@ func! CompileRun()
 	elseif &filetype == 'matlab'
 		exec "!time octave %"
 	elseif &filetype == 'vala'
-		exec "!valac %"
+		exec "!valac %:p:h/*.vala -o a.out && ./a.out"
 	elseif &filetype == 'vapi'
 		exec "!valac % -o %< && time ./%<"
 	endif
