@@ -95,12 +95,12 @@ uninstall_fct() {
 }
 
 update(){
-	if [ `git -C "$HOME/.local/bin/SupraVim" status | grep -c "Your branch is up to date"` -gt 0 ]
-	then
-		echo "You already have the latest SupraVim version"
-	else
+	#if [ `git -C "$HOME/.local/bin/SupraVim" status | grep -c "Your branch is up to date"` -gt 0 ]
+	#then
+	#	echo "You already have the latest SupraVim version"
+	#else
 		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
-	fi
+	#fi
 }
 
 help_fct(){
