@@ -35,7 +35,7 @@ theme_fct(){
 switch(){
 	if [ -f ~/.vimrc ]
 	then
-		if [ `grep -c "FctsToHeader" ~/.vimrc` -gt 0 ]
+		if [ `grep -c "SUPRAVIM" ~/.vimrc` -gt 0 ]
 		then
 			mv ~/.vimrc ~/.vimrc_supravim_off
 			echo -e "SupraVim configuration: \033[1;91mdisabled\033[0m"
