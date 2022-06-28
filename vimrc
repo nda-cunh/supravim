@@ -172,9 +172,6 @@ func! CompileRun()
 		exec "!time python3 %"
 	elseif &filetype == 'html'
 		exec "!google-chrome % &"
-	elseif &filetype == 'go'
-		exec "!go build %<"
-		exec "!time go run %"
 	elseif &filetype == 'matlab'
 		exec "!time octave %"
 	elseif &filetype == 'vala'
