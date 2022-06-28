@@ -1,3 +1,4 @@
+"**** SUPRAVIM ****"
 set nocompatible
 filetype off
 
