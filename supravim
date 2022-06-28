@@ -94,6 +94,15 @@ uninstall_fct() {
 	rm -rf "$HOME/.local/bin/SupraVim" "$HOME/.local/bin/supravim"	
 }
 
+update(){
+	if [ `git -C "$HOME/.local/bin/SupraVim" status | grep -c "Your branch is up to date"` -gt 0 ]
+	then
+		echo "You already have the latest SupraVim version"
+	else
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
+	fi
+}
+
 help_fct(){
 	echo -e "\033[1m#### SUPRAVIM EDITOR ####\033[0m
 	You are able to configure your supravim as wished: enable/ disable tools, edit theme.
@@ -152,7 +161,7 @@ for (( i=1; i<=$#; i++)); do
 		-s | status) status_fct;;
 		-h | --help) help_fct;;
 		uninstall) uninstall_fct;;
-		update) uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh;;
+		update) update;;
 		switch) switch;;
 		*) echo "Uncorrect argument: '$option' (--help option can help you maybe?)"; exit;;
 	esac
