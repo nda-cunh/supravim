@@ -157,8 +157,10 @@ func! CompileRun()
 	if &filetype == 'c' || &filetype == 'make'
 		if filereadable("Makefile")
 			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
+		elseif filereadable("../Makefile")
+			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
 		else
-			exec "!gcc -g %:p:h/*.c -o a.out && ./a.out"
+			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --leak-kind=all -q ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
