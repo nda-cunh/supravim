@@ -112,7 +112,7 @@ let g:syntastic_c_include_dirs = ['../../../include','../../include','../include
 
 "--------------- PL NERDTREE ---------------"
 let g:nerdtree_tabs_open_on_console_startup=1
-
+let NERDTreeIgnore = ['\.png$\','\.jpg$','\.o$']
 "---------------- AUTO LOAD---------------"
 autocmd VimEnter call Pause()
 
