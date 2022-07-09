@@ -11,9 +11,14 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
 **Dépendance**
 
-
 | Zsh | Clang | Vim 8 |
 |-----|-------|-------|
+
+## Mise à jour:
+```bash
+    supravim update
+```
+
 
 
 
