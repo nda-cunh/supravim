@@ -48,6 +48,24 @@ ALL,  suivie de la regle RUN.
 sinon si il ne contient pas de Makefile,
 il compilera tout les fichier C present ensemble et executera le a.out généré.
 
+# Debbug
+
+Le debug s'effectue avec CTRL-F5.
+Pour l'utiliser, n'oubliez pas de compiler avec les flags `-g` ou `-g3 -Og` pour obtenir des informations
+de debug plus exacte et complete.
+
+Si votre programme est lancé via un makefile, vim ne trouvera pas votre executable, il faudra le fournir a gdb
+avec `file monexe`
+
+<img src="GDB.png"/>
+
+# HEADER
+
+supravim vous permez aussi d'inclures vos prototype de vos fichier C dans votre header en utilisant la commandes `:MakeHeader`
+exemple:  `:MakeHeader hello.c foo.c bar.c` écrira les prototypes de ces fichiers sous votre curseur vim.
+Notes: vous pouvez utiliser l'operateur `*` ->  `*.c` | `xxx*.c`
+
+
 # Nouveauté de la 2.0
 
 - supports des onglets
