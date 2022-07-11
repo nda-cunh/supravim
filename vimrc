@@ -46,6 +46,11 @@ inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
+noremap <C-Up>			<Esc>g<C-}>
+noremap <C-Down>		<Esc><C-T>
+inoremap <C-Up>			<Esc>g<C-}>
+inoremap <C-Down>		<Esc><C-T>
+
 inoremap <c-w>				<esc>:w!<CR>
 inoremap <c-q>				<esc>:q!<CR>
 inoremap <c-s>				<esc>:w!<CR>
