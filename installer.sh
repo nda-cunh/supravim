@@ -71,11 +71,6 @@ add_config_rc(){
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qE "^alias vim=['].+branch.+$" ${SHELL_ACTIVE}; then
-		status "Adding Update checker"
-		echo "alias vim='if [ \`git -C \"\$HOME/.local/bin/SupraVim\" status | grep -c \"Your branch is up to date\"\` -eq 0 ]; then echo -e \"\e[1;33m[Warning SupraVim]\e[0m SupraVim version not up to date, do \e[1msupravim update\e[0m\"; fi; vim'" >> ${SHELL_ACTIVE}
-	fi
-
 }
 
 config_supravim_editor() {
