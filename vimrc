@@ -60,6 +60,8 @@ noremap <c-s>				<esc>:w!<CR>
 map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
+map <F6> 					:call CompileRun2()<CR>
+imap <F6>				 	<Esc>:call CompileRun2()<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split 
 noremap <F3>				<Esc>:call Norminette()<CR>
@@ -155,6 +157,17 @@ endfunc
 
 func! Norminette()
 	exec "!echo Norminette de % && norminette %"
+endfunc
+
+func! CompileRun2()
+	exec "w"
+	if &filetype == 'c' || &filetype == 'make'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
+		else filereadable("../Makefile")
+			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run2 --no-print-directory"
+		endif
+	endif
 endfunc
 
 func! CompileRun()
