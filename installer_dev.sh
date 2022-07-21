@@ -71,6 +71,9 @@ add_config_rc(){
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
+	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE}; then
+		echo "alias q=exit" >> ${SHELL_ACTIVE}
+	fi
 	source ${SHELL_ACTIVE}
 }
 
