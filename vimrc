@@ -72,6 +72,7 @@ noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
+map <S-T> <Esc>:term<CR>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
@@ -87,6 +88,8 @@ set showmode
 set backspace=indent,eol,start
 set pumheight=50
 set encoding=utf-8
+set splitbelow
+set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
