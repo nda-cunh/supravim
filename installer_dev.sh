@@ -74,6 +74,7 @@ add_config_rc(){
 	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE}; then
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
+	echo ${SHELL_ACTIVE}
 	source ${SHELL_ACTIVE}
 }
 
