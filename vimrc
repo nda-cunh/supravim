@@ -133,6 +133,8 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
+	set splitbelow nosplitbelow
+	set splitright nosplitright
 	if &filetype == 'c'
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
@@ -143,6 +145,8 @@ func! Gdbf()
 	else
 		echo "Fichier non supporter !"
 	endif
+	set splitbelow
+	set splitright
 endfunc               
 
 command -nargs=+ -bar MakeHeader :call FctsToHeader( split('<args>') )
