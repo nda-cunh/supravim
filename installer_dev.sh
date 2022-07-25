@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
 BACKUP_FILE="old_conf_vim_$(date +'%Y-%m-%d-%H%M%S').tar"
