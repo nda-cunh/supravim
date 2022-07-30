@@ -51,12 +51,12 @@ noremap <C-Down>		<Esc><C-T>
 inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
 
-inoremap <c-w>				<esc>:w!<CR>
-inoremap <c-q>				<esc>:q!<CR>
-inoremap <c-s>				<esc>:w!<CR>
-noremap <c-w>				<esc>:w!<CR>
-noremap <c-q>				<esc>:q!<CR>
-noremap <c-s>				<esc>:w!<CR>
+inoremap <c-w>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
+inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+noremap <c-w>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+noremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
+noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
