@@ -55,6 +55,14 @@ ${1:#pragma mark -
 $0
 endsnippet
 
+snippet mainv "mainv() (mainv)"
+int	main(void)
+{
+	${VISUAL}$0
+	return (0);
+}
+endsnippet
+
 snippet main "main() (main)"
 int	main(int argc, char *argv[])
 {
@@ -67,6 +75,9 @@ snippet mainh "main() (main headers)"
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 int	main(int argc, char *argv[])
 {
 	${VISUAL}$0
@@ -160,38 +171,4 @@ def get_args(arglist):
 	return args
 endglobal
 
-post_jump "if snip.tabstop == 0 : split_line(snip.tabstops[4].current_text)"
-snippet head "File Header" b
-/******************************************************************************
-* File:             `!p snip.rv = fn`
-*
-* Author:           ${2}  
-* Created:          `date +%m/%d/%y` 
-* Description:      ${4:${VISUAL}}
-*****************************************************************************/
-${0}
-endsnippet
-
-post_jump "if snip.tabstop == 0 : split_line(snip.tabstops[4].current_text)"
-snippet func "Function Header" 
-/******************************************************************************
-* Function:         $1
-* Description:      ${4:${VISUAL}}
-* Where:`!p 
-snip.rv = ""
-snip >> 2
-
-args = get_args(t[2])
-if args:
-	for arg in args:
-		snip.rv += '\n' + '*' + ' '*19 + arg + ' - TODO'
-snip << 2
-`
-* Return:           $5
-* Error:            $6
-*****************************************************************************/
-${1}($2){
-	${0}
-}
-endsnippet
 # vim:ft=snippets:
