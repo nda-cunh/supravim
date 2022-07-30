@@ -20,6 +20,18 @@ call NERDTreeHighlightFile('h', 'green', 'none')
 call NERDTreeHighlightFile('vala', 'magenta', 'none')
 call NERDTreeHighlightFile('Makefile', 'red', 'none')
 
+augroup nerdtreeconcealbrackets
+	autocmd!
+	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
+	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
+augroup END
+
+function! NERDTreeHighlightFile(extension, fg, bg)
+	exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg
+	exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
 	call mkdir($HOME."/.vim", "", 0770)
