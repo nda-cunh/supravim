@@ -14,6 +14,12 @@ set t_Co=256
 " 2: molokai
 " 3: dracula
 
+" -------------- COLORS FILE ----------------"
+call NERDTreeHighlightFile('.c', 'blue', 'none')
+call NERDTreeHighlightFile('h', 'green', 'none')
+call NERDTreeHighlightFile('vala', 'magenta', 'none')
+call NERDTreeHighlightFile('Makefile', 'red', 'none')
+
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
 	call mkdir($HOME."/.vim", "", 0770)
