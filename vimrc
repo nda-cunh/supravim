@@ -72,7 +72,19 @@ noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
-map <S-T> <Esc>:term<CR>
+map <S-T> <Esc>:term ++rows=15<CR>
+
+"---------------      Terminal        ---------------"
+tnoremap <C-q> exit<CR>
+tnoremap <F5> make all && make run<CR>
+tnoremap <F6> make all && make run2<CR>
+tnoremap <F3> norminette<CR>
+
+" tnoremap <F4> <C-W>N<CR><S-UP>
+tnoremap <S-Right>			<C-W>N<C-w><Right>
+tnoremap <S-Left>			<C-W>N<C-w><Left>
+tnoremap <S-Up>				<C-W>N<C-w><Up>
+tnoremap <S-Down>			<C-W>N<C-w><Down>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
