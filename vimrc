@@ -75,7 +75,7 @@ map <C-g>					:NERDTreeTabsToggle<CR>
 map <S-T> <Esc>:term ++rows=15<CR>
 
 "---------------      Terminal        ---------------"
-tnoremap <C-q> exit<CR>
+tnoremap <C-q> q<CR>
 tnoremap <F5> make all && make run<CR>
 tnoremap <F6> make all && make run2<CR>
 tnoremap <F3> norminette<CR>
