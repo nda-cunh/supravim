@@ -203,24 +203,24 @@ endfunc
 
 func! CompileRun2()
 	exec "w"
-	if &filetype == 'c' || &filetype == 'make'
-		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
-		else filereadable("../Makefile")
-			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run2 --no-print-directory"
-		endif
+	exec "cd" "%:p:h"
+	if filereadable("Makefile")
+		exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
+	elseif filereadable("../Makefile")
+		exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run2 --no-print-directory"
 	endif
 endfunc
 
 func! CompileRun()
 	exec "w"
+	exec "cd" "%:p:h"
 	if &filetype == 'c' || &filetype == 'make'
 		if filereadable("Makefile")
 			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
 		elseif filereadable("../Makefile")
 			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
 		else
-			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+			exec "!gcc -g %:p:h/*.c -o a.out && ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -236,9 +236,11 @@ func! CompileRun()
 		exec "!google-chrome % &"
 	elseif &filetype == 'matlab'
 		exec "!time octave %"
-	elseif &filetype == 'vala'
-		exec "!valac %:p:h/*.vala -o a.out && ./a.out"
-	elseif &filetype == 'vapi'
-		exec "!valac % -o %< && time ./%<"
+	elseif &filetype == 'vala' || &filetype == 'vapi'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
+		else
+			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
+		endif
 	endif
 endfunc
