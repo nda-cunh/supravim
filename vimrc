@@ -193,6 +193,11 @@ func! FctsToHeader(...)
 	endfor
 endfunc
 
+function! NERDTreeHighlightFile(extension, fg, bg)
+	exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg
+	exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
 func! Pause()                                  
 	exec "!stty start undef && stty stop undef"
 endfunc                                        
