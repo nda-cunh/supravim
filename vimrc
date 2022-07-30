@@ -111,6 +111,11 @@ set guioptions-=R
 set guioptions-=l
 set guioptions-=L
 
+"------------------ Snipets --------------------"
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
+
 "--------------- CLANG COMPLETER ---------------"
 set noinfercase
 set completeopt-=preview
