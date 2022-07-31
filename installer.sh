@@ -57,6 +57,29 @@ backup_vimrc() {
 	rm -f ~/.vimrc
 }
 
+step=1
+backup_config() {
+	if [ $step -eq 1 ]; then
+		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc)
+		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc)
+		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc)
+		theme=$(cat ~/.vimrc | grep colorscheme | grep -Eo "[a-z]+$")
+		step=2
+	else
+		if [ $autopairs -gt 0 ]; then
+			supravim enable autopairs >/dev/null
+		fi
+		if [ $mouse -gt 0 ]; then
+			supravim disable mouse >/dev/null
+		fi
+		if [ $nerdtree -gt 0 ]; then
+			supravim disable nerdtree >/dev/null
+		fi
+		supravim -t "$theme" >/dev/null
+		status "Have reloaded your old vim configuration"
+	fi
+}
+
 ############################################################
 # Installation
 
@@ -114,6 +137,7 @@ print_ascii() {
 # main
 
 main() {
+	backup_config
 	#	clean previous run, update SupraVim in the same way
 	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
 
@@ -123,6 +147,7 @@ main() {
 
 	install_SupraVim
 	config_supravim_editor
+	backup_config
 	print_ascii
 }
 
