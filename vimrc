@@ -77,7 +77,7 @@ map <S-T> <Esc>:term ++rows=15<CR>
 "---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
 tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc -Wall -Wextra -Werror *.c; fi; clear -x && a.out<CR>
-tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc *.c; fi; clear -x && ./a.out<CR>
+"*cflags* tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc *.c; fi; clear -x && ./a.out<CR>
 tnoremap <F3> norminette<CR>
 
 " tnoremap <F4> <C-W>N<CR><S-UP>
@@ -150,7 +150,7 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	silent call CompileRun()
+	silent call Compile()
 	set splitbelow nosplitbelow
 	set splitright nosplitright
 	if &filetype == 'c'
@@ -161,7 +161,7 @@ func! Gdbf()
 			exec ":Termdebug"
 		endif
 	else
-		echo "Fichier non supporter !"
+		echo "Tu veux débugguer quoi là ?"
 	endif
 	set splitbelow
 	set splitright
@@ -195,6 +195,10 @@ func! CompileRun2()
 endfunc
 
 func! CompileRun()
+	if &filetype == 'nerdtree' || &filetype == 'vim'
+		echo "Fenetre non compilable"
+		return
+	endif
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
@@ -204,8 +208,8 @@ func! CompileRun()
 		elseif filereadable("../Makefile")
 			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
 		else
-			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-			"exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+"*cflags* 			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -230,6 +234,44 @@ func! CompileRun()
 	endif
 	exec "redraw!"
 endfunc
+
+func! Compile()
+	exec "w"
+	exec "cd" "%:p:h"
+	silent exec "!clear -x"
+	if &filetype == 'c' || &filetype == 'make'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory"
+		elseif filereadable("../Makefile")
+			exec "!make -C %:p:h/../ --no-print-directory"
+		else
+"*cflags* 			exec "!gcc -g %:p:h/*.c -o a.out"
+			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out"
+		endif
+	elseif &filetype == 'cpp'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %"
+	elseif &filetype == 'sh'
+		exec "!time bash %"
+	elseif &filetype == 'python'
+		exec "!time python3 %"
+	elseif &filetype == 'html'
+		exec "!google-chrome % &"
+	elseif &filetype == 'matlab'
+		exec "!time octave %"
+	elseif &filetype == 'vala' || &filetype == 'vapi'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory"
+		else
+			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
+		endif
+	endif
+	exec "redraw!"
+endfunc
+
 
 " -------------- COLORS FILE ----------------"
 function! NERDTreeHighlightFile(extension, fg, bg)
