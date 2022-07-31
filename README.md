@@ -2,7 +2,7 @@
 
 L'editeur de texte vim pour 42 Angoulême.
 
-<img src="readme.png"/>
+<img src="img/readme.png"/>
 
 ## Installation:
 
@@ -62,7 +62,7 @@ de debug plus exacte et complete.
 Si votre programme est lancé via un makefile, vim ne trouvera pas votre executable, il faudra le fournir a gdb
 avec `file monexe`
 
-<img src="GDB.png"/>
+<img src="img/GDB.png"/>
 
 # HEADER
 
