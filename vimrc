@@ -76,9 +76,10 @@ map <S-T> <Esc>:term ++rows=15<CR>
 
 "---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
-tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc -Wall -Wextra -Werror *.c; fi; clear -x && a.out<CR>
-"*cflags* tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc *.c; fi; clear -x && ./a.out<CR>
-tnoremap <F3> norminette<CR>
+tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run1; [ -f ../Makefile ] && make all -C ../ && make run1 -C ../; else gcc *.c; ./a.out; fi; <CR>
+"*cflags* tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run1; [ -f ../Makefile ] && make all -C ../ && make run1 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
+tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc *.c; ./a.out; fi; <CR>
+"*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
 
 " tnoremap <F4> <C-W>N<CR><S-UP>
 tnoremap <S-Right>			<C-W>N<C-w><Right>
@@ -209,8 +210,8 @@ func! CompileRun()
 		elseif filereadable("../Makefile")
 			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
 		else
-"*cflags* 			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -246,8 +247,8 @@ func! Compile()
 		elseif filereadable("../Makefile")
 			exec "!make -C %:p:h/../ --no-print-directory"
 		else
-"*cflags* 			exec "!gcc -g %:p:h/*.c -o a.out"
-			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out"
+			exec "!gcc -g %:p:h/*.c -o a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
