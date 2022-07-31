@@ -76,8 +76,8 @@ map <S-T> <Esc>:term ++rows=15<CR>
 
 "---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
-tnoremap <F5> make all && make run<CR>
-tnoremap <F6> make all && make run2<CR>
+tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc -Wall -Wextra -Werror *.c; fi; clear -x && a.out<CR>
+tnoremap <F5> if [ -f Makefile ]; then make all & make run2; else gcc *.c; fi; clear -x && ./a.out<CR>
 tnoremap <F3> norminette<CR>
 
 " tnoremap <F4> <C-W>N<CR><S-UP>
@@ -197,6 +197,7 @@ endfunc
 func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
+	silent exec "!clear -x"
 	if &filetype == 'c' || &filetype == 'make'
 		if filereadable("Makefile")
 			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
