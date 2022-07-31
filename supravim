@@ -165,8 +165,13 @@ help_fct(){
 		
 		<name_theme>:
 		1 | gruvbox		(default) set to gruvbox theme
-		2 | molokai		set to molokai theme
-		3 | dracula		set to dracula theme
+		2 | molokai			.	.	.
+		3 | dracula			.	.	.
+		4 |	atom			.	.	.
+		5 |	iceberg			.	.	.
+		6 |	onedark			.	.	.
+		7 |	onehalf			.	.	.
+		8 |	onelight		.	.	.
 
 		<background>:
 		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
@@ -194,10 +199,34 @@ for (( i=1; i<=$#; i++)); do
 				fi
 			done;;
 		-s | status) status_fct;;
-		-h | --help) help_fct;;
+		-h | help) help_fct;;
 		uninstall) uninstall_fct;;
 		update) update $next_param;;
 		switch) switch;;
-		*) echo "Uncorrect argument: '$option' (--help option can help you maybe?)"; exit;;
+		*) echo "Uncorrect argument: '$option' (help option can help you maybe?)"; exit;;
 	esac
 done
+
+#/usr/bin/env bash
+# complete -W "help update status enable disable theme" supravim
+_SupraVim_completions()
+{
+	i=0
+	arg=${COMP_WORDS[$i]}
+	while [ "$arg" != "" ]; do
+		i=$(( $i + 1 ))
+		arg=${COMP_WORDS[$i]}
+	done
+	if [ $i -eq 1 ]; then
+  		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "enable" ] || [ "${COMP_WORDS[$(( i - 1 ))]}" = "disable" ]; then
+		COMPREPLY=($(compgen -W "mouse autopairs tree cflags" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "theme" ]; then
+  		COMPREPLY=($(compgen -W "gruvbox molokai dracula atom iceberg onedark onehalf onelight" "${COMP_WORDS[$(( i - 1 ))]}"))
+	else
+  		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
+	fi
+
+}
+
+complete -F _SupraVim_completions supravim
