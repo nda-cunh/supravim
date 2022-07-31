@@ -68,6 +68,7 @@ backup_config() {
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc)
 		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc)
 		theme=$(cat ~/.vimrc | grep colorscheme | grep -Eo "[a-z]+$")
+		devicons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
 		step=2
 	else
 		if [ $autopairs -gt 0 ]; then
@@ -78,6 +79,9 @@ backup_config() {
 		fi
 		if [ $nerdtree -gt 0 ]; then
 			supravim disable nerdtree >/dev/null
+		fi
+		if [ $devicons -gt 0 ]; then
+			supravim enable icons >/dev/null
 		fi
 		supravim -t "$theme" >/dev/null
 		status "Have reloaded your old vim configuration"
