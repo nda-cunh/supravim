@@ -181,6 +181,7 @@ func! Pause()
 endfunc                                        
 
 func! Norminette()
+	silent exec "!clear -x"
 	exec "!echo Norminette de % && norminette %"
 endfunc
 
