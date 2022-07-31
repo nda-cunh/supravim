@@ -59,6 +59,10 @@ backup_vimrc() {
 
 step=1
 backup_config() {
+	if [ -f ~/.vimrc_supravim_off ]
+	then
+		supravim switch >/dev/null
+	fi
 	if [ $step -eq 1 ]; then
 		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc)
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc)
