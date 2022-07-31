@@ -34,7 +34,7 @@ let s:red_g = '#e45649'
 let s:red_c = 167
 
 
-let g:airline#themes#onehalflight#palette = {}
+let g:airline#themes#onelight#palette = {}
 
 
 " Normal mode
