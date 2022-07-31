@@ -150,18 +150,18 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	silent call Compile()
-	set splitbelow nosplitbelow
-	set splitright nosplitright
-	if &filetype == 'c'
+	if &filetype != 'c'
+		echo "Tu veux débugguer quoi là ?"
+	else
+		set splitbelow nosplitbelow
+		set splitright nosplitright
+		silent call Compile()
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
 			exec ":Termdebug ./a.out"
 		else
 			exec ":Termdebug"
 		endif
-	else
-		echo "Tu veux débugguer quoi là ?"
 	endif
 	set splitbelow
 	set splitright
