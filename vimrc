@@ -8,6 +8,7 @@ call pathogen#helptags()
 filetype plugin indent on
 "--------------- jeu de couleur ---------------"
 colorscheme gruvbox
+set background=dark
 set t_Co=256
 " 1: gruvbox
 " 2: molokai
