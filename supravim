@@ -12,13 +12,13 @@ enable_fct(){
 		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
 		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
 		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
-		icon) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${green}[icons]${reset} already enabled"; fi ;;
+		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${green}[icons]${reset} already enabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
-		"") echo "Please enter something to enable.";;
-		*) echo "${bold}[$next_param]${reset} : cannot enable."
+		"") echo -e "Please enter something to enable.";;
+		*) echo -e "${bold}[$next_param]${reset} : cannot enable."
 	esac
 }
 
@@ -28,13 +28,13 @@ disable_fct(){
         autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
         mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
         tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
-		icon) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$next_param]${reset} correctly disabled"; fi ;;
+		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$next_param]${reset} correctly disabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$next_param]${reset} correctly disabled";; 
-		"") echo "Please enter something to disable.";;
-        *) echo "[$next_param] : cannot enable."
+		"") echo -e "Please enter something to disable.";;
+        *) echo -e "[$next_param] : cannot enable."
     esac
 }
 
