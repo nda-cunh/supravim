@@ -8,11 +8,15 @@ call pathogen#helptags()
 filetype plugin indent on
 "--------------- jeu de couleur ---------------"
 colorscheme gruvbox
-set background=dark
 set t_Co=256
 " 1: gruvbox
 " 2: molokai
 " 3: dracula
+" 4: atom
+" 5: iceberg
+" 6: onedark
+" 7: onehalf
+" 8: onelight
 
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
