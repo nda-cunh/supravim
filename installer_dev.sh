@@ -151,19 +151,22 @@ print_ascii() {
 main() {
 	#	Prepare config for new upload
 	backup_config
+	
+	balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc`
+	if [ "$balise" = "" ]; then
+		echo "Yes"
+		balise="\"====================== YOUR CONFIG =======================\\n
+\"=========================================================="
+	else
+		echo "Last config updated :)"
+	fi
+
 	#	clean previous run, update SupraVim in the same way
 	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
 
 	# backup if needed
 	[ -d ~/.vim ] && backup_vim_folder
 	[ -f ~/.vimrc ] && backup_vimrc
-
-	if [ `grep -cEzo "\"[=]+.*[=]{52}" ~/.vimrc` -gt 0 ];then
-		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc`
-	else
-		balise="\"==================== BEGIN =========================\\n
-			\"===================================================="
-	fi
 
 	install_SupraVim
 	# config_supravim_editor
