@@ -148,7 +148,15 @@ let g:syntastic_c_include_dirs = ['../../../include','../../include','../include
 let g:nerdtree_tabs_open_on_console_startup=1
 let NERDTreeIgnore = ['\.png$\','\.jpg$','\.o$']
 "---------------- AUTO LOAD---------------"
-autocmd VimEnter call Pause()
+autocmd VimEnter * call Pause()
+func! AirFresh()
+	exec "AirlineRefresh"
+endfunc                                        
+
+autocmd InsertEnter * call AirFresh()
+autocmd InsertLeave * call AirFresh()
+autocmd TabLeave * call AirFresh()
+
 
 "--------------- FONCTION ---------------"
 
