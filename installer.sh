@@ -59,6 +59,10 @@ backup_vimrc() {
 
 step=1
 backup_config() {
+	if [ -f ~/.vimrc_supravim_off ]
+	then
+		supravim switch >/dev/null
+	fi
 	if [ $step -eq 1 ]; then
 		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc)
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc)
@@ -98,7 +102,6 @@ add_config_rc(){
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
-
 	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE}; then
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
@@ -108,8 +111,9 @@ add_config_rc(){
 }
 
 config_supravim_editor() {
-	cp "$INSTALL_DIRECTORY/supravim" "$HOME/.local/bin/"
+	cp "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
     chmod +x $HOME/.local/bin/supravim
+	#ln -s ${INSTALL_DIRECTORY}/supravim $HOME/.local/bin
 }
 
 
@@ -145,6 +149,7 @@ print_ascii() {
 # main
 
 main() {
+	#	Prepare config for new upload
 	backup_config
 	#	clean previous run, update SupraVim in the same way
 	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
@@ -153,9 +158,17 @@ main() {
 	[ -d ~/.vim ] && backup_vim_folder
 	[ -f ~/.vimrc ] && backup_vimrc
 
+	if [ `grep -cEzo "\"[=]+.*[=]{52}" ~/.vimrc` -gt 0 ];then
+		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc`
+	else
+		balise="\"==================== BEGIN =========================\
+			\"===================================================="
+	fi
+
 	install_SupraVim
 	# config_supravim_editor
 	backup_config
+	echo "$balise" >> ~/.vimrc
 	print_ascii
 }
 
