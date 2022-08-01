@@ -43,6 +43,7 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 | scinder la fenetre verticalement | Shift + D|
 | Crée un nouvelle onglet | Ctrl + N|
 | Déplacement entre onglet | Ctrl + Flèche|
+| Ouvre un Terminal | Shift - S|
 
 # Compilation
 
@@ -70,7 +71,36 @@ supravim vous permez aussi d'inclures vos prototype de vos fichier C dans votre 
 exemple:  `:MakeHeader hello.c foo.c bar.c` écrira les prototypes de ces fichiers sous votre curseur vim.
 Notes: vous pouvez utiliser l'operateur `*` ->  `*.c` | `xxx*.c`
 
+<img src="img/header.gif"/>
 
+# SNIPPET
+
+les snippets permet d'écrirent du code pré-écris pour augmenter sa vitesse de code les snippets existant sont:
+| SNIPPET | Fonction |
+| ------ | ------ |
+| ifndef| IFNDEF de 42|
+| mainv| un main void|
+| main | un main vide avec argc,argv|
+| mainh|  un main avec tout les headers pour debugué rapidement|
+| while| boucle while |
+| if| condition if |
+| elif | condition else if() |
+| inc ou include| #include <name.h>|
+| func| debut l'écriture dune fonciton |
+| funcd| parreil mais uniquement pour un prototype |
+| for| boucle for |
+| tstruct ou struct| une structure avec typedef ou simple |
+
+<img src="img/Snipets.gif"/>
+
+# Programme supravim
+le programme supravim s'utilise dans le terminal avec la commande supravim
+celui-ci permet d'activer des options ou de les desactivée. de changer son theme ou bien de le mettre à jour ou le désinstaller.
+vous pouves aussi ``supravim switch`` pour passer d'une session supravim a vim simple ou la remettre.
+
+<img src="img/theme-binary.gif"/>
+
+# CHANGLOG
 # Nouveauté de la 2.0
 
 - supports des onglets
@@ -81,3 +111,18 @@ Notes: vous pouvez utiliser l'operateur `*` ->  `*.c` | `xxx*.c`
 - Creation d'un mini logiciel supravim (`supravim -h` pour plus de details)
     * Customiser le theme de vim et les options
     * Desinstaller ou mettre à jour supravim
+
+# Nouveauté de la 3.0
+
+- beaucoup de correction de bug !
+- GDB (CTRL+F5) compile avant de se lancer
+- un installeur plus propre
+- les config sont garder avec le supdates
+- un espace dédié dans le vimrc qui ne sera pas effacer lors des maj
+- une integrations aux CTAGS
+- pouvoir quitter les terminaux ou le GDB avec CTRL+Q ou s'en deplacé
+- SNIPPETS intelligent et complet.
+- F3-F5 efface désormais l'écran pour ne pas saccader l'affichage
+- de nouvelles options et une autocompletion sur le programme.
+- de nouveaux themes (onedark|half|light / atom / iceberg)
+- une meilleurs integrations de themes et des icons activable.
