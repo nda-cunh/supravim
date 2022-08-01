@@ -148,7 +148,6 @@ let g:syntastic_c_include_dirs = ['../../../include','../../include','../include
 let g:nerdtree_tabs_open_on_console_startup=1
 let NERDTreeIgnore = ['\.png$\','\.jpg$','\.o$']
 "---------------- AUTO LOAD---------------"
-autocmd VimEnter * call Pause()
 func! AirFresh()
 	exec "AirlineRefresh"
 endfunc                                        
@@ -189,11 +188,7 @@ func! FctsToHeader(...)
 		let $f=files_input
 		exec ":r !IFS=$'\\n'; for fct in $(cat "files_input" | grep -Eo \"^[a-z].*)$\" | grep -v \"[^*a-z\_]main(\"); do echo \"$fct;\"; done"
 	endfor
-endfunc
-
-func! Pause()                                  
-	exec "!stty start undef && stty stop undef"
-endfunc                                        
+endfunc                                  
 
 func! Norminette()
 	silent exec "!clear -x"
