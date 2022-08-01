@@ -8,38 +8,38 @@ bold="\033[1m"
 reset="\033[0m"
 
 enable_fct(){
-	case $1 in
-		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
+	case $next_param in
+		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${green}[icons]${reset} already enabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
+			echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
 		"") echo -e "Please enter something to enable.";;
-		*) echo -e "${bold}[$1]${reset} : cannot enable."
+		*) echo -e "${bold}[$next_param]${reset} : cannot enable."
 	esac
 }
 
 
 disable_fct(){
-    case $1 in
-        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-        mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-        tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$1]${reset} correctly disabled"; fi ;;
+    case $next_param in
+        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
+        mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
+        tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
+		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$next_param]${reset} correctly disabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
+			echo -e "${bold}${red}[$next_param]${reset} correctly disabled";; 
 		"") echo -e "Please enter something to disable.";;
-        *) echo -e "[$1] : cannot enable."
+        *) echo -e "[$next_param] : cannot enable."
     esac
 }
 
 theme_fct(){
-	case $1 in
+	case $next_param in
 		1 | gruvbox) sed -i 's/^colorscheme .*$/colorscheme gruvbox/' ~/.vimrc; echo -e "Vim theme set to ${bold}gruvbox${reset}.";;
 		2 | molokai) sed -i 's/^colorscheme .*$/colorscheme molokai/' ~/.vimrc; echo -e "Vim theme set to ${bold}molokai${reset}.";;
 		3 | dracula) sed -i 's/^colorscheme .*$/colorscheme dracula/' ~/.vimrc; echo -e "Vim theme set to ${bold}dracula${reset}.";;
@@ -112,7 +112,7 @@ status_fct(){
 		echo -e "${bold}${red}icons${reset}"
 	fi
 
-	if [ $(grep -c "^tnoremap.*gcc \*.*$" ~/.vimrc) -gt 0 ]; then
+	if [ $(grep -c "^tnoremap.*gcc \*" ~/.vimrc) -gt 0 ]; then
 		echo -e "${bold}${red}cflags${reset} "
 	else
 		echo -e "${bold}${green}cflags${reset}"
@@ -164,9 +164,9 @@ help_fct(){
 		supravim <theme | -t> <name_theme> <background>
 		
 		<name_theme>:
-		1 |	gruvbox		(default) set to gruvbox theme
-		2 |	molokai			.	.	.
-		3 |	dracula			.	.	.
+		1 | gruvbox		(default) set to gruvbox theme
+		2 | molokai			.	.	.
+		3 | dracula			.	.	.
 		4 |	atom			.	.	.
 		5 |	iceberg			.	.	.
 		6 |	onedark			.	.	.
@@ -179,36 +179,36 @@ help_fct(){
 		"
 }
 
-if [ $# -eq 0 ]; then
+if [ $# -eq 0 ]
+then
 	help_fct
-	exit 0
-elif [ $# -eq 1 ] && [ "$1" =  "update" ]; then
-	update 
 fi
 
-for opt in $@; do
-	possibility=$0
-	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "status" "-s" "switch";do
-		if [ "$opt" = "$possibility" ]; then
-			latest_opt=$opt
-		fi
-	done
-	case $latest_opt in 
-		-e | enable) [ $latest_opt != $opt ] && enable_fct $opt;;
-		-d | disable) [ $latest_opt != $opt ] && disable_fct $opt;;
-		-t | theme) [ $latest_opt != $opt ] && theme_fct $opt;;
+for (( i=1; i<=$#; i++)); do
+	option=${!i}
+	next_param=$(($i + 1))
+	export next_param="${!next_param}"
+	case $option in 
+		-e | enable) enable_fct; i=$(($i + 1));;
+		-d | disable) disable_fct; i=$(($i + 1));;
+		-t | theme) theme_fct; i=$(($i + 1)); 
+			for next in "white" "black" "light" "dark"; do
+				j=$((i + 1))
+				if [[ "${!j}" = "$next" ]]; then
+					export next_param="${!j}"; theme_fct; i=$((i + 1))
+				fi
+			done;;
 		-s | status) status_fct;;
 		-h | help) help_fct;;
 		uninstall) uninstall_fct;;
-		update) [ $opt = "dev" ] && update $opt;;
+		update) update $next_param;;
 		switch) switch;;
-		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
+		*) echo "Uncorrect argument: '$option' (help option can help you maybe?)"; exit;;
 	esac
 done
 
-
 #/usr/bin/env bash
-
+# complete -W "help update status enable disable theme" supravim
 _SupraVim_completions()
 {
 	i=0
@@ -216,25 +216,13 @@ _SupraVim_completions()
 	while [ "$arg" != "" ]; do
 		i=$(( $i + 1 ))
 		arg=${COMP_WORDS[$i]}
-		for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "help" "-h";do
-			if [ "$arg" = "$possibility" ]; then
-				latest_opt=$arg
-			fi
-		done
 	done
-	if [ "$latest_opt" = "-e" ]; then
-		latest_opt="enable"
-	elif [ "$latest_opt" = "-d" ]; then
-		latest_opt="disable"
-	elif [[ "$latest_opt" = "-t" ]]; then
-		latest_opt="theme"
-	fi
 	if [ $i -eq 1 ]; then
   		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
-	elif [ "$latest_opt" = "enable" ] || [ "$latest_opt" = "disable" ]; then
-		COMPREPLY=($(compgen -W "mouse autopairs tree cflags icons" "$latest_opt"))
-	elif [ "$latest_opt" = "theme" ]; then
-  		COMPREPLY=($(compgen -W "gruvbox molokai dracula atom iceberg onedark onehalf onelight" "$latest_opt"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "enable" ] || [ "${COMP_WORDS[$(( i - 1 ))]}" = "disable" ]; then
+		COMPREPLY=($(compgen -W "mouse autopairs tree cflags" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "theme" ]; then
+  		COMPREPLY=($(compgen -W "gruvbox molokai dracula atom iceberg onedark onehalf onelight" "${COMP_WORDS[$(( i - 1 ))]}"))
 	else
   		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
 	fi
