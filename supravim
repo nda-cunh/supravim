@@ -163,9 +163,9 @@ help_fct(){
 		supravim <theme | -t> <name_theme> <background>
 		
 		<name_theme>:
-		1 | gruvbox		(default) set to gruvbox theme
-		2 | molokai			.	.	.
-		3 | dracula			.	.	.
+		1 |	gruvbox		(default) set to gruvbox theme
+		2 |	molokai			.	.	.
+		3 |	dracula			.	.	.
 		4 |	atom			.	.	.
 		5 |	iceberg			.	.	.
 		6 |	onedark			.	.	.
