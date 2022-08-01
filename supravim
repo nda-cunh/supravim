@@ -130,7 +130,6 @@ update(){
 	if [[ $1 = "dev" ]]
 	then
 		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
-		exit
 	else
 		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 	fi
@@ -164,9 +163,9 @@ help_fct(){
 		supravim <theme | -t> <name_theme> <background>
 		
 		<name_theme>:
-		1 | gruvbox		(default) set to gruvbox theme
-		2 | molokai			.	.	.
-		3 | dracula			.	.	.
+		1 |	gruvbox		(default) set to gruvbox theme
+		2 |	molokai			.	.	.
+		3 |	dracula			.	.	.
 		4 |	atom			.	.	.
 		5 |	iceberg			.	.	.
 		6 |	onedark			.	.	.
@@ -203,7 +202,7 @@ for (( i=1; i<=$#; i++)); do
 		uninstall) uninstall_fct;;
 		update) update $next_param;;
 		switch) switch;;
-		*) echo "Uncorrect argument: '$option' (help option can help you maybe?)"; exit;;
+		*) echo "Uncorrect argument: '$option' (help option can help you maybe?)";;
 	esac
 done
 
