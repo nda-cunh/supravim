@@ -1,32 +1,55 @@
 #!/bin/bash
 
+red="\033[91m"
+green="\033[92m"
+blue="\033[94m"
+white="\033[37m"
+bold="\033[1m"
+reset="\033[0m"
+
 enable_fct(){
 	case $next_param in
-		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "\033[1;92m[$next_param]\033[0m correctly enabled";;
-		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "\033[1;92m[$next_param]\033[0m correctly enabled";;
-		nerdtree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "\033[1;92m[$next_param]\033[0m correctly enabled";;
-		"") echo "Please enter something to enable.";;
-		*) echo "[$next_param] : cannot enable."
+		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${green}[icons]${reset} already enabled"; fi ;;
+		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
+			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
+			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
+			echo -e "${bold}${green}[$next_param]${reset} correctly enabled";;
+		"") echo -e "Please enter something to enable.";;
+		*) echo -e "${bold}[$next_param]${reset} : cannot enable."
 	esac
 }
 
+
 disable_fct(){
     case $next_param in
-        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "\033[1;91m[$next_param]\033[0m correctly disabled";;
-        mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "\033[1;91m[$next_param]\033[0m correctly disabled";;
-        nerdtree) sed -i 's/^[^\"].*nerdtree.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "\033[1;91m[$next_param]\033[0m correctly disabled";;
-		"") echo "Please enter something to disable.";;
-        *) echo "[$next_param] : cannot enable."
+        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
+        mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
+        tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$next_param]${reset} correctly disabled";;
+		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$next_param]${reset} correctly disabled"; fi ;;
+		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
+			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
+			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
+			echo -e "${bold}${red}[$next_param]${reset} correctly disabled";; 
+		"") echo -e "Please enter something to disable.";;
+        *) echo -e "[$next_param] : cannot enable."
     esac
 }
 
 theme_fct(){
 	case $next_param in
-		1 | gruvbox) sed -i 's/^colorscheme .*$/colorscheme gruvbox/' ~/.vimrc; echo -e "Vim theme set to \033[1mgruvbox\033[0m.";;
-		2 | molokai) sed -i 's/^colorscheme .*$/colorscheme molokai/' ~/.vimrc; echo -e "Vim theme set to \033[1mmolokai\033[0m.";;
-		3 | dracula) sed -i 's/^colorscheme .*$/colorscheme dracula/' ~/.vimrc; echo -e "Vim theme set to \033[1mdracula\033[0m.";;
-		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to \033[1;47;30mlight\033[0m background.";;
-		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to \033[1;40mdark\033[0m background.";;
+		1 | gruvbox) sed -i 's/^colorscheme .*$/colorscheme gruvbox/' ~/.vimrc; echo -e "Vim theme set to ${bold}gruvbox${reset}.";;
+		2 | molokai) sed -i 's/^colorscheme .*$/colorscheme molokai/' ~/.vimrc; echo -e "Vim theme set to ${bold}molokai${reset}.";;
+		3 | dracula) sed -i 's/^colorscheme .*$/colorscheme dracula/' ~/.vimrc; echo -e "Vim theme set to ${bold}dracula${reset}.";;
+		4 | atom)  sed -i 's/^colorscheme .*$/colorscheme atom/' ~/.vimrc; echo -e "Vim theme set to ${bold}atom${reset}.";;
+		5 | iceberg)  sed -i 's/^colorscheme .*$/colorscheme iceberg/' ~/.vimrc; echo -e "Vim theme set to ${bold}iceberg${reset}.";;
+		6 | onedark)  sed -i 's/^colorscheme .*$/colorscheme onedark/' ~/.vimrc; echo -e "Vim theme set to ${bold}onedark${reset}.";;
+		7 | onehalf)  sed -i 's/^colorscheme .*$/colorscheme onehalf/' ~/.vimrc; echo -e "Vim theme set to ${bold}onehalf${reset}.";;
+		8 | onelight)  sed -i 's/^colorscheme .*$/colorscheme onelight/' ~/.vimrc; echo -e "Vim theme set to ${bold}onelight${reset}.";;
+		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[47;30mlight${reset} background.";;
+		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[40mdark${reset} background.";;
 		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
 		*) echo "Theme name didn't match with any, please try with one of these."; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo -e "light:	for light background"; echo "dark:	for dark background";;
 	esac
@@ -38,55 +61,64 @@ switch(){
 		if [ `grep -c "SUPRAVIM" ~/.vimrc` -gt 0 ]
 		then
 			mv ~/.vimrc ~/.vimrc_supravim_off
-			echo -e "SupraVim configuration: \033[1;91mdisabled\033[0m"
+			echo -e "SupraVim configuration: ${bold}${red}disabled${reset}"
 			if [ -f ~/.vimrc_user_off ]
 			then
 				mv ~/.vimrc_user_off ~/.vimrc
-				echo -e "Your vim configuration: \033[1;92menabled\033[0m"
+				echo -e "Your vim configuration: ${bold}${green}enabled${reset}"
 			fi
 		else
 			mv ~/.vimrc ~/.vimrc_user_off
-			echo  -e "Your vim configuration: \033[1;91mdisabled\033[0m"
+			echo  -e "Your vim configuration: ${bold}${red}disabled${reset}"
 			if [ -f ~/.vimrc_supravim_off ]
 			then
 				mv ~/.vimrc_supravim_off ~/.vimrc
-				echo -e "SupraVim configuration: \033[1;92menabled\033[0m"
+				echo -e "SupraVim configuration: ${bold}${green}enabled${reset}"
 			fi
 		fi
 	else
 		if [ -f  ~/.vimrc_supravim_off ]
 		then
 			mv ~/.vimrc_supravim_off ~/.vimrc
-			echo -e "Supravim configuration: \033[1;92menabled\033[0m"
+			echo -e "Supravim configuration: ${bold}${green}enabled${reset}"
 		fi
 	fi
 }
 
 status_fct(){
-	echo -e "\033[1m-- Options --\033[0m"
+	echo -e "${bold}-- Options --${reset}"
 
-	if [[ $(grep -c "\"\*autopairs\* " ~/.vimrc) == 0 ]]
-	then
-		echo -e "\033[1;91mautopairs\033[0m"
+	if [[ $(grep -c "\"\*autopairs\* " ~/.vimrc) == 0 ]]; then
+		echo -e "${bold}${red}autopairs${reset}"
 	else
-		echo -e "\033[1;92mautopairs\033[0m "
+		echo -e "${bold}${green}autopairs${reset} "
 	fi
 
-	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]
-	then
-		echo -e "\033[1;92mmouse\033[0m "
+	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]; then
+		echo -e "${bold}${green}mouse${reset} "
 	else
-		echo -e "\033[1;91mmouse\033[0m"
+		echo -e "${bold}${red}mouse${reset}"
 	fi
 
-	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]
-	then
-		echo -e "\033[1;92mnerdtree\033[0m "
+	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]; then
+		echo -e "${bold}${green}nerdtree${reset} "
 	else
-		echo -e "\033[1;91mnerdtree\033[0m"
+		echo -e "${bold}${red}nerdtree${reset}"
 	fi
 
-	echo -e "\n\033[1m-- Theme --\033[0m"
+	if [ -d ~/.vim/bundle/devicons ]; then
+		echo -e "${bold}${green}icons${reset} "
+	else
+		echo -e "${bold}${red}icons${reset}"
+	fi
+
+	if [ $(grep -c "^tnoremap.*gcc \*" ~/.vimrc) -gt 0 ]; then
+		echo -e "${bold}${red}cflags${reset} "
+	else
+		echo -e "${bold}${green}cflags${reset}"
+	fi
+
+	echo -e "\n${bold}-- Theme --${reset}"
 	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
 }
 
@@ -95,19 +127,20 @@ uninstall_fct() {
 }
 
 update(){
-	#if [ `git -C "$HOME/.local/bin/SupraVim" status | grep -c "Your branch is up to date"` -gt 0 ]
-	#then
-	#	echo "You already have the latest SupraVim version"
-	#else
+	if [[ $1 = "dev" ]]
+	then
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
+		exit
+	else
 		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
-	#fi
+	fi
 }
 
 help_fct(){
-	echo -e "\033[1m#### SUPRAVIM EDITOR ####\033[0m
+	echo -e "${bold}#### SUPRAVIM EDITOR ####${reset}
 	You are able to configure your supravim as wished: enable/ disable tools, edit theme.
 
-	\033[1mSETTINGS\033[0m
+	${bold}SETTINGS${reset}
 		supravim <options>
 
 		<options>:
@@ -116,26 +149,33 @@ help_fct(){
 		uninstall		uninstall supravim
 		switch			switch to vim 
 
-	\033[1mENABLE/ DISABLE\033[0m
-		supravim <\033[1;92menable\033[0m | -e> <option>
-		supravim <\033[1;91mdisable\033[0m | -d> <option>
+	${bold}ENABLE/ DISABLE${reset}
+		supravim <${bold}${green}enable${reset} | -e> <option>
+		supravim <${bold}${red}disable${reset} | -d> <option>
 		
 		<options>:
-		autopairs		put automatically a closed bracket ('}', ']', ')'), when add an opened bracket.
-		mouse			use of mouse to move/ copy and paste in your file.
-		nerdtree		left window automatically opened with files in the current directory.
+		autopairs		put automatically a closed bracket ('}', ']', ')'), when add an opened bracket
+		mouse			use of mouse to move/ copy and paste in your file
+		tree			left window automatically opened with files in the current directory
+		icon			icon in nerdtree for different type/file directory
+		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
 
-	\033[1mTHEME CHOOSING\033[0m
+	${bold}THEME CHOOSING${reset}
 		supravim <theme | -t> <name_theme> <background>
 		
 		<name_theme>:
 		1 | gruvbox		(default) set to gruvbox theme
-		2 | molokai		set to molokai theme
-		3 | dracula		set to dracula theme
+		2 | molokai			.	.	.
+		3 | dracula			.	.	.
+		4 |	atom			.	.	.
+		5 |	iceberg			.	.	.
+		6 |	onedark			.	.	.
+		7 |	onehalf			.	.	.
+		8 |	onelight		.	.	.
 
 		<background>:
-		\033[1;40mdark\033[0m			(default) set the background color to black/ darker color
-		\033[0;47;30mlight\033[0m			set the beckground color to white/ lighter colors
+		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
+		\033[47;30mlight${reset}			set the beckground color to white/ lighter colors
 		"
 }
 
@@ -159,10 +199,34 @@ for (( i=1; i<=$#; i++)); do
 				fi
 			done;;
 		-s | status) status_fct;;
-		-h | --help) help_fct;;
+		-h | help) help_fct;;
 		uninstall) uninstall_fct;;
-		update) update;;
+		update) update $next_param;;
 		switch) switch;;
-		*) echo "Uncorrect argument: '$option' (--help option can help you maybe?)"; exit;;
+		*) echo "Uncorrect argument: '$option' (help option can help you maybe?)"; exit;;
 	esac
 done
+
+#/usr/bin/env bash
+# complete -W "help update status enable disable theme" supravim
+_SupraVim_completions()
+{
+	i=0
+	arg=${COMP_WORDS[$i]}
+	while [ "$arg" != "" ]; do
+		i=$(( $i + 1 ))
+		arg=${COMP_WORDS[$i]}
+	done
+	if [ $i -eq 1 ]; then
+  		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "enable" ] || [ "${COMP_WORDS[$(( i - 1 ))]}" = "disable" ]; then
+		COMPREPLY=($(compgen -W "mouse autopairs tree cflags" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "theme" ]; then
+  		COMPREPLY=($(compgen -W "gruvbox molokai dracula atom iceberg onedark onehalf onelight" "${COMP_WORDS[$(( i - 1 ))]}"))
+	else
+  		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
+	fi
+
+}
+
+complete -F _SupraVim_completions supravim
