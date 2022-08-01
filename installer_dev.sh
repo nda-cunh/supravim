@@ -64,26 +64,37 @@ backup_config() {
 		supravim switch >/dev/null
 	fi
 	if [ $step -eq 1 ]; then
-		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc)
-		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc)
-		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc)
-		theme=$(cat ~/.vimrc | grep colorscheme | grep -Eo "[a-z]+$")
+		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
+		if [ "$balise" = "" ]; then
+			balise="\"====================== YOUR CONFIG =======================\n\
+\"=========================================================="
+		fi
+		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc 2>/dev/null)
+		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
+		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
+		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		devicons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
+		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
 		step=2
 	else
-		if [ $autopairs -gt 0 ]; then
+		if [ "$autopairs" = "0" ]; then
 			supravim enable autopairs >/dev/null
 		fi
-		if [ $mouse -gt 0 ]; then
+		if ! [ "$mouse" = "0" ]; then
 			supravim disable mouse >/dev/null
 		fi
-		if [ $nerdtree -gt 0 ]; then
-			supravim disable nerdtree >/dev/null
+		if ! [ "$nerdtree" = "0" ]; then
+			supravim disable tree >/dev/null
 		fi
-		if [ $devicons -gt 0 ]; then
+		if ! [ "$devicons" = "0" ]; then
+			download "devicons for icons"
 			supravim enable icons >/dev/null
 		fi
+		if ! [ "$cflags" = "0" ]; then
+			supravim enable cflags >/dev/null
+		fi
 		supravim -t "$theme" >/dev/null
+		echo "$balise" >> ~/.vimrc
 		status "Have reloaded your old vim configuration"
 	fi
 }
@@ -92,20 +103,20 @@ backup_config() {
 # Installation
 
 add_config_rc(){
-	if ! grep -qe "^stty stop undef" ${SHELL_ACTIVE}; then
+	if ! grep -qe "^stty stop undef" ${SHELL_ACTIVE} 2>/dev/null; then
 		echo "stty stop undef" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE}; then
+	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE} 2>/dev/null; then
 		echo "stty start undef" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qE "^export PATH=.*[\$]HOME/\.local/bin.*$" ${SHELL_ACTIVE}; then
+	if ! grep -qE "^export PATH=.*[\$]HOME/\.local/bin.*$" ${SHELL_ACTIVE} 2>/dev/null; then
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE}; then
+	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE} 2>/dev/null; then
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qe "^source ~/.local/bin/supravim" ${SHELL_ACTIVE}; then
+	if ! grep -qe "^source \~/.local/bin/supravim" ${SHELL_ACTIVE} 2>/dev/null; then
 		echo "source ~/.local/bin/supravim >/dev/null" >> ${SHELL_ACTIVE}
 	fi
 }
@@ -113,7 +124,6 @@ add_config_rc(){
 config_supravim_editor() {
 	cp "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
     chmod +x $HOME/.local/bin/supravim
-	#ln -s ${INSTALL_DIRECTORY}/supravim $HOME/.local/bin
 }
 
 
@@ -151,15 +161,6 @@ print_ascii() {
 main() {
 	#	Prepare config for new upload
 	backup_config
-	
-	balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc`
-	if [ "$balise" = "" ]; then
-		echo "Yes"
-		balise="\"====================== YOUR CONFIG =======================\\n
-\"=========================================================="
-	else
-		echo "Last config updated :)"
-	fi
 
 	#	clean previous run, update SupraVim in the same way
 	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
@@ -171,7 +172,6 @@ main() {
 	install_SupraVim
 	# config_supravim_editor
 	backup_config
-	echo "$balise" >> ~/.vimrc
 	print_ascii
 }
 
