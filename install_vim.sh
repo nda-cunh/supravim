@@ -150,7 +150,7 @@ print_ascii() {
 
 main() {
 	#	Prepare config for new upload
-	echo "vous êtes sur la branche $1"
+	echo "You are on the $1 branch"
 	backup_config
 
 	balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc`
@@ -176,6 +176,6 @@ main() {
 	print_ascii
 }
 
-main
+main $1
 ############################################################
 
