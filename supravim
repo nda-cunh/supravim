@@ -101,9 +101,9 @@ status_fct(){
 	fi
 
 	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${green}nerdtree${reset} "
+		echo -e "${bold}${green}tree${reset} "
 	else
-		echo -e "${bold}${red}nerdtree${reset}"
+		echo -e "${bold}${red}tree${reset}"
 	fi
 
 	if [ -d ~/.vim/bundle/devicons ]; then
