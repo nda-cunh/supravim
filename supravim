@@ -43,6 +43,11 @@ theme_fct(){
 		1 | gruvbox) sed -i 's/^colorscheme .*$/colorscheme gruvbox/' ~/.vimrc; echo -e "Vim theme set to ${bold}gruvbox${reset}.";;
 		2 | molokai) sed -i 's/^colorscheme .*$/colorscheme molokai/' ~/.vimrc; echo -e "Vim theme set to ${bold}molokai${reset}.";;
 		3 | dracula) sed -i 's/^colorscheme .*$/colorscheme dracula/' ~/.vimrc; echo -e "Vim theme set to ${bold}dracula${reset}.";;
+		4 | atom)  sed -i 's/^colorscheme .*$/colorscheme atom/' ~/.vimrc; echo -e "Vim theme set to ${bold}atom${reset}.";;
+		5 | iceberg)  sed -i 's/^colorscheme .*$/colorscheme iceberg/' ~/.vimrc; echo -e "Vim theme set to ${bold}iceberg${reset}.";;
+		6 | onedark)  sed -i 's/^colorscheme .*$/colorscheme onedark/' ~/.vimrc; echo -e "Vim theme set to ${bold}onedark${reset}.";;
+		7 | onehalf)  sed -i 's/^colorscheme .*$/colorscheme onehalf/' ~/.vimrc; echo -e "Vim theme set to ${bold}onehalf${reset}.";;
+		8 | onelight)  sed -i 's/^colorscheme .*$/colorscheme onelight/' ~/.vimrc; echo -e "Vim theme set to ${bold}onelight${reset}.";;
 		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[47;30mlight${reset} background.";;
 		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[40mdark${reset} background.";;
 		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
@@ -160,8 +165,13 @@ help_fct(){
 		
 		<name_theme>:
 		1 | gruvbox		(default) set to gruvbox theme
-		2 | molokai		set to molokai theme
-		3 | dracula		set to dracula theme
+		2 | molokai			.	.	.
+		3 | dracula			.	.	.
+		4 |	atom			.	.	.
+		5 |	iceberg			.	.	.
+		6 |	onedark			.	.	.
+		7 |	onehalf			.	.	.
+		8 |	onelight		.	.	.
 
 		<background>:
 		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
@@ -189,10 +199,34 @@ for (( i=1; i<=$#; i++)); do
 				fi
 			done;;
 		-s | status) status_fct;;
-		-h | --help) help_fct;;
+		-h | help) help_fct;;
 		uninstall) uninstall_fct;;
 		update) update $next_param;;
 		switch) switch;;
-		*) echo "Uncorrect argument: '$option' (--help option can help you maybe?)"; exit;;
+		*) echo "Uncorrect argument: '$option' (help option can help you maybe?)"; exit;;
 	esac
 done
+
+#/usr/bin/env bash
+# complete -W "help update status enable disable theme" supravim
+_SupraVim_completions()
+{
+	i=0
+	arg=${COMP_WORDS[$i]}
+	while [ "$arg" != "" ]; do
+		i=$(( $i + 1 ))
+		arg=${COMP_WORDS[$i]}
+	done
+	if [ $i -eq 1 ]; then
+  		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "enable" ] || [ "${COMP_WORDS[$(( i - 1 ))]}" = "disable" ]; then
+		COMPREPLY=($(compgen -W "mouse autopairs tree cflags" "${COMP_WORDS[$(( i - 1 ))]}"))
+	elif [ "${COMP_WORDS[$(( i - 1 ))]}" = "theme" ]; then
+  		COMPREPLY=($(compgen -W "gruvbox molokai dracula atom iceberg onedark onehalf onelight" "${COMP_WORDS[$(( i - 1 ))]}"))
+	else
+  		COMPREPLY=($(compgen -W "help update status enable disable theme" "${COMP_WORDS[$(( i - 1 ))]}"))
+	fi
+
+}
+
+complete -F _SupraVim_completions supravim
