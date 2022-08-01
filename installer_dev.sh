@@ -158,9 +158,17 @@ main() {
 	[ -d ~/.vim ] && backup_vim_folder
 	[ -f ~/.vimrc ] && backup_vimrc
 
+	if [ `grep -cEzo "\"[=]+.*[=]{52}" ~/.vimrc` -gt 0 ];then
+		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc`
+	else
+		balise="\"==================== BEGIN =========================\
+			\"===================================================="
+	fi
+
 	install_SupraVim
 	# config_supravim_editor
 	backup_config
+	echo "$balise" >> ~/.vimrc
 	print_ascii
 }
 
