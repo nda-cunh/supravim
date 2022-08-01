@@ -34,6 +34,14 @@ snippet def "#define ..."
 #define $1
 endsnippet
 
+snippet ifndef "ifndef 42"
+#ifndef ${1:LIBFT}_H
+# define $1_H
+${VISUAL}$0
+
+#endif
+endsnippet
+
 snippet #ifndef "#ifndef ... #define ... #endif"
 #ifndef ${1/([A-Za-z0-9_]+).*/$1/}
 #define ${1:SYMBOL} ${2:value}
@@ -91,11 +99,28 @@ for (${1:i} = 0; $2 < ${2:count}; ${3:++$1}) {
 }
 endsnippet
 
-snippet fori "for int loop (fori)"
-for (${4:int} ${2:i} = 0; $2 < ${1:count}; ${3:++$2}) {
+snippet while "while loop"
+while (${1:1})
+{
 	${VISUAL}$0
 }
 endsnippet
+
+snippet write "write func"
+write(${1:1}, $2, $3);${VISUAL}$0
+endsnippet
+
+snippet include "include"
+#include <${1:stdio}.h>${VISUAL}$0
+endsnippet
+
+snippet if "si condition"
+if ($1)
+{
+	${VISUAL}$0
+}
+endsnippet
+
 
 snippet fora "for-loop" b
 for (${1:var}; ${2:condition}; `!p
@@ -128,7 +153,8 @@ fprintf(${1:stderr}, "${2:%s}\n"${2/([^%]|%%)*(%.)?.*/(?2:, :\);)/}$3${2/([^%]|%
 endsnippet
 
 snippet eli "else if .. (eli)"
-else if (${1:/* condition */}) {
+else if (${1:/* condition */})
+{
 	${VISUAL}$0
 }
 endsnippet
@@ -138,20 +164,32 @@ snippet "printf" "printf with auto-expand args" wr
 printf("$1\n"$2);
 endsnippet
 
-snippet st "struct"
-struct ${1:`!p snip.rv = (snip.basename or "name") + "_t"`} {
-	${0:/* data */}
-};
+snippet "ft_printf" "ft_printf with auto-expand args"
+ft_printf("$1\n"$2);
 endsnippet
 
-snippet fun "function" b
+snippet tstruct "tstruct"
+typedef struct s_${1:name}{
+	${VISUAL}$0
+} t_$1;
+
+endsnippet
+
+snippet struct "struct"
+struct s_${1:name}{
+	${VISUAL}$0
+};
+
+endsnippet
+
+snippet func "function" b
 ${1:void} ${2:function_name}($3)
 {
 	${VISUAL}$0
 }
 endsnippet
 
-snippet fund "function declaration" b
+snippet funcd "function declaration" b
 ${1:void} ${2:function_name}($3);
 endsnippet
 
