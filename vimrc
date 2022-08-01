@@ -164,7 +164,7 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	if &filetype != 'c'
+	if &filetype != 'c' || &filetype != 'cpp'
 		echo "Tu veux débugguer quoi là ?"
 	else
 		set splitbelow nosplitbelow
@@ -213,7 +213,7 @@ func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make'
+	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
 		if filereadable("Makefile")
 			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
 		elseif filereadable("../Makefile")
@@ -250,7 +250,7 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make'
+	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
 		if filereadable("Makefile")
 			exec "!make -C %:p:h --no-print-directory"
 		elseif filereadable("../Makefile")
