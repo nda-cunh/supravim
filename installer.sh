@@ -64,6 +64,7 @@ backup_config() {
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc)
 		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc)
 		theme=$(cat ~/.vimrc | grep colorscheme | grep -Eo "[a-z]+$")
+		devicons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
 		step=2
 	else
 		if [ $autopairs -gt 0 ]; then
@@ -74,6 +75,9 @@ backup_config() {
 		fi
 		if [ $nerdtree -gt 0 ]; then
 			supravim disable nerdtree >/dev/null
+		fi
+		if [ $devicons -gt 0 ]; then
+			supravim enable icons >/dev/null
 		fi
 		supravim -t "$theme" >/dev/null
 		status "Have reloaded your old vim configuration"
@@ -98,6 +102,9 @@ add_config_rc(){
 	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE}; then
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
+	if ! grep -qe "^source ~/.local/bin/supravim" ${SHELL_ACTIVE}; then
+		echo "source ~/.local/bin/supravim >/dev/null" >> ${SHELL_ACTIVE}
+	fi
 }
 
 config_supravim_editor() {
@@ -114,6 +121,7 @@ install_SupraVim(){
 	ln -s ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
 	[ -f ~/.vimrc ] && rm -f ~/.vim
 	ln -s ${INSTALL_DIRECTORY}/vim ~/.vim
+	config_supravim_editor
 	add_config_rc
 }
 ############################################################
@@ -146,7 +154,7 @@ main() {
 	[ -f ~/.vimrc ] && backup_vimrc
 
 	install_SupraVim
-	config_supravim_editor
+	# config_supravim_editor
 	backup_config
 	print_ascii
 }
