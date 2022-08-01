@@ -78,6 +78,7 @@ Notes: vous pouvez utiliser l'operateur `*` ->  `*.c` | `xxx*.c`
 les snippets permet d'écrirent du code pré-écris pour augmenter sa vitesse de code les snippets existant sont:
 | SNIPPET | Fonction |
 | ------ | ------ |
+| ifndef| IFNDEF de 42|
 | mainv| un main void|
 | main | un main vide avec argc,argv|
 | mainh|  un main avec tout les headers pour debugué rapidement|
