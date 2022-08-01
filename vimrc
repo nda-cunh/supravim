@@ -13,6 +13,11 @@ set t_Co=256
 " 1: gruvbox
 " 2: molokai
 " 3: dracula
+" 4: atom
+" 5: iceberg
+" 6: onedark
+" 7: onehalf
+" 8: onelight
 
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
@@ -51,15 +56,17 @@ noremap <C-Down>		<Esc><C-T>
 inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
 
-inoremap <c-w>				<esc>:w!<CR>
-inoremap <c-q>				<esc>:q!<CR>
-inoremap <c-s>				<esc>:w!<CR>
-noremap <c-w>				<esc>:w!<CR>
-noremap <c-q>				<esc>:q!<CR>
-noremap <c-s>				<esc>:w!<CR>
+inoremap <c-w>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
+inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+noremap <c-w>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+noremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
+noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 map <C-F5> 					:Termdebug<CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
+map <F6> 					:call CompileRun2()<CR>
+imap <F6>				 	<Esc>:call CompileRun2()<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split 
 noremap <F3>				<Esc>:call Norminette()<CR>
@@ -70,6 +77,20 @@ noremap <S-Down>			<C-w><Down>
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
+map <S-T> <Esc>:term ++rows=15<CR>
+
+"---------------      Terminal        ---------------"
+tnoremap <C-q> q<CR>
+tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run1; [ -f ../Makefile ] && make all -C ../ && make run1 -C ../; else gcc *.c; ./a.out; fi; <CR>
+"*cflags* tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run1; [ -f ../Makefile ] && make all -C ../ && make run1 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
+tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc *.c; ./a.out; fi; <CR>
+"*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
+
+" tnoremap <F4> <C-W>N<CR><S-UP>
+tnoremap <S-Right>			<C-W>N<C-w><Right>
+tnoremap <S-Left>			<C-W>N<C-w><Left>
+tnoremap <S-Up>				<C-W>N<C-w><Up>
+tnoremap <S-Down>			<C-W>N<C-w><Down>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
@@ -85,6 +106,8 @@ set showmode
 set backspace=indent,eol,start
 set pumheight=50
 set encoding=utf-8
+set splitbelow
+set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
@@ -93,6 +116,11 @@ set guioptions-=r
 set guioptions-=R
 set guioptions-=l
 set guioptions-=L
+
+"------------------ Snipets --------------------"
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 
 "--------------- CLANG COMPLETER ---------------"
 set noinfercase
@@ -128,16 +156,21 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	if &filetype == 'c'
+	if &filetype != 'c'
+		echo "Tu veux débugguer quoi là ?"
+	else
+		set splitbelow nosplitbelow
+		set splitright nosplitright
+		silent call Compile()
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
 			exec ":Termdebug ./a.out"
 		else
 			exec ":Termdebug"
 		endif
-	else
-		echo "Fichier non supporter !"
 	endif
+	set splitbelow
+	set splitright
 endfunc               
 
 command -nargs=+ -bar MakeHeader :call FctsToHeader( split('<args>') )
@@ -154,11 +187,28 @@ func! Pause()
 endfunc                                        
 
 func! Norminette()
+	silent exec "!clear -x"
 	exec "!echo Norminette de % && norminette %"
 endfunc
 
-func! CompileRun()
+func! CompileRun2()
 	exec "w"
+	exec "cd" "%:p:h"
+	if filereadable("Makefile")
+		exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
+	elseif filereadable("../Makefile")
+		exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run2 --no-print-directory"
+	endif
+endfunc
+
+func! CompileRun()
+	if &filetype == 'nerdtree' || &filetype == 'vim'
+		echo "Fenetre non compilable"
+		return
+	endif
+	exec "w"
+	exec "cd" "%:p:h"
+	silent exec "!clear -x"
 	if &filetype == 'c' || &filetype == 'make'
 		if filereadable("Makefile")
 			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
@@ -166,6 +216,7 @@ func! CompileRun()
 			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
 		else
 			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -181,9 +232,67 @@ func! CompileRun()
 		exec "!google-chrome % &"
 	elseif &filetype == 'matlab'
 		exec "!time octave %"
-	elseif &filetype == 'vala'
-		exec "!valac %:p:h/*.vala -o a.out && ./a.out"
-	elseif &filetype == 'vapi'
-		exec "!valac % -o %< && time ./%<"
+	elseif &filetype == 'vala' || &filetype == 'vapi'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
+		else
+			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
+		endif
 	endif
+	exec "redraw!"
 endfunc
+
+func! Compile()
+	exec "w"
+	exec "cd" "%:p:h"
+	silent exec "!clear -x"
+	if &filetype == 'c' || &filetype == 'make'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory"
+		elseif filereadable("../Makefile")
+			exec "!make -C %:p:h/../ --no-print-directory"
+		else
+			exec "!gcc -g %:p:h/*.c -o a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out"
+		endif
+	elseif &filetype == 'cpp'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'java'
+		exec "!javac %"
+		exec "!time java %"
+	elseif &filetype == 'sh'
+		exec "!time bash %"
+	elseif &filetype == 'python'
+		exec "!time python3 %"
+	elseif &filetype == 'html'
+		exec "!google-chrome % &"
+	elseif &filetype == 'matlab'
+		exec "!time octave %"
+	elseif &filetype == 'vala' || &filetype == 'vapi'
+		if filereadable("Makefile")
+			exec "!make -C %:p:h --no-print-directory"
+		else
+			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
+		endif
+	endif
+	exec "redraw!"
+endfunc
+
+
+" -------------- COLORS FILE ----------------"
+function! NERDTreeHighlightFile(extension, fg, bg)
+	exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg
+	exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+call NERDTreeHighlightFile('.c', 'blue', 'none')
+call NERDTreeHighlightFile('h', 'green', 'none')
+call NERDTreeHighlightFile('vala', 'magenta', 'none')
+call NERDTreeHighlightFile('Makefile', 'red', 'none')
+
+augroup nerdtreeconcealbrackets
+	autocmd!
+	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
+	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
+augroup END
