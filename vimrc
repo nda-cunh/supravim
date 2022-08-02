@@ -164,7 +164,7 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	if &filetype != 'c' || &filetype != 'cpp'
+	if &filetype != 'c' && &filetype != 'cpp'
 		echo "Tu veux débugguer quoi là ?"
 	else
 		set splitbelow nosplitbelow
