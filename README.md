@@ -43,7 +43,7 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 | scinder la fenetre verticalement | Shift + D|
 | Crée un nouvelle onglet | Ctrl + N|
 | Déplacement entre onglet | Ctrl + Flèche|
-| Ouvre un Terminal | Shift - S|
+| Ouvre un Terminal | Shift - T|
 
 # Compilation
 
@@ -100,7 +100,7 @@ vous pouves aussi ``supravim switch`` pour passer d'une session supravim a vim s
 
 <img src="img/theme-binary.gif"/>
 
-# CHANGLOG
+# CHANGELOG
 # Nouveauté de la 2.0
 
 - supports des onglets
