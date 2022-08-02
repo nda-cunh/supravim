@@ -117,7 +117,7 @@ add_config_rc(){
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
 	if ! grep -qe "^source ~/.local/bin/supravim" ${SHELL_ACTIVE} >/dev/null; then
-		echo "source ~/.local/bin/supravim >/dev/null" >> ${SHELL_ACTIVE}
+		echo "source ~/.local/bin/supravim >/dev/null 2>/dev/null" >> ${SHELL_ACTIVE}
 	fi
 }
 
