@@ -86,40 +86,58 @@ switch(){
 }
 
 status_fct(){
-	echo -e "${bold}-- Options --${reset}"
+	echo -e "${bold}-------- Options --------${reset}"
 
 	if [[ $(grep -c "\"\*autopairs\* " ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${red}autopairs${reset}"
+		echo -e " ${bold}${red}autopairs${reset}"
 	else
-		echo -e "${bold}${green}autopairs${reset} "
+		echo -e " ${bold}${green}autopairs${reset} "
 	fi
 
 	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${green}mouse${reset} "
+		echo -e " ${bold}${green}mouse${reset} "
 	else
-		echo -e "${bold}${red}mouse${reset}"
+		echo -e " ${bold}${red}mouse${reset}"
 	fi
 
 	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${green}tree${reset} "
+		echo -e " ${bold}${green}tree${reset} "
 	else
-		echo -e "${bold}${red}tree${reset}"
+		echo -e " ${bold}${red}tree${reset}"
 	fi
 
 	if [ -d ~/.vim/bundle/devicons ]; then
-		echo -e "${bold}${green}icons${reset} "
+		echo -e " ${bold}${green}icons${reset} "
 	else
-		echo -e "${bold}${red}icons${reset}"
+		echo -e " ${bold}${red}icons${reset}"
 	fi
 
 	if [ $(grep -c "^tnoremap.*gcc \*" ~/.vimrc) -gt 0 ]; then
-		echo -e "${bold}${red}cflags${reset} "
+		echo -e " ${bold}${red}cflags${reset} "
 	else
-		echo -e "${bold}${green}cflags${reset}"
+		echo -e " ${bold}${green}cflags${reset}"
 	fi
 
-	echo -e "\n${bold}-- Theme --${reset}"
-	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
+	echo -e "\n${bold}---------  Theme  --------${reset}"
+	echo " Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
+	
+	echo -e "\n${bold}-------- Updates ---------${reset}"
+	
+	cd ~/.local/bin/SupraVim >/dev/null
+	origin=`curl -s https://gitlab.com/hydrasho/SupraVim/-/commits/master | grep -Eo "Copy commit|\"[0-9a-z]{40}\"" | grep -Eo -m1 "[0-9a-z]{40}"`
+	local=`git log master 2>/dev/null | grep -Eo -m1 "[0-9a-z]{40}"`
+	if [ "$origin" = "$local" ];then
+		echo -e "\033[92;1m master:\033[0m on date."
+	else
+		echo -e "/!\\ \033[91;1;5m master: an update available. \033[0m/!\\"
+	fi
+	origin=`curl -s https://gitlab.com/hydrasho/SupraVim/-/commits/dev | grep -Eo "Copy commit|\"[0-9a-z]{40}\"" | grep -Eo -m1 "[0-9a-z]{40}"`
+	local=`git log dev 2>/dev/null | grep -Eo -m1 "[0-9a-z]{40}"`
+	if [ "$origin" = "$local" ];then
+		echo -e "\033[92;1m dev:\033[0m on date."
+	else
+		echo -e "\033[93;1m dev:\033[0m an update available."
+	fi
 }
 
 uninstall_fct() {
