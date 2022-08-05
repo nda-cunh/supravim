@@ -116,8 +116,8 @@ add_config_rc(){
 	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE} >/dev/null; then
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qe "^export fpath=($HOME/.local/bin/SupraVim $fpath)" ${SHELL_ACTIVE} >/dev/null; then
-		echo "export fpath=($HOME/.local/bin/SupraVim $fpath)" >> ${SHELL_ACTIVE}
+	if ! grep -qe "^export fpath=(\$HOME/.local/bin/SupraVim \$fpath)" ${SHELL_ACTIVE} >/dev/null; then
+		echo "export fpath=(\$HOME/.local/bin/SupraVim \$fpath)" >> ${SHELL_ACTIVE}
 		echo "autoload compinit; compinit" >> ${SHELL_ACTIVE}
 	fi
 }
