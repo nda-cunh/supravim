@@ -1,0 +1,18 @@
+#compdef supravim
+
+_arguments '-s[show your configuration]' '-t[change your vim theme]: :->theme'	 '-e[enable options]: :->option' '-d[disable options]: :->option' '--update[could be launch with dev to update ythe dev branch]: :->update' '--switch[switch between your vim config and supravim one]' '--uninstall[uninstall supravim]'
+
+case "$state" in
+	theme)
+		local -a themes
+		themes=('molokai' 'gruvbox' 'dracula' 'atom' 'iceberg' 'onedark' 'onehalf' 'onelight')
+		_describe 'supravim' themes;;
+	option)
+		local -a options
+		options=('autopairs:put automatically a closed bracket' 'mouse:use of mouse to move in your vim' 'tree:left window automatically opened with files in current dir' 'icon:icon in nerdtree element' 'cflags:compile with flags -Wall -Werror -Wextra')
+		_describe 'supravim' options;;
+	update)
+		local -a branch
+		branch=(':master branch (stablest version)' 'dev:branch with potential unstable new features')
+		_describe 'supravim' branch;;
+esac
