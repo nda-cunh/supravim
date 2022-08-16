@@ -191,12 +191,14 @@ func! FctsToHeader(...)
 endfunc                                  
 
 func! Norminette()
+	exec "w"
 	silent exec "!clear -x"
 	exec "!echo Norminette de % && norminette %"
 endfunc
 
 func! CompileRun2()
 	exec "w"
+	silent exec "!clear -x"
 	exec "cd" "%:p:h"
 	if filereadable("Makefile")
 		exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
