@@ -54,6 +54,13 @@ ${VISUAL}$0
 #endif
 endsnippet
 
+snippet loop " boucle de x"
+for (var l = 0; l != ${1:42}; l++)
+{
+	${VISUAL}$0
+}
+endsnippet
+
 snippet mark "#pragma mark (mark)"
 #if 0
 ${1:#pragma mark -
@@ -171,7 +178,7 @@ endsnippet
 snippet tstruct "tstruct"
 typedef struct s_${1:name}{
 	${VISUAL}$0
-} t_$1;
+}t_$1;
 
 endsnippet
 

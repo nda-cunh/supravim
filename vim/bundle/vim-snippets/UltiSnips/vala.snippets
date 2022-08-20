@@ -1,0 +1,71 @@
+snippet while "while loop"
+while (${1:true})
+{
+	${VISUAL}$0
+}
+endsnippet
+
+snippet main "main"
+int main (string []args)
+{
+	${VISUAL}$0
+    return (0);
+}
+endsnippet
+
+snippet mainv "main void"
+void main (string []args)
+{
+	${VISUAL}$0
+}
+endsnippet
+
+snippet func "function" b
+${1:void} ${2:function_name}($3)
+{
+	${VISUAL}$0
+}
+endsnippet
+
+snippet if "if"
+if (${1:condition})
+{
+	${VISUAL}$0
+}
+endsnippet
+
+snippet elif " else if"
+else if (${1:condition})
+{
+	${VISUAL}$0
+}
+endsnippet
+
+snippet else " else vala"
+else
+{
+	${VISUAL}$0
+}
+endsnippet
+
+
+snippet loop " loop in vala"
+for (var l = 0; l != ${1:42}; l++)
+{
+	${VISUAL}$0
+}
+endsnippet
+
+
+snippet class "class vala"
+public class ${1:MyClass}
+{
+	public ${1}(${2})
+    {
+        ${VISUAL}$0
+    }
+    ~$(1){
+
+    }
+}
+endsnippet
