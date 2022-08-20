@@ -56,10 +56,8 @@ noremap <C-Down>		<Esc><C-T>
 inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
 
-inoremap <c-w>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
-noremap <c-w>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 noremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 map <C-F5> 					:Termdebug<CR>
@@ -147,6 +145,7 @@ let g:syntastic_c_include_dirs = ['../../../include','../../include','../include
 "--------------- PL NERDTREE ---------------"
 let g:nerdtree_tabs_open_on_console_startup=1
 let NERDTreeIgnore = ['\.png$\','\.jpg$','\.o$']
+let g:NERDTreeWinSize = 27
 "---------------- AUTO LOAD---------------"
 func! AirFresh()
 	exec "AirlineRefresh"
