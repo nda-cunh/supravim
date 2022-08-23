@@ -306,22 +306,15 @@ endfunc
 
 
 " -------------- SupraNorm ----------------"
-"
-" function NewNorminette()
-" 	let filename = expand("%:p")
-" 	let out_system = system("norminette " . filename)
-" 	echo out_system
-" endfunction
 
-
-highlight DapBreakpoint ctermfg=13
+highlight DapBreakpoint ctermfg=135
 
 sign define NormLinter text=\ ✖ texthl=DapBreakpoint
 let g:syntastic_error_symbol='\ ✖'
 let g:syntastic_warning_symbol='\ ✖'
 
 function GetErrors(filename)
-	let norm_errors = system("norminette \"" .expand("%") ."\"")
+	let norm_errors = system("norminette \"" .a:filename ."\"")
 	let norm_errors = norm_errors->split("\n")
 	let regex = 'Error: \([A-Z_]*\)\s*(line:\s*\(\d*\), col:\s*\(\d*\)):\t\(.*\)'
 	let errors = []
@@ -349,6 +342,8 @@ function DisplayErrorMsg()
 	for error in g:errors
 		if line(".") == error[1]
 			echo error[3]
+		else
+			echo ""
 		endif
 	endfor
 endfunction
@@ -368,20 +363,10 @@ function! s:empty_message(timer)
 	echo ""
 endfunction
 
-function GetNormMessage(filename)
-	let error_dict = GetErrorDict(a:filename)
-	if error_dict->has_key(line('.'))
-		echo get(error_dict, line('.'))
-	endif
-	call timer_start(2000, funcref('s:empty_message'))
-endfunction
-
-command Norm call HighlightNorm(expand("%:p"))
+command Norm call HighlightNorm(expand("%"))
 autocmd BufEnter,BufWritePost *.c Norm
 autocmd BufLeave *.c call clearmatches("NormErrors")
 
-command NormMessage call GetNormMessage(expand("%:p"))
-autocmd CursorHold *.c NormMessage
 "
 " -------------- COLORS FILE ----------------"
 function! NERDTreeHighlightFile(extension, fg, bg)
