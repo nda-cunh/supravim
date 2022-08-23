@@ -1,0 +1,74 @@
+Describe Basic tests of pair functionality
+    Before each
+        call autopairs#Variables#_InitVariables()
+    End
+    It should do basic insertion
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        call Expect("(").ToMatch("()")
+        call Expect("Hello (me").ToMatch("Hello (me)")
+        " Welcome to a random mid-test rant: why the fuck does Vim require
+        " this? There's no sane ways to escape characters, and \<CR> doesn't
+        " actually send the right signal unless the CR is in a double-quote
+        " string. WTF?!
+        call Expect('"""' . "\<CR>").ToMatch('"""\n\n"""')
+    End
+    It should properly break blocks
+        let g:AutoPairsReturnOnEmptyOnly = 1
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        call Expect("if(blah\<cr>").ToMatch('if(blah\n)')
+    End
+    It should also make other block expansions
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        let b:AutoPairsReturnOnEmptyOnly = 0
+        " The resulting indent is a bit weird - not sure why.
+        call Expect("if(blah\<cr>").ToMatch('if(blah\n\n  )')
+    End
+    It should handle multibyte pairs
+        let g:AutoPairs = {"Hello": ", is what I would say if I cared.", "H": "G"}
+        new | only!
+        call autopairs#AutoPairsTryInit()
+
+        call Expect('H').ToMatch("HG")
+        call Expect("Hello").ToMatch("Hello, is what I would say if I cared.")
+    End
+    It should handle nesting
+        " We don't map backspace here because this is a pair test primarily,
+        " and not a backspace test.
+        " Should probably separate out the return test, but whatever. The
+        " point being, not mapping BS here is the easiest way to test this
+        " specific situation. It's either that or \<left>\<delete> instead,
+        " which is substantially uglier.
+        let g:AutoPairsMapBS = 0
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        call Expect("((\<bs>(").ToMatch("(())")
+    End
+    It shouldn't forcibly do multiline bullshit
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        call Expect("[\<CR>").ToMatch('[\n\n]')
+        call Expect("[\<CR>]").ToMatch('[\n]\n]')
+    End
+    It should allow explicit multiline close
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        let b:AutoPairsMultilineClose = 1
+        call Expect("[\<CR>]").ToMatch('[\n]')
+    End
+    It should work with spaces
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        call Expect("[ ").ToMatch("[  ]")
+    End
+    It should erase old pairs on blank new pairs
+        call autopairs#AutoPairsAddPairs([#{open: '""', close: ""}, #{open: '"', close: 'abcd'}])
+        new | only!
+        call autopairs#AutoPairsTryInit()
+        call Expect('"').ToMatch('"abcd')
+        call Expect('""').ToMatch('""')
+    End
+End
+" vim:sw=4
