@@ -7,7 +7,7 @@ call pathogen#helptags()
 
 filetype plugin indent on
 "--------------- jeu de couleur ---------------"
-colorscheme gruvbox
+colorscheme onedark
 set background=dark
 set t_Co=256
 " 1: gruvbox
@@ -39,8 +39,8 @@ let g:termdebug_wide=1
 " let g:AutoPairsMapCR 			= 0
 " let g:AutoPairsWildClosedPair 	= ''
 " let g:AutoPairsMultilineClose 	= 0
-" imap <silent><CR>				<CR><Plug>AutoPairsReturn
-"*autopairs* let g:AutoPairs = {}
+imap <silent><CR>				<CR><Plug>AutoPairsReturn
+" *autopairs* let g:AutoPairs = {}
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
@@ -160,7 +160,7 @@ let g:syntastic_enable_signs=1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_c_remove_include_errors = 1
-let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include']
+let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include', '../libft', '../libft/include', './libft', './libft/include']
 
 "--------------- PL NERDTREE ---------------"
 let g:nerdtree_tabs_open_on_console_startup=1
@@ -212,7 +212,7 @@ endfunc
 func! Norminette()
 	exec "w"
 	silent exec "!clear -x"
-	exec "!echo Norminette de % && norminette %"
+	exec "!echo Norminette de % && norminette \"%\""
 endfunc
 
 func! CompileRun2()
@@ -220,9 +220,9 @@ func! CompileRun2()
 	silent exec "!clear -x"
 	exec "cd" "%:p:h"
 	if filereadable("Makefile")
-		exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
+		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run2 --no-print-directory"
 	elseif filereadable("../Makefile")
-		exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run2 --no-print-directory"
+		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run2 --no-print-directory"
 	endif
 endfunc
 
@@ -236,12 +236,12 @@ func! CompileRun()
 	silent exec "!clear -x"
 	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
 		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
+			exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
 		elseif filereadable("../Makefile")
-			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
+			exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
 		else
-			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+			exec "!gcc -g \"%:p:h/*.c\" -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/*.c\" -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -305,6 +305,84 @@ func! Compile()
 endfunc
 
 
+" -------------- SupraNorm ----------------"
+"
+" function NewNorminette()
+" 	let filename = expand("%:p")
+" 	let out_system = system("norminette " . filename)
+" 	echo out_system
+" endfunction
+
+
+highlight DapBreakpoint ctermfg=13
+
+sign define NormLinter text=\ ✖ texthl=DapBreakpoint
+let g:syntastic_error_symbol='\ ✖'
+let g:syntastic_warning_symbol='\ ✖'
+
+function GetErrors(filename)
+	let norm_errors = system("norminette \"" .expand("%") ."\"")
+	let norm_errors = norm_errors->split("\n")
+	let regex = 'Error: \([A-Z_]*\)\s*(line:\s*\(\d*\), col:\s*\(\d*\)):\t\(.*\)'
+	let errors = []
+	for s in norm_errors
+		if s =~# regex
+			let groups = matchlist(s, regex)
+			let groups = [groups[1], groups[2], groups[3], groups[4]]
+			call add(errors, groups)
+		endif
+	endfor
+	return errors
+endfunction
+
+function HighlightNorm(filename)
+	call clearmatches("NormErrors")
+	let g:errors = GetErrors(a:filename)
+	hi def link NormErrors Underlined
+	sign unplace *
+	for error in g:errors
+		exe ":sign place 2 line=".error[1] " name=NormLinter file=" .a:filename
+	endfor
+endfunction
+
+function DisplayErrorMsg()
+	for error in g:errors
+		if line(".") == error[1]
+			echo error[3]
+		endif
+	endfor
+endfunction
+
+autocmd CursorMoved *.c call DisplayErrorMsg()
+
+function GetErrorDict(filename)
+	let errors = GetErrors(a:filename)
+	let error_dict = {}
+	for error in errors
+		eval error_dict->extend({error[1] : error[3]})
+	endfor
+	return error_dict
+endfunction
+
+function! s:empty_message(timer)
+	echo ""
+endfunction
+
+function GetNormMessage(filename)
+	let error_dict = GetErrorDict(a:filename)
+	if error_dict->has_key(line('.'))
+		echo get(error_dict, line('.'))
+	endif
+	call timer_start(2000, funcref('s:empty_message'))
+endfunction
+
+command Norm call HighlightNorm(expand("%:p"))
+autocmd BufEnter,BufWritePost *.c Norm
+autocmd BufLeave *.c call clearmatches("NormErrors")
+
+command NormMessage call GetNormMessage(expand("%:p"))
+autocmd CursorHold *.c NormMessage
+"
 " -------------- COLORS FILE ----------------"
 function! NERDTreeHighlightFile(extension, fg, bg)
 	exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg
