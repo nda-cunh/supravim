@@ -35,13 +35,12 @@ packadd! termdebug
 let g:termdebug_wide=1
 
 "-------------- Auto Pairs ---------------------"
-let g:AutoPairsFlyMode 			= 0
-let g:AutoPairsMapCR 			= 0
-let g:AutoPairsWildClosedPair 	= ''
-let g:AutoPairsMultilineClose 	= 0
-imap <silent><CR>				<CR><Plug>AutoPairsReturn
+" let g:AutoPairsFlyMode 			= 0
+" let g:AutoPairsMapCR 			= 0
+" let g:AutoPairsWildClosedPair 	= ''
+" let g:AutoPairsMultilineClose 	= 0
+" imap <silent><CR>				<CR><Plug>AutoPairsReturn
 "*autopairs* let g:AutoPairs = {}
-
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
@@ -49,12 +48,20 @@ noremap <C-Right>				:tabnext<CR>
 noremap <C-Left>				:tabprevious<CR>
 inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
+noremap <C-l>				:tabnext<CR>
+noremap <C-h>				:tabprevious<CR>
+inoremap <C-l>				<esc>:tabnext<CR>
+inoremap <C-h>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
 noremap <C-Up>			<Esc>g<C-}>
 noremap <C-Down>		<Esc><C-T>
 inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
+noremap <C-k>			<Esc>g<C-}>
+noremap <C-j>			<Esc><C-T>
+inoremap <C-k>			<Esc>g<C-}>
+inoremap <C-j>			<Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
@@ -72,6 +79,11 @@ noremap <S-Right>			<C-w><Right>
 noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
+
+noremap <S-l>				<C-w><Right>
+noremap <S-h>				<C-w><Left>
+noremap <S-k>				<C-w><Up>
+noremap <S-j>				<C-w><Down>
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
@@ -86,10 +98,18 @@ tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Ma
 "*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
 
 " tnoremap <F4> <C-W>N<CR><S-UP>
-tnoremap <S-Right>			<C-W>N<C-w><Right>
-tnoremap <S-Left>			<C-W>N<C-w><Left>
-tnoremap <S-Up>				<C-W>N<C-w><Up>
-tnoremap <S-Down>			<C-W>N<C-w><Down>
+tnoremap <S-Right>		<C-W>N<C-w><Right>
+tnoremap <S-Left>		<C-W>N<C-w><Left>
+tnoremap <S-Up>			<C-W>N<C-w><Up>
+tnoremap <S-Down>		<C-W>N<C-w><Down>
+
+tnoremap <S-l>			<C-W>N<C-w><Right>
+tnoremap <S-h>			<C-W>N<C-w><Left>
+tnoremap <S-k>			<C-W>N<C-w><Up>
+tnoremap <S-l>			<C-W>N<C-w><Down>
+
+tnoremap <C-l>			<C-W>N<esc>:tabnext<CR>
+tnoremap <C-h>			<C-W>N<esc>:tabprevious<CR>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
