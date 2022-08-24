@@ -342,6 +342,7 @@ function DisplayErrorMsg()
 	for error in g:errors
 		if line(".") == error[1]
 			echo error[3]
+			break
 		else
 			echo ""
 		endif
