@@ -9,7 +9,6 @@ reset="\033[0m"
 
 enable_fct(){
 	case $1 in
-		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
@@ -25,7 +24,6 @@ enable_fct(){
 
 disable_fct(){
     case $1 in
-        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$1]${reset} correctly disabled"; fi ;;
@@ -88,12 +86,6 @@ switch(){
 status_fct(){
 	echo -e "${bold}-- Options --${reset}"
 
-	if [[ $(grep -c "\"\*autopairs\* " ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${red}autopairs${reset}"
-	else
-		echo -e "${bold}${green}autopairs${reset} "
-	fi
-
 	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]; then
 		echo -e "${bold}${green}mouse${reset} "
 	else
@@ -153,7 +145,6 @@ help_fct(){
 		supravim <${bold}${red}disable${reset} | -d> <option>
 		
 		<options>:
-		autopairs		put automatically a closed bracket ('}', ']', ')'), when add an opened bracket
 		mouse			use of mouse to move/ copy and paste in your file
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
