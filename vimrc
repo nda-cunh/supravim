@@ -40,7 +40,6 @@ let g:termdebug_wide=1
 " let g:AutoPairsWildClosedPair 	= ''
 " let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
-" *autopairs* let g:AutoPairs = {}
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
@@ -54,13 +53,13 @@ inoremap <C-l>				<esc>:tabnext<CR>
 inoremap <C-h>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
-noremap <C-Up>			<Esc>g<C-}>
+noremap <C-Up>			<Esc>:call CreateCtags()<CR>g<C-}>
 noremap <C-Down>		<Esc><C-T>
-inoremap <C-Up>			<Esc>g<C-}>
+inoremap <C-Up>			<Esc>:call CreateCtags()<CR>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
-noremap <C-k>			<Esc>g<C-}>
+noremap <C-k>			<Esc>:call CreateCtags()<CR>g<C-}>
 noremap <C-j>			<Esc><C-T>
-inoremap <C-k>			<Esc>g<C-}>
+inoremap <C-k>			<Esc>:call CreateCtags()<CR>g<C-}>
 inoremap <C-j>			<Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
@@ -368,7 +367,7 @@ command Norm call HighlightNorm(expand("%"))
 autocmd BufEnter,BufWritePost *.c Norm
 autocmd BufLeave *.c call clearmatches("NormErrors")
 
-"
+
 " -------------- COLORS FILE ----------------"
 function! NERDTreeHighlightFile(extension, fg, bg)
 	exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg
@@ -385,3 +384,19 @@ augroup nerdtreeconcealbrackets
 	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
 	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
 augroup END
+
+" ----------------- CTAGS ------------------"
+autocmd QuitPre *.c call DeleteCtags()
+autocmd BufWritePost *.c call CreateCtags()
+
+let g:tagPath = system("~/.local/bin/SupraVim/getRepoPath " . expand('%:p:h'))
+exec 'set tags+=' . g:tagPath . '/tags'
+
+func! CreateCtags()
+    let a = system("cd " . g:tagPath . "; ctags **/*.c")
+endfunc
+
+func! DeleteCtags()
+	let a = system('rm ' . g:tagPath . '/tags')
+endfunc
+
