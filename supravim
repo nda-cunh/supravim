@@ -156,7 +156,7 @@ help_fct(){
 		autopairs		put automatically a closed bracket ('}', ']', ')'), when add an opened bracket
 		mouse			use of mouse to move/ copy and paste in your file
 		tree			left window automatically opened with files in the current directory
-		icon			icon in nerdtree for different type/file directory
+		icons			icon in nerdtree for different type/file directory
 		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
 
 	${bold}THEME CHOOSING${reset}
@@ -186,7 +186,7 @@ fi
 
 for opt in $@; do
 	possibility=$0
-	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "--update" "status" "-s" "switch" "--swicth" "--uninstall" "uninstall";do
+	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "--update" "status" "-s" "switch" "--switch" "--uninstall" "uninstall";do
 		if [ "$opt" = "$possibility" ]; then
 			latest_opt=$opt
 		fi
