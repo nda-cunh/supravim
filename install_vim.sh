@@ -69,7 +69,6 @@ backup_config() {
 			balise="\"====================== YOUR CONFIG =======================\n\
 \"=========================================================="
 		fi
-		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc 2>/dev/null)
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
 		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
@@ -77,9 +76,6 @@ backup_config() {
 		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
 		step=2
 	else
-		if [ "$autopairs" = "0" ]; then
-			supravim enable autopairs >/dev/null
-		fi
 		if ! [ "$mouse" = "0" ]; then
 			supravim disable mouse >/dev/null
 		fi
