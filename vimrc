@@ -40,7 +40,6 @@ let g:termdebug_wide=1
 " let g:AutoPairsWildClosedPair 	= ''
 " let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
-" *autopairs* let g:AutoPairs = {}
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
