@@ -1,7 +1,6 @@
 #!/bin/sh
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
-BACKUP_FILE="old_conf_vim_$(date +'%Y-%m-%d-%H%M%S').tar"
 SUPRA_LINK="https://gitlab.com/Hydrasho/SupraVim -b $1"
 INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
 
@@ -41,21 +40,6 @@ error() {
 
 ############################################################
 # backup function
-backup_vim_folder() {
-	status "Adding old vim folder to ${BACKUP_FILE}"
-	tar -cvf ${BACKUP_FILE} --absolute-names ~/.vim
-	rm -rf ~/.vim
-}
-
-backup_vimrc() {
-	status "Adding old vimrc to ${BACKUP_FILE}"
-	if [ -f ~/${BACKUP_FILE} ]; then
-		tar -cvf ${BACKUP_FILE} ~/.vim 2>/dev/null
-	else
-		tar -rvf ${BACKUP_FILE} ~/.vim 2>/dev/null
-	fi
-	rm -f ~/.vimrc
-}
 
 step=1
 backup_config() {
@@ -162,10 +146,6 @@ main() {
 
 	#	clean previous run, update SupraVim in the same way
 	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
-
-	# backup if needed
-	[ -d ~/.vim ] && backup_vim_folder
-	[ -f ~/.vimrc ] && backup_vimrc
 
 	install_SupraVim
 	backup_config
