@@ -43,11 +43,11 @@ error() {
 
 step=1
 backup_config() {
-	if [ -f ~/.vimrc_supravim_off ]
-	then
+	if [ -f ~/.vimrc_supravim_off ] || [ `cat ~/.vimrc | head -n1 | grep -c SUPRAVIM` -eq 0 ] ; then
+		status "Switching your vim configuration, to restore it use \033[1msupravim switch\033[0m"
 		supravim switch >/dev/null
 	fi
-	if [ $step -eq 1 ]; then
+	if [ $step -eq 1 ] && [ -f ~/.vimrc ]; then
 		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
 		if [ "$balise" = "" ]; then
 			balise="\"====================== YOUR CONFIG =======================\n\
@@ -59,7 +59,7 @@ backup_config() {
 		devicons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
 		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
 		step=2
-	else
+	elif [ -f ~/.vimrc ]; then
 		if ! [ "$mouse" = "0" ]; then
 			supravim disable mouse >/dev/null
 		fi
