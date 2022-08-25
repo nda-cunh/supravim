@@ -112,6 +112,16 @@ status_fct(){
 
 	echo -e "\n${bold}-- Theme --${reset}"
 	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
+	
+	echo -e "\n${bold}-- Version --${reset}"
+	userBranch="`head -n1 ~/.local/bin/SupraVim/.git/HEAD | grep -Eo \"[a-z]+$\"`"
+	userVersion="`head -n1 ~/.local/bin/SupraVim/README.md | grep -Eo \"[0-9\.]+\"`"
+	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
+	if [ "${userVersion}" = "${repoVersion}" ]; then
+		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(on date)${reset}"
+	else
+		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update)${reset}"
+	fi
 }
 
 uninstall_fct() {
