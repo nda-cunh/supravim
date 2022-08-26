@@ -66,7 +66,7 @@ inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 noremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
-map <C-F5> 					:Termdebug<CR>
+map <C-F5> 					:Termdebug -n <CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
 map <F6> 					:call CompileRun2()<CR>
@@ -190,9 +190,9 @@ func! Gdbf()
 		silent call Compile()
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
-			exec ":Termdebug ./a.out"
+			exec ":Termdebug -n ./a.out"
 		else
-			exec ":Termdebug"
+			exec ":Termdebug -n"
 		endif
 	endif
 	set splitbelow
