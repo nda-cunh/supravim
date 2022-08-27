@@ -386,9 +386,9 @@ augroup nerdtreeconcealbrackets
 augroup END
 
 " ----------------- CTAGS ------------------"
-autocmd QuitPre *.c call DeleteCtags()
-autocmd BufWritePost *.c call CreateCtags()
-autocmd VimEnter *.c,*.h call GenerateCtags()
+autocmd QuitPre *.c,*.h call DeleteCtags()
+autocmd BufWritePost *.c,*.h call CreateCtags()
+autocmd BufEnter *.c,*.h call GenerateCtags()
 
 func! GenerateCtags()
 	if filereadable(expand('%:p'))

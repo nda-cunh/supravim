@@ -1,4 +1,4 @@
-# SupraVim 3.1.1
+# SupraVim 3.1.2
 
 L'editeur de texte vim pour 42 Angoulême.
 
