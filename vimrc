@@ -102,10 +102,10 @@ tnoremap <S-Left>		<C-W>N<C-w><Left>
 tnoremap <S-Up>			<C-W>N<C-w><Up>
 tnoremap <S-Down>		<C-W>N<C-w><Down>
 
-tnoremap <S-l>			<C-W>N<C-w><Right>
-tnoremap <S-h>			<C-W>N<C-w><Left>
-tnoremap <S-k>			<C-W>N<C-w><Up>
-tnoremap <S-l>			<C-W>N<C-w><Down>
+" tnoremap <S-l>			<C-W>N<C-w><Right>
+" tnoremap <S-h>			<C-W>N<C-w><Left>
+" tnoremap <S-k>			<C-W>N<C-w><Up>
+" tnoremap <S-l>			<C-W>N<C-w><Down>
 
 tnoremap <C-l>			<C-W>N<esc>:tabnext<CR>
 tnoremap <C-h>			<C-W>N<esc>:tabprevious<CR>
