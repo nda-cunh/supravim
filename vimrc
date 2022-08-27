@@ -388,9 +388,15 @@ augroup END
 " ----------------- CTAGS ------------------"
 autocmd QuitPre *.c call DeleteCtags()
 autocmd BufWritePost *.c call CreateCtags()
+autocmd VimEnter *.c,*.h call GenerateCtags()
 
-let g:tagPath = system("~/.local/bin/SupraVim/getRepoPath " . expand('%:p:h'))
-exec 'set tags+=' . g:tagPath . '/tags'
+func! GenerateCtags()
+	if filereadable(expand('%:p'))
+		let g:tagPath = system("~/.local/bin/SupraVim/getRepoPath " . expand('%:p:h'))
+		exec 'set tags+=' . g:tagPath . '/tags'
+	endif
+endfunc
+
 
 func! CreateCtags()
     let a = system("cd " . g:tagPath . "; ctags **/*.c")
