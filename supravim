@@ -132,10 +132,14 @@ version_fct() {
 	userBranch="`head -n1 ~/.local/bin/SupraVim/.git/HEAD | grep -Eo \"[a-z]+$\"`"
 	userVersion="`head -n1 ~/.local/bin/SupraVim/README.md | grep -Eo \"[0-9\.]+\"`"
 	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
-	if [ "${userVersion}" = "${repoVersion}" ]; then
+	if [ "$1" = "cached" ]; then
+		echo -n "$userBranch: $userVersion -> $repoVersion"
+		exit
+	fi
+	if [ "$1" = "" ] && [ "${userVersion}" = "${repoVersion}" ]; then
 		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}"
-	else
-		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update)${reset}"
+	elif [$1 = "" ]; then
+		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}"
 	fi
 }
 
@@ -215,7 +219,7 @@ for opt in $@; do
 		-h | --help | help) help_fct;;
 		--uninstall | uninstall) uninstall_fct;;
 		--update | update) [ $opt = "dev" ] && update $opt;;
-		--version | -v) version_fct;;
+		--version | -v) version_fct $2;;
 		switch | --switch) switch;;
 		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
 	esac
