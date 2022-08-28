@@ -394,7 +394,7 @@ endfunc
 
 
 func! CreateCtags()
-    let a = system("cd " . g:tagPath . "; ctags **/*.c")
+    let a = system('cd ' . g:tagPath . '; ctags **/*.c')
 endfunc
 
 func! DeleteCtags()
