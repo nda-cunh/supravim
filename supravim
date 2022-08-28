@@ -208,15 +208,15 @@ for opt in $@; do
 		fi
 	done
 	case $latest_opt in 
-		-e | enable) [ $latest_opt != $opt ] && enable_fct $opt;;
-		-d | disable) [ $latest_opt != $opt ] && disable_fct $opt;;
-		-t | theme) [ $latest_opt != $opt ] && theme_fct $opt;;
-		-s | status) status_fct;;
-		-h | help) help_fct;;
+		-e | --enable | enable) [ $latest_opt != $opt ] && enable_fct $opt;;
+		-d | --disable | disable) [ $latest_opt != $opt ] && disable_fct $opt;;
+		-t | --theme | theme) [ $latest_opt != $opt ] && theme_fct $opt;;
+		-s | --status | status) status_fct;;
+		-h | --help | help) help_fct;;
 		--uninstall | uninstall) uninstall_fct;;
 		--update | update) [ $opt = "dev" ] && update $opt;;
 		--version | -v) version_fct;;
-		switch) switch;;
+		switch | --switch) switch;;
 		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
 	esac
 done

@@ -1,6 +1,14 @@
 #compdef supravim
 
-_arguments '-s[show your configuration]' '-t[change your vim theme]: :->theme'	 '-e[enable options]: :->option' '-d[disable options]: :->option' '--update[could be launch with dev to update ythe dev branch]: :->update' '--switch[switch between your vim config and supravim one]' '--uninstall[uninstall supravim]' '--version[display your current supravim version]'
+_arguments -C -S -s $endopt \
+	'(-s --status)'{-s,--status}'[show your configuration]' \
+	'(-t --theme)'{-t,--theme}'[change your vim theme]: :->theme' \
+	'(-e --enable)'{-e,--enable}'[enable options]: :->option'	\
+	'(-d --disable)'{-d,--disable}'[disable options]: :->option' \
+	'--update[could be launch with dev to update ythe dev branch]: :->update'\
+	'--switch[switch between your vim config and supravim one]' \
+	'--uninstall[uninstall supravim]' \
+	'(-v --version)'{-v,--version}'[display your current supravim version]'
 
 case "$state" in
 	theme)
