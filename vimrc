@@ -19,6 +19,8 @@ set t_Co=256
 " 7: onehalf
 " 8: onelight
 
+" icons_disabled
+
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
 	call mkdir($HOME."/.vim", "", 0770)

@@ -11,7 +11,7 @@ enable_fct(){
 	case $1 in
 		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
+		icons) if [ $(grep -c "icons_disabled" ~/.vimrc) -gt 0 ]; then sed -i 's/icons_disabled/icons_enabled/g' ~/.vimrc; git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
@@ -28,7 +28,7 @@ disable_fct(){
     case $1 in
         mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$1]${reset} correctly disabled"; fi ;;
+		icons) sed -i 's/icons_enabled/icons_disabled/g' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
@@ -103,7 +103,7 @@ status_fct(){
 		echo -e "${bold}${red}tree${reset}"
 	fi
 
-	if [ -d ~/.vim/bundle/devicons ]; then
+	if [ $(grep -c "icons_enabled" ~/.vimc) -gt 0 ]; then
 		echo -e "${bold}${green}icons${reset} "
 	else
 		echo -e "${bold}${red}icons${reset}"
@@ -146,13 +146,9 @@ uninstall_fct() {
 update(){
 	if [[ $1 = "dev" ]]
 	then
-		cp ~/.local/bin/SupraVim/install_vim.sh /tmp
-		/tmp/install_vim.sh dev
-		rm /tmp/install_vim.sh
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 	else
-		cp ~/.local/bin/SupraVim/install_vim.sh /tmp
-		/tmp/install_vim.sh master
-		rm /tmp/install_vim.sh
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 	fi
 }
 
