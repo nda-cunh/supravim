@@ -335,7 +335,7 @@ endfunction
 function DisplayErrorMsg()
 	for error in g:errors
 		if line(".") == error[1]
-			echo error[3]
+			echo "[Norminette]: "error[3]
 			break
 		else
 			echo ""
@@ -400,4 +400,31 @@ endfunc
 func! DeleteCtags()
 	let a = system('rm ' . g:tagPath . '/tags')
 endfunc
+" ----------------- POPUP ------------------"
+autocmd InsertEnter * call CreatePop()
+hi MyPopupColor ctermfg=cyan 
 
+let g:step=0
+func! CreatePop()
+    if g:step == 1
+        return
+    endif
+    let g:step=1
+    let s=system("supravim --version cached")
+    if s == ""
+        return
+    endif
+    call popup_create([ "Supravim update", s ], #{ 
+                                \ line: 1, 
+                                \ col: 500,
+                                \ pos: 'topright',
+                                \ time: 5000, 
+                                \ tabpage: -1, 
+                                \ zindex: 300, 
+                                \ drag: 1, 
+                                \ highlight: 'MyPopupColor',
+                                \ border: [], 
+                                \ close: 'click', 
+                                \ padding: [0,1,0,1], 
+                                \ }) 
+endfunc                                                     
