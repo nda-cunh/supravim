@@ -58,6 +58,7 @@ backup_config() {
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		icons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
 		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
+		norme=$(grep -c "\"\*norme\*" ~/.vimrc 2>/dev/null)
 		step=2
 	elif [ -f ~/.vimrc ]; then
 		if ! [ "$mouse" = "0" ]; then
@@ -72,6 +73,9 @@ backup_config() {
 		fi
 		if ! [ "$cflags" = "0" ]; then
 			supravim enable cflags >/dev/null
+		fi
+		if ! [ "$norme" = "0" ]; then
+			supravim disable norme >/dev/null
 		fi
 		supravim -t "$theme" >/dev/null
 		echo "$balise" >> ~/.vimrc
