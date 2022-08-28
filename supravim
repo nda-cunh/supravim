@@ -133,7 +133,7 @@ version_fct() {
 	userVersion="`head -n1 ~/.local/bin/SupraVim/README.md | grep -Eo \"[0-9\.]+\"`"
 	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
 	if [ "$1" = "cached" ]; then
-		if [ "${userVersion}" = "${repoVersion}" ]; then
+		if ! [ "${userVersion}" = "${repoVersion}" ]; then
 			echo -n "$userBranch: $userVersion -> $repoVersion"
 		else
 			echo -n ""
@@ -210,7 +210,7 @@ fi
 
 for opt in $@; do
 	possibility=$0
-	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "--update" "status" "-s" "switch" "--switch" "--uninstall" "uninstall" "-v" "--version";do
+	for possibility in  "-h" "--help" "enable" "-e" "--enable" "disable" "-d" "--disable" "theme" "-t" "--theme" "update" "--update" "status" "--status" "-s" "switch" "--switch" "--uninstall" "uninstall" "-v" "--version";do
 		if [ "$opt" = "$possibility" ]; then
 			latest_opt=$opt
 		fi
