@@ -335,7 +335,7 @@ endfunction
 function DisplayErrorMsg()
 	for error in g:errors
 		if line(".") == error[1]
-			echo error[3]
+			echo "[Norminette]: "error[3]
 			break
 		else
 			echo ""
