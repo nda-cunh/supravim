@@ -56,7 +56,7 @@ backup_config() {
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
 		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
-		devicons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
+		icons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
 		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
 		step=2
 	elif [ -f ~/.vimrc ]; then
@@ -66,9 +66,9 @@ backup_config() {
 		if ! [ "$nerdtree" = "0" ]; then
 			supravim disable tree >/dev/null
 		fi
-		if ! [ "$devicons" = "0" ]; then
+		if ! [ "$icons" = "0" ]; then
 			download "devicons for icons"
-			supravim enable icons >/dev/null
+			supravim -e icons >/dev/null
 		fi
 		if ! [ "$cflags" = "0" ]; then
 			supravim enable cflags >/dev/null
