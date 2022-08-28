@@ -56,7 +56,7 @@ backup_config() {
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
 		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
-		icons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
+		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
 		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
 		norme=$(grep -c "\"\*norme\*" ~/.vimrc 2>/dev/null)
 		step=2
