@@ -114,6 +114,10 @@ status_fct(){
 	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
 	
 	echo -e "\n${bold}-- Version --${reset}"
+	version_fct
+}
+
+version_fct() {
 	userBranch="`head -n1 ~/.local/bin/SupraVim/.git/HEAD | grep -Eo \"[a-z]+$\"`"
 	userVersion="`head -n1 ~/.local/bin/SupraVim/README.md | grep -Eo \"[0-9\.]+\"`"
 	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
@@ -187,7 +191,7 @@ fi
 
 for opt in $@; do
 	possibility=$0
-	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "--update" "status" "-s" "switch" "--switch" "--uninstall" "uninstall";do
+	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "--update" "status" "-s" "switch" "--switch" "--uninstall" "uninstall" "-v" "--version";do
 		if [ "$opt" = "$possibility" ]; then
 			latest_opt=$opt
 		fi
@@ -200,6 +204,7 @@ for opt in $@; do
 		-h | help) help_fct;;
 		--uninstall | uninstall) uninstall_fct;;
 		--update | update) [ $opt = "dev" ] && update $opt;;
+		--version | -v) version_fct;;
 		switch) switch;;
 		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
 	esac
