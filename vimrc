@@ -47,10 +47,6 @@ noremap <C-Right>				:tabnext<CR>
 noremap <C-Left>				:tabprevious<CR>
 inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
-noremap <C-l>				:tabnext<CR>
-noremap <C-h>				:tabprevious<CR>
-inoremap <C-l>				<esc>:tabnext<CR>
-inoremap <C-h>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
 noremap <C-Up>			<Esc>:call CreateCtags()<CR>g<C-}>
@@ -106,9 +102,6 @@ tnoremap <S-Down>		<C-W>N<C-w><Down>
 " tnoremap <S-h>			<C-W>N<C-w><Left>
 " tnoremap <S-k>			<C-W>N<C-w><Up>
 " tnoremap <S-l>			<C-W>N<C-w><Down>
-
-tnoremap <C-l>			<C-W>N<esc>:tabnext<CR>
-tnoremap <C-h>			<C-W>N<esc>:tabprevious<CR>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
