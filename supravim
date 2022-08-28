@@ -103,7 +103,7 @@ status_fct(){
 		echo -e "${bold}${red}tree${reset}"
 	fi
 
-	if [ $(grep -c "icons_enabled" ~/.vimc) -gt 0 ]; then
+	if [ $(grep -c "icons_enabled" ~/.vimrc) == 0 ]; then
 		echo -e "${bold}${green}icons${reset} "
 	else
 		echo -e "${bold}${red}icons${reset}"
@@ -216,10 +216,10 @@ for opt in $@; do
 		fi
 	done
 	case $latest_opt in 
-		-e | --enable | enable) [ $latest_opt != $opt ] && enable_fct $opt;;
-		-d | --disable | disable) [ $latest_opt != $opt ] && disable_fct $opt;;
-		-t | --theme | theme) [ $latest_opt != $opt ] && theme_fct $opt;;
-		-s | --status | status) status_fct;;
+		-e | --enable | enable) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && enable_fct $opt; [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-d | --disable | disable) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && disable_fct $opt; [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-t | --theme | theme) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && theme_fct $opt;  [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-s | --status | status) [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && status_fct;  [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
 		-h | --help | help) help_fct;;
 		--uninstall | uninstall) uninstall_fct;;
 		--update | update) [ $opt = "dev" ] && update $opt;;
