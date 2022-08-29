@@ -407,7 +407,12 @@ func! DeleteCtags()
 endfunc
 " ----------------- POPUP ------------------"
 autocmd InsertEnter * call CreatePop()
+autocmd VimEnter * call CreatePopit()
 hi MyPopupColor ctermfg=cyan 
+
+func! CreatePopit()
+    let s = system("supravim --version cached > /tmp/zouzou&")
+endfunc
 
 let g:step=0
 func! CreatePop()
@@ -415,7 +420,7 @@ func! CreatePop()
         return
     endif
     let g:step=1
-    let s=system("supravim --version cached")
+	let s = system("cat /tmp/zouzou ; rm /tmp/zouzou")
     if s == ""
         return
     endif
@@ -432,4 +437,4 @@ func! CreatePop()
                                 \ close: 'click', 
                                 \ padding: [0,1,0,1], 
                                 \ }) 
-endfunc                                                     
+endfunc                                                    
