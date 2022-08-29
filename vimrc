@@ -348,8 +348,6 @@ function DisplayErrorMsg()
 	endfor
 endfunction
 
-autocmd CursorMoved *.c call DisplayErrorMsg()
-
 function GetErrorDict(filename)
 	let errors = GetErrors(a:filename)
 	let error_dict = {}
@@ -364,9 +362,9 @@ function! s:empty_message(timer)
 endfunction
 
 command Norm call HighlightNorm(expand("%"))
-autocmd BufEnter,BufWritePost *.c Norm
-autocmd BufLeave *.c call clearmatches("NormErrors")
-
+autocmd CursorMoved *.c,*.h call DisplayErrorMsg()
+autocmd BufEnter,BufWritePost *.c,*.h Norm
+autocmd BufLeave *.c,*.h call clearmatches("NormErrors")
 
 " -------------- COLORS FILE ----------------"
 function! NERDTreeHighlightFile(extension, fg, bg)
