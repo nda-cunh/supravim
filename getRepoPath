@@ -11,15 +11,11 @@ getParentDir()	{
 
 firstSearch(){
 	pathTmp=$1
-	while [ "$pathTmp" != "$HOME" ] && [ "$pathTmp" != "/tmp" ];
-	do
-		for fileDescr in `ls -la $pathTmp`
-		do
-			file="`echo "$fileDescr" | grep -o "[^ ]*$"`"
-			case $file in
-				Makefile) 	if [ "`echo "$fileDescr" | grep -Eo "^."`" = "-" ]; then echo "$pathTmp"; return; fi;;
-				.git) 	if [ "`echo "$fileDescr" | grep -Eo "^."`" = "d" ]; then echo "$pathTmp"; return; fi;;
-			esac
+	i=0
+	while [ "$pathTmp" != "$HOME" ] && ! [[ "$pathTmp" =~ \/tmp\/[^\/]+ ]]; do
+		for fileDescr in `ls -aF $pathTmp`; do
+			[[ ${fileDescr} =~ Makefile ]] && echo "$pathTmp" && return
+			[[ ${fileDescr} =~ \.git\/ ]] && echo "$pathTmp" && return
 		done
 		pathTmp=`getParentDir $pathTmp`
 	done
@@ -28,20 +24,19 @@ firstSearch(){
 
 secondSearch(){
 	pathTmp=$1
-	while [ "$pathTmp" != "$HOME" ] && [ "$pathTmp" != "/tmp" ];
-	do
-		for fileDescr in `ls -la $pathTmp`
-		do
-			file="`echo "$fileDescr" | grep -o "[^ ]*$"`"
-			case $file in
-				src) 	if [ "`echo "$fileDescr" | grep -Eo "^."`" = "d" ]; then echo "$pathTmp"; return; fi;;
-				include) 	if [ "`echo "$fileDescr" | grep -Eo "^."`" = "d" ]; then echo "$pathTmp"; return; fi;;
-			esac
+	i=0
+	while [ "$pathTmp" != "$HOME" ] && ! [[ "$pathTmp" =~ \/tmp\/[^\/]+ ]]; do
+		for fileDescr in `ls -aF $pathTmp`; do
+			[[ ${fileDescr} =~ .*src\/$ ]] && echo "$pathTmp" && return
+			[[ ${fileDescr} =~ .*include\/$ ]] && echo "$pathTmp" && return
 		done
 		pathTmp=`getParentDir $pathTmp`
 	done
 	echo -n "notFound" 
 }
+
+path=$1
+[ `echo  "$1" | grep -Ec "^[^\/].*$"` -gt 0 ] && path="`pwd`/$1"
 
 fS="`firstSearch $1`"
 if [ "$fS" = "notFound" ]
