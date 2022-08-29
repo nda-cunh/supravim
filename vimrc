@@ -210,13 +210,18 @@ func! Norminette()
 endfunc
 
 func! CompileRun2()
-	exec "w"
-	silent exec "!clear -x"
-	exec "cd" "%:p:h"
 	if filereadable("Makefile")
+		exec "cd" "%:p:h"
+		exec "w"
+		silent exec "!clear -x"
 		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run2 --no-print-directory"
 	elseif filereadable("../Makefile")
+		exec "cd" "%:p:h"
+		exec "w"
+		silent exec "!clear -x"
 		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run2 --no-print-directory"
+	else
+		echo "Aucun Makefile pour executer run2"
 	endif
 endfunc
 
