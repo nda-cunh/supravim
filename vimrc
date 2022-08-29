@@ -411,16 +411,18 @@ autocmd VimEnter * call CreatePopit()
 hi MyPopupColor ctermfg=cyan 
 
 func! CreatePopit()
-    let s = system("supravim --version cached > /tmp/zouzou&")
+    let s = system("supravim --version cached > /tmp/xdfe-". g:file_tmp ."&")
 endfunc
 
+let g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
 let g:step=0
 func! CreatePop()
     if g:step == 1
         return
     endif
     let g:step=1
-	let s = system("cat /tmp/zouzou ; rm /tmp/zouzou")
+	
+	let s = system("cat /tmp/xdfe-". g:file_tmp . " ; rm /tmp/xdfe-" . g:file_tmp)
     if s == ""
         return
     endif
@@ -437,4 +439,4 @@ func! CreatePop()
                                 \ close: 'click', 
                                 \ padding: [0,1,0,1], 
                                 \ }) 
-endfunc                                                    
+endfunc                                                   
