@@ -16,7 +16,7 @@ enable_fct(){
 			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		norme) sed -i 's/\"\*norm\* //g' ~/.vimrc;
+		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		"") echo -e "Please enter something to enable.";;
 		*) echo -e "${bold}[$1]${reset} : cannot enable."
@@ -33,7 +33,7 @@ disable_fct(){
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
-		norme) sed -i 's/autocmd.*Norm.*/\"\*norme\* &/g' ~/.vimrc;
+		norme) sed -i 's/^autocmd.*Norm.*/\"\*norme\* &/g' ~/.vimrc;
 			sed -i 's/^autocmd.*DisplayErrorMsg()$/\"\*norme\* &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		"") echo -e "Please enter something to disable.";;
