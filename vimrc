@@ -51,13 +51,13 @@ inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
-noremap <C-Up>			<Esc>:call CreateCtags()<CR>g<C-}>
+noremap <C-Up>			<Esc>g<C-}>
 noremap <C-Down>		<Esc><C-T>
-inoremap <C-Up>			<Esc>:call CreateCtags()<CR>g<C-}>
+inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
-noremap <C-k>			<Esc>:call CreateCtags()<CR>g<C-}>
+noremap <C-k>			<Esc>g<C-}>
 noremap <C-j>			<Esc><C-T>
-inoremap <C-k>			<Esc>:call CreateCtags()<CR>g<C-}>
+inoremap <C-k>			<Esc>g<C-}>
 inoremap <C-j>			<Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
@@ -383,26 +383,6 @@ augroup nerdtreeconcealbrackets
 	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
 augroup END
 
-" ----------------- CTAGS ------------------"
-autocmd QuitPre *.c,*.h call DeleteCtags()
-autocmd BufWritePost *.c,*.h call CreateCtags()
-autocmd BufEnter *.c,*.h call GenerateCtags()
-
-func! GenerateCtags()
-	if filereadable(expand('%:p'))
-		let g:tagPath = system("~/.local/bin/SupraVim/getRepoPath " . expand('%:p:h'))
-		exec 'set tags+=' . g:tagPath . '/tags'
-	endif
-endfunc
-
-
-func! CreateCtags()
-    let a = system('cd ' . g:tagPath . '; ctags **/*.c')
-endfunc
-
-func! DeleteCtags()
-	let a = system('rm ' . g:tagPath . '/tags')
-endfunc
 " ----------------- POPUP ------------------"
 autocmd InsertEnter * call CreatePop()
 autocmd VimEnter * call CreatePopit()
