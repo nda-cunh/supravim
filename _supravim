@@ -1,6 +1,14 @@
 #compdef supravim
 
-_arguments '-s[show your configuration]' '-t[change your vim theme]: :->theme'	 '-e[enable options]: :->option' '-d[disable options]: :->option' '--update[could be launch with dev to update ythe dev branch]: :->update' '--switch[switch between your vim config and supravim one]' '--uninstall[uninstall supravim]'
+_arguments -C -S -s $endopt \
+	'(-s --status)'{-s,--status}'[show your configuration]' \
+	'(-t --theme)'{-t,--theme}'[change your vim theme]: :->theme' \
+	'(-e --enable)'{-e,--enable}'[enable options]: :->option'	\
+	'(-d --disable)'{-d,--disable}'[disable options]: :->option' \
+	'--update[could be launch with dev to update ythe dev branch]: :->update'\
+	'--switch[switch between your vim config and supravim one]' \
+	'--uninstall[uninstall supravim]' \
+	'(-v --version)'{-v,--version}'[display your current supravim version]'
 
 case "$state" in
 	theme)
@@ -9,7 +17,7 @@ case "$state" in
 		_describe 'supravim' themes;;
 	option)
 		local -a options
-		options=('autopairs:put automatically a closed bracket' 'mouse:use of mouse to move in your vim' 'tree:left window automatically opened with files in current dir' 'icon:icon in nerdtree element' 'cflags:compile with flags -Wall -Werror -Wextra')
+		options=('norme:show in real time your norm errors in vim' 'mouse:use of mouse to move in your vim' 'tree:left window automatically opened with files in current dir' 'icons:icons in nerdtree element' 'cflags:compile with flags -Wall -Werror -Wextra')
 		_describe 'supravim' options;;
 	update)
 		local -a branch

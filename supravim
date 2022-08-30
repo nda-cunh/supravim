@@ -9,13 +9,14 @@ reset="\033[0m"
 
 enable_fct(){
 	case $1 in
-		autopairs) sed -ir 's/^let.*g:AutoPairs[ =\{\}]*$/\"\*autopairs\* &/g' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		icons) if ! [ -d ~/.vim/bundle/devicons ]; then git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
+		icons) if [ $(grep -c "icons_disabled" ~/.vimrc) -gt 0 ]; then sed -i 's/icons_disabled/icons_enabled/g' ~/.vimrc; git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
+			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
+		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		"") echo -e "Please enter something to enable.";;
 		*) echo -e "${bold}[$1]${reset} : cannot enable."
@@ -25,13 +26,15 @@ enable_fct(){
 
 disable_fct(){
     case $1 in
-        autopairs) sed -i 's/\"\*autopairs\* //g' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		icons) if [ -d ~/.vim/bundle/devicons ]; then rm -rf ~/.vim/bundle/devicons; echo -e "${bold}${red}[$1]${reset} correctly disabled"; fi ;;
+		icons) sed -i 's/icons_enabled/icons_disabled/g' ~/.vimrc; rm -rf "$HOME/.vim/bundle/devicons"; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
+			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
+		norme) sed -i 's/^autocmd.*Norm.*/\"\*norme\* &/g' ~/.vimrc;
+			sed -i 's/^autocmd.*DisplayErrorMsg()$/\"\*norme\* &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		"") echo -e "Please enter something to disable.";;
         *) echo -e "[$1] : cannot enable."
@@ -88,12 +91,6 @@ switch(){
 status_fct(){
 	echo -e "${bold}-- Options --${reset}"
 
-	if [[ $(grep -c "\"\*autopairs\* " ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${red}autopairs${reset}"
-	else
-		echo -e "${bold}${green}autopairs${reset} "
-	fi
-
 	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]; then
 		echo -e "${bold}${green}mouse${reset} "
 	else
@@ -106,7 +103,7 @@ status_fct(){
 		echo -e "${bold}${red}tree${reset}"
 	fi
 
-	if [ -d ~/.vim/bundle/devicons ]; then
+	if ! [ $(grep -c "icons_enabled" ~/.vimrc) == 0 ]; then
 		echo -e "${bold}${green}icons${reset} "
 	else
 		echo -e "${bold}${red}icons${reset}"
@@ -118,8 +115,36 @@ status_fct(){
 		echo -e "${bold}${green}cflags${reset}"
 	fi
 
+	if [ $(grep -c "\"\*norme\*" ~/.vimrc) -gt 0 ]; then
+		echo -e "${bold}${red}norme${reset} "
+	else
+		echo -e "${bold}${green}norme${reset}"
+	fi
+
 	echo -e "\n${bold}-- Theme --${reset}"
 	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
+	
+	echo -e "\n${bold}-- Version --${reset}"
+	version_fct
+}
+
+version_fct() {
+	userBranch="`head -n1 ~/.local/bin/SupraVim/.git/HEAD | grep -Eo \"[a-z]+$\"`"
+	userVersion="`head -n1 ~/.local/bin/SupraVim/README.md | grep -Eo \"[0-9\.]+\"`"
+	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
+	if [ "$1" = "cached" ]; then
+		if ! [ "${userVersion}" = "${repoVersion}" ]; then
+			echo -n "$userBranch: $userVersion -> $repoVersion"
+		else
+			echo -n ""
+		fi
+		exit
+	fi
+	if [ "${userVersion}" = "${repoVersion}" ]; then
+		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}"
+	else
+		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}"
+	fi
 }
 
 uninstall_fct() {
@@ -153,10 +178,9 @@ help_fct(){
 		supravim <${bold}${red}disable${reset} | -d> <option>
 		
 		<options>:
-		autopairs		put automatically a closed bracket ('}', ']', ')'), when add an opened bracket
 		mouse			use of mouse to move/ copy and paste in your file
 		tree			left window automatically opened with files in the current directory
-		icon			icon in nerdtree for different type/file directory
+		icons			icon in nerdtree for different type/file directory
 		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
 
 	${bold}THEME CHOOSING${reset}
@@ -186,20 +210,21 @@ fi
 
 for opt in $@; do
 	possibility=$0
-	for possibility in "enable" "-e" "disable" "-d" "theme" "-t" "update" "--update" "status" "-s" "switch" "--swicth" "--uninstall" "uninstall";do
+	for possibility in  "-h" "--help" "enable" "-e" "--enable" "disable" "-d" "--disable" "theme" "-t" "--theme" "update" "--update" "status" "--status" "-s" "switch" "--switch" "--uninstall" "uninstall" "-v" "--version";do
 		if [ "$opt" = "$possibility" ]; then
 			latest_opt=$opt
 		fi
 	done
 	case $latest_opt in 
-		-e | enable) [ $latest_opt != $opt ] && enable_fct $opt;;
-		-d | disable) [ $latest_opt != $opt ] && disable_fct $opt;;
-		-t | theme) [ $latest_opt != $opt ] && theme_fct $opt;;
-		-s | status) status_fct;;
-		-h | help) help_fct;;
+		-e | --enable | enable) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && enable_fct $opt; [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-d | --disable | disable) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && disable_fct $opt; [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-t | --theme | theme) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && theme_fct $opt;  [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-s | --status | status) [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && status_fct;  [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-h | --help | help) help_fct;;
 		--uninstall | uninstall) uninstall_fct;;
 		--update | update) [ $opt = "dev" ] && update $opt;;
-		switch) switch;;
+		--version | -v) version_fct $2;;
+		switch | --switch) switch;;
 		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
 	esac
 done

@@ -1,7 +1,6 @@
 #!/bin/sh
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
-BACKUP_FILE="old_conf_vim_$(date +'%Y-%m-%d-%H%M%S').tar"
 SUPRA_LINK="https://gitlab.com/Hydrasho/SupraVim -b $1"
 INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
 
@@ -41,57 +40,42 @@ error() {
 
 ############################################################
 # backup function
-backup_vim_folder() {
-	status "Adding old vim folder to ${BACKUP_FILE}"
-	tar -cvf ${BACKUP_FILE} --absolute-names ~/.vim
-	rm -rf ~/.vim
-}
-
-backup_vimrc() {
-	status "Adding old vimrc to ${BACKUP_FILE}"
-	if [ -f ~/${BACKUP_FILE} ]; then
-		tar -cvf ${BACKUP_FILE} ~/.vim 2>/dev/null
-	else
-		tar -rvf ${BACKUP_FILE} ~/.vim 2>/dev/null
-	fi
-	rm -f ~/.vimrc
-}
 
 step=1
 backup_config() {
-	if [ -f ~/.vimrc_supravim_off ]
-	then
+	if [ -f ~/.vimrc_supravim_off ] || [ `cat ~/.vimrc | head -n1 | grep -c SUPRAVIM` -eq 0 ] ; then
+		status "Switching your vim configuration, to restore it use \033[1msupravim switch\033[0m"
 		supravim switch >/dev/null
 	fi
-	if [ $step -eq 1 ]; then
+	if [ $step -eq 1 ] && [ -f ~/.vimrc ]; then
 		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
 		if [ "$balise" = "" ]; then
 			balise="\"====================== YOUR CONFIG =======================\n\
 \"=========================================================="
 		fi
-		autopairs=$(grep -c "\"\*autopairs\* " ~/.vimrc 2>/dev/null)
 		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
 		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
-		devicons=$(if [ -d ~/.vim/bundle/devicons ]; then echo 1; else echo 0; fi)
+		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
 		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
+		norme=$(grep -c "\"\*norme\*" ~/.vimrc 2>/dev/null)
 		step=2
-	else
-		if [ "$autopairs" = "0" ]; then
-			supravim enable autopairs >/dev/null
-		fi
+	elif [ -f ~/.vimrc ]; then
 		if ! [ "$mouse" = "0" ]; then
 			supravim disable mouse >/dev/null
 		fi
 		if ! [ "$nerdtree" = "0" ]; then
 			supravim disable tree >/dev/null
 		fi
-		if ! [ "$devicons" = "0" ]; then
+		if ! [ "$icons" = "0" ]; then
 			download "devicons for icons"
-			supravim enable icons >/dev/null
+			supravim -e icons >/dev/null
 		fi
 		if ! [ "$cflags" = "0" ]; then
 			supravim enable cflags >/dev/null
+		fi
+		if ! [ "$norme" = "0" ]; then
+			supravim disable norme >/dev/null
 		fi
 		supravim -t "$theme" >/dev/null
 		echo "$balise" >> ~/.vimrc
@@ -166,10 +150,6 @@ main() {
 
 	#	clean previous run, update SupraVim in the same way
 	[ -d ${INSTALL_DIRECTORY} ] && rm -rf ${INSTALL_DIRECTORY}
-
-	# backup if needed
-	[ -d ~/.vim ] && backup_vim_folder
-	[ -f ~/.vimrc ] && backup_vimrc
 
 	install_SupraVim
 	backup_config
