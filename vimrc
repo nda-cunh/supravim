@@ -7,7 +7,7 @@ call pathogen#helptags()
 
 filetype plugin indent on
 "--------------- jeu de couleur ---------------"
-colorscheme gruvbox
+colorscheme onedark
 set background=dark
 set t_Co=256
 " 1: gruvbox
@@ -18,6 +18,8 @@ set t_Co=256
 " 6: onedark
 " 7: onehalf
 " 8: onelight
+
+" icons_disabled
 
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.vim")
@@ -35,13 +37,11 @@ packadd! termdebug
 let g:termdebug_wide=1
 
 "-------------- Auto Pairs ---------------------"
-let g:AutoPairsFlyMode 			= 0
-let g:AutoPairsMapCR 			= 0
-let g:AutoPairsWildClosedPair 	= ''
-let g:AutoPairsMultilineClose 	= 0
+" let g:AutoPairsFlyMode 			= 0
+" let g:AutoPairsMapCR 			= 0
+" let g:AutoPairsWildClosedPair 	= ''
+" let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
-"*autopairs* let g:AutoPairs = {}
-
 
 "--------------- Onglets ---------------------"
 noremap <c-n>	<esc>:tabnew 
@@ -55,12 +55,16 @@ noremap <C-Up>			<Esc>g<C-}>
 noremap <C-Down>		<Esc><C-T>
 inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
+noremap <C-k>			<Esc>g<C-}>
+noremap <C-j>			<Esc><C-T>
+inoremap <C-k>			<Esc>g<C-}>
+inoremap <C-j>			<Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 noremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
-map <C-F5> 					:Termdebug<CR>
+map <C-F5> 					:Termdebug -n <CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
 map <F6> 					:call CompileRun2()<CR>
@@ -72,6 +76,11 @@ noremap <S-Right>			<C-w><Right>
 noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
+
+noremap <S-l>				<C-w><Right>
+noremap <S-h>				<C-w><Left>
+noremap <S-k>				<C-w><Up>
+noremap <S-j>				<C-w><Down>
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
@@ -86,10 +95,15 @@ tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Ma
 "*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
 
 " tnoremap <F4> <C-W>N<CR><S-UP>
-tnoremap <S-Right>			<C-W>N<C-w><Right>
-tnoremap <S-Left>			<C-W>N<C-w><Left>
-tnoremap <S-Up>				<C-W>N<C-w><Up>
-tnoremap <S-Down>			<C-W>N<C-w><Down>
+tnoremap <S-Right>		<C-W>N<C-w><Right>
+tnoremap <S-Left>		<C-W>N<C-w><Left>
+tnoremap <S-Up>			<C-W>N<C-w><Up>
+tnoremap <S-Down>		<C-W>N<C-w><Down>
+
+" tnoremap <S-l>			<C-W>N<C-w><Right>
+" tnoremap <S-h>			<C-W>N<C-w><Left>
+" tnoremap <S-k>			<C-W>N<C-w><Up>
+" tnoremap <S-l>			<C-W>N<C-w><Down>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
@@ -140,7 +154,7 @@ let g:syntastic_enable_signs=1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_c_remove_include_errors = 1
-let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include']
+let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include', '../libft', '../libft/include', './libft', './libft/include']
 
 "--------------- PL NERDTREE ---------------"
 let g:nerdtree_tabs_open_on_console_startup=1
@@ -171,9 +185,9 @@ func! Gdbf()
 		silent call Compile()
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
-			exec ":Termdebug ./a.out"
+			exec ":Termdebug -n ./a.out"
 		else
-			exec ":Termdebug"
+			exec ":Termdebug -n"
 		endif
 	endif
 	set splitbelow
@@ -185,24 +199,29 @@ command -nargs=+ -bar MakeHeader :call FctsToHeader( split('<args>') )
 func! FctsToHeader(...)
 	for files_input in a:000[0]
 		let $f=files_input
-		exec ":r !IFS=$'\\n'; for fct in $(cat "files_input" | grep -Eo \"^[a-z].*)$\" | grep -v \"[^*a-z\_]main(\"); do echo \"$fct;\"; done"
+		exec ":r !IFS=$'\\n'; for fct in $(cat "files_input" | grep -Eo \"^[a-z].*)$\" | grep -v \"[^*a-z\_]main(\" | grep -v \"^static\"); do echo \"$fct;\"; done"
 	endfor
 endfunc                                  
 
 func! Norminette()
 	exec "w"
 	silent exec "!clear -x"
-	exec "!echo Norminette de % && norminette %"
+	exec "!echo Norminette de % && norminette \"%\""
 endfunc
 
 func! CompileRun2()
-	exec "w"
-	silent exec "!clear -x"
-	exec "cd" "%:p:h"
 	if filereadable("Makefile")
-		exec "!make -C %:p:h --no-print-directory && make -C %:p:h run2 --no-print-directory"
+		exec "cd" "%:p:h"
+		exec "w"
+		silent exec "!clear -x"
+		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run2 --no-print-directory"
 	elseif filereadable("../Makefile")
-		exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run2 --no-print-directory"
+		exec "cd" "%:p:h"
+		exec "w"
+		silent exec "!clear -x"
+		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run2 --no-print-directory"
+	else
+		echo "Aucun Makefile pour executer run2"
 	endif
 endfunc
 
@@ -216,12 +235,12 @@ func! CompileRun()
 	silent exec "!clear -x"
 	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
 		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
+			exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
 		elseif filereadable("../Makefile")
-			exec "!make -C %:p:h/../ --no-print-directory && make -C %:p:h/../ run --no-print-directory"
+			exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
 		else
-			exec "!gcc -g %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -253,12 +272,12 @@ func! Compile()
 	silent exec "!clear -x"
 	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
 		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory"
+			exec "!make -C \"%:p:h\" --no-print-directory"
 		elseif filereadable("../Makefile")
-			exec "!make -C %:p:h/../ --no-print-directory"
+			exec "!make -C \"%:p:h/../\" --no-print-directory"
 		else
-			exec "!gcc -g %:p:h/*.c -o a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror %:p:h/*.c -o a.out"
+			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
+"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
 		endif
 	elseif &filetype == 'cpp'
 		exec "!g++ % -o %<"
@@ -285,6 +304,68 @@ func! Compile()
 endfunc
 
 
+" -------------- SupraNorm ----------------"
+
+highlight DapBreakpoint ctermfg=135
+
+sign define NormLinter text=\ ✖ texthl=DapBreakpoint
+let g:syntastic_error_symbol='\ ✖'
+let g:syntastic_warning_symbol='\ ✖'
+
+function GetErrors(filename)
+	let norm_errors = system("norminette \"" .a:filename ."\"")
+	let norm_errors = norm_errors->split("\n")
+	let regex = 'Error: \([A-Z_]*\)\s*(line:\s*\(\d*\), col:\s*\(\d*\)):\t\(.*\)'
+	let errors = []
+	for s in norm_errors
+		if s =~# regex
+			let groups = matchlist(s, regex)
+			let groups = [groups[1], groups[2], groups[3], groups[4]]
+			call add(errors, groups)
+		endif
+	endfor
+	return errors
+endfunction
+
+function HighlightNorm(filename)
+	call clearmatches("NormErrors")
+	let g:errors = GetErrors(a:filename)
+	hi def link NormErrors Underlined
+	sign unplace *
+	for error in g:errors
+		exe ":sign place 2 line=".error[1] " name=NormLinter file=" .a:filename
+	endfor
+endfunction
+
+function DisplayErrorMsg()
+	for error in g:errors
+		if line(".") == error[1]
+			echo "[Norminette]: "error[3]
+			break
+		else
+			echo ""
+		endif
+	endfor
+endfunction
+
+function GetErrorDict(filename)
+	let errors = GetErrors(a:filename)
+	let error_dict = {}
+	for error in errors
+		eval error_dict->extend({error[1] : error[3]})
+	endfor
+	return error_dict
+endfunction
+
+function! s:empty_message(timer)
+	echo ""
+endfunction
+
+command Norm call HighlightNorm(expand("%"))
+autocmd CursorMoved *.c,*.h call DisplayErrorMsg()
+autocmd BufEnter,BufWritePost *.c,*.h Norm
+autocmd BufLeave *.c,*.h call clearmatches("NormErrors")
+
 " -------------- COLORS FILE ----------------"
 function! NERDTreeHighlightFile(extension, fg, bg)
 	exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg
@@ -301,3 +382,39 @@ augroup nerdtreeconcealbrackets
 	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
 	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
 augroup END
+
+" ----------------- POPUP ------------------"
+autocmd InsertEnter * call CreatePop()
+autocmd VimEnter * call CreatePopit()
+hi MyPopupColor ctermfg=cyan 
+
+func! CreatePopit()
+    let s = system("supravim --version cached > /tmp/xdfe-". g:file_tmp ."&")
+endfunc
+
+let g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
+let g:step=0
+func! CreatePop()
+    if g:step == 1
+        return
+    endif
+    let g:step=1
+	
+	let s = system("cat /tmp/xdfe-". g:file_tmp . " ; rm /tmp/xdfe-" . g:file_tmp)
+    if s == ""
+        return
+    endif
+    call popup_create([ "Supravim update", s ], #{ 
+                                \ line: 1, 
+                                \ col: 500,
+                                \ pos: 'topright',
+                                \ time: 5000, 
+                                \ tabpage: -1, 
+                                \ zindex: 300, 
+                                \ drag: 1, 
+                                \ highlight: 'MyPopupColor',
+                                \ border: [], 
+                                \ close: 'click', 
+                                \ padding: [0,1,0,1], 
+                                \ }) 
+endfunc                                                   

@@ -1,6 +1,6 @@
-# SupraVim 3.0
+# SupraVim 3.2
 
-L'editeur de texte vim pour 42 Angoulême.
+Un éditeur de texte Vim pour 42 d'Angoulême.
 
 <img src="img/readme.png"/>
 
@@ -9,7 +9,7 @@ L'editeur de texte vim pour 42 Angoulême.
 ```bash
 curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
-**Dépendance**
+**Dépendances**
 
 | Zsh | Clang | Vim 8 |
 |-----|-------|-------|
@@ -30,7 +30,7 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 
 | Nom | Raccourcis |
 | ------ | ------ |
-| Fermer une fênetre | Ctrl + Q |
+| Fermer une fenêtre | Ctrl + Q |
 | Sauvegarde une fênetre | Ctrl + S|
 | TOUT Sauvegarder | :wall|
 | TOUT Quitter | :qall|
@@ -40,29 +40,24 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 | Debogueur | **Ctrl + F5**|
 | Deplacement | Shift - flèche|
 | Fermer/Ouvrir la fenêtre de l'arbre | Ctrl +G |
-| scinder la fenetre horizontalement | Ctrl + D|
-| scinder la fenetre verticalement | Shift + D|
-| Crée un nouvelle onglet | Ctrl + N|
-| Déplacement entre onglet | Ctrl + Flèche|
-| Ouvrir un Terminal | Shift - T|
+| Scinder la fenêtre horizontalement | Ctrl + D|
+| Scinder la fenêtre verticalement | Shift + D|
+| Créer un nouvel onglet | Ctrl + N|
+| Déplacement entre les onglets | Ctrl + Flèche|
+| Ouvrir un terminal | Shift - T|
 
 # Compilation
 
-Vous pouvez compiler votre programme avec la touche F5
-si votre projet contient un Makefile, celui-ci le detectera et executera la regle
-ALL,  suivie de la regle RUN.
+Si votre projet contient un fichier Makefile, vous pourrez compiler votre programme avec la touche F5, celui-ci le détectera et exécutera la règle ALL suivie de la règle RUN.
 
-sinon si il ne contient pas de Makefile,
-il compilera tout les fichier C present ensemble et executera le a.out généré.
+Dans le cas contraire, il compilera tous les fichiers C présents ensemble et exécutera le a.out généré.
 
-# Debbug
+# Débogage
 
-Le debug s'effectue avec CTRL-F5.
-Pour l'utiliser, n'oubliez pas de compiler avec les flags `-g` ou `-g3 -Og` pour obtenir des informations
-de debug plus exacte et complete.
+Le débogage s'effectue avec CTRL-F5.
+N'oubliez pas de compiler avec les flags `-g` ou `-g3 -Og` pour obtenir des informations plus approfondies.
 
-Si votre programme est lancé via un makefile, vim ne trouvera pas votre executable, il faudra le fournir a gdb
-avec `file monexe`
+Si votre programme est lancé via un makefile, Vim ne trouvera pas votre exécutable, il faudra le fournir à gdb avec `file monexe`.
 
 <img src="img/GDB.png"/>
 
@@ -70,62 +65,63 @@ Vous pouvez également quitter le mode avec Ctrl+Q tout comme le terminal.
 
 # HEADER
 
-supravim vous permez aussi d'inclures vos prototype de vos fichier C dans votre header en utilisant la commandes `:MakeHeader`
-exemple:  `:MakeHeader hello.c foo.c bar.c` écrira les prototypes de ces fichiers sous votre curseur vim.
-Notes: vous pouvez utiliser l'operateur `*` ->  `*.c` | `xxx*.c`
+Supravim vous permet aussi d'inclure les prototypes de vos fichiers C dans votre fichier header en utilisant la commande `:MakeHeader`.
+Exemple: `:MakeHeader hello.c foo.c bar.c` écrira les prototypes de ces fichiers en dessous de votre curseur vim.
+Note: Vous pouvez utiliser l'opérateur `*` ->  `*.c` | `xxx*.c`.
 
 <img src="img/header.gif"/>
 
 # SNIPPET
 
-les snippets permet d'écrirent du code pré-écris pour augmenter sa vitesse de code les snippets existant sont:
+Les snippets permettent d'écrire du code pré-enregistré pour augmenter sa vitesse de code.
+
 | SNIPPET | Fonction |
 | ------ | ------ |
 | ifndef| IFNDEF de 42|
 | mainv| un main void|
 | main | un main vide avec argc,argv|
-| mainh|  un main avec tout les headers pour debugué rapidement|
+| mainh|  un main avec tous les headers pour déboguer rapidement|
 | while| boucle while |
 | if| condition if |
-| elif | condition else if() |
+| elif | condition else if |
 | inc ou include| #include <name.h>|
-| func| debut l'écriture dune fonciton |
-| funcd| parreil mais uniquement pour un prototype |
+| func| débute l'écriture d'une fonction |
+| funcd| identique mais uniquement pour un prototype |
 | for| boucle for |
 | tstruct ou struct| une structure avec typedef ou simple |
 
 <img src="img/Snipets.gif"/>
 
-# Programme supravim
-le programme supravim s'utilise dans le terminal avec la commande supravim
-celui-ci permet d'activer des options ou de les desactivée. de changer son theme ou bien de le mettre à jour ou le désinstaller.
-vous pouves aussi ``supravim switch`` pour passer d'une session supravim a vim simple ou la remettre.
+# Programme Supravim
+Le programme Supravim s'utilise dans le terminal avec la commande `supravim`.
+Il permet d'activer des options, de les désactiver, de changer son thème, de le mettre à jour ou de le désinstaller.
+Vous pouvez également utiliser `supravim switch` pour passer d'une session Supravim à Vim et inversement.
 
 <img src="img/theme-binary.gif"/>
 
 # CHANGELOG
-# Nouveauté de la 2.0
+# Nouveautés de la 2.0
 
-- supports des onglets
-- Ajout de l'intégration GDB
-- UNDO infini! (se sauvegarde même après la fermeture)
-- Generateur de prototype pour les headers C
-- Commenter , Decommenter en selectionnant une ou plusieurs lignes
-- Creation d'un mini logiciel supravim (`supravim -h` pour plus de details)
-    * Customiser le theme de vim et les options
-    * Desinstaller ou mettre à jour supravim
+- Support des onglets.
+- Ajout de l'intégration GDB.
+- UNDO infini! (se sauvegarde même après la fermeture).
+- Générateur de prototype pour les headers C.
+- Commenter et décommenter en selectionnant une ou plusieurs lignes.
+- Création d'un mini logiciel Supravim (`supravim -h` pour plus de détails).
+    * Personnaliser le thème de Vim et les options.
+    * Désinstaller ou mettre à jour Supravim.
 
-# Nouveauté de la 3.0
+# Nouveautés de la 3.0
 
-- beaucoup de correction de bug !
-- GDB (CTRL+F5) compile avant de se lancer
-- un installeur plus propre
-- les config sont garder avec le supdates
-- un espace dédié dans le vimrc qui ne sera pas effacer lors des maj
-- une integrations aux CTAGS
-- pouvoir quitter les terminaux ou le GDB avec CTRL+Q ou s'en deplacé
-- SNIPPETS intelligent et complet.
-- F3-F5 efface désormais l'écran pour ne pas saccader l'affichage
-- de nouvelles options et une autocompletion sur le programme.
-- de nouveaux themes (onedark|half|light / atom / iceberg)
-- une meilleurs integrations de themes et des icons activable.
+- Beaucoup de corrections de bugs !
+- GDB (CTRL+F5) compile avant de se lancer.
+- Un installateur plus propre.
+- Les configurations sont enregistrées après les mises à jour.
+- Un espace dédié dans le vimrc qui ne sera pas effacé lors des mises à jour.
+- Une intégration aux CTAGS.
+- Pouvoir quitter les terminaux ou le GDB avec CTRL+Q ou s'en deplacer.
+- SNIPPETS intelligents et complets.
+- F3-F5 efface désormais l'écran pour ne pas saccader l'affichage.
+- De nouvelles options et une autocomplétion dans le programme.
+- De nouveaux thèmes (onedark|half|light / atom / iceberg).
+- Une meilleure integration de thèmes et des icônes activables.
