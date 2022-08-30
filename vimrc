@@ -7,7 +7,7 @@ call pathogen#helptags()
 
 filetype plugin indent on
 "--------------- jeu de couleur ---------------"
-colorscheme onedark
+colorscheme gruvbox
 set background=dark
 set t_Co=256
 " 1: gruvbox
