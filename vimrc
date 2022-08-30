@@ -169,6 +169,12 @@ autocmd InsertEnter * call AirFresh()
 autocmd InsertLeave * call AirFresh()
 autocmd TabLeave * call AirFresh()
 
+autocmd VimEnter * call ReBase()
+func ReBase()
+        exec "cd" "%:p:h"
+endfunc
+
+
 
 "--------------- FONCTION ---------------"
 
