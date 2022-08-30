@@ -216,10 +216,10 @@ for opt in $@; do
 		fi
 	done
 	case $latest_opt in 
-		-e | --enable | enable) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && enable_fct $opt; [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
-		-d | --disable | disable) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && disable_fct $opt; [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
-		-t | --theme | theme) [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && theme_fct $opt;  [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
-		-s | --status | status) [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && status_fct;  [ $(grep -c "SupraVim" ~/.vimrc) -eq 0 ] && echo -e "Please enable supravim with \033[1msupravim --switch\033[0m" && exit;;
+		-e | --enable | enable) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && e    cho -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && enable_fct $opt;;
+		-d | --disable | disable) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && e    cho -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && disable_fct $opt;;
+		-t | --theme | theme) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && e    cho -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $latest_opt != $opt ] && [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && theme_fct $opt;;
+		-s | --status | status) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && e    cho -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $(grep -c "SupraVim" ~/.vimrc) -gt 0 ] && status_fct;;
 		-h | --help | help) help_fct;;
 		--uninstall | uninstall) uninstall_fct;;
 		--update | update) [ $opt = "dev" ] && update $opt;;
