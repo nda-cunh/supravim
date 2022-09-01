@@ -13,7 +13,7 @@ enable_fct(){
 		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		icons) if [ $(grep -c "icons_disabled" ~/.vimrc) -gt 0 ]; then sed -i 's/icons_disabled/icons_enabled/g' ~/.vimrc; git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
-			sed -i 's/^[^\ \*]*exec \"!gcc -g \%/\"\*cflags\* &/g' ~/.vimrc;
+			sed -i 's/^[^\ \*]*exec \"!gcc -g \\\"\%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
