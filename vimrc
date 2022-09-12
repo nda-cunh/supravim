@@ -67,8 +67,10 @@ noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 map <C-F5> 					:Termdebug -n <CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
-map <F6> 					:call CompileRun2()<CR>
-imap <F6>				 	<Esc>:call CompileRun2()<CR>
+map <F6> 					:call Make("run2")<CR>
+imap <F6>				 	<Esc>:call Make("run2")<CR>
+map <F7> 					:call Make("run3")<CR>
+imap <F7>				 	<Esc>:call Make("run3")<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split 
 noremap <F3>				<Esc>:call Norminette()<CR>
@@ -176,7 +178,6 @@ func ReBase()
 endfunc
 
 
-
 "--------------- FONCTION ---------------"
 
 imap <C-F5>		<esc>:Gdbs<CR>
@@ -216,19 +217,19 @@ func! Norminette()
 	exec "!echo Norminette de % && norminette \"%\""
 endfunc
 
-func! CompileRun2()
+func! Make(rules)
 	if filereadable("Makefile")
 		exec "cd" "%:p:h"
 		exec "w"
 		silent exec "!clear -x"
-		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run2 --no-print-directory"
+		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" ". a:rules ." --no-print-directory"
 	elseif filereadable("../Makefile")
 		exec "cd" "%:p:h"
 		exec "w"
 		silent exec "!clear -x"
-		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run2 --no-print-directory"
+		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" ". a:rules ." --no-print-directory"
 	else
-		echo "Aucun Makefile pour executer run2"
+		echo "Aucun Makefile pour executer " . a:rules
 	endif
 endfunc
 
@@ -240,7 +241,7 @@ func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
+	if &filetype == 'c' || &filetype == 'make' || &filetype == 'h'
 		if filereadable("Makefile")
 			exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
 		elseif filereadable("../Makefile")
