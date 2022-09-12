@@ -142,7 +142,7 @@ let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-let g:clang_library_path='/usr/lib/llvm-12/lib/libclang.so.1'
+let g:clang_library_path=system("find /usr/lib/x86_64-linux-gnu/libclang* | grep libclang | head -n1 | tr -d '\n'")
 let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
 
