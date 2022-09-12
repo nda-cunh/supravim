@@ -217,6 +217,8 @@ func! Norminette()
 	exec "!echo Norminette de % && norminette \"%\""
 endfunc
 
+command -nargs=+ -bar Make :call Make( <args> )
+
 func! Make(rules)
 	if filereadable("Makefile")
 		exec "cd" "%:p:h"
@@ -241,33 +243,25 @@ func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make' || &filetype == 'h'
-		if filereadable("Makefile")
-			exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
-		elseif filereadable("../Makefile")
-			exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
-		else
+	if filereadable("Makefile")
+		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
+	elseif filereadable("../Makefile")
+		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
+	else
+		if &filetype == 'c' || &filetype == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		endif
-	elseif &filetype == 'cpp'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'java'
-		exec "!javac %"
-		exec "!time java %"
-	elseif &filetype == 'sh'
-		exec "!time bash %"
-	elseif &filetype == 'python'
-		exec "!time python3 %"
-	elseif &filetype == 'html'
-		exec "!google-chrome % &"
-	elseif &filetype == 'matlab'
-		exec "!time octave %"
-	elseif &filetype == 'vala' || &filetype == 'vapi'
-		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
-		else
+			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+		elseif &filetype == 'cpp'
+			exec "!g++ -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+		elseif &filetype == 'java'
+			exec "!javac % ; java %"
+		elseif &filetype == 'sh'
+			exec "!time bash %"
+		elseif &filetype == 'python'
+			exec "!time python3 %"
+		elseif &filetype == 'html'
+			exec "!google-chrome % &"
+		elseif &filetype == 'vala' || &filetype == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
 		endif
 	endif
@@ -278,39 +272,37 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
-		if filereadable("Makefile")
-			exec "!make -C \"%:p:h\" --no-print-directory"
-		elseif filereadable("../Makefile")
-			exec "!make -C \"%:p:h/../\" --no-print-directory"
-		else
+	if filereadable("Makefile")
+		exec "!make -C \"%:p:h\" --no-print-directory"
+	elseif filereadable("../Makefile")
+		exec "!make -C \"%:p:h/../\" --no-print-directory"
+	else
+		if &filetype == 'c' || &filetype == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		endif
-	elseif &filetype == 'cpp'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'java'
-		exec "!javac %"
-		exec "!time java %"
-	elseif &filetype == 'sh'
-		exec "!time bash %"
-	elseif &filetype == 'python'
-		exec "!time python3 %"
-	elseif &filetype == 'html'
-		exec "!google-chrome % &"
-	elseif &filetype == 'matlab'
-		exec "!time octave %"
-	elseif &filetype == 'vala' || &filetype == 'vapi'
-		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory"
-		else
-			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
+			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
+		elseif &filetype == 'cpp'
+			exec "!g++ -g \"%:p:h/\"*.c -o a.out ; ./a.out"
+		elseif &filetype == 'java'
+			exec "!javac %"
+			exec "!time java %"
+		elseif &filetype == 'sh'
+			exec "!time bash %"
+		elseif &filetype == 'python'
+			exec "!time python3 %"
+		elseif &filetype == 'html'
+			exec "!google-chrome % &"
+		elseif &filetype == 'matlab'
+			exec "!time octave %"
+		elseif &filetype == 'vala' || &filetype == 'vapi'
+			if filereadable("Makefile")
+				exec "!make -C %:p:h --no-print-directory"
+			else
+				exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
+			endif
 		endif
 	endif
 	exec "redraw!"
 endfunc
-
 
 " -------------- SupraNorm ----------------"
 
