@@ -121,6 +121,7 @@ set pumheight=50
 set encoding=utf-8
 set splitbelow
 set splitright
+autocmd VimEnter,WinEnter,BufEnter *.h set filetype=h
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
