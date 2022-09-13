@@ -31,9 +31,20 @@ endglobal
 #                            TextMate Snippets                            #
 ###########################################################################
 snippet main
-int main()
+int	main()
 {
 	${0}
+	return (0);
+}
+endsnippet
+
+snippet mainh
+#include <iostream>
+
+int	main(int argc, char *argv[])
+{
+	${0}
+	return (0);
 }
 endsnippet
 
@@ -47,7 +58,7 @@ snippet beginend "$1.begin(), $1.end() (beginend)"
 ${1:v}${1/^.*?(-)?(>)?$/(?2::(?1:>:.))/}begin(), $1${1/^.*?(-)?(>)?$/(?2::(?1:>:.))/}end()
 endsnippet
 
-snippet cl "class .. (class)"
+snippet class "class .. (class)"
 class ${1:`!p snip.rv = snip.basename or "name"`}
 {
 public:

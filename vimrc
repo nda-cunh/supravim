@@ -67,8 +67,10 @@ noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
 map <C-F5> 					:Termdebug -n <CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
-map <F6> 					:call CompileRun2()<CR>
-imap <F6>				 	<Esc>:call CompileRun2()<CR>
+map <F6> 					:call Make("run2")<CR>
+imap <F6>				 	<Esc>:call Make("run2")<CR>
+map <F7> 					:call Make("run3")<CR>
+imap <F7>				 	<Esc>:call Make("run3")<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split 
 noremap <F3>				<Esc>:call Norminette()<CR>
@@ -121,6 +123,7 @@ set pumheight=50
 set encoding=utf-8
 set splitbelow
 set splitright
+autocmd VimEnter,WinEnter,BufEnter *.h set filetype=h
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
@@ -139,7 +142,7 @@ let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-let g:clang_library_path='/usr/lib/llvm-12/lib/libclang.so.1'
+let g:clang_library_path=system("find /usr/lib/x86_64-linux-gnu/libclang* | grep libclang | head -n1 | tr -d '\n'")
 let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
 
@@ -173,7 +176,6 @@ autocmd VimEnter * call ReBase()
 func ReBase()
         exec "cd" "%:p:h"
 endfunc
-
 
 
 "--------------- FONCTION ---------------"
@@ -215,19 +217,21 @@ func! Norminette()
 	exec "!echo Norminette de % && norminette \"%\""
 endfunc
 
-func! CompileRun2()
+command -nargs=+ -bar Make :call Make( <args> )
+
+func! Make(rules)
 	if filereadable("Makefile")
 		exec "cd" "%:p:h"
 		exec "w"
 		silent exec "!clear -x"
-		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run2 --no-print-directory"
+		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" ". a:rules ." --no-print-directory"
 	elseif filereadable("../Makefile")
 		exec "cd" "%:p:h"
 		exec "w"
 		silent exec "!clear -x"
-		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run2 --no-print-directory"
+		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" ". a:rules ." --no-print-directory"
 	else
-		echo "Aucun Makefile pour executer run2"
+		echo "Aucun Makefile pour executer " . a:rules
 	endif
 endfunc
 
@@ -239,33 +243,25 @@ func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
-		if filereadable("Makefile")
-			exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
-		elseif filereadable("../Makefile")
-			exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
-		else
+	if filereadable("Makefile")
+		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
+	elseif filereadable("../Makefile")
+		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
+	else
+		if &filetype == 'c' || &filetype == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		endif
-	elseif &filetype == 'cpp'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'java'
-		exec "!javac %"
-		exec "!time java %"
-	elseif &filetype == 'sh'
-		exec "!time bash %"
-	elseif &filetype == 'python'
-		exec "!time python3 %"
-	elseif &filetype == 'html'
-		exec "!google-chrome % &"
-	elseif &filetype == 'matlab'
-		exec "!time octave %"
-	elseif &filetype == 'vala' || &filetype == 'vapi'
-		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory && make -C %:p:h run --no-print-directory"
-		else
+			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+		elseif &filetype == 'cpp'
+			exec "!g++ -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+		elseif &filetype == 'java'
+			exec "!javac % ; java %"
+		elseif &filetype == 'sh'
+			exec "!time bash %"
+		elseif &filetype == 'python'
+			exec "!time python3 %"
+		elseif &filetype == 'html'
+			exec "!google-chrome % &"
+		elseif &filetype == 'vala' || &filetype == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
 		endif
 	endif
@@ -276,39 +272,37 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if &filetype == 'c' || &filetype == 'make' || &filetype == 'cpp'
-		if filereadable("Makefile")
-			exec "!make -C \"%:p:h\" --no-print-directory"
-		elseif filereadable("../Makefile")
-			exec "!make -C \"%:p:h/../\" --no-print-directory"
-		else
+	if filereadable("Makefile")
+		exec "!make -C \"%:p:h\" --no-print-directory"
+	elseif filereadable("../Makefile")
+		exec "!make -C \"%:p:h/../\" --no-print-directory"
+	else
+		if &filetype == 'c' || &filetype == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
-"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		endif
-	elseif &filetype == 'cpp'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'java'
-		exec "!javac %"
-		exec "!time java %"
-	elseif &filetype == 'sh'
-		exec "!time bash %"
-	elseif &filetype == 'python'
-		exec "!time python3 %"
-	elseif &filetype == 'html'
-		exec "!google-chrome % &"
-	elseif &filetype == 'matlab'
-		exec "!time octave %"
-	elseif &filetype == 'vala' || &filetype == 'vapi'
-		if filereadable("Makefile")
-			exec "!make -C %:p:h --no-print-directory"
-		else
-			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
+			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
+		elseif &filetype == 'cpp'
+			exec "!g++ -g \"%:p:h/\"*.c -o a.out ; ./a.out"
+		elseif &filetype == 'java'
+			exec "!javac %"
+			exec "!time java %"
+		elseif &filetype == 'sh'
+			exec "!time bash %"
+		elseif &filetype == 'python'
+			exec "!time python3 %"
+		elseif &filetype == 'html'
+			exec "!google-chrome % &"
+		elseif &filetype == 'matlab'
+			exec "!time octave %"
+		elseif &filetype == 'vala' || &filetype == 'vapi'
+			if filereadable("Makefile")
+				exec "!make -C %:p:h --no-print-directory"
+			else
+				exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
+			endif
 		endif
 	endif
 	exec "redraw!"
 endfunc
-
 
 " -------------- SupraNorm ----------------"
 
