@@ -107,10 +107,8 @@ add_config_rc(){
 }
 
 config_supravim_editor() {
-    chmod +x "${INSTALL_DIRECTORY}/supravim"
-	ln -sf "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
-    chmod +x "${INSTALL_DIRECTORY}/clangd"
-    ln -sf "${INSTALL_DIRECTORY}/clangd" $HOME/.local/bin/
+	cp "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
+    chmod +x $HOME/.local/bin/supravim
 }
 
 
@@ -118,8 +116,10 @@ install_SupraVim(){
 	download "Cloning repo to ${INSTALL_DIRECTORY}"
 	git clone ${SUPRA_LINK} ${INSTALL_DIRECTORY} --progress
 	status "Installing SupraVim"
-	ln -sf ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
-	ln -sf ${INSTALL_DIRECTORY}/vim ~/.vim
+	[ -f ~/.vimrc ] && rm -rf ~/.vimrc
+	ln -s ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
+	[ -f ~/.vimrc ] && rm -rf ~/.vim
+	ln -s ${INSTALL_DIRECTORY}/vim ~/.vim
 	config_supravim_editor
 	add_config_rc
 }
