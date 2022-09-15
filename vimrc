@@ -242,7 +242,7 @@ func! CompileRun()
 	elseif filereadable("../Makefile")
 		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
 	else
-		let ext = expand('%:c')
+		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
@@ -252,7 +252,7 @@ func! CompileRun()
 			exec "!javac % ; java %"
 		elseif ext == 'sh'
 			exec "!time bash %"
-		elseif ext == 'python'
+		elseif ext == 'py'
 			exec "!time python3 %"
 		elseif ext == 'html'
 			exec "!google-chrome % &"
@@ -272,7 +272,7 @@ func! Compile()
 	elseif filereadable("../Makefile")
 		exec "!make -C \"%:p:h/../\" --no-print-directory"
 	else
-		let ext = expand('%:c')
+		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
@@ -283,12 +283,10 @@ func! Compile()
 			exec "!time java %"
 		elseif ext == 'sh'
 			exec "!time bash %"
-		elseif ext == 'python'
+		elseif ext == 'py'
 			exec "!time python3 %"
 		elseif ext == 'html'
 			exec "!google-chrome % &"
-		elseif ext == 'matlab'
-			exec "!time octave %"
 		elseif ext == 'vala' || ext == 'vapi'
 			if filereadable("Makefile")
 				exec "!make -C %:p:h --no-print-directory"
