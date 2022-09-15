@@ -55,10 +55,6 @@ noremap <C-Up>			<Esc>g<C-}>
 noremap <C-Down>		<Esc><C-T>
 inoremap <C-Up>			<Esc>g<C-}>
 inoremap <C-Down>		<Esc><C-T>
-noremap <C-k>			<Esc>g<C-}>
-noremap <C-j>			<Esc><C-T>
-inoremap <C-k>			<Esc>g<C-}>
-inoremap <C-j>			<Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
@@ -142,15 +138,14 @@ let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-let g:clang_library_path=system("find /usr/lib/x86_64-linux-gnu/libclang* | grep libclang | head -n1 | tr -d '\n'")
-let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
 
 "--------------- SYNTASTIC ---------------"
-let current_compiler = "gcc"
+let current_compiler = "clang"
 let g:rainbow_active = 1
 
-let g:syntastic_cpp_compiler = 'gcc'
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_checkers = ['clang']
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall -Werror -Wextra'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
@@ -418,3 +413,47 @@ func! CreatePop()
                                 \ padding: [0,1,0,1], 
                                 \ }) 
 endfunc                                                   
+
+if executable('clangd')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'clangd',
+        \ 'cmd': {server_info->['clangd']},
+        \ 'allowlist': ['cpp', 'c'],
+        \ })
+endif
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    
+endfunction
+
+augroup lsp_install
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+let lsp_diagnostics_enabled=0
+let g:vsnip_snippet_dir='$HOME/.local/bin/SupraVim/snippets'
+"====================== YOUR CONFIG =======================
+"==========================================================
