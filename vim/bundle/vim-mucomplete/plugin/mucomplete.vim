@@ -23,7 +23,7 @@ endif
 
 if !get(g:, 'mucomplete#no_mappings', get(g:, 'no_plugin_maps', 0))
   if !hasmapto('<plug>(MUcompleteBwd)', 'i')
-    imap <unique> <s-tab> <plug>(MUcompleteBwd)
+    " imap <unique> <s-tab> <plug>(MUcompleteBwd)
   endif
 endif
 
