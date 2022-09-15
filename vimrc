@@ -119,7 +119,7 @@ set pumheight=50
 set encoding=utf-8
 set splitbelow
 set splitright
-" autocmd VimEnter,WinEnter,BufEnter *.h set filetype=h
+autocmd VimEnter,WinEnter,BufEnter *.h set filetype=h
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
@@ -243,21 +243,20 @@ func! CompileRun()
 	elseif filereadable("../Makefile")
 		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
 	else
-		let ext = expand('%:e')
-		if ext == 'c' || exit == 'h'
+		if &filetype == 'c' || &filetype == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif ext == 'cpp'
+		elseif &filetype == 'cpp'
 			exec "!g++ -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif ext == 'java'
+		elseif &filetype == 'java'
 			exec "!javac % ; java %"
-		elseif ext == 'sh'
+		elseif &filetype == 'sh'
 			exec "!time bash %"
-		elseif ext == 'python'
+		elseif &filetype == 'python'
 			exec "!time python3 %"
-		elseif ext == 'html'
+		elseif &filetype == 'html'
 			exec "!google-chrome % &"
-		elseif ext == 'vala' || exit == 'vapi'
+		elseif &filetype == 'vala' || &filetype == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
 		endif
 	endif
@@ -273,22 +272,23 @@ func! Compile()
 	elseif filereadable("../Makefile")
 		exec "!make -C \"%:p:h/../\" --no-print-directory"
 	else
-		let ext = expand('%:e')
-		if ext == 'c' || ext == 'h'
+		if &filetype == 'c' || &filetype == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		elseif ext == 'cpp'
+		elseif &filetype == 'cpp'
 			exec "!g++ -g \"%:p:h/\"*.c -o a.out ; ./a.out"
-		elseif ext == 'java'
+		elseif &filetype == 'java'
 			exec "!javac %"
 			exec "!time java %"
-		elseif ext == 'sh'
+		elseif &filetype == 'sh'
 			exec "!time bash %"
-		elseif ext == 'python'
+		elseif &filetype == 'python'
 			exec "!time python3 %"
-		elseif ext == 'html'
+		elseif &filetype == 'html'
 			exec "!google-chrome % &"
-		elseif ext == 'vala' || ext == 'vapi'
+		elseif &filetype == 'matlab'
+			exec "!time octave %"
+		elseif &filetype == 'vala' || &filetype == 'vapi'
 			if filereadable("Makefile")
 				exec "!make -C %:p:h --no-print-directory"
 			else
@@ -455,3 +455,5 @@ smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 
 let lsp_diagnostics_enabled=0
 let g:vsnip_snippet_dir='$HOME/.local/bin/SupraVim/snippets'
+"====================== YOUR CONFIG =======================
+"==========================================================
