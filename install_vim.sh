@@ -118,9 +118,7 @@ install_SupraVim(){
 	download "Cloning repo to ${INSTALL_DIRECTORY}"
 	git clone ${SUPRA_LINK} ${INSTALL_DIRECTORY} --progress
 	status "Installing SupraVim"
-	[ -f ~/.vimrc ] && rm -rf ~/.vimrc
 	ln -sf ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
-	[ -f ~/.vim ] && rm -rf ~/.vim
 	ln -sf ${INSTALL_DIRECTORY}/vim ~/.vim
 	config_supravim_editor
 	add_config_rc
