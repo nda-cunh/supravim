@@ -118,7 +118,7 @@ install_SupraVim(){
 	status "Installing SupraVim"
 	[ -f ~/.vimrc ] && rm -rf ~/.vimrc
 	ln -s ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
-	[ -f ~/.vimrc ] && rm -rf ~/.vim
+	[ -f ~/.vim ] && rm -rf ~/.vim
 	ln -s ${INSTALL_DIRECTORY}/vim ~/.vim
 	config_supravim_editor
 	add_config_rc
