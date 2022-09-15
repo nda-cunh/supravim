@@ -119,7 +119,6 @@ set pumheight=50
 set encoding=utf-8
 set splitbelow
 set splitright
-autocmd VimEnter,WinEnter,BufEnter *.h set filetype=h
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
@@ -180,7 +179,7 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	if &filetype != 'c' && &filetype != 'cpp'
+	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala'
 		echo "Tu veux débugguer quoi là ?"
 	else
 		set splitbelow nosplitbelow
@@ -243,20 +242,21 @@ func! CompileRun()
 	elseif filereadable("../Makefile")
 		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
 	else
-		if &filetype == 'c' || &filetype == 'h'
+		let ext = expand('%:c')
+		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif &filetype == 'cpp'
+		elseif ext == 'cpp'
 			exec "!g++ -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif &filetype == 'java'
+		elseif ext == 'java'
 			exec "!javac % ; java %"
-		elseif &filetype == 'sh'
+		elseif ext == 'sh'
 			exec "!time bash %"
-		elseif &filetype == 'python'
+		elseif ext == 'python'
 			exec "!time python3 %"
-		elseif &filetype == 'html'
+		elseif ext == 'html'
 			exec "!google-chrome % &"
-		elseif &filetype == 'vala' || &filetype == 'vapi'
+		elseif ext == 'vala' || ext == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
 		endif
 	endif
@@ -272,23 +272,24 @@ func! Compile()
 	elseif filereadable("../Makefile")
 		exec "!make -C \"%:p:h/../\" --no-print-directory"
 	else
-		if &filetype == 'c' || &filetype == 'h'
+		let ext = expand('%:c')
+		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		elseif &filetype == 'cpp'
+		elseif ext == 'cpp'
 			exec "!g++ -g \"%:p:h/\"*.c -o a.out ; ./a.out"
-		elseif &filetype == 'java'
+		elseif ext == 'java'
 			exec "!javac %"
 			exec "!time java %"
-		elseif &filetype == 'sh'
+		elseif ext == 'sh'
 			exec "!time bash %"
-		elseif &filetype == 'python'
+		elseif ext == 'python'
 			exec "!time python3 %"
-		elseif &filetype == 'html'
+		elseif ext == 'html'
 			exec "!google-chrome % &"
-		elseif &filetype == 'matlab'
+		elseif ext == 'matlab'
 			exec "!time octave %"
-		elseif &filetype == 'vala' || &filetype == 'vapi'
+		elseif ext == 'vala' || ext == 'vapi'
 			if filereadable("Makefile")
 				exec "!make -C %:p:h --no-print-directory"
 			else
