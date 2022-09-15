@@ -107,8 +107,10 @@ add_config_rc(){
 }
 
 config_supravim_editor() {
-	cp "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
-    chmod +x $HOME/.local/bin/supravim
+    chmod +x "${INSTALL_DIRECTORY}/supravim"
+	ln -sf "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
+    chmod +x "${INSTALL_DIRECTORY}/clangd"
+    ln -sf "${INSTALL_DIRECTORY}/clangd" $HOME/.local/bin/
 }
 
 
