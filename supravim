@@ -148,27 +148,15 @@ version_fct() {
 }
 
 uninstall_fct() {
-	rm -rf "$HOME/.local/bin/SupraVim" "$HOME/.local/bin/supravim"	"$HOME/.local/bin/clangd"
+	rm -rf "$HOME/.local/bin/SupraVim" "$HOME/.local/bin/supravim"	
 }
 
 update(){
-	userBranch="`head -n1 ~/.local/bin/SupraVim/.git/HEAD | grep -Eo \"[a-z]+$\"`"
-	if [ "$1" == "dev" ]; then 
-		up_branch="$1"
-	elif [ "$1" == "" ]; then
-		up_branch="master"
-	fi
-	if [[ $up_branch == $userBranch ]]
+	if [[ $1 = "dev" ]]
 	then
-		cd ~/.local/bin/SupraVim 2>&1 >/dev/null
-		git pull --quiet 2>&1 >/dev/null
-		cd - 2>&1 >/dev/null
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 	else
-		if [ "$up_branch" == "dev" ]; then
-			uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
-		else
-			uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
-		fi
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 	fi
 }
 
