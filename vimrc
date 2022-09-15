@@ -455,5 +455,3 @@ smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 
 let lsp_diagnostics_enabled=0
 let g:vsnip_snippet_dir='$HOME/.local/bin/SupraVim/snippets'
-"====================== YOUR CONFIG =======================
-"==========================================================
