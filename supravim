@@ -152,11 +152,11 @@ uninstall_fct() {
 }
 
 update(){
-	if [[ "$1" = "dev" ]]
+	if [[ $1 = "dev" ]]
 	then
-		curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 	else
-		curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
+		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 	fi
 }
 
