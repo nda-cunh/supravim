@@ -123,7 +123,6 @@ set pumheight=50
 set encoding=utf-8
 set splitbelow
 set splitright
-autocmd VimEnter,WinEnter,BufEnter *.h set filetype=h
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
 
@@ -220,19 +219,10 @@ endfunc
 command -nargs=+ -bar Make :call Make( <args> )
 
 func! Make(rules)
-	if filereadable("Makefile")
-		exec "cd" "%:p:h"
-		exec "w"
-		silent exec "!clear -x"
-		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" ". a:rules ." --no-print-directory"
-	elseif filereadable("../Makefile")
-		exec "cd" "%:p:h"
-		exec "w"
-		silent exec "!clear -x"
-		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" ". a:rules ." --no-print-directory"
-	else
-		echo "Aucun Makefile pour executer " . a:rules
-	endif
+	silent exec "!clear -x"
+	let $rulesmake = a:rules
+	! vala $HOME/.local/bin/SupraVim/bin/make.vala --pkg=posix --run-args=$rulesmake
+	return v:shell_error
 endfunc
 
 func! CompileRun()
@@ -242,26 +232,24 @@ func! CompileRun()
 	endif
 	exec "w"
 	exec "cd" "%:p:h"
-	silent exec "!clear -x"
-	if filereadable("Makefile")
-		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
-	elseif filereadable("../Makefile")
-		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
-	else
-		if &filetype == 'c' || &filetype == 'h'
+	silent Make('all')
+	let err = Make('run')
+	if err != 0
+		let ext = expand('%:e')
+		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif &filetype == 'cpp'
-			exec "!g++ -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif &filetype == 'java'
+		elseif ext == 'cpp'
+			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+		elseif ext == 'java'
 			exec "!javac % ; java %"
-		elseif &filetype == 'sh'
+		elseif ext == 'sh'
 			exec "!time bash %"
-		elseif &filetype == 'python'
+		elseif ext == 'py'
 			exec "!time python3 %"
-		elseif &filetype == 'html'
+		elseif ext == 'html'
 			exec "!google-chrome % &"
-		elseif &filetype == 'vala' || &filetype == 'vapi'
+		elseif ext == 'vala' || ext == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
 		endif
 	endif
@@ -272,33 +260,26 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if filereadable("Makefile")
-		exec "!make -C \"%:p:h\" --no-print-directory"
-	elseif filereadable("../Makefile")
-		exec "!make -C \"%:p:h/../\" --no-print-directory"
-	else
-		if &filetype == 'c' || &filetype == 'h'
+		
+	let err = Make('all')
+	if err != 0
+		let ext = expand('%:e')
+		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		elseif &filetype == 'cpp'
-			exec "!g++ -g \"%:p:h/\"*.c -o a.out ; ./a.out"
-		elseif &filetype == 'java'
+		elseif ext == 'cpp'
+			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out ; ./a.out"
+		elseif ext == 'java'
 			exec "!javac %"
 			exec "!time java %"
-		elseif &filetype == 'sh'
+		elseif ext == 'sh'
 			exec "!time bash %"
-		elseif &filetype == 'python'
+		elseif ext == 'py'
 			exec "!time python3 %"
-		elseif &filetype == 'html'
+		elseif ext == 'html'
 			exec "!google-chrome % &"
-		elseif &filetype == 'matlab'
-			exec "!time octave %"
-		elseif &filetype == 'vala' || &filetype == 'vapi'
-			if filereadable("Makefile")
-				exec "!make -C %:p:h --no-print-directory"
-			else
-				exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
-			endif
+		elseif ext == 'vala' || ext == 'vapi'
+			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
 		endif
 	endif
 	exec "redraw!"
