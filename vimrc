@@ -285,6 +285,8 @@ func! Compile()
 	exec "redraw!"
 endfunc
 
+" -------------- Ctags ----------------"
+
 command -nargs=+ -bar Ctags :call Ctags( <args> )                                                                                                                                                                                             
 
 set tags=$HOME/.local/bin/tags
