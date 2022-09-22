@@ -168,7 +168,7 @@ autocmd TabLeave * call AirFresh()
 
 autocmd VimEnter * call ReBase()
 func ReBase()
-        exec "cd" "%:p:h"
+	exec "cd" "%:p:h"
 endfunc
 
 
@@ -255,7 +255,7 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-		
+
 	let err = Make('all')
 	if err != 0
 		let ext = expand('%:e')
@@ -286,7 +286,7 @@ command -nargs=+ -bar Ctags :call Ctags( <args> )
 
 set tags=$HOME/.local/bin/tags
 func! Ctags()
-    let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
+	let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
 endfunc
 
 autocmd VimLeave  * call Ctags("destroy")
@@ -379,67 +379,73 @@ autocmd InsertEnter * call CreatePop()
 autocmd VimEnter * call CreatePopit()
 hi MyPopupColor ctermfg=cyan 
 
+autocmd VimLeave * call RemovePopit()
+
 func! CreatePopit()
-    let s = system("supravim --version cached > /tmp/xdfe-". g:file_tmp ."&")
+	let s = system("supravim --version cached > /tmp/xdfe-". g:file_tmp ."&")
+endfunc
+
+func! RemovePopit()
+	let s = system("rm -f /tmp/xdfe-". g:file_tmp)
 endfunc
 
 let g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
 let g:step=0
 func! CreatePop()
-    if g:step == 1
-        return
-    endif
-    let g:step=1
-	
+	if g:step == 1
+		return
+	endif
+	let g:step=1
+
 	let s = system("cat /tmp/xdfe-". g:file_tmp . " ; rm /tmp/xdfe-" . g:file_tmp)
-    if s == ""
-        return
-    endif
-    call popup_create([ "Supravim update", s ], #{ 
-                                \ line: 1, 
-                                \ col: 500,
-                                \ pos: 'topright',
-                                \ time: 5000, 
-                                \ tabpage: -1, 
-                                \ zindex: 300, 
-                                \ drag: 1, 
-                                \ highlight: 'MyPopupColor',
-                                \ border: [], 
-                                \ close: 'click', 
-                                \ padding: [0,1,0,1], 
-                                \ }) 
+	if s == ""
+		return
+	endif
+	call popup_create([ "Supravim update", s ], #{ 
+				\ line: 1, 
+				\ col: 500,
+				\ pos: 'topright',
+				\ time: 5000, 
+				\ tabpage: -1, 
+				\ zindex: 300, 
+				\ drag: 1, 
+				\ highlight: 'MyPopupColor',
+				\ border: [], 
+				\ close: 'click', 
+				\ padding: [0,1,0,1], 
+				\ }) 
 endfunc                                                   
 
 if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd']},
-        \ 'allowlist': ['cpp', 'c'],
-        \ })
+	au User lsp_setup call lsp#register_server({
+				\ 'name': 'clangd',
+				\ 'cmd': {server_info->['clangd']},
+				\ 'allowlist': ['cpp', 'c'],
+				\ })
 endif
 
 function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
-    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+	setlocal omnifunc=lsp#complete
+	nmap <buffer> gd <plug>(lsp-definition)
+	nmap <buffer> gs <plug>(lsp-document-symbol-search)
+	nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+	nmap <buffer> gr <plug>(lsp-references)
+	nmap <buffer> gi <plug>(lsp-implementation)
+	nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> <leader>rn <plug>(lsp-rename)
+	nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+	nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+	nmap <buffer> K <plug>(lsp-hover)
+	nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+	nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
-    let g:lsp_format_sync_timeout = 1000
-    
+	let g:lsp_format_sync_timeout = 1000
+
 endfunction
 
 augroup lsp_install
-    au!
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+	au!
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
 imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
