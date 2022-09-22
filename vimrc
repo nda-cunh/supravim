@@ -420,8 +420,6 @@ endif
 
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
     nmap <buffer> gd <plug>(lsp-definition)
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
@@ -449,5 +447,12 @@ smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
+
 let lsp_diagnostics_enabled=0
+let g:lsp_diagnostics_signs_enabled = 0
+let g:lsp_document_code_action_signs_enabled = 0
+let g:lsp_diagnostics_signs_delay = 1
+let g:lsp_diagnostics_signs_priority = 0
+let g:lsp_diagnostics_signs_insert_mode_enabled = 0
+let g:lsp_tagfunc_source_methods = []
 let g:vsnip_snippet_dir='$HOME/.local/bin/SupraVim/snippets'
