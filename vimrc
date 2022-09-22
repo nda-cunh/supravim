@@ -214,19 +214,10 @@ endfunc
 command -nargs=+ -bar Make :call Make( <args> )
 
 func! Make(rules)
-	if filereadable("Makefile")
-		exec "cd" "%:p:h"
-		exec "w"
-		silent exec "!clear -x"
-		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" ". a:rules ." --no-print-directory"
-	elseif filereadable("../Makefile")
-		exec "cd" "%:p:h"
-		exec "w"
-		silent exec "!clear -x"
-		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" ". a:rules ." --no-print-directory"
-	else
-		echo "Aucun Makefile pour executer " . a:rules
-	endif
+	silent exec "!clear -x"
+	let $rulesmake = a:rules
+	! vala $HOME/.local/bin/SupraVim/bin/make.vala --pkg=posix --run-args=$rulesmake
+	return v:shell_error
 endfunc
 
 func! CompileRun()
@@ -236,18 +227,15 @@ func! CompileRun()
 	endif
 	exec "w"
 	exec "cd" "%:p:h"
-	silent exec "!clear -x"
-	if filereadable("Makefile")
-		exec "!make -C \"%:p:h\" --no-print-directory && make -C \"%:p:h\" run --no-print-directory"
-	elseif filereadable("../Makefile")
-		exec "!make -C \"%:p:h/../\" --no-print-directory && make -C \"%:p:h/../\" run --no-print-directory"
-	else
+	silent Make('all')
+	let err = Make('run')
+	if err != 0
 		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		elseif ext == 'cpp'
-			exec "!g++ -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		elseif ext == 'java'
 			exec "!javac % ; java %"
 		elseif ext == 'sh'
@@ -267,17 +255,15 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-	if filereadable("Makefile")
-		exec "!make -C \"%:p:h\" --no-print-directory"
-	elseif filereadable("../Makefile")
-		exec "!make -C \"%:p:h/../\" --no-print-directory"
-	else
+		
+	let err = Make('all')
+	if err != 0
 		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
 		elseif ext == 'cpp'
-			exec "!g++ -g \"%:p:h/\"*.c -o a.out ; ./a.out"
+			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out ; ./a.out"
 		elseif ext == 'java'
 			exec "!javac %"
 			exec "!time java %"
@@ -288,15 +274,26 @@ func! Compile()
 		elseif ext == 'html'
 			exec "!google-chrome % &"
 		elseif ext == 'vala' || ext == 'vapi'
-			if filereadable("Makefile")
-				exec "!make -C %:p:h --no-print-directory"
-			else
-				exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
-			endif
+			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
 		endif
 	endif
 	exec "redraw!"
 endfunc
+
+" -------------- Ctags ----------------"
+
+command -nargs=+ -bar Ctags :call Ctags( <args> )                                                                                                                                                                                             
+
+set tags=$HOME/.local/bin/tags
+func! Ctags()
+    let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
+endfunc
+
+autocmd VimLeave  * call Ctags("destroy")
+noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
+noremap <C-Down>        <Esc><C-T>
+inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
+inoremap <C-Down>       <Esc><C-T>
 
 " -------------- SupraNorm ----------------"
 
