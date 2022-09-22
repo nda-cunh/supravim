@@ -285,6 +285,19 @@ func! Compile()
 	exec "redraw!"
 endfunc
 
+command -nargs=+ -bar Ctags :call Ctags( <args> )                                                                                                                                                                                             
+
+set tags=$HOME/.local/bin/tags
+func! Ctags()
+    let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
+endfunc
+
+autocmd VimLeave  * call Ctags("destroy")
+noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
+noremap <C-Down>        <Esc><C-T>
+inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
+inoremap <C-Down>       <Esc><C-T>
+
 " -------------- SupraNorm ----------------"
 
 highlight DapBreakpoint ctermfg=135
