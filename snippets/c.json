@@ -80,6 +80,30 @@
 				"}",]
 	},
 
+	"printf ,": {
+		"prefix": ["printf,"],
+		"description": "printf(char *str, ...)",
+		"body": [
+			"printf(\"$1\", $2);$0"]
+	},
+	
+	"printf": {
+		"prefix": ["printf"],
+		"description": "printf(char *str)",
+		"body": [
+			"printf(\"$1\");$0"]
+	},
+
+
+	"write": {
+		"prefix": ["write"],
+		"description": "write(int fd, void *buff, int octet)",
+		"body": [
+			"write(${1:1}, ${2:\"hello\"}, ${3:5});$0"]
+	},
+
+
+
 	"for": {
 		"prefix": ["for"],
 		"description": "for",
