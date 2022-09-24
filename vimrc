@@ -51,10 +51,10 @@ inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
-noremap <C-Up>			<Esc>g<C-}>
-noremap <C-Down>		<Esc><C-T>
-inoremap <C-Up>			<Esc>g<C-}>
-inoremap <C-Down>		<Esc><C-T>
+noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
+noremap <C-Down>        <Esc><C-T>
+inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
+inoremap <C-Down>       <Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
@@ -217,7 +217,6 @@ func! Make(rules)
 	silent exec "!clear -x"
 	let $rulesmake = a:rules
 	! vala $HOME/.local/bin/SupraVim/bin/make.vala --pkg=posix --run-args=$rulesmake
-	return v:shell_error
 endfunc
 
 func! CompileRun()
@@ -228,8 +227,11 @@ func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent Make('all')
-	let err = Make('run')
-	if err != 0
+	echo v:shell_error
+	let err = v:shell_error
+	if err == "0"
+		Make('run')
+	elseif err != 0
 		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
@@ -250,6 +252,7 @@ func! CompileRun()
 	endif
 	exec "redraw!"
 endfunc
+
 
 func! Compile()
 	exec "w"
@@ -282,18 +285,12 @@ endfunc
 
 " -------------- Ctags ----------------"
 
-command -nargs=+ -bar Ctags :call Ctags( <args> )                                                                                                                                                                                             
+command -nargs=0 -bar Ctags :call Ctags()
 
 set tags=$HOME/.local/bin/tags
 func! Ctags()
 	let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
 endfunc
-
-autocmd VimLeave  * call Ctags("destroy")
-noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
-noremap <C-Down>        <Esc><C-T>
-inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
-inoremap <C-Down>       <Esc><C-T>
 
 " -------------- SupraNorm ----------------"
 
