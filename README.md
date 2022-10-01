@@ -1,14 +1,23 @@
-# SupraVim 3.2.6
+# SupraVim 4.0
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
+
+MP moi sur le discord/slack de 42 si besoin (nda-cunh)
 
 <img src="img/readme.png"/>
 
 ## Installation:
 
+branche principal:
 ```bash
 curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
+
+branche dev:
+```bash
+curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
+```
+
 **Dépendances**
 
 | Zsh | Clang | Vim 8 |
@@ -19,7 +28,11 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
     supravim update
 ```
 
+ou
 
+```bash
+    supravim update dev
+```
 
 ## Désinstallation
 
@@ -37,9 +50,9 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 | HEADER 42| **F1**|
 | Norminette | **F3**|
 | Compilation | **F5**|
-| Debogueur | **Ctrl + F5**|
-| Deplacement | Shift - flèche|
-| Fermer/Ouvrir la fenêtre de l'arbre | Ctrl +G |
+| Debogueur (GDB) | **Ctrl + F5**|
+| Deplacement entre fênetre | Shift - flèche|
+| Fermer/Ouvrir l'arbre des répértoires | Ctrl +G |
 | Scinder la fenêtre horizontalement | Ctrl + D|
 | Scinder la fenêtre verticalement | Shift + D|
 | Créer un nouvel onglet | Ctrl + N|
@@ -51,6 +64,8 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 Si votre projet contient un fichier Makefile, vous pourrez compiler votre programme avec la touche F5, celui-ci le détectera et exécutera la règle ALL suivie de la règle RUN.
 
 Dans le cas contraire, il compilera tous les fichiers C présents ensemble et exécutera le a.out généré.
+
+note: F6 et F7 lance eux la règle run2 et run3 du makefile si elles existent.
 
 # Débogage
 
@@ -70,27 +85,6 @@ Exemple: `:MakeHeader hello.c foo.c bar.c` écrira les prototypes de ces fichier
 Note: Vous pouvez utiliser l'opérateur `*` ->  `*.c` | `xxx*.c`.
 
 <img src="img/header.gif"/>
-
-# SNIPPET
-
-Les snippets permettent d'écrire du code pré-enregistré pour augmenter sa vitesse de code.
-
-| SNIPPET | Fonction |
-| ------ | ------ |
-| ifndef| IFNDEF de 42|
-| mainv| un main void|
-| main | un main vide avec argc,argv|
-| mainh|  un main avec tous les headers pour déboguer rapidement|
-| while| boucle while |
-| if| condition if |
-| elif | condition else if |
-| inc ou include| #include <name.h>|
-| func| débute l'écriture d'une fonction |
-| funcd| identique mais uniquement pour un prototype |
-| for| boucle for |
-| tstruct ou struct| une structure avec typedef ou simple |
-
-<img src="img/Snipets.gif"/>
 
 # Programme Supravim
 Le programme Supravim s'utilise dans le terminal avec la commande `supravim`.
@@ -124,4 +118,16 @@ Vous pouvez également utiliser `supravim switch` pour passer d'une session Supr
 - F3-F5 efface désormais l'écran pour ne pas saccader l'affichage.
 - De nouvelles options et une autocomplétion dans le programme.
 - De nouveaux thèmes (onedark|half|light / atom / iceberg).
-- Une meilleure integration de thèmes et des icônes activables.
+- Une meilleure integration de thèmes et  Nouveautés de la 3.0
+
+# Nouveautés de la 4.0
+
+- Nouveau moteur de complétion sur clang
+- Ctags intelligent
+- SupraNorme (norme en temps réel)
+- Nouveau moteur de Snippet (désormais peuvent être changé mannuellement avec :VsnipOpen)
+- refonte de l'autocompilation F5
+- suppression du bug avec les fichier temporaire dans le TMP
+- rearrangement de l'installeur
+- utilisation des extensions de fichier plutôt que leurs filetype
+- et evidément plein de bugs corrigé.

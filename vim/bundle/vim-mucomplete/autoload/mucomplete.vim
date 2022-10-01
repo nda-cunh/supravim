@@ -22,21 +22,21 @@ fun! s:errmsg(msg)
 endf
 
 fun! mucomplete#map(mode, lhs, rhs)
-  try
-    execute a:mode '<silent> <unique>' a:lhs a:rhs
-  catch /^Vim\%((\a\+)\)\=:E227/
-    call s:errmsg(a:lhs . ' is already mapped (use `:verbose '.a:mode.' '.a:lhs.'` to see by whom). See :help mucomplete-compatibility.')
-  endtry
+  " try
+    " execute a:mode '<silent> <unique>' a:lhs a:rhs
+  " catch /^Vim\%((\a\+)\)\=:E227/
+    " call s:errmsg(a:lhs . ' is already mapped (use `:verbose '.a:mode.' '.a:lhs.'` to see by whom). See :help mucomplete-compatibility.')
+  " endtry
 endf
 
 if !get(g:, 'mucomplete#no_mappings', get(g:, 'no_plugin_maps', 0))
   if !hasmapto('<plug>(MUcompleteCycFwd)', 'i')
-    inoremap <silent> <plug>(MUcompleteFwdKey) <c-j>
-    call mucomplete#map('imap', '<c-j>', '<plug>(MUcompleteCycFwd)')
+    " inoremap <silent> <plug>(MUcompleteFwdKey) <c-j>
+    " call mucomplete#map('imap', '<c-j>', '<plug>(MUcompleteCycFwd)')
   endif
   if !hasmapto('<plug>(MUcompleteCycBwd)', 'i')
-    inoremap <silent> <plug>(MUcompleteBwdKey) <c-h>
-    call mucomplete#map('imap', '<c-h>', '<plug>(MUcompleteCycBwd)')
+    " inoremap <silent> <plug>(MUcompleteBwdKey) <c-h>
+    " call mucomplete#map('imap', '<c-h>', '<plug>(MUcompleteCycBwd)')
   endif
 endif
 
