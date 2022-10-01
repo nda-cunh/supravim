@@ -58,6 +58,11 @@ ou
 | Créer un nouvel onglet | Ctrl + N|
 | Déplacement entre les onglets | Ctrl + Flèche|
 | Ouvrir un terminal | Shift - T|
+| Ctrl+R | le contraire du Undo.. le Redo|
+| ------ | ------ |
+| Ctr+ Up | Aller sur la fonction sous le curseur|
+| Ctr+ Down |Retourner sur la fonction d'avant|
+
 
 # Compilation
 
