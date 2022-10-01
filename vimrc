@@ -37,10 +37,6 @@ packadd! termdebug
 let g:termdebug_wide=1
 
 "-------------- Auto Pairs ---------------------"
-" let g:AutoPairsFlyMode 			= 0
-" let g:AutoPairsMapCR 			= 0
-" let g:AutoPairsWildClosedPair 	= ''
-" let g:AutoPairsMultilineClose 	= 0
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
 
 "--------------- Onglets ---------------------"
@@ -51,14 +47,10 @@ inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
 "--------------- Les racourcis ---------------"
-noremap <C-Up>			<Esc>g<C-}>
-noremap <C-Down>		<Esc><C-T>
-inoremap <C-Up>			<Esc>g<C-}>
-inoremap <C-Down>		<Esc><C-T>
-noremap <C-k>			<Esc>g<C-}>
-noremap <C-j>			<Esc><C-T>
-inoremap <C-k>			<Esc>g<C-}>
-inoremap <C-j>			<Esc><C-T>
+noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
+noremap <C-Down>        <Esc><C-T>
+inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
+inoremap <C-Down>       <Esc><C-T>
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
@@ -96,7 +88,6 @@ tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Ma
 tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc *.c; ./a.out; fi; <CR>
 "*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
 
-" tnoremap <F4> <C-W>N<CR><S-UP>
 tnoremap <S-Right>		<C-W>N<C-w><Right>
 tnoremap <S-Left>		<C-W>N<C-w><Left>
 tnoremap <S-Up>			<C-W>N<C-w><Up>
@@ -141,15 +132,14 @@ let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-let g:clang_library_path=system("find /usr/lib/x86_64-linux-gnu/libclang* | grep libclang | head -n1 | tr -d '\n'")
-let g:clang_complete_auto = 1
 let g:mucomplete#enable_auto_at_startup = 1
 
 "--------------- SYNTASTIC ---------------"
-let current_compiler = "gcc"
+let current_compiler = "clang"
 let g:rainbow_active = 1
 
-let g:syntastic_cpp_compiler = 'gcc'
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_checkers = ['clang']
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++ -Wall -Werror -Wextra'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
@@ -173,9 +163,8 @@ autocmd TabLeave * call AirFresh()
 
 autocmd VimEnter * call ReBase()
 func ReBase()
-        exec "cd" "%:p:h"
+	exec "cd" "%:p:h"
 endfunc
-
 
 "--------------- FONCTION ---------------"
 
@@ -184,7 +173,7 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	if &filetype != 'c' && &filetype != 'cpp'
+	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala'
 		echo "Tu veux débugguer quoi là ?"
 	else
 		set splitbelow nosplitbelow
@@ -222,7 +211,6 @@ func! Make(rules)
 	silent exec "!clear -x"
 	let $rulesmake = a:rules
 	! vala $HOME/.local/bin/SupraVim/bin/make.vala --pkg=posix --run-args=$rulesmake
-	return v:shell_error
 endfunc
 
 func! CompileRun()
@@ -233,22 +221,21 @@ func! CompileRun()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent Make('all')
-	let err = Make('run')
-	if err != 0
+	echo v:shell_error
+	let err = v:shell_error
+	if err == "0"
+		Make('run')
+	elseif err != 0
 		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		elseif ext == 'cpp'
 			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif ext == 'java'
-			exec "!javac % ; java %"
 		elseif ext == 'sh'
 			exec "!time bash %"
 		elseif ext == 'py'
 			exec "!time python3 %"
-		elseif ext == 'html'
-			exec "!google-chrome % &"
 		elseif ext == 'vala' || ext == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
 		endif
@@ -260,7 +247,7 @@ func! Compile()
 	exec "w"
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-		
+
 	let err = Make('all')
 	if err != 0
 		let ext = expand('%:e')
@@ -269,15 +256,10 @@ func! Compile()
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
 		elseif ext == 'cpp'
 			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out ; ./a.out"
-		elseif ext == 'java'
-			exec "!javac %"
-			exec "!time java %"
 		elseif ext == 'sh'
 			exec "!time bash %"
 		elseif ext == 'py'
 			exec "!time python3 %"
-		elseif ext == 'html'
-			exec "!google-chrome % &"
 		elseif ext == 'vala' || ext == 'vapi'
 			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
 		endif
@@ -287,18 +269,12 @@ endfunc
 
 " -------------- Ctags ----------------"
 
-command -nargs=+ -bar Ctags :call Ctags( <args> )                                                                                                                                                                                             
+command -nargs=0 -bar Ctags :call Ctags()
 
 set tags=$HOME/.local/bin/tags
 func! Ctags()
-    let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
+	let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
 endfunc
-
-autocmd VimLeave  * call Ctags("destroy")
-noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
-noremap <C-Down>        <Esc><C-T>
-inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
-inoremap <C-Down>       <Esc><C-T>
 
 " -------------- SupraNorm ----------------"
 
@@ -384,33 +360,85 @@ autocmd InsertEnter * call CreatePop()
 autocmd VimEnter * call CreatePopit()
 hi MyPopupColor ctermfg=cyan 
 
+autocmd VimLeave * call RemovePopit()
+
 func! CreatePopit()
-    let s = system("supravim --version cached > /tmp/xdfe-". g:file_tmp ."&")
+	let s = system("supravim --version cached > /tmp/xdfe-". g:file_tmp ."&")
+endfunc
+
+func! RemovePopit()
+	let s = system("rm -f /tmp/xdfe-". g:file_tmp)
 endfunc
 
 let g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
 let g:step=0
 func! CreatePop()
-    if g:step == 1
-        return
-    endif
-    let g:step=1
-	
+	if g:step == 1
+		return
+	endif
+	let g:step=1
+
 	let s = system("cat /tmp/xdfe-". g:file_tmp . " ; rm /tmp/xdfe-" . g:file_tmp)
-    if s == ""
-        return
-    endif
-    call popup_create([ "Supravim update", s ], #{ 
-                                \ line: 1, 
-                                \ col: 500,
-                                \ pos: 'topright',
-                                \ time: 5000, 
-                                \ tabpage: -1, 
-                                \ zindex: 300, 
-                                \ drag: 1, 
-                                \ highlight: 'MyPopupColor',
-                                \ border: [], 
-                                \ close: 'click', 
-                                \ padding: [0,1,0,1], 
-                                \ }) 
+	if s == ""
+		return
+	endif
+	call popup_create([ "Supravim update", s ], #{ 
+				\ line: 1, 
+				\ col: 500,
+				\ pos: 'topright',
+				\ time: 5000, 
+				\ tabpage: -1, 
+				\ zindex: 300, 
+				\ drag: 1, 
+				\ highlight: 'MyPopupColor',
+				\ border: [], 
+				\ close: 'click', 
+				\ padding: [0,1,0,1], 
+				\ }) 
 endfunc                                                   
+
+if executable('clangd')
+	au User lsp_setup call lsp#register_server({
+				\ 'name': 'clangd',
+				\ 'cmd': {server_info->['clangd']},
+				\ 'allowlist': ['cpp', 'c'],
+				\ })
+endif
+
+function! s:on_lsp_buffer_enabled() abort
+	setlocal omnifunc=lsp#complete
+	nmap <buffer> gd <plug>(lsp-definition)
+	nmap <buffer> gs <plug>(lsp-document-symbol-search)
+	nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+	nmap <buffer> gr <plug>(lsp-references)
+	nmap <buffer> gi <plug>(lsp-implementation)
+	nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> <leader>rn <plug>(lsp-rename)
+	nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+	nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+	nmap <buffer> K <plug>(lsp-hover)
+
+	let g:lsp_format_sync_timeout = 1000
+
+endfunction
+
+augroup lsp_install
+	au!
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+
+let lsp_diagnostics_enabled=0
+let g:lsp_diagnostics_signs_enabled = 0
+let g:lsp_document_code_action_signs_enabled = 0
+let g:lsp_diagnostics_signs_delay = 1
+let g:lsp_diagnostics_signs_priority = 0
+let g:lsp_diagnostics_signs_insert_mode_enabled = 0
+let g:lsp_tagfunc_source_methods = []
+let g:vsnip_snippet_dir='$HOME/.local/bin/SupraVim/snippets'
+
