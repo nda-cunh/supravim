@@ -20,8 +20,8 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 
 **Dépendances**
 
-| Zsh | Clang | Vim 8 |
-|-----|-------|-------|
+| Zsh | Clang | Vim 8 | Vala |
+|-----|-------|-------|------|
 
 ## Mise à jour:
 ```bash
