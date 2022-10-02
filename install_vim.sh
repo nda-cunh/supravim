@@ -113,6 +113,7 @@ config_supravim_editor() {
 
 
 install_SupraVim(){
+	mkdir -p $HOME/.local/bin/
 	download "Cloning repo to ${INSTALL_DIRECTORY}"
 	git clone ${SUPRA_LINK} ${INSTALL_DIRECTORY} --progress
 	status "Installing SupraVim"
