@@ -66,6 +66,11 @@ ou
 
 # Compilation
 
+<img src="img/makeclean.png"/>
+
+la commande ``:Make`` permet d'executer une règle de votre makefile (il se chargera de retrouvé le makefile lié  à votre projet.)
+``:Make clean`` lancera la regle clean et ainsi de suite...
+
 Si votre projet contient un fichier Makefile, vous pourrez compiler votre programme avec la touche F5, celui-ci le détectera et exécutera la règle ALL suivie de la règle RUN.
 
 Dans le cas contraire, il compilera tous les fichiers C présents ensemble et exécutera le a.out généré.
