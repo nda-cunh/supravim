@@ -205,7 +205,7 @@ func! Norminette()
 	exec "!echo Norminette de % && norminette \"%\""
 endfunc
 
-command -nargs=+ -bar Make :call Make( <args> )
+command -nargs=+ -bar Make :call Make( '<args>' )
 
 func! Make(rules)
 	silent exec "!clear -x"
@@ -220,11 +220,11 @@ func! CompileRun()
 	endif
 	exec "w"
 	exec "cd" "%:p:h"
-	silent Make('all')
+	silent call Make('all')
 	echo v:shell_error
 	let err = v:shell_error
 	if err == "0"
-		Make('run')
+		call Make('run')
 	elseif err != 0
 		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
