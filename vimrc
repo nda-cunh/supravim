@@ -71,10 +71,6 @@ noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
 noremap <S-Down>			<C-w><Down>
 
-noremap <S-l>				<C-w><Right>
-noremap <S-h>				<C-w><Left>
-noremap <S-k>				<C-w><Up>
-noremap <S-j>				<C-w><Down>
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
 map <C-g>					:NERDTreeTabsToggle<CR>
