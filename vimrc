@@ -142,7 +142,7 @@ let g:syntastic_enable_signs=1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_c_remove_include_errors = 1
-let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include', '../libft', '../libft/include', './libft', './libft/include']
+let g:syntastic_c_include_dirs = ['../../../include','../../include','../include','./include', '../../../includes', '../../includes', '../includes', './includes', './libft', '../libft', '../../libft', '../../../libft', './libft/include', '../libft/include', '../../libft/include']
 
 "--------------- PL NERDTREE ---------------"
 let g:nerdtree_tabs_open_on_console_startup=1
