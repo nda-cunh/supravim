@@ -148,6 +148,7 @@ version_fct() {
 }
 
 uninstall_fct() {
+	killall vim
 	rm -rf "$HOME/.local/bin/SupraVim" "$HOME/.local/bin/supravim"	
 }
 
