@@ -3,7 +3,7 @@
 		"prefix": ["main"],
 		"description": "main (string []args)",
 		"body": [
-			"int\tmain(string [args])",
+			"int\tmain(string []args)",
 			"{",
 				"\t$0",
 				"\treturn (0);",
