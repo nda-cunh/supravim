@@ -33,14 +33,13 @@ void create_tags(string super_path)
 	string all_file = "";
 	string []tablor = {"ctags"};
 
+	tablor += @"-f$(home)/.local/bin/tags";
 	search_dir(super_path, ref all_file);
 	foreach(var n in all_file.split(" "))
 	{
 		if(n != "")
 			tablor += n;
 	}
-	tablor += "-o";
-	tablor += @"$(home)/.local/bin/tags";
 	execvp("ctags", tablor);
 }
 
