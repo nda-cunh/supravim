@@ -396,10 +396,19 @@ endfunc
 if executable('clangd')
 	au User lsp_setup call lsp#register_server({
 				\ 'name': 'clangd',
-				\ 'cmd': {server_info->['clangd']},
+				\ 'cmd': {server_info->['clangd', '--clang-tidy', '-j', '8']},
 				\ 'allowlist': ['cpp', 'c'],
 				\ })
 endif
+
+if executable('vala-language-server')
+	au User lsp_setup call lsp#register_server({
+				\ 'name': 'vala-language-server',
+				\ 'cmd': {server_info->['vala-language-server']},
+				\ 'allowlist': ['vala'],
+				\ })
+endif
+
 
 function! s:on_lsp_buffer_enabled() abort
 	setlocal omnifunc=lsp#complete
