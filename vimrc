@@ -269,7 +269,7 @@ command -nargs=0 -bar Ctags :call Ctags()
 
 set tags=$HOME/.local/bin/tags
 func! Ctags()
-	let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix")
+	let ret = system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix --run-args=" . expand('%:e'))
 endfunc
 
 " -------------- SupraNorm ----------------"
