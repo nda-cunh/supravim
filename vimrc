@@ -209,6 +209,11 @@ func! Make(rules)
 	! vala $HOME/.local/bin/SupraVim/bin/make.vala --pkg=posix --run-args=$rulesmake
 endfunc
 
+func! VerifMake()
+	let $rulesmake = 'valanocompileabcsupra'
+	! vala $HOME/.local/bin/SupraVim/bin/make.vala --pkg=posix --run-args=$rulesmake
+endfunc
+
 func! CompileRun()
 	if &filetype == 'nerdtree' || &filetype == 'vim'
 		echo "Fenetre non compilable"
@@ -216,12 +221,11 @@ func! CompileRun()
 	endif
 	exec "w"
 	exec "cd" "%:p:h"
-	silent call Make('all')
-	echo v:shell_error
+	silent call VerifMake()
 	let err = v:shell_error
-	if err == "0"
+	if err != 42
 		call Make('run')
-	elseif err != 0
+	else
 		let ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
