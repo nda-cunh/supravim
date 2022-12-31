@@ -80,7 +80,7 @@ note: F6 et F7 lance eux la règle run2 et run3 du makefile si elles existent.
 # Débogage
 
 Le débogage s'effectue avec CTRL-F5.
-N'oubliez pas de compiler avec les flags `-g` ou `-g3 -Og` pour obtenir des informations plus approfondies.
+N'oubliez pas de compiler avec les flags `-g` ou `-g3` pour obtenir des informations plus approfondies.
 
 Si votre programme est lancé via un makefile, Vim ne trouvera pas votre exécutable, il faudra le fournir à gdb avec `file monexe`.
 
@@ -101,7 +101,36 @@ Le programme Supravim s'utilise dans le terminal avec la commande `supravim`.
 Il permet d'activer des options, de les désactiver, de changer son thème, de le mettre à jour ou de le désinstaller.
 Vous pouvez également utiliser `supravim switch` pour passer d'une session Supravim à Vim et inversement.
 
+`supravim --theme onedark` pour passer au theme onedark  (gruvbox) est par default.
+
 <img src="img/theme-binary.gif"/>
+
+
+# Tu veux le customisé un peu plus ?
+
+
+<img src="img/yourconfig.png"/>
+
+Tu peux ajouter tes propres lignes de vim dans cette balise, à chaque mise à jour la balise sera conservé et jamais écrasé.
+
+# Vous faites une autre langue que C, C++, Vala ?
+
+il suffit de faire ``:LspInstallServer VotreServer``
+
+la listes des serveur est ici https://github.com/mattn/vim-lsp-settings#supported-languages
+
+
+je recommande egalement d'ajouter dans votre balise YourConfig:
+```
+if expand('%:e') == '.py'                     
+    let lsp_diagnostics_enabled=1
+    let g:lsp_diagnostics_signs_enabled = 1
+endif                                         
+```
+remplacer .py par l'extension de votre fichier
+
+
+
 
 # CHANGELOG
 # Nouveautés de la 2.0
