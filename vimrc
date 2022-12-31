@@ -135,7 +135,6 @@ let current_compiler = "clang"
 let g:rainbow_active = 1
 
 let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_checkers = ['clang']
 let g:syntastic_cpp_compiler_options = ' -std=c++98 -Wall -Wextra'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
