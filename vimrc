@@ -168,7 +168,7 @@ map <C-F5>		<esc>:Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 func! Gdbf()
-	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala'
+	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
 		echo "Tu veux débugguer quoi là ?"
 	else
 		set splitbelow nosplitbelow
@@ -229,7 +229,7 @@ func! CompileRun()
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 			"*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif ext == 'cpp'
+		elseif ext == 'cpp' || ext == 'hpp'
 			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		elseif ext == 'sh'
 			exec "!time bash %"
@@ -253,7 +253,7 @@ func! Compile()
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
 			"*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		elseif ext == 'cpp'
+		elseif ext == 'cpp' || ext == 'hpp'
 			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out ; ./a.out"
 		elseif ext == 'sh'
 			exec "!time bash %"
