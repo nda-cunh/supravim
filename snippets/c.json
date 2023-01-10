@@ -118,7 +118,7 @@
 		"prefix": ["ifndef"],
 		"body": [
 			"#ifndef ${1:$TM_FILENAME_BASE}",
-			"#define ${1}",
+			"# define ${1}",
 			"$0",
 			"#endif",
 		]
