@@ -285,6 +285,7 @@ let g:syntastic_error_symbol='\ ✖'
 let g:syntastic_warning_symbol='\ ✖'
 
 let g:norm_activate = 1
+"*norme* let g:norm_activate = 0
 
 function ToggleNorm()
 	let g:norm_activate = !g:norm_activate
@@ -315,9 +316,9 @@ function HighlightNorm(filename)
 	sign unplace *
 	if g:norm_activate == 1
 		for error in g:errors
-			if error[3] == "Missing or invalid 42 header"
-				continue
-			endif
+			if error[3] == "Missing or invalid 42 header"	"HEADER
+				continue									"HEADER
+			endif											"HEADER
 			exe ":sign place 2 line=".error[1] " name=NormLinter file=" .a:filename
 		endfor
 	endif
