@@ -49,8 +49,8 @@ inoremap <C-Left>				<esc>:tabprevious<CR>
 "--------------- Les racourcis ---------------"
 noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
 noremap <C-Down>        <Esc><C-T>
-inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>
-inoremap <C-Down>       <Esc><C-T>
+inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>i
+inoremap <C-Down>       <Esc><C-T>i
 
 inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
 inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
@@ -65,7 +65,8 @@ map <F7> 					:call Make("run3")<CR>
 imap <F7>				 	<Esc>:call Make("run3")<CR>
 noremap <C-d>				:vs 
 noremap <S-d>				:split 
-noremap <F3>				<Esc>:call Norminette()<CR>
+noremap <F3>				<Esc>:call ToggleNorm()<CR>
+inoremap <F3>				<Esc>:call ToggleNorm()<CR>i
 noremap <S-Right>			<C-w><Right>
 noremap <S-Left>			<C-w><Left>
 noremap <S-Up>				<C-w><Up>
@@ -283,6 +284,13 @@ sign define NormLinter text=\ ✖ texthl=DapBreakpoint
 let g:syntastic_error_symbol='\ ✖'
 let g:syntastic_warning_symbol='\ ✖'
 
+let g:norm_activate = 1
+
+function ToggleNorm()
+	let g:norm_activate = !g:norm_activate
+	exe ":w!"
+endfunction
+
 function GetErrors(filename)
 	let norm_errors = system("norminette \"" .a:filename ."\"")
 	let norm_errors = norm_errors->split("\n")
@@ -300,23 +308,32 @@ endfunction
 
 function HighlightNorm(filename)
 	call clearmatches("NormErrors")
-	let g:errors = GetErrors(a:filename)
+	if g:norm_activate == 1
+		let g:errors = GetErrors(a:filename)
+	endif
 	hi def link NormErrors Underlined
 	sign unplace *
-	for error in g:errors
-		exe ":sign place 2 line=".error[1] " name=NormLinter file=" .a:filename
-	endfor
+	if g:norm_activate == 1
+		for error in g:errors
+			if error[3] == "Missing or invalid 42 header"
+				continue
+			endif
+			exe ":sign place 2 line=".error[1] " name=NormLinter file=" .a:filename
+		endfor
+	endif
 endfunction
 
 function DisplayErrorMsg()
-	for error in g:errors
-		if line(".") == error[1]
-			echo "[Norminette]: "error[3]
-			break
-		else
-			echo ""
-		endif
-	endfor
+	if g:norm_activate == 1
+		for error in g:errors
+			if line(".") == error[1]
+				echo "[Norminette]: "error[3]
+				break
+			else
+				echo ""
+			endif
+		endfor
+	endif
 endfunction
 
 function GetErrorDict(filename)
