@@ -13,11 +13,11 @@ _arguments -C -S -s $endopt \
 case "$state" in
 	theme)
 		local -a themes
-		themes=('molokai' 'gruvbox' 'dracula' 'atom' 'iceberg' 'onedark' 'onehalf' 'onelight')
+		themes=('molokai' 'gruvbox' 'dracula' 'atom' 'iceberg' 'onedark' 'onehalf' 'onelight' 'pablo')
 		_describe 'supravim' themes;;
 	option)
 		local -a options
-		options=('norme:show in real time your norm errors in vim' 'mouse:use of mouse to move in your vim' 'tree:left window automatically opened with files in current dir' 'icons:icons in nerdtree element' 'cflags:compile with flags -Wall -Werror -Wextra')
+		options=('norme:show in real time your norm errors in vim' 'normeHeader:display Missing Header 42 error' 'mouse:use of mouse to move in your vim' 'tree:left window automatically opened with files in current dir' 'icons:icons in nerdtree element' 'cflags:compile with flags -Wall -Werror -Wextra')
 		_describe 'supravim' options;;
 	update)
 		local -a branch

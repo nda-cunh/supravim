@@ -17,6 +17,9 @@ enable_fct(){
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
+			sed -i 's/let g:norm.*0/\"\*norme\* &/g' ~/.vimrc;
+			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
+		normeHeader) sed -i 's/.*HEADER/\"\*normeHeader\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		"") echo -e "Please enter something to enable.";;
 		*) echo -e "${bold}[$1]${reset} : cannot enable."
@@ -33,8 +36,10 @@ disable_fct(){
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
-		norme) sed -i 's/^autocmd.*Norm.*/\"\*norme\* &/g' ~/.vimrc;
-			sed -i 's/^autocmd.*DisplayErrorMsg()$/\"\*norme\* &/g' ~/.vimrc;
+		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
+			sed -i 's/let g:norm.*1/\"\*norme\* &/g' ~/.vimrc;
+			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
+		normeHeader) sed -i 's/\"\*normeHeader\* //g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		"") echo -e "Please enter something to disable.";;
         *) echo -e "[$1] : cannot enable."
@@ -115,7 +120,7 @@ status_fct(){
 		echo -e "${bold}${green}cflags${reset}"
 	fi
 
-	if [ $(grep -c "\"\*norme\*" ~/.vimrc) -gt 0 ]; then
+	if [ $(grep -c "\"\*norme\*.*1" ~/.vimrc) -gt 0 ]; then
 		echo -e "${bold}${red}norme${reset} "
 	else
 		echo -e "${bold}${green}norme${reset}"
@@ -180,6 +185,8 @@ help_fct(){
 		
 		<options>:
 		mouse			use of mouse to move/ copy and paste in your file
+		norme			norme in your vim
+		normeHeader		display error for header 42 in your files
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
 		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
