@@ -56,6 +56,7 @@ theme_fct(){
 		6 | onedark)  sed -i 's/^colorscheme .*$/colorscheme onedark/' ~/.vimrc; echo -e "Vim theme set to ${bold}onedark${reset}.";;
 		7 | onehalf)  sed -i 's/^colorscheme .*$/colorscheme onehalf/' ~/.vimrc; echo -e "Vim theme set to ${bold}onehalf${reset}.";;
 		8 | onelight)  sed -i 's/^colorscheme .*$/colorscheme onelight/' ~/.vimrc; echo -e "Vim theme set to ${bold}onelight${reset}.";;
+		9 | pablo)  sed -i 's/^colorscheme .*$/colorscheme pablo/' ~/.vimrc; echo -e "Vim theme set to ${bold}pablo${reset}.";;
 		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[47;30mlight${reset} background.";;
 		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[40mdark${reset} background.";;
 		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
@@ -203,6 +204,7 @@ help_fct(){
 		6 |	onedark			.	.	.
 		7 |	onehalf			.	.	.
 		8 |	onelight		.	.	.
+		8 |	pablo			.	.	.
 
 		<background>:
 		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
