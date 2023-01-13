@@ -13,7 +13,7 @@ _arguments -C -S -s $endopt \
 case "$state" in
 	theme)
 		local -a themes
-		themes=('molokai' 'gruvbox' 'dracula' 'atom' 'iceberg' 'onedark' 'onehalf' 'onelight' 'pablo')
+		themes=('molokai' 'gruvbox' 'dracula' 'atom' 'iceberg' 'onedark' 'onehalf' 'onelight' 'pablo' 'Tomorrow-Night' 'Tomorrow-Night-Eighties')
 		_describe 'supravim' themes;;
 	option)
 		local -a options
