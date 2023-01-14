@@ -12,6 +12,8 @@ enable_fct(){
 		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		icons) if [ $(grep -c "icons_disabled" ~/.vimrc) -gt 0 ]; then sed -i 's/icons_disabled/icons_enabled/g' ~/.vimrc; git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
+		noswap)	sed -i 's/^" set noswapfile/set noswapfile/g' ~/.vimrc;
+			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec \"!gcc -g \\\"\%/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
@@ -31,6 +33,8 @@ disable_fct(){
     case $1 in
         mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
+		noswap)	sed -i 's/^set noswapfile/" &/g' ~/.vimrc;
+			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		icons) sed -i 's/icons_enabled/icons_disabled/g' ~/.vimrc; rm -rf "$HOME/.vim/bundle/devicons"; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
@@ -103,6 +107,12 @@ status_fct(){
 		echo -e "${bold}${green}mouse${reset} "
 	else
 		echo -e "${bold}${red}mouse${reset}"
+	fi
+
+	if [[ $(grep -c "\" set noswapfile" ~/.vimrc) == 0 ]]; then
+		echo -e "${bold}${green}noswap${reset} "
+	else
+		echo -e "${bold}${red}noswap${reset}"
 	fi
 
 	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]; then
@@ -192,6 +202,7 @@ help_fct(){
 		normeHeader		display error for header 42 in your files
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
+		noswap			disable swapfile (file.swp)
 		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
 
 	${bold}THEME CHOOSING${reset}
