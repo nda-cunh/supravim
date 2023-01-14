@@ -22,13 +22,13 @@ set t_Co=256
 " icons_disabled
 
 "-------------- Save Undo  ------------"
-if !isdirectory($HOME."/.vim")
-	call mkdir($HOME."/.vim", "", 0770)
+if !isdirectory($HOME."/.cache/vim/undo")
+	call mkdir($HOME."/.cache/vim/undo", "", 0770)
 endif
-if !isdirectory($HOME."/.vim/undo-dir")
-	call mkdir($HOME."/.vim/undo-dir", "", 0700)
+if !isdirectory($HOME."/.cache/vim/undo")
+	call mkdir($HOME."/.cache/vim/undo", "", 0700)
 endif
-set undodir=~/.vim/undo-dir
+set undodir=~/.cache/vim/undo
 set undofile
 
 " -------------  DBG integration  --------------"
