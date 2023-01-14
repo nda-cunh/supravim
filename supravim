@@ -17,6 +17,9 @@ enable_fct(){
 			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
+			sed -i 's/let g:norm.*0/\"\*norme\* &/g' ~/.vimrc;
+			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
+		normeHeader) sed -i 's/.*HEADER/\"\*normeHeader\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		"") echo -e "Please enter something to enable.";;
 		*) echo -e "${bold}[$1]${reset} : cannot enable."
@@ -33,8 +36,10 @@ disable_fct(){
 			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
 			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
-		norme) sed -i 's/^autocmd.*Norm.*/\"\*norme\* &/g' ~/.vimrc;
-			sed -i 's/^autocmd.*DisplayErrorMsg()$/\"\*norme\* &/g' ~/.vimrc;
+		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
+			sed -i 's/let g:norm.*1/\"\*norme\* &/g' ~/.vimrc;
+			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
+		normeHeader) sed -i 's/\"\*normeHeader\* //g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		"") echo -e "Please enter something to disable.";;
         *) echo -e "[$1] : cannot enable."
@@ -51,6 +56,9 @@ theme_fct(){
 		6 | onedark)  sed -i 's/^colorscheme .*$/colorscheme onedark/' ~/.vimrc; echo -e "Vim theme set to ${bold}onedark${reset}.";;
 		7 | onehalf)  sed -i 's/^colorscheme .*$/colorscheme onehalf/' ~/.vimrc; echo -e "Vim theme set to ${bold}onehalf${reset}.";;
 		8 | onelight)  sed -i 's/^colorscheme .*$/colorscheme onelight/' ~/.vimrc; echo -e "Vim theme set to ${bold}onelight${reset}.";;
+		9 | pablo)  sed -i 's/^colorscheme .*$/colorscheme pablo/' ~/.vimrc; echo -e "Vim theme set to ${bold}pablo${reset}.";;
+		10 | Tomorrow-Night)  sed -i 's/^colorscheme .*$/colorscheme Tomorrow-Night/' ~/.vimrc; echo -e "Vim theme set to ${bold}Tomorrow-Night${reset}.";;
+		11 | Tomorrow-Night-Eighties)  sed -i 's/^colorscheme .*$/colorscheme Tomorrow-Night-Eighties/' ~/.vimrc; echo -e "Vim theme set to ${bold}Tomorrow-Night-Eighties${reset}.";;
 		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[47;30mlight${reset} background.";;
 		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[40mdark${reset} background.";;
 		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
@@ -115,7 +123,7 @@ status_fct(){
 		echo -e "${bold}${green}cflags${reset}"
 	fi
 
-	if [ $(grep -c "\"\*norme\*" ~/.vimrc) -gt 0 ]; then
+	if [ $(grep -c "\"\*norme\*.*1" ~/.vimrc) -gt 0 ]; then
 		echo -e "${bold}${red}norme${reset} "
 	else
 		echo -e "${bold}${green}norme${reset}"
@@ -180,6 +188,8 @@ help_fct(){
 		
 		<options>:
 		mouse			use of mouse to move/ copy and paste in your file
+		norme			norme in your vim
+		normeHeader		display error for header 42 in your files
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
 		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
@@ -188,14 +198,17 @@ help_fct(){
 		supravim <theme | -t> <name_theme> <background>
 		
 		<name_theme>:
-		1 |	gruvbox		(default) set to gruvbox theme
-		2 |	molokai			.	.	.
-		3 |	dracula			.	.	.
-		4 |	atom			.	.	.
-		5 |	iceberg			.	.	.
-		6 |	onedark			.	.	.
-		7 |	onehalf			.	.	.
-		8 |	onelight		.	.	.
+		1  |	gruvbox						(default) set to gruvbox theme
+		2  |	molokai						.	.	.
+		3  |	dracula						.	.	.
+		4  |	atom						.	.	.
+		5  |	iceberg						.	.	.
+		6  |	onedark						.	.	.
+		7  |	onehalf						.	.	.
+		8  |	onelight					.	.	.
+		9  |	pablo						.	.	.
+		10 |	Tomorrow-Night				.	.	.
+		11 |	Tomorrow-Night-Eighties		.	.	.
 
 		<background>:
 		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
