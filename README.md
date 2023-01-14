@@ -1,4 +1,4 @@
-# SupraVim 4.3.2
+# SupraVim 4.4
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
@@ -48,7 +48,7 @@ ou
 | TOUT Sauvegarder | :wall|
 | TOUT Quitter | :qall|
 | HEADER 42| **F1**|
-| Norminette | **F3**|
+| Switch SupraNorm | **F3**|
 | Compilation | **F5**|
 | Debogueur (GDB) | **Ctrl + F5**|
 | Deplacement entre fênetre | Shift - flèche|
@@ -170,3 +170,5 @@ remplacer .py par l'extension de votre fichier
 - rearrangement de l'installeur
 - utilisation des extensions de fichier plutôt que leurs filetype
 - et evidément plein de bugs corrigé.
+4.4:
+- F3 = active/desactive supraNorm
