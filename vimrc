@@ -289,7 +289,14 @@ let g:norm_activate = 1
 
 function ToggleNorm()
 	let g:norm_activate = !g:norm_activate
-	exe ":w!"
+	silent exe ":w!"
+	if g:norm_activate == 1
+		silent! echo ""
+		echo "[SupraNorm enabled]"
+	else
+		silent! echo ""
+		echo "[SupraNorm disabled]"
+	endif
 endfunction
 
 function GetErrors(filename)
