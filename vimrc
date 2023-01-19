@@ -23,10 +23,8 @@ set t_Co=256
 
 "-------------- Save Undo  ------------"
 if !isdirectory($HOME."/.cache/vim/undo")
+	call mkdir($HOME."/.cache/vim/", "", 0770)
 	call mkdir($HOME."/.cache/vim/undo", "", 0770)
-endif
-if !isdirectory($HOME."/.cache/vim/undo")
-	call mkdir($HOME."/.cache/vim/undo", "", 0700)
 endif
 set undodir=~/.cache/vim/undo
 set undofile
