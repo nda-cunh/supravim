@@ -114,6 +114,8 @@ Vous pouvez également utiliser `supravim switch` pour passer d'une session Supr
 
 `supravim --theme onedark` pour passer au theme onedark  (gruvbox) est par default.
 
+Listes des themes:
+``atom, gruvbox, molokai, onehalf, pablo, Tomorrow-Night-Eighties, dracula, iceberg, onedark, onelight, Tomorrow-Night``~~~~
 <img src="img/theme-binary.gif"/>
 
 
