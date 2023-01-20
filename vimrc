@@ -157,7 +157,11 @@ autocmd TabLeave * call AirFresh()
 
 autocmd VimEnter * call ReBase()
 func ReBase()
-	exec "cd" "%:p:h"
+	let w = expand("%:p:h")
+	echo w
+	if isdirectory(w)
+		exec "cd" "%:p:h"
+	endif
 endfunc
 
 "--------------- FONCTION ---------------"
