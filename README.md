@@ -63,7 +63,6 @@ ou
 | Ctr+ Up | Aller sur la fonction sous le curseur|
 | Ctr+ Down |Retourner sur la fonction d'avant|
 
-
 # Compilation
 
 <img src="img/makeclean.png"/>
@@ -76,6 +75,18 @@ Si votre projet contient un fichier Makefile, vous pourrez compiler votre progra
 Dans le cas contraire, il compilera tous les fichiers C présents ensemble et exécutera le a.out généré.
 
 note: F6 et F7 lance eux la règle run2 et run3 du makefile si elles existent.
+
+# SupraMake
+
+supramake est une commande de supravim (c'est celui-ci qu'il utilise pour le F5,6,7)
+il fonctionne comme la commande make, sauf qu'il cherchera ou se trouve le makefile pour executer votre règle.
+
+si vous êtes ici:
+``~/Desktop/Projets/src/folder1/folder2/``
+et que votre Makefile est ici:
+``~/Desktop/Projets/Makefile``
+
+``supramake rule`` le lancera, tandis que ``make rule`` ne le trouvera pas.
 
 # Débogage
 
