@@ -111,6 +111,7 @@ set splitbelow
 set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 let g:UltiSnipsExpandTrigger="<Tab>"
+set fillchars=vert:│
 " set noswapfile
 "---------- Qui utilise la scrollbar -----------"
 set guioptions-=r
