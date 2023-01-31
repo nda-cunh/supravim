@@ -1,5 +1,5 @@
-// modules: posix;
-using Posix;                                                                                                                                                                       
+//valac make.vala --pkg=posix
+using Posix;
 
 void search_dir(string dir_path, ref string tab_file, string ext)
 {
@@ -17,8 +17,17 @@ void search_dir(string dir_path, ref string tab_file, string ext)
 				search_dir(path, ref tab_file, ext);
 				continue;
 			}
-			if(!(path.substring(-search_ext.length, -1) == search_ext))
-				continue ;
+			if (search_ext == ".c" || search_ext == ".cpp")
+			{
+				if (!path.has_suffix(".h") && !path.has_suffix(search_ext) && !path.has_suffix(".hpp"))
+					continue;
+			}
+			else
+			{
+				if (!path.has_suffix(search_ext))
+					continue;
+			}
+			print("Add %s\n", path);
 			tab_file = @"$(tab_file)$(path) ";
 		}
 	}
@@ -35,6 +44,8 @@ void create_tags(string super_path, string ext)
 	string []tablor = {"ctags"};
 
 	tablor += @"-f$(home)/.local/bin/tags";
+	tablor += "-d";
+	tablor += "-T";
 	search_dir(super_path, ref all_file, ext);
 	foreach(var n in all_file.split(" "))
 	{
@@ -50,7 +61,7 @@ void main(string []args)
 	string home = Environment.get_home_dir();
 	int i = path.length;
 	string search_ext = args[1] ?? "c";
-	
+
 	i--;
 	unlink(@"$home/.local/bin/tags");
 	while (home != path && path != "/tmp" && i > 0)
