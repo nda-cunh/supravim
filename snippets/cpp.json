@@ -103,12 +103,16 @@
 				"}",
 				"",
 				"$1::$1(const $1 &copy){",
+				"\t*this = copy;",
 				"}",
 				"",
 				"$1 & $1::operator=(const $1 &copy){",
-				"}",
-				"",
-				"",]
+				"\tif (&copy != this)",
+				"\t{",
+				"\t\t",
+				"\t}",
+				"\treturn (*this);",
+			"}",]
 	},
 	"ifndef": {
 		"prefix": ["ifndef"],
