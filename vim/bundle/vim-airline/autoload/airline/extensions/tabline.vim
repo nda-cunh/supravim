@@ -219,6 +219,9 @@ if !exists(":def") || !airline#util#has_vim9_script()
       if len(curbuf) ==  0
         call add(curbuf, tabpagebuflist(a:n)[0])
       endif
+      " a:n: -> buffer number
+      " curbuf: list of buffers in current tabpage
+      " we need the buffername in current tab page.
       return airline#extensions#tabline#get_buffer_name(curbuf[0], curbuf)
     endif
 

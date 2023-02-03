@@ -104,7 +104,8 @@ set smartindent
 set autoindent
 set shiftround
 set showmode
-set backspace=indent,eol,start
+set backspace=indent,eol,startcall NERDTreeHighlightFile('.cpp', 'blue', 'none')
+call NERDTreeHighlightFile('.hpp', 'green', 'none')
 set pumheight=50
 set encoding=utf-8
 set splitbelow
@@ -373,6 +374,8 @@ endfunction
 
 call NERDTreeHighlightFile('.c', 'blue', 'none')
 call NERDTreeHighlightFile('h', 'green', 'none')
+call NERDTreeHighlightFile('.cpp', 'blue', 'none')
+call NERDTreeHighlightFile('.hpp', 'green', 'none')
 call NERDTreeHighlightFile('vala', 'magenta', 'none')
 call NERDTreeHighlightFile('Makefile', 'red', 'none')
 
@@ -382,7 +385,32 @@ augroup nerdtreeconcealbrackets
 	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
 augroup END
 
+" ----------------- AIR LINE ------------------"
+let g:airline_section_z = airline#section#create(['%p/100%%', ' Line: %l', 'hunks', ' Col:%c', ' SupraVim'])
+if expand('%:e') == ''
+	let g:airline_section_warning = airline#section#create(['SupraVim'])
+	let g:airline_section_z = airline#section#create(['%p/100%%', ' Line: %l', 'hunks', ' Col:%c'])
+	let g:airline_section_b = airline#section#create([' im'])
+endif
+
+let g:airline_section_b = airline#section#create([' im'])
+
+if !exists('g:airline_symbols')
+	let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.colnr = ' :'
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ' :'
+let g:airline_symbols.maxlinenr = '☰ '
+let g:airline_symbols.dirty='⚡'
+let g:airline#extensions#nerdtree_statusline = 0
 " ----------------- POPUP ------------------"
+
 autocmd InsertEnter * call CreatePop()
 autocmd VimEnter * call CreatePopit()
 hi MyPopupColor ctermfg=cyan 
@@ -468,7 +496,7 @@ smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
-
+let g:lsp_log_file = '/tmp/lsp.log'
 let lsp_diagnostics_enabled=0
 let g:lsp_diagnostics_signs_enabled = 0
 let g:lsp_document_code_action_signs_enabled = 0
