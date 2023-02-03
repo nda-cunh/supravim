@@ -1,4 +1,4 @@
-# SupraVim 4.5
+# SupraVim 4.6.1
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
@@ -87,6 +87,12 @@ et que votre Makefile est ici:
 ``~/Desktop/Projets/Makefile``
 
 ``supramake rule`` le lancera, tandis que ``make rule`` ne le trouvera pas.
+# Entrer dans une fonction
+
+vous pouvez aller directement a une fonction ou define en question en faisant la touche 'Ctrl + UP' sur le symbole, il vous ouvrira le fichier et l'emplacement de l'initiation de ce symbole.
+Ctrl+Down retournera en arrière.
+
+Fonctionne avec les structures, defines et fonction.
 
 # Débogage
 
@@ -118,6 +124,15 @@ Listes des themes:
 ``atom, gruvbox, molokai, onehalf, pablo, Tomorrow-Night-Eighties, dracula, iceberg, onedark, onelight, Tomorrow-Night``~~~~
 <img src="img/theme-binary.gif"/>
 
+n'hésitez pas à regarder ``supravim --status`` pour voir les options activé ou désactivé par default.
+
+vous pourrez les activé avec ``supravime --enable option``
+exemple:  ``supravim --enable icons``
+activera la prise en charge d'icone.
+
+exemple:  ``supravim --disable tree``
+retirera l'arbre de dossier à gauche par défault.
+
 
 # Tu veux le customisé un peu plus ?
 
@@ -142,7 +157,9 @@ endif
 ```
 remplacer .py par l'extension de votre fichier
 
-
+# Autre chose ? une idée ?
+ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
+je suis à l'écoute d'un peu tout :)
 
 
 # CHANGELOG

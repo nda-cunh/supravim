@@ -137,7 +137,7 @@ endfunction
 
 function! airline#util#ignore_buf(name)
   let pat = '\c\v'. get(g:, 'airline#ignore_bufadd_pat', '').
-        \ get(g:, 'airline#extensions#tabline#ignore_bufadd_pat', 
+        \ get(g:, 'airline#extensions#tabline#ignore_bufadd_pat',
         \ '!|defx|gundo|nerd_tree|startify|tagbar|term://|undotree|vimfiler')
   return match(a:name, pat) > -1
 endfunction
@@ -180,7 +180,12 @@ function! airline#util#doautocmd(event)
     " airline disabled
     return
   endif
-  exe printf("silent doautocmd %s User %s", s:nomodeline, a:event)
+  try
+    exe printf("silent doautocmd %s User %s", s:nomodeline, a:event)
+  catch /^Vim\%((\a\+)\)\=:E48:/
+    " Catch: Sandbox mode
+    " no-op
+  endtry
 endfunction
 
 function! airline#util#themes(match)
@@ -211,7 +216,7 @@ function! airline#util#is_popup_window(winnr)
    if exists('*win_gettype')
      return win_gettype(a:winnr) ==# 'popup' || win_gettype(a:winnr) ==# 'autocmd'
    else
-      return getwinvar(a:winnr, '&buftype', '') ==# 'popup'
+      return airline#util#getwinvar(a:winnr, '&buftype', '') ==# 'popup'
   endif
 endfunction
 
