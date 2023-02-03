@@ -67,10 +67,10 @@ backup_config() {
 		if ! [ "$nerdtree" = "0" ]; then
 			supravim disable tree >/dev/null
 		fi
-		if ! [ "$icons" = "0" ]; then
-			download "devicons for icons"
+		# if ! [ "$icons" = "0" ]; then
+			# download "devicons for icons"
 			supravim -e icons >/dev/null
-		fi
+		# fi
 		if ! [ "$cflags" = "0" ]; then
 			supravim enable cflags >/dev/null
 		fi
