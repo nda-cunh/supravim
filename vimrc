@@ -105,7 +105,6 @@ set autoindent
 set shiftround
 set showmode
 set backspace=indent,eol,start
-call NERDTreeHighlightFile('.hpp', 'green', 'none')
 set pumheight=50
 set encoding=utf-8
 set splitbelow
