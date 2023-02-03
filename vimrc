@@ -104,7 +104,8 @@ set smartindent
 set autoindent
 set shiftround
 set showmode
-set backspace=indent,eol,start
+set backspace=indent,eol,startcall NERDTreeHighlightFile('.cpp', 'blue', 'none')
+call NERDTreeHighlightFile('.hpp', 'green', 'none')
 set pumheight=50
 set encoding=utf-8
 set splitbelow
@@ -373,6 +374,8 @@ endfunction
 
 call NERDTreeHighlightFile('.c', 'blue', 'none')
 call NERDTreeHighlightFile('h', 'green', 'none')
+call NERDTreeHighlightFile('.cpp', 'blue', 'none')
+call NERDTreeHighlightFile('.hpp', 'green', 'none')
 call NERDTreeHighlightFile('vala', 'magenta', 'none')
 call NERDTreeHighlightFile('Makefile', 'red', 'none')
 
