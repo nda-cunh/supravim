@@ -110,7 +110,7 @@ config_supravim_editor() {
 	cp -rf "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
     ln -sf "${INSTALL_DIRECTORY}/clangd" $HOME/.local/bin/
 	mkdir -p $HOME/.local/share/fonts
-    ln -sf "${INSTALL_DIRECTORY}/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/
+    mv "${INSTALL_DIRECTORY}/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
     ln -sf "${INSTALL_DIRECTORY}/supramake" $HOME/.local/bin/
 }
 
