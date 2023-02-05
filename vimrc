@@ -50,10 +50,10 @@ noremap <C-Down>        <Esc><C-T>
 inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>i
 inoremap <C-Down>       <Esc><C-T>i
 
-inoremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
-inoremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
-noremap <c-q>				<esc>:q!<CR>:NERDTreeRefreshRoot<CR>
-noremap <c-s>				<esc>:w!<CR>:NERDTreeRefreshRoot<CR>
+inoremap <c-q>				<esc>:call Quit()<CR>
+inoremap <c-s>				<esc>:call Save()<CR>i
+noremap <c-q>				<esc>:call Quit()<CR>
+noremap <c-s>				<esc>:call Save()<CR>
 map <C-F5> 					:Termdebug -n <CR>
 map <F5> 					:call CompileRun()<CR>
 imap <F5>				 	<Esc>:call CompileRun()<CR>
@@ -167,6 +167,16 @@ endfunc
 
 "--------------- FONCTION ---------------"
 
+function Save()
+	w!
+	NERDTreeRefreshRoot
+	AirlineRefresh
+endfunction
+
+function Quit()
+	q!
+endfunction
+
 imap <C-F5>		<esc>:Gdbs<CR>
 map <C-F5>		<esc>:Gdbs<CR>
 
@@ -199,7 +209,7 @@ func! FctsToHeader(...)
 endfunc                                  
 
 func! Norminette()
-	exec "w"
+	call Save()
 	silent exec "!clear -x"
 	exec "!echo Norminette de % && norminette \"%\""
 endfunc
@@ -222,7 +232,7 @@ func! CompileRun()
 		echo "Fenetre non compilable"
 		return
 	endif
-	exec "w"
+	w!
 	exec "cd" "%:p:h"
 	silent call VerifMake()
 	let err = v:shell_error
@@ -247,7 +257,7 @@ func! CompileRun()
 endfunc
 
 func! Compile()
-	exec "w"
+	w!
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
 
