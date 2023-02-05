@@ -65,10 +65,10 @@ noremap <C-d>				:vs
 noremap <S-d>				:split 
 noremap <F3>				<Esc>:call ToggleNorm()<CR>
 inoremap <F3>				<Esc>:call ToggleNorm()<CR>i
-noremap <S-Right>			<C-w><Right>
-noremap <S-Left>			<C-w><Left>
-noremap <S-Up>				<C-w><Up>
-noremap <S-Down>			<C-w><Down>
+noremap <S-Right>			<C-w><Right><Esc>:AirlineRefresh<CR>
+noremap <S-Left>			<C-w><Left><Esc>:AirlineRefresh<CR>
+noremap <S-Up>				<C-w><Up><Esc>:AirlineRefresh<CR>
+noremap <S-Down>			<C-w><Down><Esc>:AirlineRefresh<CR>
 
 inoremap <TAB>				<TAB>
 imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
@@ -83,15 +83,10 @@ tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Ma
 tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc *.c; ./a.out; fi; <CR>
 "*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
 
-tnoremap <S-Right>		<C-W>N<C-w><Right>
-tnoremap <S-Left>		<C-W>N<C-w><Left>
-tnoremap <S-Up>			<C-W>N<C-w><Up>
-tnoremap <S-Down>		<C-W>N<C-w><Down>
-
-" tnoremap <S-l>			<C-W>N<C-w><Right>
-" tnoremap <S-h>			<C-W>N<C-w><Left>
-" tnoremap <S-k>			<C-W>N<C-w><Up>
-" tnoremap <S-l>			<C-W>N<C-w><Down>
+tnoremap <S-Right>		<C-W>N<C-w><Right><Esc>:AirlineRefresh<CR>
+tnoremap <S-Left>		<C-W>N<C-w><Left><Esc>:AirlineRefresh<CR>
+tnoremap <S-Up>			<C-W>N<C-w><Up><Esc>:AirlineRefresh<CR>
+tnoremap <S-Down>		<C-W>N<C-w><Down><Esc>:AirlineRefresh<CR>
 
 "--------------- utilitaires basiques ---------------"
 syntax on
