@@ -51,7 +51,7 @@ inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>i
 inoremap <C-Down>       <Esc><C-T>i
 
 inoremap <c-q>				<esc>:call Quit()<CR>
-inoremap <c-s>				<esc>:call Save()<CR>i
+inoremap <c-s>				<esc>:call Save()<CR>
 noremap <c-q>				<esc>:call Quit()<CR>
 noremap <c-s>				<esc>:call Save()<CR>
 map <C-F5> 					:Termdebug -n <CR>
