@@ -1,4 +1,4 @@
-# SupraVim 4.6.5
+# SupraVim 4.7
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
@@ -202,3 +202,4 @@ je suis à l'écoute d'un peu tout :)
 - et evidément plein de bugs corrigé.
 4.4:
 - F3 = active/desactive supraNorm
+- Ajout de snippet pour Makefile
