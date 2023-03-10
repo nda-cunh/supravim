@@ -6,12 +6,14 @@ Table of help documents~
     |AutoPairs.txt|
     |AutoPairsCompatibility| (you are here)
     |AutoPairsTroubleshooting|
+    |AutoPairsHowTo|
 
 ================================================================================
 Table of Contents                               *autopairs-compatibility-contents*
 
     1. vim-visual-multi ............... |vm-autopairs| |autopairs-visual-multi|
     2. Telescope ...................... |autopairs-telescope|
+    3. Plugins interfering with <CR> .. |autopairs-incompatible-cr|
 
 ================================================================================
 1. vim-visual-multi                          *vm-autopairs* *autopairs-visual-multi*
@@ -35,7 +37,7 @@ vague, the implementation details are unclear and therefore not implemented.
 
 That being said, due to the use of keybinds that do conflict with the plugin,
 such as |<cr>| and potentially others, depending on various mapping details,
-VM may produce warnings. It's adviced that you suppress these, as they're
+VM may produce warnings. It's advised that you suppress these, as they're
 unavoidable at the time of writing. The warnings may be suppressed with: >
     let g:VM_show_warnings = 0
 <
@@ -48,9 +50,12 @@ it makes no practical difference.
                                                              *telescope-autopairs*
 
 COMPATIBILITY STATUS
-Poor (bug in nvim; requires hacks)
+Currently good
 
-Description~
+Known bug #1: auto-pairs runs in terminal buffers~
+FIXED
+Update to 0.6.0 or newer
+---
 Auto-pairs doesn't work in Telescope, by design. The same goes for terminal
 buffers in Vim and Neovim.
 
@@ -80,5 +85,22 @@ at this point set, which may have unintended consequences. >
 
 [1]: https://github.com/neovim/neovim/issues/14798
 [2]: https://github.com/LunarWatcher/auto-pairs/issues/34
+
+================================================================================
+3. Plugins incompatible with <CR>                      *autopairs-incompatible-cr*
+
+This is just a list of plugins. For a problem description, see
+|autopairs-bad-cr|.
+
+* https://github.com/JuliaEditorSupport/julia-vim 
+    Won't fix~
+    Prints the previous `<CR>` as a literal string by using `feedkeys()`. 
+    Relevant issue: https://github.com/JuliaEditorSupport/julia-vim/issues/289
+* https://github.com/neoclide/coc.nvim (and other autocomplete)
+    Workarounds exist~
+    Has several different bugs related to `<CR>` maps made by the user. The
+    plugin itself does not define anything causing incompatibilities. For
+    compatible maps, see |autopairs-autocomplete-cr|
+    Alternatively, use |complete_CTRL-Y| instead of <CR>
 
 vim:ft=help

@@ -1,4 +1,4 @@
-*AutoPairs.txt* *autopairs* *AutoPairs*
+*AutoPairs.txt* *autopairs* *AutoPairs* *auto-pairs*
 
 Insert or delete brackets, parens, and quotes in pair (a fork by LunarWatcher)
 
@@ -24,6 +24,9 @@ Table of help documents~
         plugins.
     |AutoPairsTroubleshooting|
         Contains answers to known and common problems with auto-pairs.
+    |AutoPairsHowTo|
+        Contains a set of concrete guides for common auto-pairs
+        configurations.
 
 Note: While the documents aim to contain only categorically relevant info,
 there are cases where this won't happen. There are a number of reasons for
@@ -77,32 +80,33 @@ than a meta (alt)-based one.
 Requirements~
 
 Auto-pairs is fully self-contained. Consequently, it only has one requirement:
-Vim 7.4 or newer.
-
-4.0.0 may require a newer version; the master branch, as well as tags, follow
-3.x.y. Unless you explicitly source the 4.0.0 branch, the minimum requirement
-is 7.4.
+Vim 8.1 with patch 1114 or newer.
 
 ------------------------------------------------------------------------------
                                                        *autopairs-contributing*
+                                                            *autopairs-support*
 Contributing~
 
 If you enjoy the plugin, please consider starring it on GitHub:
         https://github.com/LunarWatcher/auto-pairs
 
-This fork is maintained (and will continue to be maintained). Issues can
-currently be submitted to: https://github.com/LunarWatcher/auto-pairs/issues
+This fork is maintained (and will continue to be maintained unless a better
+option magically appears). Issues can currently be submitted to
+https://github.com/LunarWatcher/auto-pairs/issues
 
 I do, however, keep an eye on the issue tracker in jiangmiao's repo, because
 this fork doesn't have nearly as many users as the original, and many legacy
 bugs still haunt users.
 
-Questions about the plugin can be submitted as an issue, but should preferably
-be submitted on GitHub Discussions, in the repo previously linked (direct
-link: https://github.com/LunarWatcher/auto-pairs/discussions)
+Questions about the plugin not covered by the documentation can be submitted
+as an issue, but should preferably be submitted on GitHub Discussions, in the
+repo previously linked.
+
+Direct link: https://github.com/LunarWatcher/auto-pairs/discussions
 
 Pull requests are also more than welcome, and I'll make sure they don't stick
 around for 6 years without being merged.
+
 ------------------------------------------------------------------------------
                                                            *autopairs-migrating*
 Migrating from jiangmiao~
@@ -123,6 +127,9 @@ A few notes on config:
   changes, but if you expect something to work that doesn't, check the
   documentation. If the documentation is gone, it's been removed. If you're in
   doubt, or have questions, feel free to open an issue.
+* All the alt-based maps have been remapped. Compatible maps can be re-enabled
+  with |g:AutoPairsCompatibleMaps|, but this is strongly discouraged due to the
+  consequences this has for non-ascii characters. 
 
 Overall caveats~
 
@@ -147,149 +154,9 @@ makes a bad call on completion or balancing.
 ==============================================================================
 2. Features                                                 *autopairs-features*
 
-Insert in pair: >
-
-        input: [
-        output: [|]
-
-Delete in pair: >
-
-        input: foo[<BS>]
-        output: foo
-
-Delete after pair: >
-        input: foo[]<BS>
-        output: foo
-<
-Note: This feature is disabled by default, and must be explicitly enabled.
-See |g:AutoPairsMapBS|
-
-Insert new indented line after Return: >
-
-        input: {|} (press <CR> at |)
-        output: {
-            |
-        }
-
-
-See |autopairs-diagnose-indent| if you're not getting the expected indent.
-
-Insert spaces before closing characters, only for [], (), {}: >
-
-        input: {|} (press <SPACE> at |)
-        output: { | }
-
-        input: {|} (press <SPACE>foo} at |)
-        output: { foo }|
-
-        input: '|' (press <SPACE> at |)
-        output: ' |'
-
-Skip ' when inside a word: >
-
-        input: foo| (press ' at |)
-        output: foo'
-See |g:AutoPairsSingleQuoteMode|, |g:AutoPairsSingleQuoteExpandFor|,
-    |g:AutoPairsSingleQuotePrefixGroup|
-
-Skip closed bracket: >
-
-        input: [|]
-        output: []
-
-Ignore auto pair when previous character is '\': >
-
-        input: "\'
-        output: "\'"
-
-Fast Wrap: >
-
-        input: |'hello' (press (<M-e> at |)
-        output: ('hello')
-
-    Wrap string, only support c style string.
-        input: |'h\\el\'lo' (press (<M-e> at |)
-        output ('h\\ello\'')
-
-        input: |[foo, bar()] (press (<M-e> at |)
-        output: ([foo, bar()])
-Note: if |g:AutoPairsCompleteOnlyOnSpace| is 1, this example does not play out
-in the same way, purely because the ( will not expand, leaving you with
-`([foo, var())]` .
-
-Quick jump to closed pair: >
-
-        input:
-        {
-            something;|
-        }
-
-        (press <C-p>c} at |)
-
-        output:
-        {
-            something;
-        }|
-
-See |g:AutoPairsShortcutMultilineClose|. Note that for various implementation
-reasons, |g:AutoPairsShortcutJump| generally works better. Multiline close
-does come with some optional space removal
-(|g:AutoPairsMultilineCloseDeleteSpace|), but is otherwise just a short jump.
-
-Support ```, ''' and """: >
-
-        input:
-            '''
-
-        output:
-            '''|'''
-
-Delete Repeated Pairs with one keypress: >
-
-        input: """|""" (press <BS> at |)
-        output: |
-
-        input: {{|}} (press <BS> at |)
-        output: |
-
-        input: [[[[[[|]]]]]] (press <BS> at |)
-        output: |
-
-Fly Mode (|autopairs-flymode|): >
-
-        input: if(a[3)
-        output: if(a[3])| (In Fly Mode)
-        output: if(a[3)]) (Without Fly Mode)
-
-        input:
-        {
-            hello();|
-            world();
-        }
-
-        (press } at |)
-
-        output:
-        {
-            hello();
-            world();
-        }|
-
-        (then press <M-b> at | to do backinsert)
-        output:
-        {
-            hello();}|
-            world();
-        }
-
-See |autopairs-flymode| section for details
-
-Only inserting when the next character is a space:
-|g:AutoPairsCompleteOnlyOnSpace|
-
-Note that not all features are documented in this section, because listing and
-previewing all of them isn't feasible. Some of them have implementation
-details that requires an explicit listing.
+This section is undergoing maintenance. If you have ideas for something to put
+here (that adds value beyond the rest of the docs), please consider opening an
+issue or a discussion in the GitHub repo.
 
 ------------------------------------------------------------------------------
 2.1. Multibyte pairs                                       *autopairs-multibyte*
@@ -310,10 +177,11 @@ some languages, but it's not implemented at this time.
 ==============================================================================
 3. Fly Mode                                                  *autopairs-flymode*
 
-Note: Flymode is currently considered buggy and unreliable. It should be avoided
+Note: Flymode is considered buggy and unreliable. It should be avoided
 unless you enjoy spending time on flymode doing weird shit while you're
 typing. Creative ideas and/or pull requests for making flymode less bad are
-welcome. (|autopairs-contributing|)
+welcome (|autopairs-contributing|), but this feature shouldn't be used and
+will not receive bugfixes in its current state.
 
 Fly Mode will always force closed-pair jumping instead of inserting. Only for
 ")", "}", "]". If jumps in mistake, you can use |g:AutoPairsBackInsert| (default
@@ -359,6 +227,9 @@ And finally, other shortcuts defined by auto-pairs:
 All the above can be remapped by using the appropriate configuration variable.
 Setting a configuration variable to "" disables that keybind
 
+Also note that the prefix for most keybinds is <C-p> by default.
+This can be reconfigured with |g:AutoPairsPrefix| if desired or necessitated
+by plugin conflict.
 
 ------------------------------------------------------------------------------
 4.1. Remapping shortcuts                          *autopairs-shortcut-remapping*
@@ -391,16 +262,16 @@ This list is a table of contents for the options, sorted by categories.
 Core~
 - |g:AutoPairs| (has buffer variant) (default: see the entry)
     Defines what pairs AutoPairs will complete
-- |g:AutoPairsCompleteOnlyOnSpace| (has a buffer variant) (default: 0)
-    Defines whether or not there has to be a space (or EOL) to insert a pair
 - |g:AutoPairsShortcutToggle| (has a buffer variant) (default: see the entry)
     Defines the shortcut for toggling auto-pairs
 - |g:AutoPairsInitHook| (default: 0 (= null))
-    A pre-init hook for auto-pairs.
-- |g:AutoPairsExperimentalAutocmd| (default: 0)
+    A pre-init hook for auto-pairs. This doesn't have that many uses, but can
+    be used to ensure some bit of code is always executed just before
+    auto-pairs runs.
+- |g:AutoPairsExperimentalAutocmd| (default: 1)
     Whether or not to use BufWinEnter instead of BufEnter
 - |g:AutoPairsDirectoryBlacklist| (default: [])
-    Directories to disable auto-pairs in
+    Directories to completely disable auto-pairs in
 - |b:autopairs_enabled| ("default": 1)
     Whether or not auto-pairs is enabled in the buffer. Can also be used to
     toggle auto-pairs
@@ -409,18 +280,30 @@ Core~
     explicit definition of |b:AutoPairs|
 - |g:AutoPairsOpenBalanceBlacklist| (has a buffer variant) (default: [])
     Contains a list of characters that don't trigger opening balance checks
-- |g:AutoPairsFiletypeBlacklist| (default: [])
-    Contains filetypes in which |b:autopairs_enabled| is 0 when entering the
-    file.
+- |g:AutoPairsFiletypeBlacklist| (default: see entry)
+    Filetypes to completely disable auto-pairs in
+- |g:AutoPairsPrefix| (default: <C-p>)
+    Controls the default prefix for all non-compatible maps.
+
+Whitespace and autocomplete~
+- |g:AutoPairsCompleteOnlyOnSpace| (has a buffer variant) (default: 0)
+    Defines whether or not there has to be a space (or EOL) to insert a pair.
+- |g:AutoPairsSpaceCompletionRegex| (has a buffer variant) (default: \S)
+    Defines the regex to use when |g:AutoPairsCompleteOnlyOnSpace| is 1
+- |g:AutoPairsAutoBuildSpaceWhitelist| (has a buffer variant) (default: 1)
+    Whether or not to automatically generate parts of the character whitelist
+- |g:AutoPairsNextCharWhitelist| (has a buffer variant) (default: [])
+    Defines additional characters to add to the list of exceptions for
+    |g:AutoPairsCompleteOnlyOnSpace|
 
 Compat~
-- |g:AutoPairsCompatibleMaps| (default: 1)
+- |g:AutoPairsCompatibleMaps| (default: 0)
     Whether or not to use legacy keybinds (from jiangmiao/auto-pairs), or to
     use new ones designed not to conflict with other maps, or with characters
     in various languages.
 - |g:AutoPairsVersion|
     This is not directly an option, but it defines the current version of
-    auto-pairs. Can be used for compatibility checks
+    auto-pairs. Can be used for compatibility checks. DO NOT OVERRIDE!
 
 Backspace~
 - |g:AutoPairsMapBS| (has a buffer variant) (default: 0)
@@ -468,15 +351,19 @@ Quote management~
     |g:AutoPairsCarefulStringExpansion|
 
 String and comment management~
-
 - |g:AutoPairsStringHandlingMode| (has a buffer variant) (default: 0)
     How auto-pairs handles strings. HIGHLY EXPERIMENTAL!
-
 
 Insertion behavior~
 - |g:AutoPairsAutoLineBreak| (has a buffer variant) (default: [])
     A set of opening characters that trigger an instant line break (as in
     auto-pairs does the line break after the open character automagically)
+- |g:AutoPairsAutoBreakBefore| (has a buffer variant) (default: [])
+    A set of opening characters that insert a linebreak before the pair.
+- |g:AutoPairsSyncAutoBreakOptions| (has a buffer variant) (default: 0)
+    Whether or not to automatically assign
+    |b:AutoPairsAutoBreakBefore| = |b:AutoPairsAutoLineBreak|
+    Please read the full help entry for limitations!
 
 Balancing~
 - |g:AutoPairsPreferClose| (default: 1)
@@ -524,6 +411,12 @@ Misc. navigation~
 - |g:AutoPairsMoveExpression| (has a buffer variant) (default: <C-p>%key)
     Defines an expression that triggers the move feature. Please read the
     entry before using.
+
+Fly Mode~
+Obligatory re-iteration that fly mode should not be used.
+- |g:AutoPairsFlyMode|
+- |g:AutoPairsFlyModeList|
+- |g:AutoPairsShortcutBackInsert|
 
 ------------------------------------------------------------------------------
                                                        *g:AutoPairs* *b:AutoPairs*
@@ -668,8 +561,98 @@ Defines whether or not to require a space or end of the line to complete. If
 this is 1 and you try: `{|word`, you'll get `{|word`, rather than `{|}word`
 if this is 0.
 
+Note that there are a few exceptions to this rule, represented as a part of an
+internal variable; |b:autopairs_whitespace_exceptions|
+
 3.0.0-alpha5:~
     renamed from *g:AutoPairsCompleteOnSpace* to |g:AutoPairsCompleteOnlyOnSpace|
+
+------------------------------------------------------------------------------
+                                               *g:AutoPairsSpaceCompletionRegex*
+
+This variable also exists in a buffer variant.~
+
+Default: '\S'
+Note: the value is prefixed with ^|\v| for internal processing reasons, but
+this means the regex is very magic by default, and checks characters
+immediately after the cursor. Also note that the regex is processed
+case-insensitively, and has to evaluate to true to prevent expansion.
+
+Only takes effect if |g:AutoPairsCompleteOnlyOnSpace| is 1. Again, note that
+|b:autopairs_whitespace_exceptions| applies.
+
+Example:~
+Expanding only on non-alphanumeric characters (... in the English alphabet): >
+    let g:AutoPairsSpaceCompletionRegex = '\w'
+<
+Alternatively, if non-english letters are used: >
+    let g:AutoPairsSpaceCompletionRegex = '[[:lower:][:upper:]0-9]'
+<
+
+But do note the caveats of both |[:upper:]| and |[:lower:]|. That said, Vim is
+good at dealing with unicode, all things considered, so they should usually be
+good enough. Both [:upper:] and [:lower:] seem redundant, but many groups
+(including both of these) blatantly disregard the case insensitive flag,
+meaning both are required in spite of the regex fundamentally being
+case-insensitive
+
+------------------------------------------------------------------------------
+                                            *g:AutoPairsAutoBuildSpaceWhitelist*
+                                                                        number
+
+This variable also exists in a buffer variant~
+Default: 1
+
+Whether or not to prepopulate |g:AutoPairsNextCharWhitelist|
+
+------------------------------------------------------------------------------
+                                                  *g:AutoPairsNextCharWhitelist*
+                                                                          list
+
+This variable also exists in a buffer variant~
+Default: [] when |g:AutoPairsAutoBuildSpaceWhitelist| is 0; otherwise, dynamic
+based on close pairs not in *g:AutoPairsQuoteClosingChar* , which is a list of
+characters that count as closing a string. Must not be confused with
+|g:AutoPairsQuotes|, which are currently two different options. This may
+change in the future.
+
+Only takes effect when |g:AutoPairsCompleteOnlyOnSpace| = 1 (particularly,
+when the buffer variant is 1)
+
+Takes any number of characters that act as an exception to only inserting when
+there's whitespace after the cursor. Note that this variable does NOT support
+multiple bytes per exception; this will not change.
+
+Read: ['a', 'd', 'e'] is okay, ['ac', 'dc', 'e'] is not
+
+------------------------------------------------------------------------------
+                                             *b:autopairs_whitespace_exceptions*
+                                                                    [internal]
+
+This variable should not be used directly~
+
+Contains a regex of close pairs that count as an exception to whitespace only
+completion when |g:AutoPairsCompleteOnlyOnSpace| is 1.
+
+This variable should not be used directly. There are two control variables:
+
+* To enable or disable automatic population of close pairs that aren't string,
+    use |g:AutoPairsAutoBuildSpaceWhitelist|
+* To manually add pairs to this list, use |g:AutoPairsNextCharWhitelist|
+------------------------------------------------------------------------------
+                                               *g:AutoPairsOpenBalanceBlacklist*
+                                                                    list[char]
+
+Has a buffer variant~
+Default: []
+
+Contains a list of characters that are exceptions to auto-balancing; i.e.
+pairs that fully ignore the auto-balancing rules.
+
+Similarly to |g:AutoPairsNextCharWhitelist|, this variable only supports
+single characters, and not multibyte values.
+
+Used to populate an internal variable that does the actual heavy lifting.
 
 ------------------------------------------------------------------------------
                                                      *g:AutoPairsShortcutToggle*
@@ -878,18 +861,10 @@ Set it to 1 to enable |autopairs-flymode|.
 This variable also exists in a buffer variant~
 Default: 0
 
-Whether or not to use multiline closing. See also
-|g:AutoPairsShortcutToggleMultilineClose|.
+Whether or not to use multiline close.
 
 Note that there's no way to override a bad jump, aside disabling multiline
 close and re-inserting the character.
-
-------------------------------------------------------------------------------
-                                             *g:AutoPairsShortcutMultilineClose*
-
-This variable has been deprecated. See:
-https://github.com/LunarWatcher/auto-pairs/issues/32
-
 
 ------------------------------------------------------------------------------
                                        *g:AutoPairsShortcutToggleMultilineClose*
@@ -907,14 +882,8 @@ The shortcut to toggle |g:AutoPairsMultilineClose|
 Default: []
 
 Defines a set of directories (checked against |getcwd()|) in which the plugin
-is disabled. This is pretty much a utility around `let b:autopairs_enabled = 0`,
-which means the plugin is toggled in the buffer.
-
-It's disabled by default as this means it's possible to load it after the
-fact, where as a complete block wouldn't allow for manually enabling the
-plugin, if desired.
-
-See also |g:AutoPairsShortcutToggle|
+is completely uninitialized. Note |g:AutoPairsShortcutToggle| cannot enable
+autopairs in these directories.
 
 ------------------------------------------------------------------------------
                                                            *b:autopairs_enabled*
@@ -990,7 +959,8 @@ This variable also exists in a buffer variant.~
 
 Sets whether or not to search for close brackets after a space. This is
 default behavior in jiangmiao/auto-pairs, and disabled in Krasjet/auto.pairs.
-Neither of the two have an option to toggle this, however.
+Neither of the two have an option to toggle this, however. Aren't forks
+wonderful?
 
 value = 0:
 >
@@ -1090,11 +1060,11 @@ Used with |g:AutoPairsSingleQuoteMode| = 2
 Default: >
     {
         \ "erlang": {'<<': '>>'},
-        \ "tex": {'``': "''" },
+        \ "tex": {'``': "''", '$': '$'},
         \ "html": {'<': '>'},
-        \ 'vim': {'\v(^\s*\zs"\ze|".*"\s*\zs"\ze$|^(\s*[a-zA-Z]+\s*([a-zA-Z]*\s*\=\s*)?)@!(\s*\zs"\ze((\\\"|[^"])*$)@=))': ''},
-        \ 'rust': {'\w\zs<': '>', '&\zs''': ''},
-        \ 'php': {'<?': '?>//k]', '<?php': '?>//k]'}
+        \ 'vim': {'(^\s*\zs"\ze|".*"\s*\zs"\ze$|^(\s*[a-zA-Z]+\s*([a-zA-Z]*\s*\=\s*)?)@!(\s*\zs"\ze((\\\"|[^"])*$)@=))': {"close": '', 'mapclose': 0, 'regex': 1}},
+        \ 'rust': {'\w\zs<': {'close': '>', 'regex': 1}, '&\zs''': {'close': '', 'regex': 1}},
+        \ 'php': {'<?': { 'close': '?>', 'mapclose': ']'}, '<?php': {'close': '?>', 'mapclose': ']'}}
         \ }
 <
 
@@ -1126,9 +1096,9 @@ means attempts to deal with HTML-like tags using regex simply aren't feasible.
 Default: []
 This variable also exists in a buffer variant.~
 
-Contains a list of opening brackets  that result in an instant linebreak. It's
-empty by default as this is one of the more intrusive options -- make sure you
-want this when you set it.
+Contains a list of opening brackets  that result in an instant linebreak after
+the open character. It's empty by default as this is one of the more intrusive
+options -- make sure you want this when you set it.
 
 Example, assuming '{' is in the list: >
     Input : {|
@@ -1139,6 +1109,44 @@ Example, assuming '{' is in the list: >
 
 Note that the exact cursor and bracket positions may vary. See
 |autopairs-indent-problems| and |indent|.
+
+------------------------------------------------------------------------------
+                                                    *g:AutoPairsAutoBreakBefore*
+                                                                          list
+
+Default: []
+This variable also exists in a buffer variant~
+
+Contains a list of opening brackets that results in an instant linebreak
+before the open character. With great similarity to
+|g:AutoPairsAutoLineBreak|, this option is highly intrusive, and does not come
+with an undo switch.
+
+This is fully compatible with |g:AutoPairsLineBreak|; if both are enabled for
+a given pair, the effects stack.
+
+------------------------------------------------------------------------------
+                                               *g:AutoPairsSyncAutoBreakOptions*
+                                                                          bool
+Default: 0
+This variable also exists in a buffer variant~
+
+Whether or not to sync b:AutoPairsAutoBreakBefore = b:AutoPairsAutoLineBreak
+on buffer creation.
+
+When this has happened, internal pointer logic ensures any changes to either
+list is reflected in the other. However, by initialization logic, any and all
+pairs have to be added to |g:AutoPairsAutoLineBreak| (or its buffer variant).
+When the buffer has initialized, which the pairs are added to is irrelevant,
+because they're actually the same list.
+
+This also means that if, for some reason, you want to split the two lists into
+distinct lists without reloading the buffer, you have to ensure you make
+|g:AutoPairsAutoBreakBefore| a brand new list, or alternatively use |copy|
+
+Also, if this option is set, note that the contents of this variable is
+completely disregarded, and is overwritten if it exists.
+
 ------------------------------------------------------------------------------
                                              *g:AutoPairsCarefulStringExpansion*
                                                                            int
@@ -1178,20 +1186,6 @@ for implementation reasons, this only works when the open and close characters
 are the same.
 
 ------------------------------------------------------------------------------
-                                               *g:AutoPairsOpenBalanceBlacklist*
-                                                                         array
-This variable also exists in a buffer variant.~
-
-Default: []
-
-Blacklist for checking for balance before inserting.
-
-3.0.0-beta3:~
-    * Made the default [], because defaulting to quotes triggered weird
-      behavior, and I can't remember the rationale for adding them in the
-      first place
-
-------------------------------------------------------------------------------
                                                   *g:AutoPairsMultilineFastWrap*
                                                                            int
 
@@ -1213,6 +1207,11 @@ jiangmiao/auto-pairs.
 ------------------------------------------------------------------------------
                                                             *g:AutoPairsVersion*
                                                                           list
+
+DO NOT MODIFY
+This variable is a constant per version, and exists for compatibility reasons.
+Do not set this variable yourself. This can and will have unintended
+consequences.
 
 Defines the current version. Note that while this is largely intended to
 follow certain semantic aspects regarding the version wherever possible, to
@@ -1271,8 +1270,8 @@ This variable also exists in a buffer variant.~
 
 Default: 1
 
-Note that this variable only has an effect when triggered by
-|g:AutoPairsShortcutMultilineClose|
+Note that this variable only has an effect when |g:AutoPairsMultilineClose| is
+1.
 
 Defines whether or not to delete the space in the event of a multiline close.
 From the readme, there's this example: >
@@ -1314,12 +1313,10 @@ behavior and assume the next character is what you want to wrap.
                                                   *g:AutoPairsFiletypeBlacklist*
                                                                          array
 
-Default: []
+Default: ["registers"]
 
-List containing filetypes in which autopairs is disabled by default. Note that
-the keybinds and whatnot are loaded due to how the plugin is built up. This
-may change in a future version. The plugin may be manually enabled in spite of
-this blacklist. See |g:AutoPairsShortcutToggle|
+List containing filetypes in which autopairs is completely uninitialized. Note
+|g:AutoPairsShortcutToggle| cannot enable autopairs in these filetypes.
 
 ------------------------------------------------------------------------------
                                                           *b:AutoPairsJumpRegex*
@@ -1344,34 +1341,10 @@ the syntax rules for when `\V` is in effect.
 See also: |\v|, |\V|
 
 ------------------------------------------------------------------------------
-                                                         *g:AutoPairsEnableMove*
-                                                                           int
-This variable is deprecated~
-Default: 0
-
-Whether or not to enable default mappings for g:AutoPairsMoveCharacter, a
-utility for moving the character under the cursor to a defined pair.
-
-Disabled by default due to keybinds causing conflicts, and the ctrl variants
-not being viable in terminal Vim. For this reason, I only recommend enabling
-this if you're using gVim.
-
-Alternatively, if you like the move character feature
->
-    " Defines a move keybind for ) (as in whatever keybind triggers a move to
-    " the ) character)
-    inoremap <silent> <buffer> <Whatever keybind> <C-R>=autopairs#AutoPairsMoveCharacter(')')<CR>
-<
-The function can theoretically be used with any characters. For a default
-mapping to <M-key>, add it to g:AutoPairsMoveCharacter.
-
-Please use |g:AutoPairsMoveExpression|
-
-------------------------------------------------------------------------------
                                                      *g:AutoPairsCompatibleMaps*
                                                                            int
 
-Default: 1
+Default: 0
 
 This variable defines whether or not to use backwards-compatible maps.
 
@@ -1408,7 +1381,7 @@ or (value 0): >
 ------------------------------------------------------------------------------
                                                 *g:AutoPairsExperimentalAutocmd*
 
-Default: 0
+Default: 1
 
 Sounds super fancy, but it really isn't.
 The only difference is that it uses |BufWinEnter| (value = 1)
@@ -1561,7 +1534,7 @@ characters in |g:AutoPairsMoveCharacter|.
 For the same keybinds as jiangmiao/auto-pairs, use "<M-%key>".
 
 To disable the move feature, set this variable to ""~
-This detail replaces |g:AutoPairsEnableMove|, which is now deprecated.
+This detail replaces *g:AutoPairsEnableMove* , which is now removed.
 
 ------------------------------------------------------------------------------
                                                         *g:AutoPairsPreferClose*
@@ -1595,11 +1568,21 @@ character(s) may have been escaped. The internal check is for \<pair> and
 not \\<pair>: this means \[ doesn't insert the close pair, but \\[ does insert
 ].
 
-Modified multibyte functionality in 3.0.0-beta12 means that if '\\[': '\]' is
-defined as a pair, \\[ counts as escaping and \\\[ counts as the backslash
-being escaped. The backslash before the [ is considered a part of the pair.
-See |autopairs-regex-escaping| for an explanation on the double escaping in
-the pair itself.
+------------------------------------------------------------------------------
+                                                             *g:AutoPairsPrefix*
+
+Type: keybind string
+Default: <C-p>
+
+Prefix to use for auto-pairs incompatible maps. Only takes effect if
+|g:AutoPairsCompatibleMaps| = 0, as the legacy meta maps don't have any
+prefixes, there's no reason to have it anyway.
+
+Note that this keybind _can_ be blank, but it's recommended to reassign
+|g:AutoPairsMoveExpression| (or disable it). Otherwise, the move system can map
+raw keys, which can and will cause conflicts with typed letters if given the
+opportunity. Should you choose not to, though, you get to live with the
+consequences, if any.
 
 *autopairs-end-of-options* (this tag exists purely for doc editing purposes and
                             has no meaning for the plugin)
@@ -1777,6 +1760,29 @@ to map a key to this function unless:
     2. You want a second mapping
     3. You're doing scripting involving the function
 
+------------------------------------------------------------------------------
+autopairs#Variables#_InitVariables           *autopairs#Variables#InitVariables*
+                                                          *autopairs-early-init*
+Arguments: none
+
+This function initialises all the global variables auto-pairs uses.
+
+While primarily intended for internal use, it can be used to force load
+auto-pairs' variables. This is more or less entirely intended for object or 
+list variables, where setting the value may override other desired variables
+but where the variable doesn't also have a corresponding modifying function.
+
+Because it's an autoload function, unlike the normal load system, it's loaded
+on-demand rather than after the vimrc has loaded. This function is therefore
+the option for extending defaults where other functions aren't defined.
+
+Note that calling this function is not necessary if any other autoload 
+function is involved, including (and probably far more commonly) 
+autopairs#AutoPairsDefine.
+
+See |autopairs-undefined| for a more extended explanation of the why and how.
+
+
 ==============================================================================
 8. Declaring custom pairs                               *autopairs-custom-pairs*
 
@@ -1849,7 +1855,7 @@ While undefined keys have no effect, missing required will throw errors.
 
 *autopairs-open* *autopairs-close* *autopairs-passiveopen*
 *autopairs-passiveclose* *autopairs-mapclose* *autopairs-mapopen*
-*autopairs-alwaysmapdefault*
+*autopairs-alwaysmapdefault* *autopairs-regex*
 
 Essentially: >
     {
@@ -1859,7 +1865,10 @@ Essentially: >
             filetype variable. Optional, only used with AutoPairsAddPair"],
         "mapclose": "if int, enable or disable. If string, the keybind used
             to trigger the pair (specifically jump logic).
-            Optional, defaults to 1 and auto-resolve",
+            Optional, defaults to 1 and auto-resolve. Note that if this is set
+            to 0, alwaysmapdefaultclose is also set to 0 unless overridden.
+            Effectively, this acts as the primary control for all close
+            mapping",
         "delete": "int; whether or not to allow deletion. Forcibly set to 1
             for pairs with an empty close, for implementation reasons. Still
             requires deletion to be enabled to have an effect",
@@ -1875,6 +1884,12 @@ Essentially: >
             rather than open. This is largely useful for edge-cases like '',
             where certain characters become invalid after text is typed
             inside the quotes.",
+        "regex": "0/1, whether or not the enclosed pattern is regex. Disabled
+            by default, as most patterns WILL NOT need this set to true. Only
+            exceptionally rare patterns (notably, the vimscript comment
+            pattern) needs full regex support. Note that this applies to both
+            the open and close pairs, so if enabled, the close pair also has
+            to be written in a compatible way."
     }
 <
 
@@ -1949,5 +1964,10 @@ A consequence of auto-pairs being dead for a number of years is that catching
 up and modernising means certain things end up being incompatibly changed.
 This section isn't meant as an overview of that, but this fork will not go far
 to make sure compatibility is maintained with a dead repo.
+
+                                                        *autopairs-ai-uprising*
+Auto-pairs can be configured to force an AI uprising. Due to the danger of
+storing the instructions to this in text (CGPT, anyone?), the instructions for
+this have been stored in a video: https://www.youtube.com/watch?v=yRKh34Ofg50
 
 vim:ft=help
