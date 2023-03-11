@@ -1,3 +1,7 @@
+if !has('nvim') && has('vimscript-4')
+    scriptversion 4
+endif
+
 fun! autopairs#Balancing#doInsert(open, close, openPair, before, afterline, target)
     let open = a:open
     let close = a:close
@@ -21,12 +25,12 @@ fun! autopairs#Balancing#doInsert(open, close, openPair, before, afterline, targ
         let found = 0
         " delete pair
         for [o, c, opt] in b:AutoPairsList
-            let os = autopairs#Strings#matchend(before, o)
+            let os = autopairs#Strings#matchend(before, o, opt)
             if len(os) && len(os[1]) < len(target)
                 " any text before openPair should not be deleted
                 continue
             end
-            let cs = autopairs#Strings#matchbegin(afterline, c)
+            let cs = autopairs#Strings#matchbegin(afterline, c, opt)
             if len(os) && len(cs)
                 let found = 1
                 let before = os[1]
@@ -38,14 +42,14 @@ fun! autopairs#Balancing#doInsert(open, close, openPair, before, afterline, targ
         endfor
         if !found
             " delete character
-            let ms = autopairs#Strings#matchend(before, '\v.')
+            let ms = autopairs#Strings#matchend(before, '\v.', 0)
             if len(ms)
                 let before = ms[1]
                 let bs = bs .. autopairs#Strings#backspace(ms[2])
             end
         end
     endwhile
-    return bs .. del .. openPair
+    return bs .. del .. (index(b:AutoPairsAutoBreakBefore, open) != -1 ? "\<cr>" : '') .. openPair
                 \ .. close .. autopairs#Strings#left(close)
                 \ .. (index(b:AutoPairsAutoLineBreak, open) != -1 ?
                 \     "\<cr>" .. autopairs#AutoPairsDetermineCRMovement()
