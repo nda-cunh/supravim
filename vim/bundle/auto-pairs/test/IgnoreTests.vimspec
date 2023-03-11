@@ -1,6 +1,6 @@
 Describe Ignoring insertions is some times desired.
     Before each
-        call autopairs#Variables#InitVariables()
+        call autopairs#Variables#_InitVariables()
     end
     It should be possible to disable
         new | only!

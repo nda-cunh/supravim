@@ -16,14 +16,7 @@ function! lsp#internal#diagnostics#float#_enable() abort
     let s:enabled = 1
 
     let s:Dispose = lsp#callbag#pipe(
-        \ lsp#callbag#merge(
-        \   lsp#callbag#fromEvent(['CursorMoved', 'CursorHold']),
-        \   lsp#callbag#pipe(
-        \       lsp#callbag#fromEvent(['InsertEnter']),
-        \       lsp#callbag#filter({_->!g:lsp_diagnostics_float_insert_mode_enabled}),
-        \       lsp#callbag#tap({_->s:hide_float()}),
-        \   )
-        \ ),
+        \ lsp#callbag#fromEvent('CursorMoved'),
         \ lsp#callbag#filter({_->g:lsp_diagnostics_float_cursor}),
         \ lsp#callbag#tap({_->s:hide_float()}),
         \ lsp#callbag#debounceTime(g:lsp_diagnostics_float_delay),
@@ -53,15 +46,8 @@ function! s:show_float(diagnostic) abort
         call setbufline(l:doc_win.get_bufnr(), 1, lsp#utils#_split_by_eol(a:diagnostic['message']))
 
         " Compute size. 
-        if g:lsp_float_max_width >= 1
-            let l:maxwidth = g:lsp_float_max_width
-        elseif g:lsp_float_max_width == 0
-            let l:maxwidth = &columns
-        else
-            let l:maxwidth = float2nr(&columns * 0.4)
-        endif
         let l:size = l:doc_win.get_size({
-        \   'maxwidth': l:maxwidth,
+        \   'maxwidth': float2nr(&columns * 0.4),
         \   'maxheight': float2nr(&lines * 0.4),
         \ })
 
@@ -110,7 +96,8 @@ endfunction
 function! s:compute_position(size) abort
     let l:pos = screenpos(0, line('.'), col('.'))
     if l:pos.row == 0 && l:pos.col == 0
-        let l:pos = {'curscol': screencol(), 'row': screenrow()}
+        " When the specified position is not visible
+        return []
     endif
     let l:pos = [l:pos.row + 1, l:pos.curscol + 1]
     if l:pos[0] + a:size.height > &lines
