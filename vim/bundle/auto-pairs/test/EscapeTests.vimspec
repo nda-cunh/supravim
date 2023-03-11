@@ -1,6 +1,6 @@
 Describe Backslashes are trash, but
     Before each
-        call autopairs#Variables#InitVariables()
+        call autopairs#Variables#_InitVariables()
     End
     It should escape correctly
         new | only!
@@ -24,5 +24,14 @@ Describe Backslashes are trash, but
         call Expect('\\(').ToMatch('\\()')
         call Expect('\\"').ToMatch('\\""')
         call Expect('\\{').ToMatch('\\{}')
+    End
+    It should work with pairs starting with a backslash
+        let g:AutoPairs = autopairs#AutoPairsDefine({'\\[': '\]', '\\(': '\)'})
+        new | only!
+        call Expect('[').ToMatch('[]')
+        call Expect('\[').ToMatch('\[\]')
+        call Expect('\\[').ToMatch('\\[')
+        call Expect('\\\[').ToMatch('\\\[\]')
+        call Expect('\(').ToMatch('\(\)')
     End
 End

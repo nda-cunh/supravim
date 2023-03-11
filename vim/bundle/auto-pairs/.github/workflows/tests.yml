@@ -1,0 +1,47 @@
+name: Tests
+on:
+  push:
+    branches: [ master, develop, develop-4.0.0 ]
+  pull_request:
+    branches: [ master, develop, develop-4.0.0 ]
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - name: Run hooks
+        run: |
+          python3 -m pip install pre-commit
+          pre-commit run --all-files
+  test-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Versions
+        run: vim --version
+      - name: Run tests
+        run: |
+          git clone https://github.com/thinca/vim-themis
+          ./vim-themis/bin/themis
+  test-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Versions
+        run: vim --version
+      - name: Run tests
+        run: |
+          git clone https://github.com/thinca/vim-themis
+          ./vim-themis/bin/themis
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Versions
+        run: vim --version
+      - name: Run tests
+        shell: cmd
+        run: |
+          git clone https://github.com/thinca/vim-themis
+          bash -c "./vim-themis/bin/themis"

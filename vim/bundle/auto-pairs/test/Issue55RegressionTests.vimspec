@@ -1,6 +1,6 @@
 Describe Contextual balancing should cooperate with everything
     Before each
-        call autopairs#Variables#InitVariables()
+        call autopairs#Variables#_InitVariables()
         let g:AutoPairsStringHandlingMode = 1
     End
     It should work in semantic mode in markdown

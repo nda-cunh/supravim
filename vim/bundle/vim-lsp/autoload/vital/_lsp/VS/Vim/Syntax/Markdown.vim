@@ -74,7 +74,7 @@ function! s:apply(...) abort
       \   l:filetype_group
       \ )
     catch /.*/
-      unsilent echomsg printf('Fail to apply "syntax/%s.vim". Add "let g:markdown_fenced_languages = ["%s=$FILETYPE"]" to enable syntax', l:filetype, l:filetype)
+      unsilent echomsg string({ 'exception': v:exception, 'throwpoint': v:throwpoint })
     endtry
   endfor
 endfunction

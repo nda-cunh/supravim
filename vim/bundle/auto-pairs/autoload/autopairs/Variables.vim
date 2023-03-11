@@ -1,7 +1,3 @@
-if !has('nvim') && has('vimscript-4')
-    scriptversion 4
-endif
-
 fun! s:define(name, default)
     " g:AutoPairsForceDefine is a variable meant for tests.
     " It's undocumented because it shouldn't be used outside testing,
@@ -12,7 +8,7 @@ fun! s:define(name, default)
 endfun
 
 " TODO: sort this garbage
-fun! autopairs#Variables#InitVariables()
+fun! autopairs#Variables#_InitVariables()
     " Default autopairs
     call s:define("g:AutoPairs", {'(': ')', '[': ']', '{': '}', "'": "'", '"': '"',
                 \ '```': '```', '"""':'"""', "'''":"'''", "`":"`"})
@@ -21,14 +17,12 @@ fun! autopairs#Variables#InitVariables()
     " The last paragraph of the help is extremely important.
     call s:define("g:AutoPairsLanguagePairs", {
         \ "erlang": {'<<': '>>'},
-        \ "tex": {'``': "''", '$': '$', '\[': {'close': '\]', 'mapclose': 0}, '\(': {'close': '\)', 'mapclose': 0}},
+        \ "tex": {'``': "''", '$': '$'},
         \ "html": {'<': '>'},
-        \ 'vim': {'(^\s*\zs"\ze|".*"\s*\zs"\ze$|^(\s*[a-zA-Z]+\s*([a-zA-Z]*\s*\=\s*)?)@!(\s*\zs"\ze((\\\"|[^"])*$)@=))': {"close": '', 'mapclose': 0, 'regex': 1}},
-        \ 'rust': {'\w\zs<': {'close': '>', 'regex': 1}, '&\zs''': {'close': '', 'regex': 1}},
+        \ 'vim': {'\v(^\s*\zs"\ze|".*"\s*\zs"\ze$|^(\s*[a-zA-Z]+\s*([a-zA-Z]*\s*\=\s*)?)@!(\s*\zs"\ze((\\\"|[^"])*$)@=))': {"close": '', 'mapclose': 0}},
+        \ 'rust': {'\w\zs<': '>', '&\zs''': ''},
         \ 'php': {'<?': { 'close': '?>', 'mapclose': ']'}, '<?php': {'close': '?>', 'mapclose': ']'}}
         \ })
-
-    call s:define('g:AutoPairsPrefix', '<C-p>')
 
     " Krasjet: the closing character for quotes, auto completion will be
     " inhibited when the next character is one of these
@@ -50,9 +44,9 @@ fun! autopairs#Variables#InitVariables()
     " (Pro tip: also a great use for autocmds and default-disable rather than
     " plugin configuration. Project .vimrcs work too)
     call s:define('g:AutoPairsDirectoryBlacklist', [])
-    call s:define('g:AutoPairsFiletypeBlacklist', ["registers"])
+    call s:define('g:AutoPairsFiletypeBlacklist', [])
 
-    call s:define('g:AutoPairsCompatibleMaps', 0)
+    call s:define('g:AutoPairsCompatibleMaps', 1)
 
     " Olivia: set to 0 based on my own personal biases
     call s:define('g:AutoPairsMapBS', 0)
@@ -66,21 +60,18 @@ fun! autopairs#Variables#InitVariables()
 
     call s:define('g:AutoPairsCenterLine', 1)
 
-    call s:define('g:AutoPairsShortcutToggle', g:AutoPairsCompatibleMaps ? '<M-p>' : g:AutoPairsPrefix .. '<C-t>')
-    call s:define("g:AutoPairsShortcutIgnore", g:AutoPairsPrefix .. '<C-e>')
+    call s:define('g:AutoPairsShortcutToggle', g:AutoPairsCompatibleMaps ? '<M-p>': '<C-p><C-t>')
+    call s:define("g:AutoPairsShortcutIgnore", '<C-p><C-e>')
     call s:define('g:AutoPairsShortcutFastWrap', g:AutoPairsCompatibleMaps ? '<M-e>' : '<C-f>')
 
     call s:define('g:AutoPairsMoveCharacter', "()[]{}\"'")
-    call s:define('g:AutoPairsMoveExpression', g:AutoPairsPrefix .. '%key')
+    call s:define('g:AutoPairsMoveExpression', '<C-p>%key')
 
     " Variable controlling whether or not to require a space or EOL to complete
     " bracket pairs. Extension off Krasjet.
     call s:define('g:AutoPairsCompleteOnlyOnSpace', 0)
-    call s:define('g:AutoPairsSpaceCompletionRegex', '\S')
-    call s:define('g:AutoPairsAutoBuildSpaceWhitelist', 1)
-    call s:define('g:AutoPairsDefaultSpaceWhitelist', '')
 
-    call s:define('g:AutoPairsShortcutJump', g:AutoPairsCompatibleMaps ? '<M-n>' : g:AutoPairsPrefix .. '<C-s>')
+    call s:define('g:AutoPairsShortcutJump', g:AutoPairsCompatibleMaps ? '<M-n>' : '<C-p><C-s>')
 
     " Fly mode will for closed pair to jump to closed pair instead of insert.
     " also support AutoPairsBackInsert to insert pairs where jumped.
@@ -90,7 +81,7 @@ fun! autopairs#Variables#InitVariables()
     call s:define('g:AutoPairsMultilineCloseDeleteSpace', 1)
 
     " Work with Fly Mode, insert pair where jumped
-    call s:define('g:AutoPairsShortcutBackInsert', g:AutoPairsCompatibleMaps ? '<M-b>' : g:AutoPairsPrefix .. '<C-b>')
+    call s:define('g:AutoPairsShortcutBackInsert', g:AutoPairsCompatibleMaps ? '<M-b>' : '<C-p><C-b>')
 
     call s:define('g:AutoPairsNoJump', 0)
 
@@ -103,7 +94,6 @@ fun! autopairs#Variables#InitVariables()
     call s:define('g:AutoPairsSingleQuoteExpandFor', 'fbr')
 
     call s:define('g:AutoPairsAutoLineBreak', [])
-    call s:define('g:AutoPairsAutoBreakBefore', [])
 
     call s:define('g:AutoPairsCarefulStringExpansion', 1)
     call s:define('g:AutoPairsQuotes', ["'", '"'])
@@ -124,13 +114,17 @@ fun! autopairs#Variables#InitVariables()
     call s:define('g:AutoPairsPreferClose', 1)
 
     call s:define('g:AutoPairsMultilineClose', 0)
-    call s:define('g:AutoPairsShortcutToggleMultilineClose', g:AutoPairsPrefix .. '<C-m>')
+    call s:define('g:AutoPairsShortcutToggleMultilineClose', '<C-p><C-m>')
     call s:define('g:AutoPairsSearchEscape', 1)
 
     call s:define("g:AutoPairsBSAfter", 1)
     call s:define("g:AutoPairsBSIn", 1)
 
-    call s:define("g:AutoPairsSyncAutoBreakOptions", 0)
+    if exists('g:AutoPairsEnableMove')
+        echom "g:AutoPairsEnableMove has been deprecated. If you set it to 1, you may remove it."
+                    \ . " If you set it to 0, let g:AutoPairsMoveExpression = '' to disable move again."
+                    \ . "  See the documentation for both variables for more details."
+    endif
 endfun
 
 
@@ -138,20 +132,17 @@ fun! autopairs#Variables#_InitBufferVariables()
     call s:define('b:autopairs_enabled', 1)
     call s:define('b:AutoPairs', autopairs#AutoPairsDefaultPairs())
     call s:define('b:AutoPairsQuoteClosingChar', copy(g:AutoPairsQuoteClosingChar))
+    call s:define('b:AutoPairsNextCharWhitelist', copy(g:AutoPairsNextCharWhitelist))
     call s:define('b:AutoPairsOpenBalanceBlacklist', copy(g:AutoPairsOpenBalanceBlacklist))
     call s:define('b:AutoPairsSingleQuoteBalanceCheck', g:AutoPairsSingleQuoteBalanceCheck)
     call s:define('b:AutoPairsMoveCharacter', g:AutoPairsMoveCharacter)
-
     call s:define('b:AutoPairsCompleteOnlyOnSpace', g:AutoPairsCompleteOnlyOnSpace)
-    call s:define('b:AutoPairsSpaceCompletionRegex', g:AutoPairsSpaceCompletionRegex)
-    call s:define('b:AutoPairsAutoBuildSpaceWhitelist', g:AutoPairsAutoBuildSpaceWhitelist)
-    call s:define('b:AutoPairsNextCharWhitelist', copy(g:AutoPairsNextCharWhitelist))
-
     call s:define('b:AutoPairsFlyMode', g:AutoPairsFlyMode)
     call s:define('b:AutoPairsNoJump', g:AutoPairsNoJump)
     call s:define('b:AutoPairsSearchCloseAfterSpace', g:AutoPairsSearchCloseAfterSpace)
     call s:define('b:AutoPairsSingleQuoteMode', g:AutoPairsSingleQuoteMode)
     call s:define('b:AutoPairsSingleQuoteExpandFor', g:AutoPairsSingleQuoteExpandFor)
+    call s:define('b:AutoPairsAutoLineBreak', g:AutoPairsAutoLineBreak)
     call s:define('b:AutoPairsCarefulStringExpansion', g:AutoPairsCarefulStringExpansion)
     call s:define('b:AutoPairsQuotes', g:AutoPairsQuotes)
     call s:define('b:AutoPairsFlyModeList', g:AutoPairsFlyModeList)
@@ -182,13 +173,4 @@ fun! autopairs#Variables#_InitBufferVariables()
     call s:define("b:AutoPairsShortcutIgnore", g:AutoPairsShortcutIgnore)
 
     call s:define("b:AutoPairsIgnoreSingle", 0)
-    call s:define("b:AutoPairsSyncAutoBreakOptions", g:AutoPairsSyncAutoBreakOptions)
-
-    " Linebreaks
-    call s:define('b:AutoPairsAutoLineBreak', g:AutoPairsAutoLineBreak)
-    if !b:AutoPairsSyncAutoBreakOptions
-        call s:define('b:AutoPairsAutoBreakBefore', g:AutoPairsAutoBreakBefore)
-    else
-        let b:AutoPairsAutoBreakBefore = b:AutoPairsAutoLineBreak
-    endif
 endfun

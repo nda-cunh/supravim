@@ -17,13 +17,12 @@ endif
 " Current version; not representative of tags or real versions, but purely
 " meant as a number associated with the version. Semantic meaning on the first
 " digit will take place. See the documentation for more details.
-
-let g:AutoPairsVersion = 40002
+let g:AutoPairsVersion = 30062
 
 let s:save_cpo = &cpoptions
 set cpoptions&vim
 
-call autopairs#Variables#InitVariables()
+call autopairs#Variables#_InitVariables()
 
 fun! autopairs#AutoPairsAddLanguagePair(pair, language)
     if !has_key(a:pair, "open") || !has_key(a:pair, "close")
@@ -106,8 +105,8 @@ fun! autopairs#AutoPairsAddPair(pair, ...)
     endif
 endfun
 
-" Returns the default set of pairs given the current buffer's filetype
-func! autopairs#AutoPairsDefaultPairs()
+" default pairs base on filetype
+func! autopairs#AutoPairsDefaultPairs(...)
     let r = copy(g:AutoPairs)
     if has_key(g:AutoPairsLanguagePairs, &ft)
         for [open, close] in items(g:AutoPairsLanguagePairs[&ft])
@@ -159,12 +158,8 @@ func! autopairs#AutoPairsInsert(key, ...)
     " Check open pairs {{{
     " TODO: maybe move this to another file?
     for [open, close, opt] in b:AutoPairsList
-        let ms = autopairs#Strings#matchend(before .. a:key, open, opt)
-        let m = matchstr(afterline, '^\v\s*\zs' .. autopairs#Utils#escape(close, opt))
-        "if (close == '''') 
-            "echom open close opt
-            "echom "Line: " before .. a:key
-        "endif
+        let ms = autopairs#Strings#matchend(before .. a:key, open)
+        let m = matchstr(afterline, '^\v\s*\zs\V' .. escape(close, '\'))
 
         if len(ms) > 0
             let target = ms[1]
@@ -214,7 +209,7 @@ func! autopairs#AutoPairsInsert(key, ...)
             " Krasjet: only insert the closing pair if the next character is a space
             " or a non-quote closing pair, or a whitelisted character (string)
             " Olivia: that ^ if and only if it's desired.
-            if b:AutoPairsCompleteOnlyOnSpace == 1 && afterline[0] =~? '^\v' .. b:AutoPairsSpaceCompletionRegex && afterline[0] !~# b:autopairs_whitespace_exceptions
+            if b:AutoPairsCompleteOnlyOnSpace == 1 && afterline[0] =~? '^\v\S' && afterline[0] !~# b:autopairs_next_char_whitelist
                 break
             end
 
@@ -262,8 +257,8 @@ func! autopairs#AutoPairsDelete()
                 continue
             endif
             let rest_of_line = opt['multiline'] ? after : ig
-            let b = matchstr(before, autopairs#Utils#escape(open, opt) .. '\v\s?$')
-            let a = matchstr(rest_of_line, '^\v\s*' .. autopairs#Utils#escape(close, opt))
+            let b = matchstr(before, '\V' .. open .. '\v\s?$')
+            let a = matchstr(rest_of_line, '^\v\s*\V' .. close)
 
             if b != '' && a != ''
                 if b[-1:-1] == ' '
@@ -288,12 +283,12 @@ func! autopairs#AutoPairsDelete()
             if (close == '')
                 continue
             endif
-            let m = autopairs#Strings#matchend(before, autopairs#Utils#escape(open, opt) .. '\v\s*' .. autopairs#Utils#escape(close, opt) .. '\v$', 0)
+            let m = autopairs#Strings#matchend(before, '\V' .. open .. '\v\s*' .. '\V' .. close .. '\v$')
 
             if len(m) > 0
                 return autopairs#Strings#backspace(m[2])
             elseif opt["multiline"] && b:AutoPairsMultilineBackspace
-                let m = matchstr(before, '^\v\s*' .. autopairs#Utils#escape(close, opt))
+                let m = matchstr(before, '^\v\s*\V' .. close)
                 if m != ''
                     let b = ""
                     let offset = 1
@@ -305,7 +300,7 @@ func! autopairs#AutoPairsDelete()
                             return "\<BS>"
                         endif
                     endwhile
-                    let a = matchstr(getline(line('.') - offset), autopairs#Utils#escape(open, opt) .. '\v\s*$') .. ' '
+                    let a = matchstr(getline(line('.') - offset), '\V' .. open .. '\v\s*$') .. ' '
                     if a != ' '
                         return autopairs#Strings#backspace(a) .. autopairs#Strings#backspace(b) .. autopairs#Strings#backspace(m)
                     endif
@@ -342,9 +337,8 @@ func! autopairs#AutoPairsFastWrap(...)
 
             let match = []
             let esc = substitute(close, "'", "''", "g")
-            let esc = autopairs#Utils#escape(esc, opt)
+            let esc = substitute(esc, '\', '\\\\', "g")
 
-            " TODO: Wtf is this for?
             let res = substitute(after, '^\V' .. esc, '\=add(match, submatch(0))', '')
 
             if len(match) > 0 && len(match[0]) > length
@@ -377,9 +371,9 @@ func! autopairs#AutoPairsFastWrap(...)
             if close == ''
                 continue
             end
-            if after =~ '\v^\s*' .. autopairs#Utils#escape(open, opt)
+            if after =~ '^\s*\V' .. open
                 if open == close && count(before, open) % 2 != 0
-                            \ && before =~ autopairs#Utils#escape(open, opt) .. '\v.*$' && after =~ '^' .. autopairs#Utils#escape(close, opt)
+                            \ && before =~ '\V' .. open .. '\v.*$' && after =~ '^\V' .. close
                     break
                 endif
 
@@ -387,7 +381,7 @@ func! autopairs#AutoPairsFastWrap(...)
                 " Search goes for the first one rather than the logical option
                 " -- the last one. This is only a problem when open == close,
                 "  which means in the case of quotes.
-                if open == close && after =~ '^\v\s+' .. autopairs#Utils#escape(close, opt)
+                if open == close && after =~ '^\v\s+\V' .. close
                     call search(close, 'We')
                 endif
                 normal! p
@@ -442,10 +436,12 @@ func! autopairs#AutoPairsJump()
     call search('\V' .. b:AutoPairsJumpRegex, 'W')
 endf
 
+" Handles the move feature -- note that the move feature has been disabled by
+" default. DO NOT confuse this for the jump feature.
 func! autopairs#AutoPairsMoveCharacter(key)
     let c = getline(".")[col(".")-1]
     let escaped_key = substitute(a:key, "'", "''", 'g')
-    return "\<DEL>\<ESC>:call search(" .. "'" .. escaped_key .. "'" .. ")\<CR>a" .. c .. "\<LEFT>"
+    return "\<DEL>\<ESC>:call search("."'" .. escaped_key .. "'" .. ")\<CR>a" .. c .. "\<LEFT>"
 endf
 
 " Back insert for flymode.
@@ -504,7 +500,7 @@ func! autopairs#AutoPairsReturn()
         " \V<open>\v is basically escaping. Makes sure ( isn't considered the
         " start of a group, which would yield incorrect results.
         " Used to prevent fuckups
-        if before =~ autopairs#Utils#escape(open, opt) .. '\v' .. (b:AutoPairsReturnOnEmptyOnly ? '\s*' : '.*') .. '$' && afterline =~ '^\s*' .. autopairs#Utils#escape(close, opt)
+        if before =~ '\V' .. open .. '\v' .. (b:AutoPairsReturnOnEmptyOnly ? '\s*' : '.*') .. '$' && afterline =~ '^\s*\V' .. close
             if b:AutoPairsCarefulStringExpansion && index(b:AutoPairsQuotes, open) != -1 && count(before, open) % 2 == 0
                 return ""
             endif
@@ -530,7 +526,7 @@ func! autopairs#AutoPairsSpace()
         if close == ''
             continue
         end
-        if before =~ autopairs#Utils#escape(open, opt) .. '\v$' && after =~ '^' .. autopairs#Utils#escape(close, opt)
+        if before =~ '\V' .. open .. '\v$' && after =~ '^\V' .. close
             if close =~ '\v^[''"`]$'
                 return "\<SPACE>"
             else
@@ -564,7 +560,7 @@ endf
 
 func! autopairs#AutoPairsIgnore()
     let b:AutoPairsIgnoreSingle = !b:AutoPairsIgnoreSingle
-    echo (b:AutoPairsIgnoreSingle ? "Skipping" : "Not skipping") "next pair"
+    echo (b:AutoPairsIgnoreSingle ? "Skipping next pair" : "Not skipping next pair")
     return ''
 endfunc
 
@@ -584,7 +580,7 @@ func! autopairs#AutoPairsInit()
     let b:autopairs_saved_pair = [0, 0]
     " Krasjet: only auto-complete if the next character, or characters, is one of
     " these
-    let b:autopairs_whitespace_exceptions = []
+    let b:autopairs_next_char_whitelist = []
     let b:AutoPairsList = []
 
     " Deal with mappings associated with specific pairs
@@ -619,7 +615,8 @@ func! autopairs#AutoPairsTryInit()
         call g:AutoPairsInitHook()
     endif
     if index(g:AutoPairsDirectoryBlacklist, getcwd()) >= 0 || index(g:AutoPairsFiletypeBlacklist, &ft) != -1
-        return
+        " TODO: return and make an explicit enable possible
+        let b:autopairs_enabled = 0
     endif
 
     call autopairs#Variables#_InitBufferVariables()

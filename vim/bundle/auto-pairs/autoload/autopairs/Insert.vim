@@ -46,7 +46,7 @@ fun! autopairs#Insert#checkBalance(open, close, opt, before, after, afterline, o
     endif
 
     " Krasjet: do not complete the closing pair until pairs are balanced
-    if a:open !~# b:autopairs_balance_blacklist
+    if a:open !~# b:autopairs_open_blacklist
         if b:AutoPairsStringHandlingMode == 1 && autopairs#Strings#isInString()
             " We only need to address mode == 1 here.
             return strClose <= strOpen
@@ -118,7 +118,7 @@ fun! autopairs#Insert#checkClose(key, before, after, afterline)
             " Krasjet: do not search for the closing pair if spaces are in between
             " Olivia: Add override for people who want this (like me)
             " Note: this only checks the current line
-            let m = matchstr(a:afterline, searchRegex .. autopairs#Utils#escape(close, opt))
+            let m = matchstr(a:afterline, searchRegex .. escape(close, '\'))
             if m != ''
                 " Krasjet: only jump across the closing pair if pairs are balanced
                 let balance = autopairs#Insert#checkBalance(open, close, opt, a:before, a:after, a:afterline, {}, 1)
@@ -130,7 +130,7 @@ fun! autopairs#Insert#checkClose(key, before, after, afterline)
                 if b:AutoPairsNoJump == 1 || index(b:AutoPairsJumpBlacklist, close) != -1
                     return a:key
                 endif
-                if a:before =~ '\V' .. autopairs#Utils#escape(open, opt) .. '\v\s*$' && m[0] =~ '\v\s'
+                if a:before =~ '\V' .. open .. '\v\s*$' && m[0] =~ '\v\s'
                     " remove the space we inserted if the text in pairs is blank
                     return "\<DEL>" .. autopairs#Strings#right(m[1:])
                 else
@@ -145,13 +145,12 @@ fun! autopairs#Insert#checkClose(key, before, after, afterline)
             " This may check multiline depending on something.
             " Still not entirely sure what this brings to the table that the
             " other clause doesn't
-            let m = matchstr(a:after, '\v^\s*\zs\V' .. autopairs#Utils#escape(close, opt))
+            let m = matchstr(a:after, '\v^\s*\zs\V' .. escape(close, '\'))
             if m != ''
                 if opt['multiline']
                     if b:AutoPairsMultilineCloseDeleteSpace && b:autopairs_return_pos == line('.') && getline('.') =~ '\v^\s*$'
                         exec 'normal! ddk$'
                     end
-
                     call search(m, 'We')
                     return "\<Right>"
                 else
