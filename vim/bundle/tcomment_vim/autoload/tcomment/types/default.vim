@@ -1,8 +1,8 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @Website:     https://github.com/tomtom
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Last Change: 2022-12-07
-" @Revision:    36
+" @Last Change: 2021-03-29
+" @Revision:    35
 
 call tcomment#type#Define('aap',              '# %s'             )
 call tcomment#type#Define('ada',              '-- %s'            )
@@ -270,7 +270,6 @@ call tcomment#type#Define('typescript.tsx_block', g:tcomment#block_fmt_c   )
 call tcomment#type#Define('typescript.tsx_inline', g:tcomment#inline_fmt_c )
 call tcomment#type#Define('typoscript',       '# %s'             )
 call tcomment#type#Define('upstart',          '# %s'             )
-call tcomment#type#Define('unison',           '-- %s'            )
 call tcomment#type#Define('vader',            {'col': 1, 'commentstring': '" %s' })
 call tcomment#type#Define('vhdl',             '-- %s'            )
 call tcomment#type#Define('verilog',          '// %s'            )
@@ -283,7 +282,7 @@ call tcomment#type#Define('viki',             '%% %s'            )
 call tcomment#type#Define('viki_3',           '%%%%%% %s'        )
 call tcomment#type#Define('viki_inline',      '{cmt: %s}'        )
 call tcomment#type#Define('vim',              {'choose': [
-      \ {'if': 'search(''^\s*:\?vim9script\>'', "bcnW") ||' .
+      \ {'if': 'search(''^\s*vim9script\s*$'', "bcnW") ||' .
       \        'getline(search(''^\s*\%(fu\%[nction]\|def\)\>'', ''bcnWz'')) =~# ''^\s*def\>'' && search(''^\s*def\>'', ''bcnWz'') < line("''[")',
       \  'commentstring': '# %s'},
       \ {'commentstring': '" %s'}],

@@ -49,7 +49,6 @@ function! s:on_complete_done() abort
   endif
 
   let s:context['done_line'] = getline('.')
-  let s:context['done_line_nr'] = line('.')
   let s:context['completed_item'] = copy(v:completed_item)
   let s:context['done_position'] = lsp#utils#position#vim_to_lsp('%', getpos('.')[1 : 2])
   let s:context['complete_position'] = l:managed_user_data['complete_position']
@@ -72,7 +71,6 @@ function! s:on_complete_done_after() abort
   endif
 
   let l:done_line = s:context['done_line']
-  let l:done_line_nr = s:context['done_line_nr']
   let l:completed_item = s:context['completed_item']
   let l:done_position = s:context['done_position']
   let l:complete_position = s:context['complete_position']
@@ -81,7 +79,7 @@ function! s:on_complete_done_after() abort
   let l:start_character = s:context['start_character']
 
   " check the commit characters are <BS> or <C-w>.
-  if line('.') ==# l:done_line_nr && strlen(getline('.')) < strlen(l:done_line)
+  if strlen(getline('.')) < strlen(l:done_line)
     doautocmd <nomodeline> User lsp_complete_done
     return ''
   endif
