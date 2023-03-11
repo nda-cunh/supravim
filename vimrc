@@ -396,25 +396,23 @@ if expand('%:e') == ''
 	let g:airline_section_z = airline#section#create(['%p/100%%', ' Line: %l', 'hunks', ' Col:%c'])
 	let g:airline_section_b = airline#section#create([' im'])
 endif
-
 let g:airline_section_b = airline#section#create([' im'])
-
-if !exists('g:airline_symbols')
-	let g:airline_symbols = {}
-endif
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.colnr = ' :'
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ' :'
-let g:airline_symbols.maxlinenr = '☰ '
-let g:airline_symbols.dirty='⚡'
-let g:airline#extensions#nerdtree_statusline = 0
-" ----------------- POPUP ------------------"
+" Activer le plugin airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#tabs_label = 'Tabs'
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
 
+" ----------------- POPUP ------------------"
 autocmd InsertEnter * call CreatePop()
 autocmd VimEnter * call CreatePopit()
 hi MyPopupColor ctermfg=cyan 
