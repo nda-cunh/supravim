@@ -32,4 +32,19 @@
 			"}",
 		]
 	},
+
+	"class": {
+		"prefix": ["class"],
+		"description": "class vala",
+		"body": [
+			"class ${1:MyClass}{",
+			"\tpublic $1(){",
+			"\t\t$0",
+			"\t}",
+			"\t~$1(){",
+			"\t\t",
+			"\t}",
+			"}",
+		]
+	}
 }
