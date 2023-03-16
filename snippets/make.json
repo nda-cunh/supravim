@@ -36,12 +36,12 @@
 	},
 	"MakefileC": {
 		"prefix": ["makefile_c"],
-		"description": "Makefile creator CPP",
+		"description": "Makefile creator C",
 		"body": [
 			"CC=clang",
 			"NAME = ${1:name}",
 			"SRCS = ${VIM:system('echo *.c')}HEADER = ${VIM:system('echo *.h')}OBJS = \\$(SRCS:.cpp=.o)",
-			"CFLAGS = -Wall -Wextra -Werror --std=c++98",
+			"CFLAGS = -Wall -Wextra -Werror",
 			"LDFLAGS = ",
 			"",
 			"all:\\$(NAME)",
@@ -68,5 +68,5 @@
 			"",
 			".PHONY: all fclean clean run run2 re",
 		]
-	},
+	}
 }
