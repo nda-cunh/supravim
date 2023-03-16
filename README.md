@@ -1,4 +1,4 @@
-# SupraVim 4.8.1
+# SupraVim 4.8.2
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
@@ -59,6 +59,7 @@ ou
 | Déplacement entre les onglets | Ctrl + Flèche|
 | Ouvrir un terminal | Shift - T|
 | Ctrl+R | le contraire du Undo.. le Redo|
+| Space  | lance la dernière macro |
 | ------ | ------ |
 | Ctr+ Up | Aller sur la fonction sous le curseur|
 | Ctr+ Down |Retourner sur la fonction d'avant|
@@ -160,46 +161,3 @@ remplacer .py par l'extension de votre fichier
 # Autre chose ? une idée ?
 ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
 je suis à l'écoute d'un peu tout :)
-
-
-# CHANGELOG
-# Nouveautés de la 2.0
-
-- Support des onglets.
-- Ajout de l'intégration GDB.
-- UNDO infini! (se sauvegarde même après la fermeture).
-- Générateur de prototype pour les headers C.
-- Commenter et décommenter en selectionnant une ou plusieurs lignes.
-- Création d'un mini logiciel Supravim (`supravim -h` pour plus de détails).
-    * Personnaliser le thème de Vim et les options.
-    * Désinstaller ou mettre à jour Supravim.
-
-# Nouveautés de la 3.0
-
-- Beaucoup de corrections de bugs !
-- GDB (CTRL+F5) compile avant de se lancer.
-- Un installateur plus propre.
-- Les configurations sont enregistrées après les mises à jour.
-- Un espace dédié dans le vimrc qui ne sera pas effacé lors des mises à jour.
-- Une intégration aux CTAGS.
-- Pouvoir quitter les terminaux ou le GDB avec CTRL+Q ou s'en deplacer.
-- SNIPPETS intelligents et complets.
-- F3-F5 efface désormais l'écran pour ne pas saccader l'affichage.
-- De nouvelles options et une autocomplétion dans le programme.
-- De nouveaux thèmes (onedark|half|light / atom / iceberg).
-- Une meilleure integration de thèmes et  Nouveautés de la 3.0
-
-# Nouveautés de la 4.0
-
-- Nouveau moteur de complétion sur clang
-- Ctags intelligent
-- SupraNorme (norme en temps réel)
-- Nouveau moteur de Snippet (désormais peuvent être changé mannuellement avec :VsnipOpen)
-- refonte de l'autocompilation F5
-- suppression du bug avec les fichier temporaire dans le TMP
-- rearrangement de l'installeur
-- utilisation des extensions de fichier plutôt que leurs filetype
-- et evidément plein de bugs corrigé.
-4.4:
-- F3 = active/desactive supraNorm
-- Ajout de snippet pour Makefile
