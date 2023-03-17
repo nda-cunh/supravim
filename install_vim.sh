@@ -93,6 +93,9 @@ add_config_rc(){
 	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE} >/dev/null; then
 		echo "stty start undef" >> ${SHELL_ACTIVE}
 	fi
+	if ! grep -qe "^alias smake=supramake" ${SHELL_ACTIVE} >/dev/null; then
+		echo "alias smake=supramake" >> ${SHELL_ACTIVE}
+	fi
 	if ! grep -qE "^export PATH=.*[\$]HOME/\.local/bin.*$" ${SHELL_ACTIVE} >/dev/null; then
 		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
