@@ -1,10 +1,18 @@
-using Posix;
-
 int	main(string []args)
 {
 	string path = Environment.get_variable ("PWD");
 	string home = Environment.get_variable ("HOME");
-	string rules = args[1] ?? "all";
+	string []rules = {};
+	string []av_exec;
+	
+	if (args[1] == null){
+		rules += "all";
+	}
+	else{
+		for (var i = 1; args[i] != null; i++){
+			rules += args[i];
+		}
+	}
 	int i = path.length - 1;
 	int ret;
 
@@ -15,9 +23,13 @@ int	main(string []args)
 			int pid = fork();
 			if (pid == 0)
 			{
-				if (rules == "valanocompileabcsupra")
+				if (rules[0] == "valanocompileabcsupra")
 					return (0);
-				execvp("make", {"make", "-C", path, rules, "--no-print-directory"});
+				av_exec = {"make", "-C", path, "--no-print-directory"};
+				foreach(var item in rules){
+					av_exec += item;
+				}
+				execvp("make", av_exec);
 			}
 			waitpid(pid, out ret, 0);
 			return (ret);
