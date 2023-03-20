@@ -43,7 +43,7 @@ error() {
 
 step=1
 backup_config() {
-	if [ -f ~/.vimrc_supravim_off ] || [ `cat ~/.vimrc | head -n1 | grep -c SUPRAVIM` -eq 0 ] ; then
+	if [ -f ~/.vimrc_supravim_off ] || [ `head -n2 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ] ; then
 		status "Switching your vim configuration, to restore it use \033[1msupravim switch\033[0m"
 		supravim switch >/dev/null
 	fi
