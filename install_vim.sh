@@ -136,7 +136,7 @@ install_SupraVim(){
 # print ascii line by line wiht rainbow colors
 
 print_ascii_line() {
-	printf "$2$1 ${reset}" 
+	printf "$2$1 ${reset}\n" 
 }
 
 print_ascii() {
