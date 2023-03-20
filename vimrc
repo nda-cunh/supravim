@@ -3,8 +3,8 @@ vim9script
 set nocompatible
 filetype off
 
-call pathogen#infect()
-call pathogen#helptags()
+pathogen#infect()
+pathogen#helptags()
 
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"
@@ -16,8 +16,8 @@ set t_Co=256
 
 #-------------- Save Undo  ------------"
 if !isdirectory($HOME .. "/.cache/vim/undo")
-	call mkdir($HOME .. "/.cache/vim/", "", 0770)
-	call mkdir($HOME .. "/.cache/vim/undo", "", 0770)
+	mkdir($HOME .. "/.cache/vim/", "", 0770)
+	mkdir($HOME .. "/.cache/vim/undo", "", 0770)
 endif
 
 set undodir=~/.cache/vim/undo
@@ -100,6 +100,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
 # set noswapfile
+
 #---------- Qui utilise la scrollbar -----------"
 set guioptions-=r
 set guioptions-=R
@@ -120,7 +121,8 @@ g:mucomplete#enable_auto_at_startup = 1
 #--------------- SYNTASTIC ---------------"
 var current_compiler = "clang"
 g:rainbow_active = 1
-
+g:syntastic_error_symbol = '\ ✖'
+g:syntastic_warning_symbol = '\ ✖'
 g:syntastic_cpp_compiler = 'clang++'
 g:syntastic_cpp_compiler_options = ' -Wall -Wextra'
 g:syntastic_check_on_open = 1
@@ -129,24 +131,24 @@ g:syntastic_cpp_check_header = 1
 g:syntastic_cpp_remove_include_errors = 1
 g:syntastic_c_remove_include_errors = 1
 g:syntastic_c_include_dirs = ['../../../include', '../../include', '../include', './include', '../../../includes', '../../includes', '../includes', './includes', './libft', '../libft', '../../libft', '../../../libft', './libft/include', '../libft/include', '../../libft/include']
-#
+
 #--------------- PL NERDTREE ---------------"
 g:nerdtree_tabs_open_on_console_startup = 1
 g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
+
 #---------------- AUTO LOAD---------------"
 def AirFresh()
 	exec "AirlineRefresh"
 enddef
 
-autocmd InsertEnter * call AirFresh()
-autocmd InsertLeave * call AirFresh()
-autocmd TabLeave * call AirFresh()
+autocmd InsertEnter * AirFresh()
+autocmd InsertLeave * AirFresh()
+autocmd TabLeave * AirFresh()
 
-autocmd VimEnter * call ReBase()
+autocmd VimEnter * ReBase()
 def ReBase()
 	var w = expand("%:p:h")
-	echo w
 	if isdirectory(w)
 		exec "cd" "%:p:h"
 	endif
@@ -179,12 +181,12 @@ command -nargs=+ -bar Make :call Make( '<args>' )
 
 def g:Make(rules: string)
 	silent exec "!clear -x"
-	call setenv('rulesmake', rules)
+	 setenv('rulesmake', rules)
 	! supramake $rulesmake
 enddef
 
 def VerifMake()
-	call setenv('rulesmake', 'valanocompileabcsupra')
+	setenv('rulesmake', 'valanocompileabcsupra')
 	! supramake $rulesmake
 enddef
 
@@ -195,10 +197,10 @@ def g:CompileRun()
 	endif
 	w!
 	exec "cd" "%:p:h"
-	silent call VerifMake()
+	silent VerifMake()
 	var err = v:shell_error
 	if err != 42
-		call g:Make('run')
+		g:Make('run')
 	else
 		var ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
@@ -222,7 +224,7 @@ def g:Compile()
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
 
-	call g:Make('all')
+	g:Make('all')
 	var err = v:shell_error
 	if err != 0
 		var ext = expand('%:e')
@@ -253,7 +255,7 @@ def g:Gdbf()
 	else
 		set splitbelow nosplitbelow
 		set splitright nosplitright
-		silent call g:Compile()
+		silent g:Compile()
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
 			exec ":Termdebug -n ./a.out"
@@ -276,10 +278,7 @@ enddef
 
 # -------------- SupraNorm ----------------"
 highlight DapBreakpoint ctermfg=135
-
 sign define NormLinter text=\ ✖ texthl=DapBreakpoint
-g:syntastic_error_symbol = '\ ✖'
-g:syntastic_warning_symbol = '\ ✖'
 
 #*norme* g:norm_activate = true
 g:norm_activate = false
@@ -305,7 +304,7 @@ def GetErrors(filename: string): list<any>
 		if s =~# regex
 			var groups = matchlist(s, regex)
 			groups = [groups[1], groups[2], groups[3], groups[4]]
-			call add(errors, groups)
+			add(errors, groups)
 		endif
 	endfor
 	return errors
@@ -314,7 +313,6 @@ enddef
 g:errors = []
 
 def HighlightNorm(filename: string)
-	# call clearmatches("NormErrors")
 	if g:norm_activate == true
 		g:errors = GetErrors(filename)
 	endif
@@ -324,7 +322,7 @@ def HighlightNorm(filename: string)
 	for error in g:errors
 		if error[3] == "Missing or invalid 42 header"	#HEADER
 			continue									#HEADER
-			endif											#HEADER
+			endif										#HEADER
 			exe ":sign place 2 line=" .. error[1] " name=NormLinter file=" .. filename
 	endfor
 		endif
@@ -352,8 +350,8 @@ def GetErrorDict(filename: string): list<string>
 	return errors
 enddef
 
-command Norm call HighlightNorm(expand("%"))
-autocmd CursorMoved *.c,*.h call DisplayErrorMsg()
+command Norm HighlightNorm(expand("%"))
+autocmd CursorMoved *.c,*.h DisplayErrorMsg()
 autocmd BufEnter,BufWritePost *.c,*.h Norm
 # autocmd BufLeave *.c,*.h call clearmatches("NormErrors")
 
@@ -364,12 +362,12 @@ def NERDTreeHighlightFile(extension: string, fg: string, bg: string)
 enddef
 
 #TODO
-call NERDTreeHighlightFile('.c', 'blue', 'none')
-call NERDTreeHighlightFile('h', 'green', 'none')
-call NERDTreeHighlightFile('.cpp', 'blue', 'none')
-call NERDTreeHighlightFile('.hpp', 'green', 'none')
-call NERDTreeHighlightFile('vala', 'magenta', 'none')
-call NERDTreeHighlightFile('Makefile', 'red', 'none')
+NERDTreeHighlightFile('.c', 'blue', 'none')
+NERDTreeHighlightFile('h', 'green', 'none')
+NERDTreeHighlightFile('.cpp', 'blue', 'none')
+NERDTreeHighlightFile('.hpp', 'green', 'none')
+NERDTreeHighlightFile('vala', 'magenta', 'none')
+NERDTreeHighlightFile('Makefile', 'red', 'none')
 
 augroup nerdtreeconcealbrackets
 	autocmd!
@@ -401,11 +399,11 @@ g:airline#extensions#tabline#right_sep = ''
 g:airline#extensions#tabline#right_alt_sep = ''
 
 # ----------------- POPUP ------------------ #
-autocmd InsertEnter * call CreatePop()
-autocmd VimEnter * call CreatePopit()
+autocmd InsertEnter * CreatePop()
+autocmd VimEnter * CreatePopit()
 hi MyPopupColor ctermfg=cyan
 
-autocmd VimLeave * call RemovePopit()
+autocmd VimLeave * RemovePopit()
 
 def CreatePopit()
 	var s = system("supravim --version cached > /tmp/xdfe-" .. g:file_tmp .. "&")
@@ -416,33 +414,19 @@ def RemovePopit()
 enddef
 
 g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
-g:step = 0
+g:step = false
 
 def CreatePop()
-	if g:step == 1
+	if g:step == true
 		return
 	endif
-	g:step = 1
-
+	g:step = true
 	var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)
 	if s == ""
 		return
 	endif
-	call popup_create("Supravim update", {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
+	popup_create("Supravim update", {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
 enddef
-
-# if executable('clangd')
-# 	au User lsp_setup call lsp#register_server({'name': 'clangd', 'cmd': {server_info->['clangd', '--clang-tidy', '-j', '8']}, 'allowlist': ['cpp', 'c']})
-# endif
-#
-# if executable('vala-language-server')
-# 	au User lsp_setup call lsp#register_server({
-# 				\ 'name': 'vala-language-server',
-# 				\ 'cmd': {server_info->['vala-language-server']},
-# 				\ 'allowlist': ['vala'],
-# 				\ })
-# endif
-
 
 def On_lsp_buffer_enabled()
 	setlocal omnifunc=lsp#complete
