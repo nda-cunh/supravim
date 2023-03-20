@@ -48,17 +48,17 @@ backup_config() {
 		supravim switch >/dev/null
 	fi
 	if [ $step -eq 1 ] && [ -f ~/.vimrc ]; then
-		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
+		balise=`grep -Ezo "#[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
 		if [ "$balise" = "" ]; then
-			balise="\"====================== YOUR CONFIG =======================\n\
-\"=========================================================="
+			balise="#====================== YOUR CONFIG =======================\n\
+#=========================================================="
 		fi
-		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
-		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
+		mouse=$(grep -c "#\*mouse\*" ~/.vimrc 2>/dev/null)
+		nerdtree=$(grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
-		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
-		norme=$(grep -c "\"\*norme\*" ~/.vimrc 2>/dev/null)
+		cflags=$(grep -c "#\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
+		norme=$(grep -c "#\*norme\*" ~/.vimrc 2>/dev/null)
 		step=2
 	elif [ -f ~/.vimrc ]; then
 		if ! [ "$mouse" = "0" ]; then
@@ -136,7 +136,7 @@ install_SupraVim(){
 # print ascii line by line wiht rainbow colors
 
 print_ascii_line() {
-	echo "$2$1 ${reset}" 
+	printf "$2$1 ${reset}" 
 }
 
 print_ascii() {
