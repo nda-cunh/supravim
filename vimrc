@@ -11,14 +11,6 @@ filetype plugin indent on
 colorscheme onehalf
 set background=dark
 set t_Co=256
-# 1: gruvbox
-# 2: molokai
-# 3: dracula
-# 4: atom
-# 5: iceberg
-# 6: onedark
-# 7: onehalf
-# 8: onelight
 
 # icons_enabled
 
@@ -40,50 +32,48 @@ g:termdebug_wide = 1
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
 
 #--------------- Onglets ---------------------"
-noremap <c-n>	<esc>:tabnew 
+noremap <c-n>					<esc>:tabnew
 noremap <C-Right>				:tabnext<CR>
 noremap <C-Left>				:tabprevious<CR>
 inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
 #--------------- Les racourcis ---------------"
-noremap <C-Up>          <Esc>:call Ctags()<CR>g<C-}>
-noremap <C-Down>        <Esc><C-T>
-inoremap <C-Up>         <Esc>:call Ctags()<CR>g<C-}>i
-inoremap <C-Down>       <Esc><C-T>i
-noremap <Space>          @@
-inoremap <c-q>				<esc>:call Quit()<CR>
-inoremap <c-s>				<esc>:call Save()<CR>
-noremap <c-q>				<esc>:call Quit()<CR>
-noremap <c-s>				<esc>:call Save()<CR>
-map <C-F5> 					:Termdebug -n <CR>
-map <F5> 					:call CompileRun()<CR>
-imap <F5>				 	<Esc>:call CompileRun()<CR>
-map <F6> 					:call Make("run2")<CR>
-imap <F6>				 	<Esc>:call Make("run2")<CR>
-map <F7> 					:call Make("run3")<CR>
-imap <F7>				 	<Esc>:call Make("run3")<CR>
-noremap <C-d>				:vs 
-noremap <S-d>				:split 
-noremap <F3>				<Esc>:call ToggleNorm()<CR>
-inoremap <F3>				<Esc>:call ToggleNorm()<CR>i
-noremap <S-Right>			<C-w><Right><Esc>:AirlineRefresh<CR>
-noremap <S-Left>			<C-w><Left><Esc>:AirlineRefresh<CR>
-noremap <S-Up>				<C-w><Up><Esc>:AirlineRefresh<CR>
-noremap <S-Down>			<C-w><Down><Esc>:AirlineRefresh<CR>
-
-inoremap <TAB>				<TAB>
-imap <C-g>					<esc>:NERDTreeTabsToggle<CR>
-map <C-g>					:NERDTreeTabsToggle<CR>
+noremap <C-Up>		<Esc>:call Ctags()<CR>g<C-}>
+noremap <C-Down>	<Esc><C-T>
+inoremap <C-Up>		<Esc>:call Ctags()<CR>g<C-}>i
+inoremap <C-Down>	<Esc><C-T>i
+noremap <Space>		@@
+inoremap <c-q>		<esc>:call Quit()<CR>
+inoremap <c-s>		<esc>:call Save()<CR>
+noremap <c-q>		<esc>:call Quit()<CR>
+noremap <c-s>		<esc>:call Save()<CR>
+map <C-F5> 			:Termdebug -n <CR>
+map <F5> 			:call CompileRun()<CR>
+imap <F5>			<Esc>:call CompileRun()<CR>
+map <F6>			:call Make("run2")<CR>
+imap <F6>			<Esc>:call Make("run2")<CR>
+map <F7> 			:call Make("run3")<CR>
+imap <F7>			<Esc>:call Make("run3")<CR>
+noremap <C-d>		:vs 
+noremap <S-d>		:split 
+noremap <F3>		<Esc>:call ToggleNorm()<CR>
+inoremap <F3>		<Esc>:call ToggleNorm()<CR>i
+noremap <S-Right>	<C-w><Right><Esc>:AirlineRefresh<CR>
+noremap <S-Left>	<C-w><Left><Esc>:AirlineRefresh<CR>
+noremap <S-Up>		<C-w><Up><Esc>:AirlineRefresh<CR>
+noremap <S-Down>	<C-w><Down><Esc>:AirlineRefresh<CR>
+inoremap <TAB>		<TAB>
+imap <C-g>			<esc>:NERDTreeTabsToggle<CR>
+map <C-g>			:NERDTreeTabsToggle<CR>
 map <S-T> <Esc>:term ++rows=15<CR>
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
 tnoremap <F3> clear -x ; norminette<CR>
-tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run; [ -f ../Makefile ] && make all -C ../ && make run -C ../; else gcc *.c; ./a.out; fi; <CR>
-#*cflags* tnoremap <F5> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run; [ -f ../Makefile ] && make all -C ../ && make run -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
-tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc *.c; ./a.out; fi; <CR>
-#*cflags* tnoremap <F6> clear -x; if [ -f Makefile ] \|\| [ -f ../Makefile ]; then [ -f Makefile ] && make all && make run2; [ -f ../Makefile ] && make all -C ../ && make run2 -C ../; else gcc -Wall -Wextra -Werror *.c; ./a.out; fi; <CR>
+tnoremap <F5> supramake run<CR>
+tnoremap <F6> supramake run2<CR>
+tnoremap <F7> supramake run3<CR>
 
 tnoremap <S-Right>		<C-W>N<C-w><Right><Esc>:AirlineRefresh<CR>
 tnoremap <S-Left>		<C-W>N<C-w><Left><Esc>:AirlineRefresh<CR>
@@ -174,27 +164,6 @@ def g:Quit()
 	q!
 enddef
 
-imap <C-F5>		<esc>:Gdbs<CR>
-map <C-F5>		<esc>:Gdbs<CR>
-
-command -nargs=0 -bar Gdbs :call Gdbf()
-def Gdbf()
-	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
-		echo "Tu veux débugguer quoi là ?"
-	else
-		set splitbelow nosplitbelow
-		set splitright nosplitright
-		silent call Compile()
-		exec ":NERDTreeTabsClose"
-		if !filereadable("Makefile")
-			exec ":Termdebug -n ./a.out"
-		else
-			exec ":Termdebug -n"
-		endif
-	endif
-	set splitbelow
-	set splitright
-enddef               
 
 command -nargs=+ -bar MakeHeader :call FctsToHeader( split('<args>') )
 
@@ -204,12 +173,6 @@ def FctsToHeader(...itemlist: list<string>)
 		var f = files_input
 		exec ":r !IFS=$'\\n'; for fct in $(cat "files_input" | grep -Eo \"^[a-z].*)$\" | grep -v \"[^*a-z\_]main(\" | grep -v \"^static\"); do echo \"$fct;\"; done"
 	endfor
-enddef
-
-def Norminette()
-	call Save()
-	silent exec "!clear -x"
-	exec "!echo Norminette de % && norminette \"%\""
 enddef
 
 command -nargs=+ -bar Make :call Make( '<args>' )
@@ -240,7 +203,7 @@ def g:CompileRun()
 		var ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-			#*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
+		#*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		elseif ext == 'cpp' || ext == 'hpp'
 			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
 		elseif ext == 'sh'
@@ -254,17 +217,18 @@ def g:CompileRun()
 	exec "redraw!"
 enddef
 
-def Compile()
+def g:Compile()
 	w!
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
 
-	var err = Make('all')
+	call g:Make('all')
+	var err = v:shell_error
 	if err != 0
 		var ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
-			#*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
+		#*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
 		elseif ext == 'cpp' || ext == 'hpp'
 			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out ; ./a.out"
 		elseif ext == 'sh'
@@ -278,6 +242,28 @@ def Compile()
 	exec "redraw!"
 enddef
 
+imap <C-F5>		<esc>:Gdbs<CR>
+map <C-F5>		<esc>:Gdbs<CR>
+
+command -nargs=0 -bar Gdbs :call Gdbf()
+
+def g:Gdbf()
+	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
+		echo "Tu veux débugguer quoi là ?"
+	else
+		set splitbelow nosplitbelow
+		set splitright nosplitright
+		silent call g:Compile()
+		exec ":NERDTreeTabsClose"
+		if !filereadable("Makefile")
+			exec ":Termdebug -n ./a.out"
+		else
+			exec ":Termdebug -n"
+		endif
+	endif
+	set splitbelow
+	set splitright
+enddef               
 # -------------- Ctags ----------------"
 
 command -nargs=0 -bar Ctags :call Ctags()
@@ -296,7 +282,7 @@ g:syntastic_error_symbol = '\ ✖'
 g:syntastic_warning_symbol = '\ ✖'
 
 #*norme* g:norm_activate = true
-g:norm_activate = true
+g:norm_activate = false
 
 def g:ToggleNorm()
 	g:norm_activate = !g:norm_activate
@@ -334,14 +320,14 @@ def HighlightNorm(filename: string)
 	endif
 	hi def link NormErrors Underlined
 	sign unplace *
-	if g:norm_activate == true
-		for error in g:errors
-			if error[3] == "Missing or invalid 42 header"	#HEADER
-				continue									#HEADER
+		if g:norm_activate == true
+	for error in g:errors
+		if error[3] == "Missing or invalid 42 header"	#HEADER
+			continue									#HEADER
 			endif											#HEADER
 			exe ":sign place 2 line=" .. error[1] " name=NormLinter file=" .. filename
-		endfor
-	endif
+	endfor
+		endif
 enddef
 
 def DisplayErrorMsg()
