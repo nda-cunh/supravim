@@ -43,11 +43,11 @@ error() {
 
 step=1
 backup_config() {
-	if [ -f ~/.vimrc_supravim_off ] || [ `grep -c "** SUPRAVIM **" ~/.vimrc` -eq 0 ] ; then
+	if [ -f ~/.vimrc ] && [ `grep -c "** SUPRAVIM **" ~/.vimrc` -eq 0 ] ; then
 		status "Switching your vim configuration, to restore it use \033[1msupravim switch\033[0m"
 		supravim switch >/dev/null
 	fi
-	if [ $step -eq 1 ] && [ -f ~/.vimrc ]; then
+	if [ $step -eq 1 ]; then
 		balise=`grep -Ezo "#[=]+.*[=]{42}" ~/.vimrc 2>/dev/null`
 		if [ "$balise" = "" ]; then
 			balise="#====================== YOUR CONFIG =======================\n\
@@ -60,7 +60,7 @@ backup_config() {
 		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
 		norme=$(grep -c "norm_activate = false" ~/.vimrc 2>/dev/null)
 		step=2
-	elif [ -f ~/.vimrc ]; then
+	elif [ $step -eq 2 ]; then
 		if [ "$icons" = "0" ]; then
 			# download "devicons for icons"
 			supravim disable icons >/dev/null
