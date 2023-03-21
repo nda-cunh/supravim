@@ -416,16 +416,17 @@ g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]
 g:step = false
 
 def CreatePop()
-	if g:step == true
-		return
-	endif
-	g:step = true
-	var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)
-	if s == ""
-		return
-	endif
-	popup_create("Supravim update", {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
+    if g:step == true
+        return
+    endif
+    g:step = true
+    var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)                                                                                                                                                                
+    if s == ""
+        return
+    endif
+    popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s ], {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
 enddef
+
 
 if executable('clangd')
     au User lsp_setup call lsp#register_server({
