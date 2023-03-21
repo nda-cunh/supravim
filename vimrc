@@ -74,6 +74,7 @@ tnoremap <F3> clear -x ; norminette<CR>
 tnoremap <F5> supramake run<CR>
 tnoremap <F6> supramake run2<CR>
 tnoremap <F7> supramake run3<CR>
+tnoremap <esc>	<c-\><c-n>
 
 tnoremap <S-Right>		<C-W>N<C-w><Right><Esc>:AirlineRefresh<CR>
 tnoremap <S-Left>		<C-W>N<C-w><Left><Esc>:AirlineRefresh<CR>
@@ -93,6 +94,7 @@ set shiftround
 set showmode
 set backspace=indent,eol,start
 set pumheight=50
+set timeoutlen=115
 set encoding=utf-8
 set splitbelow
 set splitright
