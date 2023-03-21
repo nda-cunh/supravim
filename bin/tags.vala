@@ -27,7 +27,6 @@ void search_dir(string dir_path, ref string tab_file, string ext)
 				if (!path.has_suffix(search_ext))
 					continue;
 			}
-			print("Add %s\n", path);
 			tab_file = @"$(tab_file)$(path) ";
 		}
 	}
@@ -61,19 +60,24 @@ void main(string []args)
 	string home = Environment.get_home_dir();
 	int i = path.length;
 	string search_ext = args[1] ?? "c";
-
 	i--;
-	unlink(@"$home/.local/bin/tags");
-	while (home != path && path != "/tmp" && i > 0)
+
+	if (path == home)
+		return ;
+	if(FileUtils.test(path, GLib.FileTest.EXISTS))
 	{
-		if (access(path + "/Makefile", F_OK) == 0 || access(path + "/src", F_OK) == 0 || access(path + "/.git", F_OK) == 0)
-			create_tags(path, search_ext);
-		else
+		unlink(@"$home/.local/bin/tags");
+		while (home != path && path != "/tmp" && i > 0)
 		{
-			while (path[i] != '/')
-				i--;
-			path.data[i] = '\0';
+			if (access(path + "/Makefile", F_OK) == 0 || access(path + "/src", F_OK) == 0 || access(path + "/.git", F_OK) == 0)
+				create_tags(path, search_ext);
+			else
+			{
+				while (path[i] != '/')
+					i--;
+				path.data[i] = '\0';
+			}
 		}
+		create_tags(Environment.get_current_dir(), search_ext);
 	}
-	create_tags(Environment.get_current_dir(), search_ext);
 }
