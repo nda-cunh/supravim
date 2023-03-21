@@ -12,7 +12,7 @@ colorscheme onehalf
 set background=dark
 set t_Co=256
 
-# icons_disabled
+# icons_enabled
 
 #-------------- Save Undo  ------------"
 if !isdirectory($HOME .. "/.cache/vim/undo")
