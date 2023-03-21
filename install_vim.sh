@@ -61,10 +61,10 @@ backup_config() {
 		norme=$(grep -c "norm_activate = false" ~/.vimrc 2>/dev/null)
 		step=2
 	elif [ -f ~/.vimrc ]; then
-		# if ! [ "$icons" = "0" ]; then
+		if ! [ "$icons" = "0" ]; then
 			# download "devicons for icons"
 			supravim -e icons >/dev/null
-		# fi
+		fi
 		! [ "$mouse" = "0" ] && supravim disable mouse >/dev/null
 		  [ "$noswap" = "0" ] && supravim enable noswap >/dev/null
 		! [ "$nerdtree" = "0" ] && supravim disable tree >/dev/null
