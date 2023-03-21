@@ -101,12 +101,6 @@ g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
 # set noswapfile
 
-#---------- Qui utilise la scrollbar -----------"
-set guioptions-=r
-set guioptions-=R
-set guioptions-=l
-set guioptions-=L
-
 #------------------ Snipets --------------------"
 g:UltiSnipsExpandTrigger = "<tab>"
 g:UltiSnipsJumpForwardTrigger = "<tab>"
@@ -386,7 +380,6 @@ g:airline_left_sep = ''
 g:airline_left_alt_sep = ''
 g:airline_right_sep = ''
 g:airline_right_alt_sep = ''
-#Activer le plugin airline
 g:airline#extensions#tabline#enabled = 1
 g:airline#extensions#tabline#show_buffers = 0
 g:airline#extensions#tabline#tabs_label = 'Tabs'
