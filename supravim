@@ -20,9 +20,6 @@ enable_fct(){
 					echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
 		noswap)	sed -i 's/^# set noswapfile/set noswapfile/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		cflags) sed -i 's/#\*cflags\* //g' ~/.vimrc;
-			sed -i 's/^[^\ \*]*exec \"!gcc -g \\\"\%/#*cflags\* &/g' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		norme) sed -i 's/norm_activate = false/norm_activate = true/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		normeHeader) sed -i 's/.*HEADER/#*normeHeader\* &/g' ~/.vimrc;
@@ -40,9 +37,6 @@ disable_fct(){
 		noswap)	sed -i 's/^set noswapfile/# &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		icons) sed -i 's/icons_enabled/icons_disabled/g' ~/.vimrc; rm -rf "$HOME/.vim/bundle/devicons"; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		cflags) sed -i 's/#\*cflags\* //g' ~/.vimrc;
-			sed -i 's/^[^\ \*]*exec.* -g -Wall/#*cflags\* &/g' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		norme) sed -i 's/g:norm_activate = true/g:norm_activate = false/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		normeHeader) sed -i 's/#\*normeHeader\* //g' ~/.vimrc;
@@ -129,13 +123,7 @@ status_fct(){
 		echo -e "${bold}${red}icons${reset}"
 	fi
 
-	if [ $(grep -c "^tnoremap.*gcc \*.*$" ~/.vimrc) -gt 0 ]; then
-		echo -e "${bold}${red}cflags${reset} "
-	else
-		echo -e "${bold}${green}cflags${reset}"
-	fi
-
-	if [ $(grep -c "#*norme\*.*1" ~/.vimrc) -gt 0 ]; then
+	if [ $(grep -c "g:norm_activate = false" ~/.vimrc) -gt 0 ]; then
 		echo -e "${bold}${red}norme${reset} "
 	else
 		echo -e "${bold}${green}norme${reset}"
@@ -214,7 +202,6 @@ help_fct(){
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
 		noswap			disable swapfile (file.swp)
-		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
 
 	${bold}THEME CHOOSING${reset}
 		supravim <theme | -t> <name_theme> <background>
@@ -246,14 +233,14 @@ fi
 
 for opt in $@; do
 	possibility=$0
-	for possibility in  "-h" "--help" "help"\
-						"enable" "-e" "--enable" \
-						"disable" "-d" "--disable" \
-						"theme" "-t" "--theme" \
-						"update" "--update" \
-						"status" "--status" "-s" \
-						"switch" "--switch" \
-						"--uninstall" "uninstall" \
+	for possibility in  "-h" "--help" "help"		\
+						"enable" "-e" "--enable" 	\
+						"disable" "-d" "--disable" 	\
+						"theme" "-t" "--theme" 		\
+						"update" "--update" 		\
+						"status" "--status" "-s" 	\
+						"switch" "--switch" 		\
+						"--uninstall" "uninstall" 	\
 						"-v" "--version"
 	do
 		if [ "$opt" = "$possibility" ]; then
