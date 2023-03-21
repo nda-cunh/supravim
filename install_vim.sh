@@ -43,12 +43,12 @@ error() {
 
 step=1
 backup_config() {
-	if [ -f ~/.vimrc_supravim_off ] || [ `head -n2 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ] ; then
+	if [ -f ~/.vimrc_supravim_off ] || [ `grep -c "** SUPRAVIM **" ~/.vimrc` -eq 0 ] ; then
 		status "Switching your vim configuration, to restore it use \033[1msupravim switch\033[0m"
 		supravim switch >/dev/null
 	fi
 	if [ $step -eq 1 ] && [ -f ~/.vimrc ]; then
-		balise=`grep -Ezo "#[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
+		balise=`grep -Ezo "#[=]+.*[=]{42}" ~/.vimrc 2>/dev/null`
 		if [ "$balise" = "" ]; then
 			balise="#====================== YOUR CONFIG =======================\n\
 #=========================================================="
@@ -57,26 +57,17 @@ backup_config() {
 		nerdtree=$(grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
-		cflags=$(grep -c "#\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
 		norme=$(grep -c "#\*norme\*" ~/.vimrc 2>/dev/null)
 		step=2
 	elif [ -f ~/.vimrc ]; then
-		if ! [ "$mouse" = "0" ]; then
-			supravim disable mouse >/dev/null
-		fi
-		if ! [ "$nerdtree" = "0" ]; then
-			supravim disable tree >/dev/null
-		fi
+		! [ "$mouse" = "0" ] && supravim disable mouse >/dev/null
+		! [ "$nerdtree" = "0" ] && supravim disable tree >/dev/null
 		# if ! [ "$icons" = "0" ]; then
 			# download "devicons for icons"
 			supravim -e icons >/dev/null
 		# fi
-		if ! [ "$cflags" = "0" ]; then
-			supravim enable cflags >/dev/null
-		fi
-		if ! [ "$norme" = "0" ]; then
-			supravim disable norme >/dev/null
-		fi
+		! [ "$cflags" = "0" ] && supravim enable cflags >/dev/null
+		! [ "$norme" = "0" ] && supravim disable norme >/dev/null
 		supravim -t "$theme" >/dev/null
 		echo "$balise" >> ~/.vimrc
 		status "Have reloaded your old vim configuration"
@@ -167,4 +158,3 @@ main() {
 
 main $1
 ############################################################
-
