@@ -32,7 +32,7 @@ g:termdebug_wide = 1
 imap <silent><CR>				<CR><Plug>AutoPairsReturn
 
 #--------------- Onglets ---------------------"
-noremap <c-n>					<esc>:tabnew
+noremap <c-n>					<esc>:tabnew 
 noremap <C-Right>				:tabnext<CR>
 noremap <C-Left>				:tabprevious<CR>
 inoremap <C-Right>				<esc>:tabnext<CR>
