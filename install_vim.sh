@@ -57,15 +57,15 @@ backup_config() {
 		nerdtree=$(grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
-		norme=$(grep -c "#\*norme\*" ~/.vimrc 2>/dev/null)
+		norme=$(grep -c "g:norm_activate = false" ~/.vimrc 2>/dev/null)
 		step=2
 	elif [ -f ~/.vimrc ]; then
-		! [ "$mouse" = "0" ] && supravim disable mouse >/dev/null
-		! [ "$nerdtree" = "0" ] && supravim disable tree >/dev/null
 		# if ! [ "$icons" = "0" ]; then
 			# download "devicons for icons"
 			supravim -e icons >/dev/null
 		# fi
+		! [ "$mouse" = "0" ] && supravim disable mouse >/dev/null
+		! [ "$nerdtree" = "0" ] && supravim disable tree >/dev/null
 		! [ "$cflags" = "0" ] && supravim enable cflags >/dev/null
 		! [ "$norme" = "0" ] && supravim disable norme >/dev/null
 		supravim -t "$theme" >/dev/null
