@@ -280,7 +280,6 @@ enddef
 highlight DapBreakpoint ctermfg=135
 sign define NormLinter text=\ ✖ texthl=DapBreakpoint
 
-#*norme* g:norm_activate = true
 g:norm_activate = false
 
 def g:ToggleNorm()
