@@ -142,16 +142,14 @@ version_fct() {
 	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
 	if [ "$1" = "cached" ]; then
 		if ! [ "${userVersion}" = "${repoVersion}" ]; then
-			echo -n "$userBranch: $userVersion -> $repoVersion"
-		else
-			echo -n ""
+			printf "$userBranch: $userVersion -> $repoVersion"
 		fi
 		exit
 	fi
 	if [ "${userVersion}" = "${repoVersion}" ]; then
-		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}"
+		printf "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}\n"
 	else
-		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}"
+		printf "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}\n"
 	fi
 }
 
