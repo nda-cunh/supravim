@@ -101,6 +101,7 @@ set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
+auto BufEnter,VimEnter *.tpp set filetype=cpp
 # set noswapfile
 
 #------------------ Snipets --------------------"
