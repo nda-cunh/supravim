@@ -94,7 +94,7 @@ set shiftround
 set showmode
 set backspace=indent,eol,start
 set pumheight=50
-set timeoutlen=115
+set timeoutlen=135
 set encoding=utf-8
 set splitbelow
 set splitright
