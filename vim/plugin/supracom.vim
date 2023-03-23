@@ -1,6 +1,7 @@
 vim9script
-vnoremap c			:call Commentary()<CR>
-noremap c			:call Commentary()<CR>
+vnoremap c		:call Commentary()<CR>
+noremap c		:call Commentary()<CR>
+noremap gcc		:call Commentary()<CR>
 
 def g:Commentary()
 	var e = expand('%:e')
