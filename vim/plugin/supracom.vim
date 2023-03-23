@@ -3,37 +3,23 @@ vnoremap c		:call Commentary()<CR>
 noremap c		:call Commentary()<CR>
 noremap gcc		:call Commentary()<CR>
 
+def Commentator(char: string, line: string)
+	if line =~ '^\s*' .. char .. '.*'
+		var new_content = substitute(line, char .. '\(.*\)$', '\1', '')
+		setline('.', new_content)
+	else
+		var new_content = substitute(line, '\(\s*\)\(.*\)$', '\1' .. char .. '\2', '')
+		setline('.', new_content)
+	endif
+enddef
+
 def g:Commentary()
 	var e = expand('%:e')
 	var line = getline('.')
 
-	if e == 'cpp' || e == 'vala' || e == 'hpp' || e == 'tpp'
-		if line =~# '^// .*'
-			var new_contents = substitute(line, '^// \(.*\)$', '\1', '')
-			call setline('.', new_contents)
-		else
-			setline('.', '// ' .. line)
-		endif
-	elseif e == ''
-		if line =~# '^# .* #$'
-			var new_contents = substitute(line, '^# \(.*\) #$', '\1', '')
-			call setline('.', new_contents)
-		else
-			setline('.', '# ' .. line .. ' #')
-		endif
-	elseif e == 'c' || e == 'h'
-		if line =~# '^/\* .* \*/$'
-			var new_contents = substitute(line, '^/\* \(.*\) \*/$', '\1', '')
-			call setline('.', new_contents)
-		else
-			setline('.', '/* ' .. line .. ' */')
-		endif
+	if e == 'cpp' || e == 'vala' || e == 'hpp' || e == 'tpp' || e == 'h' || e == 'c'
+		Commentator('// ', line)
 	else
-		if line =~# '^# .* #$'
-			var new_contents = substitute(line, '^# \(.*\) #$', '\1', '')
-			call setline('.', new_contents)
-		else
-			setline('.', '# ' .. line .. ' #')
-		endif
+		Commentator('# ', line)
 	endif
 enddef
