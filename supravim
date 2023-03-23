@@ -223,10 +223,31 @@ help_fct(){
 		"
 }
 
+clangd_install(){
+	if [ "$1" = "user" ]
+	then
+		flatpak install --user runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
+		flatpak install --user runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
+	else
+		flatpak install --system runtime/org.freedesktop.Sdk/x86_64/22.08 -y
+		flatpak install --system runtime/org.freedesktop.Sdk/x86_64/22.08 -y
+	fi
+	if [ "$1" = "user" ]
+	then
+		echo "L'installation est terminé, relancer le vim :) (user)"
+	else
+		echo "L'installation est terminé, relancer le vim :) (system)"
+	fi
+}
+
+
 if [ $# -eq 0 ]; then
 	help_fct
 elif [[ $# -eq 1 && ( "$1" =  "update"  ||  "$1" = "--update" ) ]]; then
 	update 
+elif [[ $# -ge 1 && ( "$1" =  "server"  ||  "$1" = "--server" ) ]]; then
+	clangd_install $2
+	exit
 fi
 
 for opt in $@; do

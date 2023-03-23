@@ -424,13 +424,41 @@ def CreatePop()
 enddef
 
 
+def SearchClangd(): string
+    var home: string = expand('$HOME')
+    var fpath_sys: string = "/var/lib/flatpak/runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08/active/files/bin/clangd"
+    var fpath_user: string = home .. "/.local/share/flatpak/runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08/active/files/bin/clangd"
+    var path_supra: string = home .. "/.local/bin/clangd"
+
+    if filereadable("/bin/clangd")
+        return "/bin/clangd"
+    elseif filereadable(fpath_user)
+        return fpath_user
+    elseif filereadable(fpath_sys)
+        return fpath_sys
+    else
+        return path_supra
+    endif
+enddef
+
+g:clangd_path = SearchClangd()
 if executable('clangd')
     au User lsp_setup call lsp#register_server({
-                \ name: 'clangd',                                              
+                \ name: g:clangd_path,                                              
                 \ cmd: (server_info) => ['clangd', '--clang-tidy', '-j', '8'],
                 \ allowlist: ['cpp', 'c'],
                 \ })
 endif
+
+def g:InstallclangD(where: string)
+	if (where == 'user')
+		terminal supravim server user
+	else
+		terminal supravim server
+	endif
+enddef
+
+command -nargs=+ -bar InstallClangd :call g:InstallclangD( '<args>' )
 
 imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
