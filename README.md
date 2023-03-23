@@ -1,4 +1,4 @@
-# SupraVim 4.8.3
+# SupraVim 4.9.1
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
@@ -45,12 +45,13 @@ ou
 | ------ | ------ |
 | Fermer une fenêtre | Ctrl + Q |
 | Sauvegarde une fênetre | Ctrl + S|
-| TOUT Sauvegarder | :wall|
-| TOUT Quitter | :qall|
+| TOUT Sauvegarder | :wall ou :wa|
+| TOUT Quitter | :qall ou :qa|
 | HEADER 42| **F1**|
 | Switch SupraNorm | **F3**|
 | Compilation | **F5**|
 | Debogueur (GDB) | **Ctrl + F5**|
+| Commenter | cc (fonctionne aussi en visuel) |
 | Deplacement entre fênetre | Shift - flèche|
 | Fermer/Ouvrir l'arbre des répértoires | Ctrl +G |
 | Scinder la fenêtre horizontalement | Ctrl + D|
