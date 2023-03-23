@@ -7,7 +7,7 @@ def g:Commentary()
 	var e = expand('%:e')
 	var line = getline('.')
 
-	if e == 'cpp' || e == 'vala'
+	if e == 'cpp' || e == 'vala' || e == 'hpp' || e == 'tpp'
 		if line =~# '^// .*'
 			var new_contents = substitute(line, '^// \(.*\)$', '\1', '')
 			call setline('.', new_contents)
@@ -21,7 +21,7 @@ def g:Commentary()
 		else
 			setline('.', '# ' .. line .. ' #')
 		endif
-	elseif e == 'c'
+	elseif e == 'c' || e == 'h'
 		if line =~# '^/\* .* \*/$'
 			var new_contents = substitute(line, '^/\* \(.*\) \*/$', '\1', '')
 			call setline('.', new_contents)
