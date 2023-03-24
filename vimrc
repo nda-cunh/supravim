@@ -424,7 +424,7 @@ def CreatePop()
 enddef
 
 au User lsp_setup call lsp#register_server({
-            \ name: g:clangd_path,                                              
+            \ name: 'clangd',                                              
             \ cmd: (server_info) => ['clangd', '--clang-tidy', '-j', '8'],
             \ allowlist: ['cpp', 'c'],
             \ })
