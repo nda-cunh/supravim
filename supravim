@@ -226,11 +226,12 @@ help_fct(){
 clangd_install(){
 	if [ "$1" = "user" ]
 	then
-		flatpak install --user runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
+		flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+		flatpak install --user runtime/org.freedesktop.Sdk/x86_64/22.08 -y
 		flatpak install --user runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
 	else
 		flatpak install --system runtime/org.freedesktop.Sdk/x86_64/22.08 -y
-		flatpak install --system runtime/org.freedesktop.Sdk/x86_64/22.08 -y
+		flatpak install --system runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
 	fi
 	if [ "$1" = "user" ]
 	then
