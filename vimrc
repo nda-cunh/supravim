@@ -43,7 +43,6 @@ noremap <C-Up>		<Esc>:call Ctags()<CR>g<C-}>
 noremap <C-Down>	<Esc><C-T>
 inoremap <C-Up>		<Esc>:call Ctags()<CR>g<C-}>i
 inoremap <C-Down>	<Esc><C-T>i
-noremap <Space>		@@
 inoremap <c-q>		<esc>:call Quit()<CR>
 inoremap <c-s>		<esc>:call Save()<CR>
 noremap <c-q>		<esc>:call Quit()<CR>
