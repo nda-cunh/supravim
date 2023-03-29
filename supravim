@@ -9,19 +9,20 @@ reset="\033[0m"
 
 enable_fct(){
 	case $1 in
-		mouse) sed -i 's/\"\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		tree) sed -i 's/\"\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		icons) if [ $(grep -c "icons_disabled" ~/.vimrc) -gt 0 ]; then sed -i 's/icons_disabled/icons_enabled/g' ~/.vimrc; git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons; echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";else echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
-		noswap)	sed -i 's/^" set noswapfile/set noswapfile/g' ~/.vimrc;
+		mouse) sed -i 's/#\*mouse\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
+		tree) sed -i 's/#\*nerdtree\* //' ~/.vimrc; echo -e "${bold}${green}[$1]${reset} correctly enabled";;
+		icons) 	if [ $(grep -c "icons_disabled" ~/.vimrc) -gt 0 ];
+				then
+					sed -i 's/icons_disabled/icons_enabled/g' ~/.vimrc;
+					git clone https://github.com/ryanoasis/vim-devicons ~/.vim/bundle/devicons;
+					echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";
+				else
+					echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
+		noswap)	sed -i 's/^# set noswapfile/set noswapfile/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
-			sed -i 's/^[^\ \*]*exec \"!gcc -g \\\"\%/\"\*cflags\* &/g' ~/.vimrc;
-			sed -i 's/^tnoremap.*gcc \*.*/\"\*cflags\* &/g' ~/.vimrc;
+		norme) sed -i 's/norm_activate = false/norm_activate = true/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
-			sed -i 's/let g:norm.*0/\"\*norme\* &/g' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		normeHeader) sed -i 's/.*HEADER/\"\*normeHeader\* &/g' ~/.vimrc;
+		normeHeader) sed -i 's/.*HEADER/#*normeHeader\* &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		"") echo -e "Please enter something to enable.";;
 		*) echo -e "${bold}[$1]${reset} : cannot enable."
@@ -31,19 +32,14 @@ enable_fct(){
 
 disable_fct(){
     case $1 in
-        mouse) sed -i 's/^set mouse.*/\"\*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-        tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/\"\*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		noswap)	sed -i 's/^set noswapfile/" &/g' ~/.vimrc;
+        mouse) sed -i 's/^set mouse.*/#*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
+        tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/#*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
+		noswap)	sed -i 's/^set noswapfile/# &/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		icons) sed -i 's/icons_enabled/icons_disabled/g' ~/.vimrc; rm -rf "$HOME/.vim/bundle/devicons"; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		cflags) sed -i 's/\"\*cflags\* //g' ~/.vimrc;
-			sed -i 's/^[^\ \*]*exec.* -g -Wall/\"\*cflags\* &/g' ~/.vimrc;
-			sed -i 's/^tnoremap.*\-Wall.*/\"\*cflags\* &/g' ~/.vimrc;
+		norme) sed -i 's/g:norm_activate = true/g:norm_activate = false/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
-		norme) sed -i 's/\"\*norme\* //g' ~/.vimrc;
-			sed -i 's/let g:norm.*1/\"\*norme\* &/g' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
-		normeHeader) sed -i 's/\"\*normeHeader\* //g' ~/.vimrc;
+		normeHeader) sed -i 's/#\*normeHeader\* //g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";; 
 		"") echo -e "Please enter something to disable.";;
         *) echo -e "[$1] : cannot enable."
@@ -103,19 +99,19 @@ switch(){
 status_fct(){
 	echo -e "${bold}-- Options --${reset}"
 
-	if [[ $(grep -c "\"\*mouse\*" ~/.vimrc) == 0 ]]; then
+	if [[ $(grep -c "#*mouse\*" ~/.vimrc) == 0 ]]; then
 		echo -e "${bold}${green}mouse${reset} "
 	else
 		echo -e "${bold}${red}mouse${reset}"
 	fi
 
-	if [[ $(grep -c "\" set noswapfile" ~/.vimrc) == 0 ]]; then
+	if [[ $(grep -c "# set noswapfile" ~/.vimrc) == 0 ]]; then
 		echo -e "${bold}${green}noswap${reset} "
 	else
 		echo -e "${bold}${red}noswap${reset}"
 	fi
 
-	if [[ $(grep -c "\"\*nerdtree\*" ~/.vimrc) == 0 ]]; then
+	if [[ $(grep -c "#*nerdtree\*" ~/.vimrc) == 0 ]]; then
 		echo -e "${bold}${green}tree${reset} "
 	else
 		echo -e "${bold}${red}tree${reset}"
@@ -127,13 +123,7 @@ status_fct(){
 		echo -e "${bold}${red}icons${reset}"
 	fi
 
-	if [ $(grep -c "^tnoremap.*gcc \*.*$" ~/.vimrc) -gt 0 ]; then
-		echo -e "${bold}${red}cflags${reset} "
-	else
-		echo -e "${bold}${green}cflags${reset}"
-	fi
-
-	if [ $(grep -c "\"\*norme\*.*1" ~/.vimrc) -gt 0 ]; then
+	if [ $(grep -c "g:norm_activate = false" ~/.vimrc) -gt 0 ]; then
 		echo -e "${bold}${red}norme${reset} "
 	else
 		echo -e "${bold}${green}norme${reset}"
@@ -152,16 +142,14 @@ version_fct() {
 	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
 	if [ "$1" = "cached" ]; then
 		if ! [ "${userVersion}" = "${repoVersion}" ]; then
-			echo -n "$userBranch: $userVersion -> $repoVersion"
-		else
-			echo -n ""
+			printf "$userBranch: $userVersion -> $repoVersion"
 		fi
 		exit
 	fi
 	if [ "${userVersion}" = "${repoVersion}" ]; then
-		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}"
+		printf "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}\n"
 	else
-		echo -e "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}"
+		printf "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}\n"
 	fi
 }
 
@@ -176,6 +164,15 @@ update(){
 		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 	else
 		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
+	fi
+}
+
+on_supravim(){
+	if ! [[ ( -f ~/.vimrc ) && ( `grep -c "** SUPRAVIM **" ~/.vimrc` -gt 0 ) ]]
+	then
+		return 0;
+	else
+		return 1;
 	fi
 }
 
@@ -203,7 +200,6 @@ help_fct(){
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
 		noswap			disable swapfile (file.swp)
-		cflags			compile with cflags (-Wall -Wextra -Werror) when pressing F5
 
 	${bold}THEME CHOOSING${reset}
 		supravim <theme | -t> <name_theme> <background>
@@ -227,29 +223,60 @@ help_fct(){
 		"
 }
 
+clangd_install(){
+	if [ "$1" = "user" ]
+	then
+		flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+		flatpak install --user runtime/org.freedesktop.Sdk/x86_64/22.08 -y
+		flatpak install --user runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
+	else
+		flatpak install --system runtime/org.freedesktop.Sdk/x86_64/22.08 -y
+		flatpak install --system runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
+	fi
+	if [ "$1" = "user" ]
+	then
+		echo "L'installation est terminé, relancer le vim :) (user)"
+	else
+		echo "L'installation est terminé, relancer le vim :) (system)"
+	fi
+}
+
+
 if [ $# -eq 0 ]; then
 	help_fct
 elif [[ $# -eq 1 && ( "$1" =  "update"  ||  "$1" = "--update" ) ]]; then
 	update 
+elif [[ $# -ge 1 && ( "$1" =  "server"  ||  "$1" = "--server" ) ]]; then
+	clangd_install $2
+	exit
 fi
 
 for opt in $@; do
 	possibility=$0
-	for possibility in  "-h" "--help" "enable" "-e" "--enable" "disable" "-d" "--disable" "theme" "-t" "--theme" "update" "--update" "status" "--status" "-s" "switch" "--switch" "--uninstall" "uninstall" "-v" "--version";do
+	for possibility in  "-h" "--help" "help"		\
+						"enable" "-e" "--enable" 	\
+						"disable" "-d" "--disable" 	\
+						"theme" "-t" "--theme" 		\
+						"update" "--update" 		\
+						"status" "--status" "-s" 	\
+						"switch" "--switch" 		\
+						"--uninstall" "uninstall" 	\
+						"-v" "--version"
+	do
 		if [ "$opt" = "$possibility" ]; then
 			latest_opt=$opt
 		fi
 	done
 	case $latest_opt in 
-		-e | --enable | enable) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && echo -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $latest_opt != $opt ] && enable_fct $opt;;
-		-d | --disable | disable) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && echo -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $latest_opt != $opt ] && disable_fct $opt;;
-		-t | --theme | theme) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && echo -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; [ $latest_opt != $opt ] && theme_fct $opt;;
-		-s | --status | status) [[ ! ( -f ~/.vimrc ) || ( `head -n1 ~/.vimrc | grep -c SUPRAVIM` -eq 0 ) ]] && echo -e "Please reactivate supravim (\033[1msupravim --switch\033[0m)" && exit; status_fct;;
-		-h | --help | help) help_fct;;
-		--uninstall | uninstall) uninstall_fct;;
-		--update | update) [ $opt = "dev" ] && update $opt;;
-		--version | -v) version_fct $2;;
-		switch | --switch) switch;;
+		-e | --enable | enable)   on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; [ $latest_opt != $opt ] && enable_fct $opt;;
+		-d | --disable | disable) on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; [ $latest_opt != $opt ] && disable_fct $opt;;
+		-t | --theme | theme)     on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; [ $latest_opt != $opt ] && theme_fct $opt;;
+		-s | --status | status)   on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; status_fct;;
+		-h | --help | help)       help_fct;;
+		--uninstall | uninstall)  uninstall_fct;;
+		--update | update)        [ $opt = "dev" ] && update $opt;;
+		--version | -v)           version_fct $2;;
+		switch | --switch)        switch;;
 		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
 	esac
 done

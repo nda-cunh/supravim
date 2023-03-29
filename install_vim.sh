@@ -43,40 +43,33 @@ error() {
 
 step=1
 backup_config() {
-	if [ -f ~/.vimrc_supravim_off ] || [ `cat ~/.vimrc | head -n1 | grep -c SUPRAVIM` -eq 0 ] ; then
+	if [ -f ~/.vimrc ] && [ `grep -c "** SUPRAVIM **" ~/.vimrc` -eq 0 ] ; then
 		status "Switching your vim configuration, to restore it use \033[1msupravim switch\033[0m"
 		supravim switch >/dev/null
 	fi
-	if [ $step -eq 1 ] && [ -f ~/.vimrc ]; then
-		balise=`grep -Ezo "\"[=]+.*[=]{52}" ~/.vimrc 2>/dev/null`
+	if [ $step -eq 1 ]; then
+		balise=`grep -Ezo "#[=]+.*[=]{42}" ~/.vimrc 2>/dev/null`
 		if [ "$balise" = "" ]; then
-			balise="\"====================== YOUR CONFIG =======================\n\
-\"=========================================================="
+			balise="#====================== YOUR CONFIG =======================\n\
+#=========================================================="
 		fi
-		mouse=$(grep -c "\"\*mouse\*" ~/.vimrc 2>/dev/null)
-		nerdtree=$(grep -c "\"\*nerdtree\*" ~/.vimrc 2>/dev/null)
+		mouse=$(grep -c "#\*mouse\*" ~/.vimrc 2>/dev/null)
+		noswap=$(grep -c "#.*noswapfile" ~/.vimrc 2>/dev/null)
+		nerdtree=$(grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
-		cflags=$(grep -c "\"\*cflags\*.*tnoremap.*gcc \*.*$" ~/.vimrc 2>/dev/null)
-		norme=$(grep -c "\"\*norme\*" ~/.vimrc 2>/dev/null)
+		norme=$(grep -c "norm_activate = false" ~/.vimrc 2>/dev/null)
 		step=2
-	elif [ -f ~/.vimrc ]; then
-		if ! [ "$mouse" = "0" ]; then
-			supravim disable mouse >/dev/null
-		fi
-		if ! [ "$nerdtree" = "0" ]; then
-			supravim disable tree >/dev/null
-		fi
-		# if ! [ "$icons" = "0" ]; then
+	elif [ $step -eq 2 ]; then
+		if [ "$icons" = "0" ]; then
 			# download "devicons for icons"
-			supravim -e icons >/dev/null
-		# fi
-		if ! [ "$cflags" = "0" ]; then
-			supravim enable cflags >/dev/null
+			supravim disable icons >/dev/null
 		fi
-		if ! [ "$norme" = "0" ]; then
-			supravim disable norme >/dev/null
-		fi
+		! [ "$mouse" = "0" ] && supravim disable mouse >/dev/null
+		  [ "$noswap" = "0" ] && supravim enable noswap >/dev/null
+		! [ "$nerdtree" = "0" ] && supravim disable tree >/dev/null
+		  [ "$norme" = "0" ] && supravim enable norme >/dev/null
+		
 		supravim -t "$theme" >/dev/null
 		echo "$balise" >> ~/.vimrc
 		status "Have reloaded your old vim configuration"
@@ -92,6 +85,9 @@ add_config_rc(){
 	fi
 	if ! grep -qe "^stty start undef" ${SHELL_ACTIVE} >/dev/null; then
 		echo "stty start undef" >> ${SHELL_ACTIVE}
+	fi
+	if ! grep -qe "^alias smake=supramake" ${SHELL_ACTIVE} >/dev/null; then
+		echo "alias smake=supramake" >> ${SHELL_ACTIVE}
 	fi
 	if ! grep -qE "^export PATH=.*[\$]HOME/\.local/bin.*$" ${SHELL_ACTIVE} >/dev/null; then
 		status "Adding path ($HOME/.local/bin)"
@@ -133,7 +129,7 @@ install_SupraVim(){
 # print ascii line by line wiht rainbow colors
 
 print_ascii_line() {
-	echo "$2$1 ${reset}" 
+	printf "$2$1 ${reset}\n" 
 }
 
 print_ascii() {
@@ -164,4 +160,3 @@ main() {
 
 main $1
 ############################################################
-
