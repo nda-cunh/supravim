@@ -154,7 +154,7 @@ enddef
 
 def g:Save()
 	w!
-	# NERDTreeRefreshRoot
+	NERDTreeRefreshRoot
 	AirlineRefresh
 enddef
 
