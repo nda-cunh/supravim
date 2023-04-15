@@ -153,9 +153,12 @@ enddef
 #--------------- FONCTION ---------------"
 
 def g:Save()
-	w!
-	NERDTreeRefreshRoot
-	AirlineRefresh
+	silent w!
+	echo "saving ..."
+	silent NERDTreeRefreshRoot
+	silent NERDTreeRefreshRoot
+	silent AirlineRefresh
+	echo "save ! " .. expand('%c')
 enddef
 
 def g:Quit()
