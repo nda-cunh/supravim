@@ -158,6 +158,7 @@ def g:Save()
 	silent NERDTreeRefreshRoot
 	silent NERDTreeRefreshRoot
 	silent AirlineRefresh
+	silent redraw
 	echo "save ! " .. expand('%c')
 enddef
 
