@@ -426,11 +426,21 @@ def CreatePop()
     popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s ], {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
 enddef
 
-au User lsp_setup call lsp#register_server({
-            \ name: 'clangd',                                              
-            \ cmd: (server_info) => ['clangd', '--clang-tidy', '-j', '8'],
-            \ allowlist: ['cpp', 'c'],
-            \ })
+if executable('clangd')
+	au User lsp_setup call lsp#register_server({
+				\ name: 'clangd',                                              
+				\ cmd: (server_info) => ['clangd', '--clang-tidy', '-j', '8'],
+				\ allowlist: ['cpp', 'c'],
+				\ })
+endif
+
+if executable('vala-language-server')
+	au User lsp_setup call lsp#register_server({
+				\ name: 'vala-language-server',                                              
+				\ cmd: (server_info) => ['vala-language-server'],
+				\ allowlist: ['vala'],
+				\ })
+endif
 
 
 def g:InstallclangD(where: string)
