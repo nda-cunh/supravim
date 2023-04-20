@@ -40,7 +40,7 @@
 		"body": [
 			"CC=clang",
 			"NAME = ${1:name}",
-			"SRCS = ${VIM:system('echo *.c')}HEADER = ${VIM:system('echo *.h')}OBJS = \\$(SRCS:.cpp=.o)",
+			"SRCS = ${VIM:system('echo *.c')}HEADER = ${VIM:system('echo *.h')}OBJS = \\$(SRCS:.c=.o)",
 			"CFLAGS = -Wall -Wextra -Werror",
 			"LDFLAGS = ",
 			"",
