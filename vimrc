@@ -360,12 +360,16 @@ def NERDTreeHighlightFile(extension: string, fg: string, bg: string)
 	exec 'autocmd filetype nerdtree syn match ' .. extension .. ' #^\s\+.*' .. extension .. '$#'
 enddef
 
-#TODO
 NERDTreeHighlightFile('.c', 'blue', 'none')
 NERDTreeHighlightFile('h', 'green', 'none')
 NERDTreeHighlightFile('.cpp', 'blue', 'none')
 NERDTreeHighlightFile('.hpp', 'green', 'none')
 NERDTreeHighlightFile('vala', 'magenta', 'none')
+NERDTreeHighlightFile('vapi', 'magenta', 'none')
+NERDTreeHighlightFile('py', 'yellow', 'none')
+NERDTreeHighlightFile('java', 'red', 'none')
+NERDTreeHighlightFile('sh', 'green', 'none')
+NERDTreeHighlightFile('go', 'cyan', 'none')
 NERDTreeHighlightFile('Makefile', 'red', 'none')
 
 augroup nerdtreeconcealbrackets
