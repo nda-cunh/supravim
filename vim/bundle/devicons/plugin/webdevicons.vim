@@ -168,6 +168,7 @@ function! s:setDictionaries()
   let s:file_node_extensions = {
         \ 'styl'     : '',
         \ 'vala'     : '',
+        \ 'vapi'     : '',
         \ 'gs'       : '',
         \ 'sass'     : '',
         \ 'scss'     : '',
