@@ -54,7 +54,7 @@ backup_config() {
 #=========================================================="
 		fi
 		mouse=$(grep -c "#\*mouse\*" ~/.vimrc 2>/dev/null)
-		noswap=$(grep -c "#.*noswapfile" ~/.vimrc 2>/dev/null)
+		swap=$(grep -c "#.*noswapfile" ~/.vimrc 2>/dev/null)
 		nerdtree=$(grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null)
 		theme=$(cat ~/.vimrc 2>/dev/null | grep colorscheme | grep -Eo "[a-z]+$")
 		icons=$(grep -c "icons_enabled" ~/.vimrc 2>/dev/null)
@@ -66,7 +66,7 @@ backup_config() {
 			supravim disable icons >/dev/null
 		fi
 		! [ "$mouse" = "0" ] && supravim disable mouse >/dev/null
-		  [ "$noswap" = "0" ] && supravim enable noswap >/dev/null
+		  [ "$swap" = "0" ] && supravim disable swap >/dev/null
 		! [ "$nerdtree" = "0" ] && supravim disable tree >/dev/null
 		  [ "$norme" = "0" ] && supravim enable norme >/dev/null
 		
@@ -105,6 +105,9 @@ add_config_rc(){
 config_supravim_editor() {
 	cp -rf "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
     ln -sf "${INSTALL_DIRECTORY}/clangd" $HOME/.local/bin/
+	ln -sf "${INSTALL_DIRECTORY}/suprabrain" $HOME/.local/bin/
+	chmod +x $HOME/.local/bin/suprabrain
+	chmod +x $HOME/.local/bin/SupraVim/suprago
 	mkdir -p $HOME/.local/share/fonts
     mv "${INSTALL_DIRECTORY}/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
     ln -sf "${INSTALL_DIRECTORY}/supramake" $HOME/.local/bin/

@@ -18,7 +18,7 @@ enable_fct(){
 					echo -e "\n${bold}${blue}[INFO]${reset} If you do not have a compatible font, here are some: https://www.nerdfonts.com/font-downloads ";
 				else
 					echo -e "${bold}${green}[icons]${reset} already enabled"; fi ;;
-		noswap)	sed -i 's/^# set noswapfile/set noswapfile/g' ~/.vimrc;
+		swap)	sed -i 's/^set noswapfile/# &/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
 		norme) sed -i 's/norm_activate = false/norm_activate = true/g' ~/.vimrc;
 			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
@@ -34,7 +34,7 @@ disable_fct(){
     case $1 in
         mouse) sed -i 's/^set mouse.*/#*mouse\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
         tree) sed -i 's/^[^\"].*nerdtree.*startup.*$/#*nerdtree\* &/' ~/.vimrc; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		noswap)	sed -i 's/^set noswapfile/# &/g' ~/.vimrc;
+		swap)	sed -i 's/^# set noswapfile/set noswapfile/g' ~/.vimrc;
 			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		icons) sed -i 's/icons_enabled/icons_disabled/g' ~/.vimrc; rm -rf "$HOME/.vim/bundle/devicons"; echo -e "${bold}${red}[$1]${reset} correctly disabled";;
 		norme) sed -i 's/g:norm_activate = true/g:norm_activate = false/g' ~/.vimrc;
@@ -106,9 +106,10 @@ status_fct(){
 	fi
 
 	if [[ $(grep -c "# set noswapfile" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${green}noswap${reset} "
+		echo -e "${bold}${red}swap${reset}"
 	else
-		echo -e "${bold}${red}noswap${reset}"
+		echo -e "${bold}${green}swap${reset} "
+
 	fi
 
 	if [[ $(grep -c "#*nerdtree\*" ~/.vimrc) == 0 ]]; then
@@ -199,7 +200,7 @@ help_fct(){
 		normeHeader		display error for header 42 in your files
 		tree			left window automatically opened with files in the current directory
 		icons			icon in nerdtree for different type/file directory
-		noswap			disable swapfile (file.swp)
+		swap			disable swapfile (file.swp)
 
 	${bold}THEME CHOOSING${reset}
 		supravim <theme | -t> <name_theme> <background>

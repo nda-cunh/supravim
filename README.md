@@ -1,10 +1,11 @@
-# SupraVim 4.10.2
+# SupraVim 4.11.1
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
 MP moi sur le discord/slack de 42 si besoin (nda-cunh)
 
 <img src="img/readme.png"/>
+
 
 ## Installation:
 
@@ -22,6 +23,10 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 
 | Zsh | Clang | Vim 8 | Vala |
 |-----|-------|-------|------|
+
+# Beta suprabrain
+
+suprabrain une IA pour supravim , demandez lui de l'aide pour supravim !
 
 ## Mise à jour:
 ```bash
