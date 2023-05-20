@@ -1,7 +1,7 @@
 using Posix;
 
-int    main(string []args)
-{
+int    main(string []args) {
+	signal(SIGINT, sig_handler);
     string path = Environment.get_variable ("PWD");
     string home = Environment.get_variable ("HOME");
     string []rules = {};
@@ -13,7 +13,7 @@ int    main(string []args)
     }
     else{
         var i = 1;
-        while (args[i] != null){
+        while (args[i] != null) {
             if (args[i] == "--arg")
                 break;
             rules += args[i];
@@ -31,10 +31,8 @@ int    main(string []args)
     int i = path.length - 1;
     int ret;
 
-    while (home != path && path != "/tmp" && i > 0)
-    {
-        if (access(path + "/Makefile", F_OK) == 0)
-        {
+    while (home != path && path != "/tmp" && i > 0) {
+        if (access(path + "/Makefile", F_OK) == 0) {
             int pid = fork();
             if (pid == 0)
             {
@@ -49,12 +47,19 @@ int    main(string []args)
             waitpid(pid, out ret, 0);
             return (ret);
         }
-        else
-        {
+        else {
             while (path[i] != '/')
                 i--;
             path.data[i] = '\0';
         }
     }
     return (42);
+}
+
+void    sig_handler (int sig)
+{
+	if (sig == SIGINT){
+		print("[SupraMake]: Send Ctrl+C to %d", pid);
+		kill(pid, SIGINT);
+	}
 }
