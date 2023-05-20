@@ -66,6 +66,8 @@ inoremap <TAB>		<TAB>
 imap <C-g>			<esc>:NERDTreeTabsToggle<CR>
 map <C-g>			:NERDTreeTabsToggle<CR>
 map <S-T> <Esc>:term ++rows=15<CR>
+map <S-Tab>			<<
+map <Tab>			>>
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
@@ -156,9 +158,7 @@ def g:Save()
 	silent w!
 	echo "saving ..."
 	silent NERDTreeRefreshRoot
-	silent NERDTreeRefreshRoot
-	silent AirlineRefresh
-	silent redraw
+	silent redraw!
 	echo "save ! " .. expand('%c')
 enddef
 
@@ -202,6 +202,7 @@ def g:CompileRun()
 	if err != 42
 		g:Make('run')
 	else
+		!clear -x
 		var ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
