@@ -1,7 +1,8 @@
-# SupraVim 4.11.2
+# SupraVim 4.13
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
+Il contient : supramake supratags suprabrain supracom supranorme
 MP moi sur le discord/slack de 42 si besoin (nda-cunh)
 
 <img src="img/readme.png"/>
@@ -26,7 +27,7 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 
 # Beta suprabrain
 
-suprabrain une IA pour supravim , demandez lui de l'aide pour supravim !
+Suprabrain une IA pour supravim , demandez lui de l'aide pour supravim !
 
 ## Mise à jour:
 ```bash
@@ -65,12 +66,11 @@ ou
 | Déplacement entre les onglets | Ctrl + Flèche|
 | Ouvrir un terminal | Shift - T|
 | Ctrl+R | le contraire du Undo.. le Redo|
-| Space  | lance la dernière macro |
 | ------ | ------ |
 | Ctr+ Up | Aller sur la fonction sous le curseur|
 | Ctr+ Down |Retourner sur la fonction d'avant|
 
-# Compilation
+# Compilation (SupraMake)
 
 <img src="img/makeclean.png"/>
 
@@ -83,7 +83,18 @@ Dans le cas contraire, il compilera tous les fichiers C présents ensemble et ex
 
 note: F6 et F7 lance eux la règle run2 et run3 du makefile si elles existent.
 
-# SupraMake
+exemple d'un makefile:
+```make
+NAME=hello
+
+all:
+    gcc main.c -o $(NAME)
+
+run: all
+    ./$(NAME)
+```
+
+## SupraMake
 
 supramake est une commande de supravim (c'est celui-ci qu'il utilise pour le F5,6,7)
 il fonctionne comme la commande make, sauf qu'il cherchera ou se trouve le makefile pour executer votre règle.
@@ -94,6 +105,12 @@ et que votre Makefile est ici:
 ``~/Desktop/Projets/Makefile``
 
 ``supramake rule`` le lancera, tandis que ``make rule`` ne le trouvera pas.
+
+il est possible d'ajouter des arguments a executer pour run avec la variable
+$(ARG) avec la commande
+
+supramake run --arg \<vos argument\>
+
 # Entrer dans une fonction
 
 vous pouvez aller directement a une fonction ou define en question en faisant la touche 'Ctrl + UP' sur le symbole, il vous ouvrira le fichier et l'emplacement de l'initiation de ce symbole.
@@ -150,7 +167,7 @@ Tu peux ajouter tes propres lignes de vim dans cette balise, à chaque mise à j
 
 # Vous faites une autre langue que C, C++, Vala ?
 
-il suffit de faire ``:LspInstallServer VotreServer``
+il suffit de faire ``:LspInstallServer <optionel: non dun server>``
 
 la listes des serveur est ici https://github.com/mattn/vim-lsp-settings#supported-languages
 
@@ -158,11 +175,54 @@ la listes des serveur est ici https://github.com/mattn/vim-lsp-settings#supporte
 je recommande egalement d'ajouter dans votre balise YourConfig:
 ```
 if expand('%:e') == '.py'                     
-    let lsp_diagnostics_enabled=1
-    let g:lsp_diagnostics_signs_enabled = 1
-endif                                         
+    var lsp_diagnostics_enabled = 1
+	g:lsp_diagnostics_signs_priority = 1
+	g:lsp_diagnostics_signs_insert_mode_enabled = 1
+    g:lsp_diagnostics_signs_enabled = 1
+endif                                       
 ```
 remplacer .py par l'extension de votre fichier
+## Python
+pour un support python:
+
+```
+//dans vim:
+ :LspInstallServer
+
+//dans votre .vimrc a la fin dans YOUR CONFIG:
+
+if expand('%:e') == '.py'                     
+    var lsp_diagnostics_enabled = 1
+    g:lsp_diagnostics_signs_priority = 1
+    g:lsp_diagnostics_signs_insert_mode_enabled = 1
+    g:lsp_diagnostics_signs_enabled = 1
+endif
+
+```
+
+## TypeScript
+
+pour un support typescript plus interessant:
+```
+//terminal:
+git clone https://github.com/Quramy/tsuquyomi/ ~/.vim/bundle/tsc
+
+//dans vim:
+ :LspInstallServer
+
+//dans votre .vimrc a la fin dans YOUR CONFIG:
+g:syntastic_typescript_checkers = ['tsuquyomi']
+g:tsuquyomi_disable_quickfix = 1
+
+if expand('%:e') == '.ts'                     
+    var lsp_diagnostics_enabled = 1
+    g:lsp_diagnostics_signs_priority = 1
+    g:lsp_diagnostics_signs_insert_mode_enabled = 1
+    g:lsp_diagnostics_signs_enabled = 1
+endif
+
+```
+
 
 # Autre chose ? une idée ?
 ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
