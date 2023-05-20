@@ -158,6 +158,7 @@ def g:Save()
 	silent w!
 	echo "saving ..."
 	silent NERDTreeRefreshRoot
+	redraw
 	echo "save ! " .. expand('%c')
 enddef
 
