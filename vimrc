@@ -144,21 +144,10 @@ autocmd InsertEnter * AirFresh()
 autocmd InsertLeave * AirFresh()
 autocmd TabLeave * AirFresh()
 
-autocmd VimEnter * ReBase()
-def ReBase()
-	var w = expand("%:p:h")
-	if isdirectory(w)
-		exec "cd" "%:p:h"
-	endif
-enddef
-
 #--------------- FONCTION ---------------"
 
 def g:Save()
 	silent w!
-	echo "saving ..."
-	silent NERDTreeRefreshRoot
-	redraw
 	echo "save ! " .. expand('%c')
 enddef
 
