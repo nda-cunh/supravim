@@ -87,6 +87,10 @@ syntax on
 set mouse=a
 set cursorline
 set nu
+set incsearch
+set autochdir
+set title
+set wildmenu
 set tabstop=4
 set shiftwidth=4
 set smartindent
