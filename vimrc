@@ -202,7 +202,7 @@ def g:CompileRun()
 	if err != 42
 		g:Make('run')
 	else
-		!clear -x
+		silent !clear -x
 		var ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
