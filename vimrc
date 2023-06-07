@@ -87,6 +87,10 @@ syntax on
 set mouse=a
 set cursorline
 set nu
+set incsearch
+set autochdir
+set title
+set wildmenu
 set tabstop=4
 set shiftwidth=4
 set smartindent
@@ -144,21 +148,10 @@ autocmd InsertEnter * AirFresh()
 autocmd InsertLeave * AirFresh()
 autocmd TabLeave * AirFresh()
 
-autocmd VimEnter * ReBase()
-def ReBase()
-	var w = expand("%:p:h")
-	if isdirectory(w)
-		exec "cd" "%:p:h"
-	endif
-enddef
-
 #--------------- FONCTION ---------------"
 
 def g:Save()
 	silent w!
-	echo "saving ..."
-	silent NERDTreeRefreshRoot
-	redraw
 	echo "save ! " .. expand('%c')
 enddef
 
@@ -202,7 +195,7 @@ def g:CompileRun()
 	if err != 42
 		g:Make('run')
 	else
-		!clear -x
+		silent !clear -x
 		var ext = expand('%:e')
 		if ext == 'c' || ext == 'h'
 			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
@@ -402,29 +395,25 @@ g:airline#extensions#tabline#right_sep = ''
 g:airline#extensions#tabline#right_alt_sep = ''
 
 # ----------------- POPUP ------------------ #
-autocmd InsertEnter * CreatePop()
 autocmd VimEnter * CreatePopit()
 hi MyPopupColor ctermfg=cyan
 
 autocmd VimLeave * RemovePopit()
 
 def CreatePopit()
+	g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
 	var s = system("supravim --version cached > /tmp/xdfe-" .. g:file_tmp .. "&")
+	var timer = timer_start(3000, (_) => {
+		CreatePop()
+	     })
 enddef
 
 def RemovePopit()
 	var s = system("rm -f /tmp/xdfe-" .. g:file_tmp)
 enddef
 
-g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
-g:step = false
-
 def CreatePop()
-    if g:step == true
-        return
-    endif
-    g:step = true
-    var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)                                                                                                                                                                
+    var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)
     if s == ""
         return
     endif
