@@ -5,6 +5,10 @@ Un éditeur de texte Vim pour 42 d'Angoulême.
 Il contient : supramake supratags suprabrain supracom supranorme
 MP moi sur le discord/slack de 42 si besoin (nda-cunh)
 
+# note
+
+N'hésitez pas à découvrir d'autre éditeur de texte, ou d'ide ou de construire votre propre configuration VIM la seule limite et votre pensée. savoir configurer ses outils , c'est aussi être plus à l'aise avec votre travail.
+
 <img src="img/readme.png"/>
 
 
