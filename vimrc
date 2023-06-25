@@ -68,6 +68,7 @@ map <C-g>			:NERDTreeTabsToggle<CR>
 map <S-T> <Esc>:term ++rows=15<CR>
 map <S-Tab>			<<
 map <Tab>			>>
+nmap <c-@>  :LspHover<cr>
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
