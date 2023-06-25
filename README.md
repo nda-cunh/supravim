@@ -2,21 +2,14 @@
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
-Il contient : supramake supratags suprabrain supracom supranorme
-MP moi sur le discord/slack de 42 si besoin (nda-cunh)
-
-# [Wiki](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
-Pour savoir comment fonctionne Supravim aller sur ce wiki:
-
+# [Le SupraWiki](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
+Pour savoir comment fonctionne Supravim aller sur ce wiki: 
 [Clique sur moi](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 
 
 # note
 
 N'hésitez pas à découvrir d'autre éditeur de texte, ou d'ide ou de construire votre propre configuration VIM la seule limite et votre pensée. savoir configurer ses outils , c'est aussi être plus à l'aise avec votre travail.
-
-<img src="img/readme.png"/>
-
 
 ## Installation:
 
@@ -56,6 +49,12 @@ ou
     supravim uninstall
 ```
 
+
+<img src="img/readme.png"/>
+
+
 # Autre chose ? une idée ?
 ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
 je suis à l'écoute d'un peu tout :)
+
+MP moi sur le discord/slack de 42 si besoin (nda-cunh)
