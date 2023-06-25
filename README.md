@@ -2,10 +2,9 @@
 
 Un éditeur de texte Vim pour 42 d'Angoulême.
 
-# [Le SupraWiki](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
-Pour savoir comment fonctionne Supravim aller sur ce wiki: 
+# [Le SupraWiki (Documentation)](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
+La documentation de Supravim est ici : 
 [Clique sur moi](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
-
 
 # note
 
@@ -25,22 +24,12 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
 
 **Dépendances**
 
-| Zsh | Clang | Vim 8 | Vala |
+| Zsh | Clang | Vim 9 | Vala |
 |-----|-------|-------|------|
-
-# Beta suprabrain
-
-Suprabrain une IA pour supravim , demandez lui de l'aide pour supravim !
 
 ## Mise à jour:
 ```bash
     supravim update
-```
-
-ou
-
-```bash
-    supravim update dev
 ```
 
 ## Désinstallation
@@ -48,7 +37,6 @@ ou
 ```bash
     supravim uninstall
 ```
-
 
 <img src="img/readme.png"/>
 
