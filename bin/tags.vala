@@ -1,4 +1,3 @@
-//valac make.vala --pkg=posix
 using Posix;
 
 void search_dir(string dir_path, ref string tab_file, string ext)
@@ -30,8 +29,7 @@ void search_dir(string dir_path, ref string tab_file, string ext)
 			tab_file = @"$(tab_file)$(path) ";
 		}
 	}
-	catch (FileError err)
-	{
+	catch (FileError err) {
 		printf (err.message);
 	}
 }
@@ -52,6 +50,8 @@ void create_tags(string super_path, string ext)
 			tablor += n;
 	}
 	execvp("ctags", tablor);
+	printerr("Error Execvp\n");
+	exit(-1);
 }
 
 void main(string []args)
@@ -69,8 +69,10 @@ void main(string []args)
 		unlink(@"$home/.local/bin/tags");
 		while (home != path && path != "/tmp" && i > 0)
 		{
-			if (access(path + "/Makefile", F_OK) == 0 || access(path + "/src", F_OK) == 0 || access(path + "/.git", F_OK) == 0)
+			if (access(path + "/Makefile", F_OK) == 0 || access(path + "/src", F_OK) == 0 || access(path + "/.git", F_OK) == 0) {
 				create_tags(path, search_ext);
+				return ;
+			}
 			else
 			{
 				while (path[i] != '/')
@@ -81,3 +83,4 @@ void main(string []args)
 		create_tags(Environment.get_current_dir(), search_ext);
 	}
 }
+
