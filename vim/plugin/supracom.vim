@@ -1,16 +1,14 @@
 vim9script
-vnoremap c		:call Commentary()<CR>
-noremap c		:call Commentary()<CR>
-noremap gcc		:call Commentary()<CR>
+noremap <c-_>	:call Commentary()<CR>
 
-def Commentator(char: string, line: string)
-	if line =~ '^\s*' .. char .. '.*'
-		var new_content = substitute(line, char .. '\(.*\)$', '\1', '')
-		setline('.', new_content)
-	else
-		var new_content = substitute(line, '\(\s*\)\(.*\)$', '\1' .. char .. '\2', '')
-		setline('.', new_content)
-	endif
+def Comment(char: string, line: string)
+	var new_content = substitute(line, '\(\s*\)\(.*\)$', '\1' .. char .. ' \2', '')
+	setline('.', new_content)
+enddef
+
+def UnComment(char: string, line: string)
+	var new_content = substitute(line, char .. '\s*', '', '')
+	setline('.', new_content)
 enddef
 
 def g:Commentary()
@@ -18,8 +16,16 @@ def g:Commentary()
 	var line = getline('.')
 
 	if e == 'cpp' || e == 'vala' || e == 'vapi' || e == 'hpp' || e == 'tpp' || e == 'h' || e == 'c'
-		Commentator('// ', line)
+		if line =~ '^\s*[/][/].*$'
+			UnComment('//', line)
+		else
+			Comment('//', line)
+		endif
 	else
-		Commentator('# ', line)
+		if line =~ '^\s*[#].*$'
+			UnComment('#', line)
+		else
+			Comment('#', line)
+		endif
 	endif
 enddef
