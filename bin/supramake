@@ -1,0 +1,3 @@
+#!/bin/bash
+s="$@"
+vala $HOME/.local/share/SupraVim/bin/make.vala --pkg=posix --run-args="$s"

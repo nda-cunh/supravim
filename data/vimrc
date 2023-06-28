@@ -12,6 +12,10 @@ colorscheme onehalf
 set background=dark
 set t_Co=256
 
+if (has("termguicolors"))
+	set termguicolors
+endif
+
 # icons_enabled
 
 #-------------- Save Undo  ------------"
@@ -265,10 +269,10 @@ enddef
 
 command -nargs=0 -bar Ctags :call Ctags()
 
-set tags=$HOME/.local/bin/tags
+set tags=$HOME/.local/share/tags
 
 def g:Ctags()
-	system("vala $HOME/.local/bin/SupraVim/bin/tags.vala --pkg=posix --run-args=" .. expand('%:e'))
+	system("^supratags" .. expand('%:e'))
 enddef
 
 # -------------- SupraNorm ----------------"
@@ -461,4 +465,4 @@ g:lsp_diagnostics_signs_delay = 1
 g:lsp_diagnostics_signs_priority = 0
 g:lsp_diagnostics_signs_insert_mode_enabled = 0
 g:lsp_tagfunc_source_methods = []
-g:vsnip_snippet_dir = '$HOME/.local/bin/SupraVim/snippets'
+g:vsnip_snippet_dir = '$HOME/.local/share/SupraVim/data/snippets'
