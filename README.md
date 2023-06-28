@@ -1,4 +1,4 @@
-# SupraVim 4.3
+# SupraVim 4.4
 
 # [Le SupraWiki (Documentation et Aide)](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 La documentation de Supravim est ici : 
@@ -25,9 +25,10 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
 # note
 
+
 N'hésitez pas à découvrir d'autre éditeur de texte, ou d'ide ou de construire votre propre configuration VIM la seule limite et votre pensée. savoir configurer ses outils , c'est aussi être plus à l'aise avec votre travail.
 
-<img src="img/readme.png"/>
+<img src="data/README.png"/>
 
 # Autre chose ? une idée ?
 ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
