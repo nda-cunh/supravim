@@ -2,7 +2,7 @@
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
 SUPRA_LINK="https://gitlab.com/Hydrasho/SupraVim -b $1"
-INSTALL_DIRECTORY="${HOME}/.local/bin/SupraVim"
+INSTALL_DIRECTORY="${HOME}/.local/share/SupraVim"
 
 ############################################################
 # Bash Color
@@ -48,7 +48,7 @@ backup_config() {
 		supravim switch >/dev/null
 	fi
 	if [ $step -eq 1 ]; then
-		balise=`grep -Ezo "#[=]+.*[=]{42}" ~/.vimrc 2>/dev/null`
+		balise="`grep -Ezo "#[=]+.*[=]{42}" ~/.vimrc 2>/dev/null | tr -d '\0'`"
 		if [ "$balise" = "" ]; then
 			balise="#====================== YOUR CONFIG =======================\n\
 #=========================================================="
@@ -71,7 +71,7 @@ backup_config() {
 		  [ "$norme" = "0" ] && supravim enable norme >/dev/null
 		
 		supravim -t "$theme" >/dev/null
-		echo "$balise" >> ~/.vimrc
+		printf "$balise" >> ~/.vimrc
 		status "Have reloaded your old vim configuration"
 	fi
 }
@@ -96,33 +96,33 @@ add_config_rc(){
 	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE} >/dev/null; then
 		echo "alias q=exit" >> ${SHELL_ACTIVE}
 	fi
-	if ! grep -qe "^export fpath=(\$HOME/.local/bin/SupraVim \$fpath)" ${SHELL_ACTIVE} >/dev/null; then
-		echo "export fpath=(\$HOME/.local/bin/SupraVim \$fpath)" >> ${SHELL_ACTIVE}
+	if ! grep -qe "^export fpath=(${INSTALL_DIRECTORY}/bin \$fpath)" ${SHELL_ACTIVE} >/dev/null; then
+		echo "export fpath=(${INSTALL_DIRECTORY}/bin \$fpath)" >> ${SHELL_ACTIVE}
 		echo "autoload compinit; compinit" >> ${SHELL_ACTIVE}
 	fi
 }
 
 config_supravim_editor() {
-	cp -rf "${INSTALL_DIRECTORY}/supravim" $HOME/.local/bin/
-    ln -sf "${INSTALL_DIRECTORY}/clangd" $HOME/.local/bin/
-	ln -sf "${INSTALL_DIRECTORY}/suprabrain" $HOME/.local/bin/
+	cp -rf "${INSTALL_DIRECTORY}/bin/supravim" $HOME/.local/bin/
+    ln -sf "${INSTALL_DIRECTORY}/bin/clangd" $HOME/.local/bin/
+	ln -sf "${INSTALL_DIRECTORY}/bin/suprabrain" $HOME/.local/bin/
+    ln -sf "${INSTALL_DIRECTORY}/bin/supramake" $HOME/.local/bin/
 	chmod +x $HOME/.local/bin/suprabrain
-	chmod +x $HOME/.local/bin/SupraVim/suprago
+	chmod +x $HOME/.local/share/SupraVim/bin/suprago
 	mkdir -p $HOME/.local/share/fonts
-    mv "${INSTALL_DIRECTORY}/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
-    ln -sf "${INSTALL_DIRECTORY}/supramake" $HOME/.local/bin/
+    mv "${INSTALL_DIRECTORY}/data/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
 }
 
 
 install_SupraVim(){
-	mkdir -p $HOME/.local/bin/
+	mkdir -p $INSTALL_DIRECTORY
 	download "Cloning repo to ${INSTALL_DIRECTORY}"
 	git clone ${SUPRA_LINK} ${INSTALL_DIRECTORY} --progress
 	status "Installing SupraVim"
 	rm -rf ~/.vimrc
 	rm -rf ~/.vim
-	ln -s ${INSTALL_DIRECTORY}/vimrc ~/.vimrc
-	ln -s ${INSTALL_DIRECTORY}/vim ~/.vim
+	ln -s ${INSTALL_DIRECTORY}/data/vimrc ~/.vimrc
+	ln -s ${INSTALL_DIRECTORY}/data/vim ~/.vim
 	config_supravim_editor
 	add_config_rc
 }
