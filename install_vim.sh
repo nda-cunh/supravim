@@ -150,6 +150,7 @@ main() {
 	#	Prepare config for new upload
 	echo "Kill all vim before update"
 	killall vim
+	killall suprabrain
 	echo "You are on the $1 branch"
 	backup_config
 
