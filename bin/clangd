@@ -9,10 +9,10 @@ path_supra=$HOME"/.local/bin/clangd"
 		/bin/clangd $@
 	elif [ -f $fpath_user ]
 	then
-		flatpak run --user --env="PATH=/usr/lib/sdk/llvm14/bin:$PATH" --filesystem=home --command=clangd org.freedesktop.Sdk//22.08 $@
+		flatpak run --user --env="PATH=/usr/lib/sdk/llvm14/bin:$PATH" --filesystem=home --filesystem=/tmp --command=clangd org.freedesktop.Sdk//22.08 $@
 	elif [ -f $fpath_sys ]
 	then
-		flatpak run --env="PATH=/usr/lib/sdk/llvm14/bin:$PATH" --filesystem=home --command=clangd org.freedesktop.Sdk//22.08 $@
+		flatpak run --env="PATH=/usr/lib/sdk/llvm14/bin:$PATH" --filesystem=home --filesystem=/tmp --command=clangd org.freedesktop.Sdk//22.08 $@
 	else
 		~/.local/share/SupraVim/bin/clangd_spv $@
 	fi
