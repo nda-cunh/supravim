@@ -19,7 +19,7 @@ endif
 # icons_enabled
 
 #-------------- Save Undo  ------------"
-silent! execute "!chmod 777 -R ~/.cache/vim && chown -R $USER ~/.cache/vim"
+silent! system("!chmod 777 -R ~/.cache/vim && chown -R $USER ~/.cache/vim")
 if !isdirectory($HOME .. "/.cache/vim/undo")
 	silent! mkdir($HOME .. "/.cache/vim/", "", 0770)
 	silent! mkdir($HOME .. "/.cache/vim/undo", "", 0770)
