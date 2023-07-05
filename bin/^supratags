@@ -1,3 +1,0 @@
-#!/bin/bash
-s="$@"
-vala $HOME/.local/share/SupraVim/bin/tags.vala --pkg=posix --run-args="$s"

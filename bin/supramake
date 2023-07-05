@@ -1,3 +1,2 @@
 #!/bin/bash
-s="$@"
-vala $HOME/.local/share/SupraVim/bin/make.vala --pkg=posix --run-args="$s"
+sleep 0.05 && suprastore force supramake $@&
