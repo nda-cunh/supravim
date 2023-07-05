@@ -53,8 +53,8 @@ inoremap <c-s>		<esc>:call Save()<CR>
 noremap <c-q>		<esc>:call Quit()<CR>
 noremap <c-s>		<esc>:call Save()<CR>
 map <C-F5> 			:Termdebug -n <CR>
-map <F5> 			:call CompileRun()<CR>
-imap <F5>			<Esc>:call CompileRun()<CR>
+map <F5>			:call Make("run")<CR>
+imap <F5>			<Esc>:call Make("run")<CR>
 map <F6>			:call Make("run2")<CR>
 imap <F6>			<Esc>:call Make("run2")<CR>
 map <F7> 			:call Make("run3")<CR>
@@ -180,67 +180,15 @@ command -nargs=+ -bar Make :call Make( '<args>' )
 
 def g:Make(rules: string)
 	silent exec "!clear -x"
-	 setenv('rulesmake', rules)
+	setenv('rulesmake', rules)
 	! supramake $rulesmake
-enddef
-
-def VerifMake()
-	setenv('rulesmake', 'valanocompileabcsupra')
-	! supramake $rulesmake
-enddef
-
-def g:CompileRun()
-	if &filetype == 'nerdtree' || &filetype == 'vim'
-		echo "Fenetre non compilable"
-		return
-	endif
-	w!
-	exec "cd" "%:p:h"
-	silent VerifMake()
-	var err = v:shell_error
-	if err != 42
-		g:Make('run')
-	else
-		silent !clear -x
-		var ext = expand('%:e')
-		if ext == 'c' || ext == 'h'
-			exec "!gcc -g \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		#*cflags* 			exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif ext == 'cpp' || ext == 'hpp'
-			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out && valgrind --leak-check=full --show-leak-kinds=all -q ./a.out"
-		elseif ext == 'sh'
-			exec "!time bash %"
-		elseif ext == 'py'
-			exec "!time python3 %"
-		elseif ext == 'vala' || ext == 'vapi'
-			exec "!valac %:p:h/*.vala --pkg=posix -o a.out && ./a.out"
-		endif
-	endif
-	exec "redraw!"
 enddef
 
 def g:Compile()
 	w!
 	exec "cd" "%:p:h"
 	silent exec "!clear -x"
-
 	g:Make('all')
-	var err = v:shell_error
-	if err != 0
-		var ext = expand('%:e')
-		if ext == 'c' || ext == 'h'
-			exec "!gcc -g \"%:p:h/\"*.c -o a.out"
-		#*cflags* 		exec "!gcc -g -Wall -Wextra -Werror \"%:p:h/\"*.c -o a.out"
-		elseif ext == 'cpp' || ext == 'hpp'
-			exec "!g++ -g \"%:p:h/\"*.cpp -o a.out ; ./a.out"
-		elseif ext == 'sh'
-			exec "!time bash %"
-		elseif ext == 'py'
-			exec "!time python3 %"
-		elseif ext == 'vala' || ext == 'vapi'
-			exec "!valac %:p:h/*.vala --pkg=posix -o a.out"
-		endif
-	endif
 	exec "redraw!"
 enddef
 
