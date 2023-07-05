@@ -155,10 +155,10 @@ print_ascii() {
 # main
 
 main() {
-	#	Prepare config for new upload
+	# Prepare config for new upload
 	echo "Kill all vim before update"
-	killall vim
-	killall suprabrain
+	killall vim 2> /dev/null
+	killall suprabrain 2> /dev/null
 	echo "You are on the $1 branch"
 	backup_config
 
