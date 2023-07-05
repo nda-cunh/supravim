@@ -155,7 +155,9 @@ version_fct() {
 }
 
 uninstall_fct() {
-	killall vim
+	killall vim 2> /dev/null
+    killall suprabrain 2> /dev/null
+    killall suprastore 2> /dev/null
 	rm -rf "$HOME/.local/bin/SupraVim" "$HOME/.local/bin/supravim"
 	rm -rf "$HOME/.local/share/SupraVim" "$HOME/.local/share/supravim"	
 }
