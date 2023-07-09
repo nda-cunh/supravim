@@ -74,6 +74,8 @@ map <S-T> <Esc>:term ++rows=15<CR>
 map <S-Tab>			<<
 map <Tab>			>>
 nmap <c-@>  :LspHover<cr>
+map <a-up>		ddkkp
+map <a-down>	ddp
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
@@ -441,17 +443,6 @@ if executable('vala-language-server')
 				\ allowlist: ['vala'],
 				\ })
 endif
-
-
-def g:InstallclangD(where: string)
-	if (where == 'user')
-		terminal supravim server user
-	else
-		terminal supravim server
-	endif
-enddef
-
-command -nargs=+ -bar InstallClangd :call g:InstallclangD( '<args>' )
 
 imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
