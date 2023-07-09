@@ -74,8 +74,8 @@ map <S-T> <Esc>:term ++rows=15<CR>
 map <S-Tab>			<<
 map <Tab>			>>
 nmap <c-@>  :LspHover<cr>
-map <a-up>		ddkkp
-map <a-down>	ddp
+map <a-up>		:vim9cmd g:SwaplineUp()<cr>
+map <a-down>	:vim9cmd g:SwaplineDown()<cr>
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
@@ -158,6 +158,24 @@ autocmd TabLeave * AirFresh()
 
 #--------------- FONCTION ---------------"
 
+def g:SwaplineUp()
+	var cursor: number = line('.')
+	var a: string = getline(cursor)
+	var b: string = getline(cursor - 1)
+	setline(cursor, b)
+	setline(cursor - 1, a)
+	normal k
+enddef
+
+def g:SwaplineDown()
+	var cursor: number = line('.')
+	var a: string = getline(cursor)
+	var b: string = getline(cursor + 1)
+	setline(cursor, b)
+	setline(cursor + 1, a)
+	normal j
+enddef
+
 def g:Save()
 	silent w!
 	echo "save ! " .. expand('%c')
@@ -165,17 +183,6 @@ enddef
 
 def g:Quit()
 	q!
-enddef
-
-
-command -nargs=+ -bar MakeHeader :call FctsToHeader( split('<args>') )
-
-#TODO
-def FctsToHeader(...itemlist: list<string>)
-	for files_input in itemlist
-		var f = files_input
-		exec ":r !IFS=$'\\n'; for fct in $(cat "files_input" | grep -Eo \"^[a-z].*)$\" | grep -v \"[^*a-z\_]main(\" | grep -v \"^static\"); do echo \"$fct;\"; done"
-	endfor
 enddef
 
 command -nargs=+ -bar Make :call Make( '<args>' )
