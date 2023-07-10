@@ -53,8 +53,8 @@ inoremap <c-s>		<esc>:call Save()<CR>
 noremap <c-q>		<esc>:call Quit()<CR>
 noremap <c-s>		<esc>:call Save()<CR>
 noremap <C-F5> 		:Termdebug -n <CR>
-noremap <F5> 		:call CompileRun()<CR>
-inoremap <F5>		<Esc>:call CompileRun()<CR>
+noremap <F5> 		:call Make("run")<CR>
+inoremap <F5>		<Esc>:call Make("run")<CR>
 noremap <F6>		:call Make("run2")<CR>
 inoremap <F6>		<Esc>:call Make("run2")<CR>
 noremap <F7> 		:call Make("run3")<CR>
