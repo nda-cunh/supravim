@@ -1,2 +1,0 @@
-#!/bin/bash
-sleep 0.05 && suprastore force supramake $@&
