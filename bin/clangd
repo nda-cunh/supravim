@@ -14,7 +14,7 @@ path_supra=$HOME"/.local/bin/clangd"
 	then
 		flatpak run --env="PATH=/usr/lib/sdk/llvm14/bin:$PATH" --filesystem=home --filesystem=/tmp --command=clangd org.freedesktop.Sdk//22.08 $@
 	else
-		~/.local/share/SupraVim/bin/clangd_spv $@
+		suprastore run clangd_spv $@
 	fi
 }
 
