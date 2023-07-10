@@ -34,7 +34,7 @@ packadd! termdebug
 g:termdebug_wide = 1
 
 #-------------- Auto Pairs ---------------------"
-imap <silent><CR>				<CR><Plug>AutoPairsReturn
+inoremap <silent><CR>		<CR><Plug>AutoPairsReturn
 
 #--------------- Onglets ---------------------"
 noremap <c-n>					<esc>:tabnew 
@@ -43,7 +43,7 @@ noremap <C-Left>				:tabprevious<CR>
 inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
-#--------------- Les racourcis ---------------"
+#--------------- Racourcis --------------"
 noremap <C-Up>		<Esc>:call Ctags()<CR>g<C-}>
 noremap <C-Down>	<Esc><C-T>
 inoremap <C-Up>		<Esc>:call Ctags()<CR>g<C-}>i
@@ -52,13 +52,13 @@ inoremap <c-q>		<esc>:call Quit()<CR>
 inoremap <c-s>		<esc>:call Save()<CR>
 noremap <c-q>		<esc>:call Quit()<CR>
 noremap <c-s>		<esc>:call Save()<CR>
-map <C-F5> 			:Termdebug -n <CR>
-map <F5>			:call Make("run")<CR>
-imap <F5>			<Esc>:call Make("run")<CR>
-map <F6>			:call Make("run2")<CR>
-imap <F6>			<Esc>:call Make("run2")<CR>
-map <F7> 			:call Make("run3")<CR>
-imap <F7>			<Esc>:call Make("run3")<CR>
+noremap <C-F5> 		:Termdebug -n <CR>
+noremap <F5> 		:call CompileRun()<CR>
+inoremap <F5>		<Esc>:call CompileRun()<CR>
+noremap <F6>		:call Make("run2")<CR>
+inoremap <F6>		<Esc>:call Make("run2")<CR>
+noremap <F7> 		:call Make("run3")<CR>
+inoremap <F7>		<Esc>:call Make("run3")<CR>
 noremap <C-d>		:vs 
 noremap <S-d>		:split 
 noremap <F3>		<Esc>:call ToggleNorm()<CR>
@@ -68,12 +68,14 @@ noremap <S-Left>	<C-w><Left><Esc>:AirlineRefresh<CR>
 noremap <S-Up>		<C-w><Up><Esc>:AirlineRefresh<CR>
 noremap <S-Down>	<C-w><Down><Esc>:AirlineRefresh<CR>
 inoremap <TAB>		<TAB>
-imap <C-g>			<esc>:NERDTreeTabsToggle<CR>
-map <C-g>			:NERDTreeTabsToggle<CR>
-map <S-T> <Esc>:term ++rows=15<CR>
-map <S-Tab>			<<
-map <Tab>			>>
-nmap <c-@>  :LspHover<cr>
+inoremap <C-g>		<esc>:NERDTreeTabsToggle<CR>
+noremap <C-g>		:NERDTreeTabsToggle<CR>
+noremap <S-T>		<Esc>:term ++rows=15<CR>
+noremap <S-Tab>		<<
+noremap <Tab>		>>
+noremap <c-@>		:LspHover<cr>
+noremap <a-up>		:vim9cmd g:SwaplineUp()<cr>
+noremap <a-down>	:vim9cmd g:SwaplineDown()<cr>
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
@@ -155,6 +157,23 @@ autocmd InsertLeave * AirFresh()
 autocmd TabLeave * AirFresh()
 
 #--------------- FONCTION ---------------"
+def g:SwaplineUp()
+	var cursor: number = line('.')
+	var a: string = getline(cursor)
+	var b: string = getline(cursor - 1)
+	setline(cursor, b)
+	setline(cursor - 1, a)
+	normal k
+enddef
+
+def g:SwaplineDown()
+	var cursor: number = line('.')
+	var a: string = getline(cursor)
+	var b: string = getline(cursor + 1)
+	setline(cursor, b)
+	setline(cursor + 1, a)
+	normal j
+enddef
 
 def g:Save()
 	silent w!
