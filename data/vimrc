@@ -282,7 +282,7 @@ command -nargs=0 -bar Ctags :call Ctags()
 set tags=$HOME/.local/share/tags
 
 def g:Ctags()
-	system("^supratags" .. expand('%:e'))
+	system("-supratags" .. expand('%:e'))
 enddef
 
 # -------------- SupraNorm ----------------"
