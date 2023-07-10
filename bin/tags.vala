@@ -40,7 +40,7 @@ void create_tags(string super_path, string ext)
 	string all_file = "";
 	string []tablor = {"ctags"};
 
-	tablor += @"-f$(home)/.local/bin/tags";
+	tablor += @"-f$(home)/.local/share/tags";
 	tablor += "-d";
 	tablor += "-T";
 	search_dir(super_path, ref all_file, ext);
