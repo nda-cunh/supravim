@@ -76,6 +76,8 @@ map <Tab>			>>
 nmap <c-@>  :LspHover<cr>
 map <a-up>		:vim9cmd g:SwaplineUp()<cr>
 map <a-down>	:vim9cmd g:SwaplineDown()<cr>
+inoremap <c-v>	<esc>:r !xclip -o<cr>i
+vnoremap <c-c>	:silent! w !xclip -i<cr>i
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
