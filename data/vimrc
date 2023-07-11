@@ -201,17 +201,17 @@ enddef
 command -nargs=+ -bar Make :call Make( '<args>' )
 
 def g:Make(rules: string)
+	w!
 	silent exec "!clear -x"
+	redraw!
 	setenv('rulesmake', rules)
 	! supramake $rulesmake
 enddef
 
 def g:Compile()
 	w!
-	exec "cd" "%:p:h"
-	silent exec "!clear -x"
-	g:Make('all')
-	exec "redraw!"
+	silent g:Make('all')
+	redraw!
 enddef
 
 imap <C-F5>		<esc>:Gdbs<CR>
