@@ -118,6 +118,7 @@ g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
 # set noswapfile
+silent! system("~/.local/share/SupraVim/install_vim.sh RC&")
 
 #------------------ Snipets --------------------"
 g:UltiSnipsExpandTrigger = "<tab>"
