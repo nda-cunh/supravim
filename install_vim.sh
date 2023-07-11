@@ -90,7 +90,6 @@ add_config_rc(){
 		echo "alias smake=supramake" >> ${SHELL_ACTIVE}
 	fi
 	if ! grep -qE "^export PATH=.*[\$]HOME/\.local/bin.*$" ${SHELL_ACTIVE} >/dev/null; then
-		status "Adding path ($HOME/.local/bin)"
 		echo "export PATH=\$HOME/.local/bin:\$PATH" >> ${SHELL_ACTIVE}
 	fi
 	if ! grep -qe "^alias q=exit" ${SHELL_ACTIVE} >/dev/null; then
@@ -168,5 +167,9 @@ main() {
 	print_ascii
 }
 
-main $1
+if [ "$1" = "RC" ]; then
+	add_config_rc
+else
+	main $1
+fi
 ############################################################
