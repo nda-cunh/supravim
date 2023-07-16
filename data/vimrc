@@ -434,6 +434,8 @@ smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
+g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
+g:vsnip_snippet_dir = '$HOME/.local/share/SupraVim/data/snippets'
 var ext = expand("%:e")
 if  ext == 'c' || ext == 'cpp'
         g:lsp_diagnostics_enabled = 0
