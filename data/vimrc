@@ -76,8 +76,15 @@ noremap <Tab>		>>
 noremap <c-@>		:LspHover<cr>
 noremap <a-up>		:vim9cmd g:SwaplineUp()<cr>
 noremap <a-down>	:vim9cmd g:SwaplineDown()<cr>
-inoremap <c-v>	<esc>:r !xclip -o -selection clipboard<cr>i
-vnoremap <c-c>	:silent! w !xclip -i -selection clipboard<cr>i
+
+if expand("$XDG_SESSION_TYPE") == "wayland"
+	inoremap <c-v>	<esc>:r !wl-paste<cr>i
+	vnoremap <c-c>	:silent! w !wl-copy<cr>i
+else
+	inoremap <c-v>	<esc>:r !xclip -o -selection clipboard<cr>i
+	vnoremap <c-c>	:silent! w !xclip -i -selection clipboard<cr>i
+endif
+
 
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
