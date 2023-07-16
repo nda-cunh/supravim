@@ -79,6 +79,12 @@ noremap <a-down>	:vim9cmd g:SwaplineDown()<cr>
 inoremap <c-v>	<esc>:r !xclip -o -selection clipboard<cr>i
 vnoremap <c-c>	:silent! w !xclip -i -selection clipboard<cr>i
 
+#---------------      Command        ---------------"
+cmap <c-q>	q!<cr>
+cmap <c-w>	w!<cr>
+cmap <F5>	Make 
+cmap <c-v>	<c-r>0<del>
+
 #---------------      Terminal        ---------------"
 tnoremap <C-q> q<CR>
 tnoremap <F3> clear -x ; norminette<CR>
