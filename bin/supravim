@@ -129,6 +129,12 @@ status_fct(){
 	else
 		echo -e "${bold}${green}norme${reset}"
 	fi
+	
+	if [ $(grep -c "\#\*normeHeader\*" ~/.vimrc) -gt 0 ]; then
+		echo -e "${bold}${green}norme header${reset} "
+	else
+		echo -e "${bold}${red}norme header${reset}"
+	fi
 
 	echo -e "\n${bold}-- Theme --${reset}"
 	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
@@ -207,24 +213,7 @@ help_fct(){
 
 	${bold}THEME CHOOSING${reset}
 		supravim <theme | -t> <name_theme> <background>
-		
-		<name_theme>:
-		1  |	gruvbox						(default) set to gruvbox theme
-		2  |	molokai						.	.	.
-		3  |	dracula						.	.	.
-		4  |	atom						.	.	.
-		5  |	iceberg						.	.	.
-		6  |	onedark						.	.	.
-		7  |	onehalf						.	.	.
-		8  |	onelight					.	.	.
-		9  |	pablo						.	.	.
-		10 |	Tomorrow-Night				.	.	.
-		11 |	Tomorrow-Night-Eighties		.	.	.
-
-		<background>:
-		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
-		\033[47;30mlight${reset}			set the beckground color to white/ lighter colors
-		"
+	"
 }
 
 clangd_install(){
