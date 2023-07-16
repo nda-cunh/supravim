@@ -104,17 +104,18 @@ add_config_rc(){
 config_supravim_editor() {
 	cp -rf "${INSTALL_DIRECTORY}/bin/supravim" $HOME/.local/bin/
     ln -sf "${INSTALL_DIRECTORY}/bin/clangd" $HOME/.local/bin/
-	ln -sf "${INSTALL_DIRECTORY}/bin/suprastore" $HOME/.local/bin/
 	chmod +x $HOME/.local/bin/supravim
 	chmod +x $HOME/.local/bin/clangd
-	chmod +x $HOME/.local/bin/suprastore
 
 	mkdir -p $HOME/.local/share/fonts
     mv "${INSTALL_DIRECTORY}/data/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
-	suprastore _fake suprabrain
-	suprastore _fake supratags
-	suprastore _fake supramake
-	suprastore _fake suprabear
+	status "Installing SupraStore"
+	curl https://gitlab.com/supraproject/suprastore/-/raw/master/install.sh 2>/dev/null | sh
+
+	suprastore _fake suprabrain 2>/dev/null
+	suprastore _fake supratags 2>/dev/null
+	suprastore install supramake
+	suprastore install suprabear
 	suprastore update
 }
 
