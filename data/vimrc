@@ -428,12 +428,16 @@ smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
-g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
-g:lsp_diagnostics_enabled = 0
-g:lsp_diagnostics_signs_enabled = 0
-g:lsp_document_code_action_signs_enabled = 0
-g:lsp_diagnostics_signs_delay = 1
-g:lsp_diagnostics_signs_priority = 0
-g:lsp_diagnostics_signs_insert_mode_enabled = 0
-g:lsp_tagfunc_source_methods = []
-g:vsnip_snippet_dir = '$HOME/.local/share/SupraVim/data/snippets'
+var ext = expand("%:e")
+if  ext == 'c' || ext == 'cpp'
+        g:lsp_diagnostics_enabled = 0
+        g:lsp_diagnostics_signs_enabled = 0
+        g:lsp_document_code_action_signs_enabled = 0
+        g:lsp_diagnostics_signs_delay = 1
+        g:lsp_diagnostics_signs_priority = 0
+        g:lsp_diagnostics_signs_insert_mode_enabled = 0
+        g:lsp_tagfunc_source_methods = []
+else
+        g:lsp_diagnostics_echo_cursor = 1
+		g:lsp_diagnostics_echo_delay = 50
+endif
