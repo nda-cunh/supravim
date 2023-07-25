@@ -88,7 +88,7 @@ endif
 
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
-cmap <c-w>	w!<cr>
+cmap <c-s>	w!<cr>
 cmap <F5>	Make 
 cmap <c-v>	<c-r>0<del>
 
