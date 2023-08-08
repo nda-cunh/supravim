@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SHELL_ACTIVE="${HOME}/.$(basename $SHELL)rc"
-SUPRA_LINK="https://gitlab.com/Hydrasho/SupraVim -b $1"
+SUPRA_LINK="https://gitlab.com/hydrasho/SupraVim -b $1"
 INSTALL_DIRECTORY="${HOME}/.local/share/SupraVim"
 
 ############################################################
