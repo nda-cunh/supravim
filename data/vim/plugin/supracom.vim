@@ -15,7 +15,7 @@ def g:Commentary()
 	var e = expand('%:e')
 	var line = getline('.')
 
-	if e == 'cpp' || e == 'vala' || e == 'vapi' || e == 'hpp' || e == 'tpp' || e == 'h' || e == 'c'
+	if e == 'cpp' || e == 'vala' || e == 'vapi' || e == 'hpp' || e == 'tpp' || e == 'h' || e == 'c' || e == 'vue' || e == 'ts' || e == 'js'
 		if line =~ '^\s*[/][/].*$'
 			UnComment('//', line)
 		else
