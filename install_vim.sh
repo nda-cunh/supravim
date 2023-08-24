@@ -102,6 +102,7 @@ add_config_rc(){
 }
 
 config_supravim_editor() {
+	mkdir -p $HOME/.local/bin
 	cp -rf "${INSTALL_DIRECTORY}/bin/supravim" $HOME/.local/bin/
     ln -sf "${INSTALL_DIRECTORY}/bin/clangd" $HOME/.local/bin/
 	ln -sf "${INSTALL_DIRECTORY}/bin/suprabrain" $HOME/.local/bin/
@@ -115,7 +116,7 @@ config_supravim_editor() {
 	chmod +x "${INSTALL_DIRECTORY}/bin/supratags"
 
 	mkdir -p $HOME/.local/share/fonts
-    ln -sf "${INSTALL_DIRECTORY}/data/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
+    mv "${INSTALL_DIRECTORY}/data/ubuntuNerdFont.ttf" $HOME/.local/share/fonts/ubuntuNerdFont.ttf
 }
 
 
