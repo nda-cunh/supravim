@@ -59,6 +59,7 @@ theme_fct(){
 		9 | pablo)  sed -i 's/^colorscheme .*$/colorscheme pablo/' ~/.vimrc; echo -e "Vim theme set to ${bold}pablo${reset}.";;
 		10 | Tomorrow-Night)  sed -i 's/^colorscheme .*$/colorscheme Tomorrow-Night/' ~/.vimrc; echo -e "Vim theme set to ${bold}Tomorrow-Night${reset}.";;
 		11 | Tomorrow-Night-Eighties)  sed -i 's/^colorscheme .*$/colorscheme Tomorrow-Night-Eighties/' ~/.vimrc; echo -e "Vim theme set to ${bold}Tomorrow-Night-Eighties${reset}.";;
+		12 | nord)  sed -i 's/^colorscheme .*$/colorscheme nord/' ~/.vimrc; echo -e "Vim theme set to ${bold}nord${reset}.";;
 		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[47;30mlight${reset} background.";;
 		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[40mdark${reset} background.";;
 		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
@@ -208,16 +209,17 @@ help_fct(){
 		
 		<name_theme>:
 		1  |	gruvbox						(default) set to gruvbox theme
-		2  |	molokai						.	.	.
-		3  |	dracula						.	.	.
-		4  |	atom						.	.	.
-		5  |	iceberg						.	.	.
-		6  |	onedark						.	.	.
-		7  |	onehalf						.	.	.
-		8  |	onelight					.	.	.
-		9  |	pablo						.	.	.
-		10 |	Tomorrow-Night				.	.	.
-		11 |	Tomorrow-Night-Eighties		.	.	.
+		2  |	molokai
+		3  |	dracula
+		4  |	atom
+		5  |	iceberg
+		6  |	onedark
+		7  |	onehalf
+		8  |	onelight
+		9  |	pablo
+		10 |	Tomorrow-Night
+		11 |	Tomorrow-Night-Eighties
+		12 |	nord
 
 		<background>:
 		${bold}\033[40mdark${reset}			(default) set the background color to black/ darker color
