@@ -238,7 +238,6 @@ def g:Gdbf()
 	else
 		set splitbelow nosplitbelow
 		set splitright nosplitright
-		silent g:Compile()
 		exec ":NERDTreeTabsClose"
 		if !filereadable("Makefile")
 			exec ":Termdebug -n ./a.out"
