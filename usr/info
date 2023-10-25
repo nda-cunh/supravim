@@ -1,0 +1,5 @@
+name: supravim
+version: 4.63
+author: nda-cunh
+binary: supravim
+description: a supraediteur
