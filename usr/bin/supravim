@@ -71,21 +71,20 @@ switch(){
 	then
 		if [ `grep -c "SUPRAVIM" ~/.vimrc` -gt 0 ]
 		then
-			mv ~/.vimrc ~/.vimrc_supravim_off
 			echo -e "SupraVim configuration: ${bold}${red}disabled${reset}"
-			if [ -f ~/.vimrc_user_off ]
-			then
-				mv ~/.vimrc_user_off ~/.vimrc
-				echo -e "Your vim configuration: ${bold}${green}enabled${reset}"
-			fi
+
+			# Create vimrc_user config if does not exist
+			! [ -f ~/.vimrc_user ] && touch ~/.vimrc_user
+			
+			ln -sf ~/.vimrc_user ~/.vimrc
+			echo -e "Your vim configuration: ${bold}${green}enabled${reset}"
 		else
-			mv ~/.vimrc ~/.vimrc_user_off
+			# Create vimrc_user with config
+			mv ~/.vimrc ~/.vimrc_user 2>/dev/null
+
 			echo  -e "Your vim configuration: ${bold}${red}disabled${reset}"
-			if [ -f ~/.vimrc_supravim_off ]
-			then
-				mv ~/.vimrc_supravim_off ~/.vimrc
-				echo -e "SupraVim configuration: ${bold}${green}enabled${reset}"
-			fi
+			ln -sf ~/.local/share/SupraVim/vimrc ~/.vimrc
+			echo -e "SupraVim configuration: ${bold}${green}enabled${reset}"
 		fi
 	else
 		if [ -f  ~/.vimrc_supravim_off ]
