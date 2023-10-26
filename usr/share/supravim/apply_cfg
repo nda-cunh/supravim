@@ -1,0 +1,28 @@
+#!/bin/bash	
+
+conf_file="$SRCDIR/share/supravim/supravim.cfg"
+
+# Default conf
+mouse=1
+swap=1
+tree=1
+theme='gruvbox'
+icons=1
+norme=0
+balise=""
+
+[ `grep -c "sv_mouse:0" $conf_file` -eq 1 ] && supravim -d mouse || supravim -e mouse
+[ `grep -c "sv_swap:0" $conf_file`  -eq 1 ] && supravim -d swap  || supravim -e swap
+[ `grep -c "sv_tree:0" $conf_file`  -eq 1 ] && supravim -d tree  || supravim -e tree
+[ `grep -c "sv_icons:0" $conf_file` -eq 1 ] && supravim -d icons || supravim -e icons
+[ `grep -c "sv_norme:0" $conf_file` -eq 1 ] && supravim -d norme || supravim -e norme
+
+supravim -t `grep theme $conf_file | grep -v "theme:"`
+
+echo "#====================== YOUR CONFIG =======================" >> ~/.vimrc
+
+conf_nb_line="`cat $conf_file | wc -l`"
+[ $conf_nb_line -gt 7 ] && tail -n$(($conf_nb_line - 7)) $conf_file >> ~/.vimrc
+
+echo "#==========================================================" >> ~/.vimrc
+

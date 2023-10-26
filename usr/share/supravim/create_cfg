@@ -1,0 +1,41 @@
+#!/bin/bash	
+
+conf_file="$SRCDIR/share/supravim/supravim.cfg"
+
+touch $conf_file
+
+default_conf(){
+	# Init config file
+	cat << _END_ > $conf_file
+sv_mouse:$1
+sv_swap:$2
+sv_tree:$3
+sv_theme:$4
+sv_icons:$5
+sv_norme:$6
+sv_perso_conf:
+$7
+_END_
+}
+# Default conf
+mouse=1
+swap=1
+tree=1
+theme='gruvbox'
+icons=1
+norme=0
+balise=""
+
+if [ -f ~/.vimrc ] && [ `grep -c "** SUPRAVIM **" ~/.vimrc` -gt 0 ]; then
+	[ `grep -c "#\*mouse\*" ~/.vimrc 2>/dev/null` -gt 0 ] && mouse=0
+	[ `grep -c "#.*noswapfile" ~/.vimrc 2>/dev/null` -eq 0 ] && swap=0
+	[ `grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null` -gt 0 ] && tree=0
+	[ `grep -c "icons_enabled" ~/.vimrc 2>/dev/null` -eq 0 ] && icons=0
+	[ `grep -c "norm_activate = true" ~/.vimrc 2>/dev/null` -eq 1 ] && norme=1
+	
+	theme=$(grep colorscheme ~/.vimrc | grep -Eo "[a-z]+$")
+	balise_len="`grep -Eoz "#[=]+.+" ~/.vimrc 2>/dev/null | wc -l`"
+	balise="`tail -n$(($balise_len - 1)) ~/.vimrc | head -n$((balise_len - 2))`"
+fi
+
+default_conf $mouse $swap $tree $theme $icons $norme "$balise"
