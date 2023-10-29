@@ -143,37 +143,16 @@ status_fct(){
 }
 
 version_fct() {
-	userBranch="`head -n1 ~/.local/share/SupraVim/.git/HEAD | grep -Eo \"[a-z]+$\"`"
-	userVersion="`head -n1 ~/.local/share/SupraVim/README.md | grep -Eo \"[0-9\.]+\"`"
-	repoVersion="`curl -s https://gitlab.com/hydrasho/SupraVim/-/raw/${userBranch}/README.md | head -n1 | grep -Eo \"[0-9\.]+\"`"
-	if [ "$1" = "cached" ]; then
-		if ! [ "${userVersion}" = "${repoVersion}" ]; then
-			printf "$userBranch: $userVersion -> $repoVersion"
-		fi
-		exit
-	fi
-	if [ "${userVersion}" = "${repoVersion}" ]; then
-		printf "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${green}${bold}(up to date)${reset}\n"
-	else
-		printf "On branch ${bold}${blue}${userBranch}${reset}: v${userVersion} ${red}${bold}(need an update: $repoVersion available)${reset}\n"
-	fi
+	version=$(suprapack info supravim | grep Version | cut -d ':' -f 2)
+	printf $version
 }
 
 uninstall_fct() {
-	killall vim 2> /dev/null
-    killall suprabrain 2> /dev/null
-    killall suprastore 2> /dev/null
-	rm -rf "$HOME/.local/bin/SupraVim" "$HOME/.local/bin/supravim"
-	rm -rf "$HOME/.local/share/SupraVim" "$HOME/.local/share/supravim"	
+	suprapack uninstall supravim
 }
 
 update(){
-	if [[ $1 = "dev" ]]
-	then
-		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/dev/installer_dev.sh | sh
-	else
-		uninstall_fct && curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
-	fi
+	suprapack update supravim
 }
 
 on_supravim(){

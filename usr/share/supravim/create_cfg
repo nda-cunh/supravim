@@ -1,6 +1,12 @@
 #!/bin/bash	
 
-conf_file="$SRCDIR/share/supravim/supravim.cfg"
+if ! test -n "$1"; then
+	echo "Add cfg argument"
+	exit 1
+fi
+
+#conf_file="$SRCDIR/share/supravim/supravim.cfg"
+conf_file="$1"
 
 touch $conf_file
 
