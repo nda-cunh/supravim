@@ -1,5 +1,6 @@
 name: supravim
 version: 4.63
 author: nda-cunh
-binary: supravim
-description: a supraediteur
+binary: 
+description: un supraediteur sur vim
+dependency: suprapack supramake suprabear ubuntu-nerdfont-ttf

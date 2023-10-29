@@ -452,7 +452,7 @@ imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
 g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
-g:vsnip_snippet_dir = '$HOME/.local/share/SupraVim/data/snippets'
+g:vsnip_snippet_dir = '$HOME/.local/share/supravim/data/snippets'
 var ext = expand("%:e")
 g:lsp_document_code_action_signs_enabled = 0
 if  ext == 'c' || ext == 'cpp' || ext == 'h' || ext == 'hpp'
