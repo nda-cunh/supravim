@@ -401,7 +401,7 @@ autocmd VimLeave * RemovePopit()
 
 def CreatePopit()
 	g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
-	var s = system("supravim --version cached > /tmp/xdfe-" .. g:file_tmp .. "&")
+	var s = system("suprapack have_update supravim > /tmp/xdfe-" .. g:file_tmp .. "&")
 	var timer = timer_start(3000, (_) => {
 		CreatePop()
 	     })
