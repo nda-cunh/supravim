@@ -10,7 +10,7 @@ La documentation de Supravim est ici :
 |-----|-------|-------|------|
 ## Installation:
 ```bash
-curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
+curl https://gitlab.com/hydrasho/SupraVim/-/raw/suprapack/install.sh | sh
 ```
 
 #### Mise à jour:
