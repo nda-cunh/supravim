@@ -1,3 +1,3 @@
 git clone https://gitlab.com/hydrasho/suprapack
-mv suprapack
+cd suprapack
 make install_vim
