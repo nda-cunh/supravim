@@ -1,5 +1,5 @@
 name: supravim
-version: 4.70
+version: 5.0
 author: nda-cunh
 binary: 
 description: un supraediteur sur vim
