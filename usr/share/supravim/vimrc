@@ -419,10 +419,10 @@ def CreatePop()
     popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s ], {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
 enddef
 
-if executable('clangd')
+if executable('ccls')
 	au User lsp_setup call lsp#register_server({
-				\ name: 'clangd',                                              
-				\ cmd: (server_info) => ['clangd', '--clang-tidy', '-j', '8'],
+				\ name: 'ccls',                                              
+				\ cmd: (server_info) => ['ccls'],
 				\ allowlist: ['cpp', 'c'],
 				\ })
 endif
