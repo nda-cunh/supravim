@@ -3,4 +3,4 @@ version: 5.01
 author: nda-cunh
 binary: 
 description: un supraediteur sur vim
-dependency: suprapack supramake suprabear clangd ubuntu-nerdfont-ttf
+dependency: suprapack supramake suprabear ccls ubuntu-nerdfont-ttf
