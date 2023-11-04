@@ -246,7 +246,7 @@ def g:Ctags()
 		LspDeclaration
 		return
 	endif
-	system("suprastore run .supratags " .. expand('%:e'))
+	system("suprapack run supratags " .. expand('%:e'))
 	if v:shell_error == 42
 		LspDeclaration
 		g:notags = true
