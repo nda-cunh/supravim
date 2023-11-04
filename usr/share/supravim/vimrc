@@ -131,7 +131,7 @@ g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
 # set noswapfile
-silent! system("~/.local/share/SupraVim/install_vim.sh RC&")
+silent! system($HOME .. "/.local/share/supravim/add_config_rc")
 
 #------------------ Snipets --------------------"
 g:UltiSnipsExpandTrigger = "<tab>"
@@ -149,15 +149,6 @@ g:rainbow_active = 1
 g:nerdtree_tabs_open_on_console_startup = 1
 g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
-
-#---------------- AUTO LOAD---------------"
-def AirFresh()
-	exec "AirlineRefresh"
-enddef
-
-autocmd InsertEnter * AirFresh()
-autocmd InsertLeave * AirFresh()
-autocmd TabLeave * AirFresh()
 
 #--------------- FONCTION ---------------"
 def g:SwaplineUp()
@@ -428,8 +419,6 @@ smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 
 g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
 g:vsnip_snippet_dir = '$HOME/.local/share/supravim/data/snippets'
-var ext = expand("%:e")
 g:lsp_document_code_action_signs_enabled = 0
-
 g:lsp_diagnostics_echo_cursor = 1
 g:lsp_diagnostics_echo_delay = 50
