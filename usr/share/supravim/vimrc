@@ -254,6 +254,7 @@ g:norm_activate = true
 
 def g:ToggleNorm()
 	g:norm_activate = !g:norm_activate
+	sign unplace *
 	silent w!
 	if g:norm_activate == true
 		silent! echo ""
@@ -265,7 +266,11 @@ def g:ToggleNorm()
 enddef
 
 def GetErrors(filename: string): list<any>
-	var retsys = system("norminette \"" .. filename .. "\"")
+	var retsys = system("timeout 1s norminette \"" .. filename .. "\"")
+	if v:shell_error == 124
+		echo "[Norminette] -- timeout --"
+		return []
+	endif
 	var norm_errors = retsys->split("\n")
 	var regex = 'Error: \([A-Z_]*\)\s*(line:\s*\(\d*\), col:\s*\(\d*\)):\t\(.*\)'
 	var errors = []
@@ -282,19 +287,20 @@ enddef
 g:errors = []
 
 def HighlightNorm(filename: string)
-	if g:norm_activate == true
-		g:errors = GetErrors(filename)
+	if g:norm_activate == false 
+		return
 	endif
+	g:errors = GetErrors(filename)
 	hi def link NormErrors Underlined
 	sign unplace *
-		if g:norm_activate == true
-	for error in g:errors
-		if error[3] == "Missing or invalid 42 header"	#HEADER
-			continue									#HEADER
+	if g:norm_activate == true
+		for error in g:errors
+			if error[3] == "Missing or invalid 42 header"	#HEADER
+				continue									#HEADER
 			endif										#HEADER
 			exe ":sign place 2 line=" .. error[1] " name=NormLinter file=" .. filename
-	endfor
-		endif
+		endfor
+	endif
 enddef
 
 def DisplayErrorMsg()
@@ -396,10 +402,10 @@ def CreatePop()
     popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s, "run: `suprapack update`" ], {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
 enddef
 
-if executable('ccls')
+if executable('lsp_c')
 	au User lsp_setup call lsp#register_server({
-				\ name: 'ccls',                                              
-				\ cmd: (server_info) => ['ccls'],
+				\ name: 'lsp_c',                                              
+				\ cmd: (server_info) => ['lsp_c'],
 				\ allowlist: ['cpp', 'c'],
 				\ })
 endif
