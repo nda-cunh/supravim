@@ -1,3 +1,4 @@
 git clone https://gitlab.com/hydrasho/suprapack
 cd suprapack
-make install_vim
+make install
+./suprapack add supravim --force
