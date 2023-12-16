@@ -1,0 +1,42 @@
+*elevator.txt*  Clickable tabs per window
+
+Author:         Sergey Vlasov <sergey@vlasov.me>
+Licence:        Vim licence, see |license|
+Site:           https://github.com/noscript/elevator.vim
+Version:        0.2
+
+================================================================================
+CONTENTS                                                     *elevator-contents*
+
+    Intro...................................................|elevator-intro|
+    Mappings.............................................|elevator-mappings|
+    Mouse...................................................|elevator-mouse|
+    Commands.............................................|elevator-commands|
+    Functions...........................................|elevator-functions|
+    Variables...........................................|elevator-variables|
+
+================================================================================
+INTRO                                                           *elevator-intro*
+
+Elevator is a scollbar that utilizes VIM |popup| feature and works across both
+VIM and GVIM.
+
+Elevator works out of the box and does not require any configuration.
+
+================================================================================
+VARIABLES                                                   *elevator-variables*
+
+*g:elevator#timeout_msec*             Timeout after which the scrollbar will
+                                      hide automatically.
+                                      Default value: 2000
+Example:
+>
+    g:elevator#timeout_msec = 1000
+<
+
+*g:elevator#width*                    Scrollbar width.
+                                      Default value: 1
+Example:
+>
+    g:elevator#width = 2
+<
