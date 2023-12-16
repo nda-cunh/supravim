@@ -235,12 +235,12 @@ set tags=$HOME/.local/share/tags
 g:notags = false
 def g:Ctags()
 	if g:notags == true 
-		LspDeclaration
+		LspDefinition
 		return
 	endif
 	system("suprapack run supratags " .. expand('%:e'))
 	if v:shell_error == 42
-		LspDeclaration
+		LspDefinition
 		g:notags = true
 	else
 		execute "tag " .. expand("<cword>")
