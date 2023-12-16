@@ -44,6 +44,7 @@ inoremap <C-Right>				<esc>:tabnext<CR>
 inoremap <C-Left>				<esc>:tabprevious<CR>
 
 #--------------- Racourcis --------------"
+map		<c-f>		fl
 noremap <C-Up>		<Esc>:call Ctags()<CR>
 noremap <C-Down>	<Esc><C-T>
 inoremap <C-Up>		<Esc>:call Ctags()<CR>i
@@ -417,6 +418,13 @@ if executable('vala-language-server')
 				\ allowlist: ['vala'],
 				\ })
 endif
+
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ name: 'file',
+    \ allowlist: ['*'],
+    \ priority: 2,
+    \ completor: function('asyncomplete#sources#file#completor')
+    \ }))
 
 imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
