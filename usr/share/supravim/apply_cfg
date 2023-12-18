@@ -25,6 +25,8 @@ balise=""
 
 supravim -t `grep sv_theme $conf_file | sed 's/sv_theme://'`
 
+sed -i '/^#====================== YOUR CONFIG =======================/,/^#==========================================================$/d' ~/.vimrc
+
 echo "#====================== YOUR CONFIG =======================" >> ~/.vimrc
 
 conf_nb_line="`cat $conf_file | wc -l`"
