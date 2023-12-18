@@ -8,10 +8,21 @@ La documentation de Supravim est ici :
 ### Dépendances
 | Zsh | Clang | Vim 9 | Vala |
 |-----|-------|-------|------|
+
 ## Installation:
+
+
+ Version 4.5.5: 
 ```bash
 curl https://gitlab.com/hydrasho/SupraVim/-/raw/master/installer.sh | sh
 ```
+
+ Version 5.0 (dev-stable):
+```bash
+curl https://gitlab.com/hydrasho/SupraVim/-/raw/suprapack/install.sh | sh
+```
+
+
 
 #### Mise à jour:
 ```bash
