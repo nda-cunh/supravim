@@ -6,8 +6,16 @@ filetype off
 pathogen#infect()
 pathogen#helptags()
 
+g:sp_mouse = true
+g:sp_swap = true
+g:sp_tree = false 
+g:sp_norme = true 
+g:sp_nobackground = true 
+
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"
+syntax on
+
 colorscheme onehalf
 set background=dark
 set t_Co=256
@@ -16,7 +24,10 @@ if (has("termguicolors"))
 	set termguicolors
 endif
 
-# icons_enabled
+if g:sp_nobackground == true
+	hi Normal guibg=NONE ctermbg=NONE
+endif
+
 
 #-------------- Save Undo  ------------"
 silent! system("!chmod 777 -R ~/.cache/vim && chown -R $USER ~/.cache/vim")
@@ -86,7 +97,6 @@ else
 	vnoremap <c-c>	:silent! w !xclip -i -selection clipboard<cr>i
 endif
 
-
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
 cmap <c-s>	w!<cr>
@@ -107,8 +117,12 @@ tnoremap <S-Up>			<C-W>N<C-w><Up><Esc>:AirlineRefresh<CR>
 tnoremap <S-Down>		<C-W>N<C-w><Down><Esc>:AirlineRefresh<CR>
 
 #--------------- utilitaires basiques ---------------"
-syntax on
-set mouse=a
+if g:sp_mouse == true
+	set mouse=a
+endif
+if g:sp_swap == false 
+	set noswapfile
+endif
 set cursorline
 set nu
 set incsearch
@@ -131,8 +145,8 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
-# set noswapfile
 silent! system($HOME .. "/.local/share/supravim/add_config_rc")
+
 
 #------------------ Snipets --------------------"
 g:UltiSnipsExpandTrigger = "<tab>"
@@ -147,7 +161,9 @@ g:mucomplete#enable_auto_at_startup = 1
 
 #--------------- PL NERDTREE ---------------"
 g:rainbow_active = 1
-g:nerdtree_tabs_open_on_console_startup = 1
+if g:sp_tree == true
+#*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* 	g:nerdtree_tabs_open_on_console_startup = 1
+endif
 g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
 
@@ -251,13 +267,11 @@ enddef
 highlight DapBreakpoint ctermfg=135
 sign define NormLinter text=\ ✖ texthl=DapBreakpoint
 
-g:norm_activate = true
-
 def g:ToggleNorm()
-	g:norm_activate = !g:norm_activate
+	g:sp_norme = !g:sp_norme
 	sign unplace *
 	silent w!
-	if g:norm_activate == true
+	if g:sp_norme == true
 		silent! echo ""
 		echo "[SupraNorm enabled]"
 	else
@@ -288,13 +302,13 @@ enddef
 g:errors = []
 
 def HighlightNorm(filename: string)
-	if g:norm_activate == false 
+	if g:sp_norme == false 
 		return
 	endif
 	g:errors = GetErrors(filename)
 	hi def link NormErrors Underlined
 	sign unplace *
-	if g:norm_activate == true
+	if g:sp_norme == true
 		for error in g:errors
 			if error[3] == "Missing or invalid 42 header"	#HEADER
 				continue									#HEADER
@@ -305,7 +319,7 @@ def HighlightNorm(filename: string)
 enddef
 
 def DisplayErrorMsg()
-	if g:norm_activate == true
+	if g:sp_norme == true
 		for error in g:errors
 			if line(".") == str2nr(error[1])
 				echo "[Norminette]: " .. error[3]
@@ -436,3 +450,4 @@ g:vsnip_snippet_dir = '$HOME/.local/share/supravim/data/snippets'
 g:lsp_document_code_action_signs_enabled = 0
 g:lsp_diagnostics_echo_cursor = 1
 g:lsp_diagnostics_echo_delay = 50
+
