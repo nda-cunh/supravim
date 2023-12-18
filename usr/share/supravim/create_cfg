@@ -1,47 +1,60 @@
-#!/bin/bash	
+#!/bin/bash
 
 if ! test -n "$1"; then
 	echo "Add cfg argument"
 	exit 1
 fi
 
-#conf_file="$SRCDIR/share/supravim/supravim.cfg"
-conf_file="$1"
+# Init Variable
 
-touch $conf_file
-
-default_conf(){
-	# Init config file
-	cat << _END_ > $conf_file
-sv_mouse:$1
-sv_swap:$2
-sv_tree:$3
-sv_theme:$4
-sv_icons:$5
-sv_norme:$6
-sv_perso_conf:
-$7
-_END_
-}
-# Default conf
-mouse=1
-swap=1
-tree=1
 theme='gruvbox'
-icons=1
+mouse=0
+swap=0
+tree=0
 norme=0
+nobackground=0
 balise=""
 
-if [ -f ~/.vimrc ] && [ `grep -c "** SUPRAVIM **" ~/.vimrc` -gt 0 ]; then
-	[ `grep -c "#\*mouse\*" ~/.vimrc 2>/dev/null` -gt 0 ] && mouse=0
-	[ `grep -c "#.*noswapfile" ~/.vimrc 2>/dev/null` -eq 0 ] && swap=0
-	[ `grep -c "#\*nerdtree\*" ~/.vimrc 2>/dev/null` -gt 0 ] && tree=0
-	[ `grep -c "icons_enabled" ~/.vimrc 2>/dev/null` -eq 0 ] && icons=0
-	[ `grep -c "norm_activate = true" ~/.vimrc 2>/dev/null` -eq 1 ] && norme=1
-	
+# get theme and balise YOUR CONFIG only if .vimrc exist
+
+if [ -e "$HOME/.vimrc" ]; then
+	HEAD=$(head $HOME/.vimrc -n 20)
+	balise_len="`grep -Eoz "#[=]+.+" $HOME/.vimrc 2>/dev/null | wc -l`"
+	balise="`tail -n$(($balise_len - 1)) $HOME/.vimrc | head -n$((balise_len - 2))`"
 	theme=$(grep colorscheme ~/.vimrc | grep -Eo "[a-z]+$")
-	balise_len="`grep -Eoz "#[=]+.+" ~/.vimrc 2>/dev/null | wc -l`"
-	balise="`tail -n$(($balise_len - 1)) ~/.vimrc | head -n$((balise_len - 2))`"
+else
+	mouse=1
+	swap=1
+	tree=1
 fi
 
-default_conf $mouse $swap $tree $theme $icons $norme "$balise"
+# set to true if options is true in .vimrc
+
+if echo "$HEAD" | grep -q "g:sp_mouse = true"; then
+	mouse=1
+fi
+if echo "$HEAD" | grep -q "g:sp_swap = true"; then
+	swap=1
+fi
+if echo "$HEAD" | grep -q "g:sp_tree = true"; then
+	tree=1
+fi
+if echo "$HEAD" | grep -q "g:sp_norme = true"; then
+	norme=1
+fi
+if echo "$HEAD" | grep -q "g:sp_nobackground = true"; then
+	nobackground=1
+fi
+
+
+
+echo "sv_mouse:$mouse" > $1
+echo "sv_swap:$swap" >> $1
+echo "sv_tree:$tree" >> $1
+echo "sv_nobackground:$nobackground" >> $1
+echo "sv_theme:$theme" >> $1
+echo "sv_norme:$norme" >> $1
+echo "sv_perso_conf:" >> $1
+echo "$balise" >> $1
+
+# echo "$HEAD"
