@@ -90,48 +90,29 @@ switch(){
 	fi
 }
 
+print_status(){
+	if grep -q "sv_$1:0" "$HOME/.local/share/supravim/supravim.cfg"; then
+		echo -e "${bold}${red}$1${reset} "
+	else
+		echo -e "${bold}${green}$1${reset}"
+	fi
+}
+
 status_fct(){
-	echo -e "${bold}-- Options --${reset}"
 
-	if [[ $(grep -c "#*mouse\*" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${green}mouse${reset} "
-	else
-		echo -e "${bold}${red}mouse${reset}"
-	fi
-
-	if [[ $(grep -c "# set noswapfile" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${red}swap${reset}"
-	else
-		echo -e "${bold}${green}swap${reset} "
-
-	fi
-
-	if [[ $(grep -c "#*nerdtree\*" ~/.vimrc) == 0 ]]; then
-		echo -e "${bold}${green}tree${reset} "
-	else
-		echo -e "${bold}${red}tree${reset}"
-	fi
-
-	if ! [ $(grep -c "icons_enabled" ~/.vimrc) == 0 ]; then
-		echo -e "${bold}${green}icons${reset} "
-	else
-		echo -e "${bold}${red}icons${reset}"
-	fi
-
-	if [ $(grep -c "g:norm_activate = false" ~/.vimrc) -gt 0 ]; then
-		echo -e "${bold}${red}norme${reset} "
-	else
-		echo -e "${bold}${green}norme${reset}"
-	fi
+	$HOME/.local/share/supravim/create_cfg $HOME/.local/share/supravim/supravim.cfg
 	
-	if [ $(grep -c "\#\*normeHeader\*" ~/.vimrc) -gt 0 ]; then
-		echo -e "${bold}${green}norme header${reset} "
-	else
-		echo -e "${bold}${red}norme header${reset}"
-	fi
+	echo -e "${bold}-- Options --${reset}"
+	
+	print_status mouse
+	print_status norme 
+	print_status tree
+	print_status swap 
+	print_status nobackground 
 
+	THEME=$(cat $HOME/.local/share/supravim/supravim.cfg | grep sv_theme | sed 's/sv_theme://')
 	echo -e "\n${bold}-- Theme --${reset}"
-	echo "Your vim theme is: `cat ~/.vimrc | grep colorscheme | grep -Eo \"[a-z]+$\"` `cat ~/.vimrc | grep background | grep -Eo \"[a-z]+$\"`"
+	echo "Your vim theme is: $THEME"
 	
 	echo -e "\n${bold}-- Version --${reset}"
 	version_fct
@@ -188,25 +169,6 @@ help_fct(){
 		supravim <theme | -t> <name_theme> <background>
 	"
 }
-
-clangd_install(){
-	if [ "$1" = "user" ]
-	then
-		flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-		flatpak install --user runtime/org.freedesktop.Sdk/x86_64/22.08 -y
-		flatpak install --user runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
-	else
-		flatpak install --system runtime/org.freedesktop.Sdk/x86_64/22.08 -y
-		flatpak install --system runtime/org.freedesktop.Sdk.Extension.llvm14/x86_64/22.08 -y
-	fi
-	if [ "$1" = "user" ]
-	then
-		echo "L'installation est terminé, relancer le vim :) (user)"
-	else
-		echo "L'installation est terminé, relancer le vim :) (system)"
-	fi
-}
-
 
 if [ $# -eq 0 ]; then
 	help_fct
