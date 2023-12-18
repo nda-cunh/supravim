@@ -13,7 +13,6 @@ conf_file="$1"
 mouse=1
 swap=1
 tree=1
-theme='gruvbox'
 icons=1
 norme=0
 balise=""
@@ -24,7 +23,7 @@ balise=""
 [ `grep -c "sv_norme:0" $conf_file` -eq 1 ] && supravim -d norme || supravim -e norme
 [ `grep -c "sv_nobackground:0" $conf_file` -eq 1 ] && supravim -d nobackground || supravim -e nobackground
 
-supravim -t `grep theme $conf_file | grep -v "theme:"`
+supravim -t `grep sv_theme $conf_file | sed 's/sv_theme://'`
 
 echo "#====================== YOUR CONFIG =======================" >> ~/.vimrc
 
