@@ -83,8 +83,10 @@ inoremap <TAB>		<TAB>
 inoremap <C-g>		<esc>:NERDTreeTabsToggle<CR>
 noremap <C-g>		:NERDTreeTabsToggle<CR>
 noremap <S-T>		<Esc>:term ++rows=15<CR>
-noremap <S-Tab>		<<
-noremap <Tab>		>>
+nnoremap <S-Tab>	<<
+nnoremap <Tab>		>>
+vnoremap <S-Tab>	<<<esc>gv
+vnoremap <Tab>		>><esc>gv
 noremap <c-@>		:LspHover<cr>
 noremap <a-up>		:vim9cmd g:SwaplineUp()<cr>
 noremap <a-down>	:vim9cmd g:SwaplineDown()<cr>
@@ -451,3 +453,73 @@ g:lsp_document_code_action_signs_enabled = 0
 g:lsp_diagnostics_echo_cursor = 1
 g:lsp_diagnostics_echo_delay = 50
 
+def g:MoveLineDown(mode: string)
+	var array = getline(line("'<"), line("'>"))
+	var len = len(array)
+	var begin = line('.')
+
+	if mode == 'n'
+		var tmp = getline(line('.') + 1)
+		setline(line('.') + 1, getline(line('.')))
+		setline(line('.'), tmp)
+		normal j
+		return
+	elseif line("'<") != begin 
+		return
+	endif
+
+	var tmp = getline(begin + len)
+	var i = 0 
+	reverse(array)
+
+	for str in array
+		setline(begin + len - i, str)
+		i = i + 1
+	endfor
+	setline(begin, tmp)
+	setpos("'<", [0, begin + 1, 0, 0])
+	setpos("'>", [0, begin + len, 0, 0])
+	normal! gv
+enddef
+
+def g:MoveLineUp(mode: string)
+	var array = getline(line("'<"), line("'>"))
+	var len = len(array)
+	var begin = line('.')
+	
+	if begin == 1
+		return
+	elseif mode == 'n'
+		var tmp = getline(line('.') - 1)
+		setline(line('.') - 1, getline(line('.')))
+		setline(line('.'), tmp)
+		normal k
+		return
+	endif
+	
+	if line("'<") != begin 
+		return
+	endif
+
+	var tmp = getline(line('.') - 1)
+	var i = begin
+	for str in array
+		setline(i - 1, str)
+	 	i = i + 1	
+	endfor
+	setline(i - 1, tmp)
+	
+	setpos("'<", [0, begin - 1, 0, 0])
+	setpos("'>", [0, begin + len - 2, 0, 0])
+	normal! gv
+enddef
+
+
+vnoremap <A-Down> :<c-u>call MoveLineDown("v")<CR>
+vnoremap <A-Up> :<c-u>call MoveLineUp("v")<CR>
+nnoremap <A-Down> :<c-u>call MoveLineDown("n")<CR>
+nnoremap <A-Up> :<c-u>call MoveLineUp("n")<CR>
+
+# Search Ctrl + F
+map <c-f> \fl
+imap <c-f> \fl
