@@ -36,10 +36,10 @@ function! lsp#internal#diagnostics#signs#_enable() abort
     if s:enabled | return | endif
     let s:enabled = 1
 
-    call s:define_sign('LspError', 'E>', g:lsp_diagnostics_signs_error)
-    call s:define_sign('LspWarning', 'W>', g:lsp_diagnostics_signs_warning)
-    call s:define_sign('LspInformation', 'I>', g:lsp_diagnostics_signs_information)
-    call s:define_sign('LspHint', 'H>', g:lsp_diagnostics_signs_hint)
+    call s:define_sign('LspError', '✖', g:lsp_diagnostics_signs_error)
+    call s:define_sign('LspWarning', '✖', g:lsp_diagnostics_signs_warning)
+    call s:define_sign('LspInformation', '✖', g:lsp_diagnostics_signs_information)
+    call s:define_sign('LspHint', '✖', g:lsp_diagnostics_signs_hint)
 
     let s:Dispose = lsp#callbag#pipe(
         \ lsp#callbag#merge(
