@@ -25,6 +25,9 @@ if !hlexists('LspHintText')
     highlight link LspHintText Normal
 endif
 
+" imports
+let s:Buffer = vital#lsp#import('VS.Vim.Buffer')
+
 function! lsp#internal#diagnostics#signs#_enable() abort
     " don't even bother registering if the feature is disabled
     if !lsp#utils#_has_signs() | return | endif
@@ -33,10 +36,10 @@ function! lsp#internal#diagnostics#signs#_enable() abort
     if s:enabled | return | endif
     let s:enabled = 1
 
-    call s:define_sign('LspError', '\ ✖', g:lsp_diagnostics_signs_error)
-    call s:define_sign('LspWarning', '\ ✖', g:lsp_diagnostics_signs_warning)
-    call s:define_sign('LspInformation', '\ ✖', g:lsp_diagnostics_signs_information)
-    call s:define_sign('LspHint', '\ ✖', g:lsp_diagnostics_signs_hint)
+    call s:define_sign('LspError', 'E>', g:lsp_diagnostics_signs_error)
+    call s:define_sign('LspWarning', 'W>', g:lsp_diagnostics_signs_warning)
+    call s:define_sign('LspInformation', 'I>', g:lsp_diagnostics_signs_information)
+    call s:define_sign('LspHint', 'H>', g:lsp_diagnostics_signs_hint)
 
     let s:Dispose = lsp#callbag#pipe(
         \ lsp#callbag#merge(
@@ -127,8 +130,15 @@ function! s:set_signs(params) abort
 endfunction
 
 function! s:place_signs(server, diagnostics_response, bufnr) abort
+    let l:linecount = s:Buffer.get_line_count(a:bufnr)
     for l:item in lsp#utils#iteratable(a:diagnostics_response['params']['diagnostics'])
         let l:line = lsp#utils#position#lsp_line_to_vim(a:bufnr, l:item['range']['start'])
+
+        " Some language servers report an unexpected EOF one line past the end
+        if  l:line == l:linecount + 1
+            let l:line = l:line - 1
+        endif
+
         if has_key(l:item, 'severity') && !empty(l:item['severity'])
             let l:sign_name = get(s:severity_sign_names_mapping, l:item['severity'], 'LspError')
             let l:sign_priority = get(g:lsp_diagnostics_signs_priority_map, l:sign_name, g:lsp_diagnostics_signs_priority)

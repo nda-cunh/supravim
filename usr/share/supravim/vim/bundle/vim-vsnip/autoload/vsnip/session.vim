@@ -131,20 +131,21 @@ endfunction
 " @NOTE: Must work even if virtualedit=all/onmore or not.
 "
 function! s:Session.select(jump_point) abort
-  let l:pos = s:Position.lsp_to_vim('%', a:jump_point.range.end)
-  call cursor([l:pos[0], l:pos[1] - (&selection !~# 'exclusive')])
+  let l:start_pos = s:Position.lsp_to_vim('%', a:jump_point.range.start)
+  let l:end_pos = s:Position.lsp_to_vim('%', a:jump_point.range.end)
 
-  let l:select_length = strchars(a:jump_point.placeholder.text()) - (&selection !~# 'exclusive')
   let l:cmd = ''
-  let l:cmd .= mode()[0] ==# 'i' ? "\<Esc>l" : ''
-  let l:cmd .= printf('v%s', l:select_length > 0 ? l:select_length . 'h' : '')
+  let l:cmd .= "\<Cmd>set virtualedit=onemore\<CR>"
+  let l:cmd .= mode()[0] ==# 'i' ? "\<Esc>" : ''
+  let l:cmd .= printf("\<Cmd>call cursor(%s, %s)\<CR>", l:start_pos[0], l:start_pos[1])
+  let l:cmd .= 'v'
+  let l:cmd .= printf("\<Cmd>call cursor(%s, %s)\<CR>%s", l:end_pos[0], l:end_pos[1], &selection ==# 'exclusive' ? '' : 'h')
   if get(g:, 'vsnip_test_mode', v:false)
-    let l:cmd .= "\<Esc>gvo\<C-g>" " Update `last visual selection` for getting it in test.
-    execute printf('normal! %s', l:cmd)
-  else
-    let l:cmd .= "o\<C-g>"
-    call feedkeys(l:cmd, 'n')
+    let l:cmd .= "\<Esc>gv"
   endif
+  let l:cmd .= printf("\<Cmd>set virtualedit=%s\<CR>", &virtualedit)
+  let l:cmd .= "\<C-g>"
+  call feedkeys(l:cmd, 'ni')
 endfunction
 
 "
@@ -157,10 +158,12 @@ function! s:Session.move(jump_point) abort
 
   call cursor(l:pos)
 
-  if l:pos[1] > strlen(getline(l:pos[0]))
-    startinsert!
-  else
-    startinsert
+  if mode()[0] ==# 'n'
+    if l:pos[1] != getcurpos()[2]
+      call feedkeys('a', 'ni')
+    else
+      call feedkeys('i', 'ni')
+    endif
   endif
 endfunction
 
@@ -177,22 +180,6 @@ endfunction
 "
 function! s:Session.on_insert_leave() abort
   call self.flush_changes()
-endfunction
-
-"
-" on_insert_char_pre
-"
-function! s:Session.on_insert_char_pre(char) abort
-  if a:char =~# '^[:print:]\+$'
-    let l:range = self.snippet.range()
-    let l:position = s:Position.cursor()
-    let l:is_out_of_range = v:false
-    let l:is_out_of_range = l:is_out_of_range || l:position.line < l:range.start.line || (l:position.line == l:range.start.line && l:position.character < l:range.start.character)
-    let l:is_out_of_range = l:is_out_of_range || l:position.line > l:range.end.line || (l:position.line == l:range.end.line && l:position.character > l:range.end.character)
-    if l:is_out_of_range
-      call vsnip#deactivate()
-    endif
-  endif
 endfunction
 
 "
