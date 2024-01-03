@@ -11,8 +11,10 @@ CONTENTS                                                  *vim-lsp-contents*
       Configure                             |vim-lsp-configure|
       vim-lsp-settings                      |vim-lsp-settings_plugin|
       Wiki                                  |vim-lsp-configure-wiki|
+      Health Check                          |vim-lsp-healthcheck|
     Options                               |vim-lsp-options|
       g:lsp_auto_enable                     |g:lsp_auto_enable|
+      g:lsp_use_native_client               |g:lsp_use_native_client|
       g:lsp_preview_keep_focus              |g:lsp_preview_keep_focus|
       g:lsp_preview_float                   |g:lsp_preview_float|
       g:lsp_preview_autoclose               |g:lsp_preview_autoclose|
@@ -28,6 +30,8 @@ CONTENTS                                                  *vim-lsp-contents*
       g:lsp_diagnostics_echo_delay          |g:lsp_diagnostics_echo_delay|
       g:lsp_diagnostics_float_cursor        |g:lsp_diagnostics_float_cursor|
       g:lsp_diagnostics_float_delay         |g:lsp_diagnostics_float_delay|
+      g:lsp_diagnostics_float_insert_mode_enabled
+                                  |g:lsp_diagnostics_float_insert_mode_enabled|
       g:lsp_diagnostics_highlights_enabled
 			     |g:lsp_diagnostics_highlights_enabled|
       g:lsp_diagnostics_highlights_insert_mode_enabled
@@ -47,8 +51,12 @@ CONTENTS                                                  *vim-lsp-contents*
 			     |g:lsp_diagnostics_virtual_text_insert_mode_enabled|
       g:lsp_diagnostics_virtual_text_delay
 			     |g:lsp_diagnostics_virtual_text_delay|
-      g:lsp_diagnostics_virtual_text_prefix
-			     |g:lsp_diagnostics_virtual_text_prefix|
+      g:lsp_diagnostics_virtual_text_align
+			     |g:lsp_diagnostics_virtual_text_align|
+      g:lsp_diagnostics_virtual_text_padding_left
+			     |g:lsp_diagnostics_virtual_text_padding_left|
+      g:lsp_diagnostics_virtual_text_wrap
+			     |g:lsp_diagnostics_virtual_text_wrap|
       g:lsp_document_code_action_signs_enabled
 			     |g:lsp_document_code_actions_signs_enabled|
       g:lsp_document_code_action_signs_delay
@@ -66,9 +74,12 @@ CONTENTS                                                  *vim-lsp-contents*
       g:lsp_document_highlight_enabled      |g:lsp_document_highlight_enabled|
       g:lsp_document_highlight_delay        |g:lsp_document_highlight_delay|
       g:lsp_get_supported_capabilities      |g:lsp_get_supported_capabilities|
+      g:lsp_document_symbol_detail          |g:lsp_document_symbol_detail|
       g:lsp_peek_alignment                  |g:lsp_peek_alignment|
       g:lsp_preview_max_width               |g:lsp_preview_max_width|
       g:lsp_preview_max_height              |g:lsp_preview_max_height|
+      g:lsp_preview_fixup_conceal           |g:lsp_preview_fixup_conceal|
+      g:lsp_float_max_width                 |g:lsp_float_max_width|
       g:lsp_signature_help_enabled          |g:lsp_signature_help_enabled|
       g:lsp_fold_enabled                    |g:lsp_fold_enabled|
       g:lsp_hover_conceal                   |g:lsp_hover_conceal|
@@ -103,6 +114,7 @@ CONTENTS                                                  *vim-lsp-contents*
       lsp#document_hover_preview_winid()  |lsp#document_hover_preview_winid()|
     Commands                              |vim-lsp-commands|
       LspAddTreeCallHierarchyIncoming       |:LspAddTreeCallHierarchyIncoming|
+      LspAddTreeReferences                  |:LspAddTreeReferences|
       LspCallHierarchyIncoming              |:LspCallHierarchyIncoming|
       LspCallHierarchyOutgoing              |:LspCallHierarchyOutgoing|
       LspCodeAction                         |:LspCodeAction|
@@ -205,6 +217,9 @@ http://downloads.sourceforge.net/luabinaries/lua-5.3.2_Win32_dllw4_lib.zip
 64bit:
 http://downloads.sourceforge.net/luabinaries/lua-5.3.2_Win64_dllw4_lib.zip
 
+If you are using vim set `let g:lsp_use_native_client = 1` and make sure you
+are running vim 8.2.4780+.
+
 Set |g:lsp_semantic_enabled| to 0.
 
 Set |g:lsp_format_sync_timeout| to a reasonable value such as `1000`.
@@ -217,19 +232,19 @@ vim-lsp doesn't ship with any language servers. The user is responsible for
 configuring the language servers correctly.
 
 Here is an example of configuring the python language server protocol based
-on pyls (https://github.com/palantir/python-language-server)
+on pylsp (https://github.com/python-lsp/python-lsp-server)
 
 1. Make sure the language server is available locally in the machine.
    For python, pip package manager can be used to install the language server.
 >
-	pip install python-language-server
+	pip install python-lsp-server
 
 2. Register the language server in your .vimrc
 >
-	if (executable('pyls'))
+	if (executable('pylsp'))
 	    au User lsp_setup call lsp#register_server({
-		\ 'name': 'pyls',
-		\ 'cmd': {server_info->['pyls']},
+		\ 'name': 'pylsp',
+		\ 'cmd': {server_info->['pylsp']},
 		\ 'allowlist': ['python']
 		\ })
 	endif
@@ -270,6 +285,13 @@ to automatically register various language servers.
 	Plug 'prabirshrestha/vim-lsp'
 	Plug 'mattn/vim-lsp-settings'
 
+HEALTH CHECK						*vim-lsp-healthcheck*
+vim-lsp supports the |:CheckHealth| command which can be useful when debugging
+lsp configuration issues.
+
+This command is included in neovim and implemented in vim with the
+[vim-healthcheck](https://github.com/rhysd/vim-healthcheck) plugin. 
+
 WIKI                                               *vim-lsp-configure-wiki*
 For documentation on how to configure other language servers refer
 to https://github.com/prabirshrestha/vim-lsp/wiki/Servers
@@ -287,6 +309,18 @@ g:lsp_auto_enable                                       *g:lsp_auto_enable*
     Example: >
 	let g:lsp_auto_enable = 1
 	let g:lsp_auto_enable = 0
+
+g:lsp_use_native_client                             *g:lsp_use_native_client*
+    Type: |Number|
+    Default: `0`
+
+    Enable native lsp client support for vim 8.2.4780+. No impact for neovim.
+    TCP language servers are not supported and should be set to 0 if one is
+    used.
+
+    Example: >
+	let g:lsp_use_native_client = 1
+	let g:lsp_use_native_client = 0
 
 g:lsp_preview_keep_focus                         *g:lsp_preview_keep_focus*
     Type: |Number|
@@ -501,6 +535,18 @@ g:lsp_diagnostics_float_delay                *g:lsp_diagnostics_float_delay*
 	let g:lsp_diagnostics_float_delay = 200
 	let g:lsp_diagnostics_float_delay = 1000
 
+g:lsp_diagnostics_float_insert_mode_enabled
+                                 *g:lsp_diagnostics_float_insert_mode_enabled*
+    Type: |Boolean|
+    Default: `1`
+
+    Indicates whether to enable float of diagnostic error for the current line
+    to status when in |insertmode|. Requires |g:lsp_diagnostics_enabled| and
+    |g:lsp_diagnostics_float_cursor| set to 1.
+
+    Example: >
+	let g:lsp_diagnostics_float_insert_mode_enabled = 0
+
 g:lsp_format_sync_timeout                           *g:lsp_format_sync_timeout*
     Type: |Number|
     Default: `-1`
@@ -648,7 +694,8 @@ g:lsp_diagnostics_virtual_text_enabled
     Default: `1` for neovim 0.3+
 
     Enables virtual text to be shown next to diagnostic errors. Requires
-    NeoVim with version 0.3 or newer and |g:lsp_diagnostics_enabled| set to `1`.
+    NeoVim with version 0.3 or newer or Vim with |virtual-text| and
+    patch 9.0.0178, and |g:lsp_diagnostics_enabled| set to `1`.
     Virtual text uses the same highlight groups used for signs (eg LspErrorText),
     but can be uniquely defined if you want to have different highlight groups
     for signs and virtual text. To set unique virtual text highlighting, you
@@ -692,6 +739,51 @@ g:lsp_diagnostics_virtual_text_prefix   *g:lsp_diagnostics_virtual_text_prefix*
     Example: >
 	let g:lsp_diagnostics_virtual_text_prefix = "> "
 	let g:lsp_diagnostics_virtual_text_prefix = " ‣ "
+
+g:lsp_diagnostics_virtual_text_align    *g:lsp_diagnostics_virtual_text_align*
+    Type: |String|
+    Default: `"below"`
+
+    Determines the align of the diagnostics virtual text. Requires
+    |g:lsp_diagnostics_virtual_text_enabled|.
+
+    Possible values are:
+
+       after   after the end of the line
+       right   right aligned in the window (unless the text wraps to the next
+               screen line)
+       below   in the next screen line
+       above   just above the line
+
+    Only one "right" property can fit in each line, if there are two or more
+    these will go in a separate line (still right aligned).
+
+    This value is passed as the "text_align" property in a |prop_add()| call.
+
+    Example: >
+	let g:lsp_diagnostics_virtual_text_align = "right"
+
+g:lsp_diagnostics_virtual_text_padding_left
+                                  *g:lsp_diagnostics_virtual_text_padding_left*
+    Type: |Number|
+    Default: `1`
+
+    Determines the left padding of the diagnostics virtual text. Requires
+    |g:lsp_diagnostics_virtual_text_enabled|.
+
+    Example: >
+	let g:lsp_diagnostics_virtual_text_padding_left = 2
+
+g:lsp_diagnostics_virtual_text_wrap       *g:lsp_diagnostics_virtual_text_wrap*
+    Type: |String|
+    Default: `"wrap"`
+
+    Determines whether or not to wrap the diagnostics virtual text. Possible
+    values are one of `'wrap'`, `'truncate'`. Requires
+    |g:lsp_diagnostics_virtual_text_enabled|.
+
+    Example: >
+	let g:lsp_diagnostics_virtual_text_wrap = "truncate"
 
 g:lsp_document_code_action_signs_enabled
 				      *g:lsp_document_code_action_signs_enabled*
@@ -737,9 +829,9 @@ g:lsp_document_code_action_signs_delay
 g:lsp_inlay_hints_enabled
 				      *g:lsp_inlay_hints_enabled*
     Type: |Number|
-    Default: `1`
+    Default: `0`
 
-    Enables inlay-hints. Requires Vim9 with |virtualtext|.
+    Enables inlay-hints. Requires Vim9 with |virtual-text|.
     patch 9.0.0167 or newer.
 
     Example: >
@@ -786,7 +878,9 @@ g:lsp_tree_incoming_prefix                          *g:lsp_tree_incoming_prefix*
     Type: |String|
     Default: `"<= "`
 
-    Specifies the prefix of items added by |LspAddTreeCallHierarchyIncoming|.
+    Specifies the prefix of items added by following commands.
+	* |LspAddTreeCallHierarchyIncoming|
+	* |LspAddTreeReferences|
 
     Example: >
 	let g:lsp_tree_incoming_prefix = "← "
@@ -816,8 +910,8 @@ g:lsp_max_buffer_size                               *g:lsp_max_buffer_size*
     to a negative value.
 
     Example: >
-	let g:max_buffer_size = 10000000
-	let g:max_buffer_size = -1
+	let g:lsp_max_buffer_size = 10000000
+	let g:lsp_max_buffer_size = -1
 
 g:lsp_document_highlight_enabled      *g:lsp_document_highlight_enabled*
     Type: |Number|
@@ -858,8 +952,24 @@ g:lsp_get_supported_capabilities         *g:lsp_get_supported_capabilities*
     capabilities vim-lsp sends to a language server.
 
     Note: You can obtain the default supported capabilities of vim-lsp by
-    calling `lsp#omni#default_get_supported_capabilities` from within your
+    calling `lsp#default_get_supported_capabilities` from within your
     function.
+
+g:lsp_document_symbol_detail                 *g:lsp_document_symbol_detail*
+    Type: |Number|
+    Default: `0`
+
+    Determines whether document symbol shows details or not. Set to `1` to
+    show details.
+
+    Note: showing details needs to turn on setting below: >
+      \ 'capabilities': {
+      \     'textDocument': {
+      \         'documentSymbol': {
+      \             'hierarchicalDocumentSymbolSupport': v:true,
+      \         },
+      \     },
+      \ },
 
 g:lsp_peek_alignment                                 *g:lsp_peek_alignment*
     Type: |String|
@@ -885,6 +995,25 @@ g:lsp_preview_max_height                         *g:lsp_preview_max_height*
 
     If positive, determines the maximum height of the preview window in
     characters. Use a value of `-1` to disable setting a maximum height.
+
+g:lsp_preview_fixup_conceal                   *g:lsp_preview_fixup_conceal*
+    Type: |Number|
+    Default: `0`
+
+    If negative, all markdown documents are not converted as compact format.
+    That's useful in vim. vim's popup doesn't shrink correctly if the
+    buffer content uses conceals.
+
+g:lsp_float_max_width                           *g:lsp_float_max_width*
+    Type: |Number|
+    Default: `-1`
+
+    If positive, determines the maximum width of the float windows in
+    characters. Lines longer than `g:lsp_float_max_width` will be wrapped to fit
+    in the float window.
+    If set to 0, float windows can stretch to the width of the screen.
+    Otherwise, the maximum width of the floating windows is set to 40% of the
+    screen.
 
 g:lsp_signature_help_enabled                *g:lsp_signature_help_enabled*
     Type: |Number|
@@ -1085,7 +1214,7 @@ Used to register the language server with vim-lsp. This method takes
 one parameter which is a vim |dict| and is referred to as |vim-lsp-server_info|
 
     Example: >
-	if (executable('pyls'))
+	if (executable('pylsp'))
 	    au User lsp_setup call lsp#register_server({
 		\ 'name': 'name-of-server',
 		\ 'cmd': {server_info->['server-exectuable']},
@@ -1137,7 +1266,7 @@ The vim |dict| containing information about the server.
     can be determined statically and |vim-lsp-server_info| is not necessary.
 
     Example: >
-	'cmd': ['pyls']
+	'cmd': ['pylsp']
 <
     Function can be complex based on custom requirements.
     For example:
@@ -1185,12 +1314,13 @@ The vim |dict| containing information about the server.
 	'blocklist': ['javascript', 'typescript']
 <
   * workspace_config:
-    optional vim |dict|
+    optional
+    vim |dict| or a function returning a vim |dict|
     Used to pass workspace configuration to the server after
     initialization. Configuration settings are language-server specific.
 
     Example: >
-	'workspace_config': {'pyls': {'plugins': \
+	'workspace_config': {'pylsp': {'plugins': \
 		{'pydocstyle': {'enabled': v:true}}}}
 <
   * languageId:
@@ -1553,6 +1683,11 @@ LspAddTreeCallHierarchyIncoming           *:LspAddTreeCallHierarchyIncoming*
 Just like |LspCallHierarchyIncoming| , but instead of making a new list the
 result is appended to the current list.
 
+LspAddTreeReferences                                 *:LspAddTreeReferences*
+
+Just like |LspReferences| , but instead of making a new list the result is
+appended to the current list.
+
 LspCallHierarchyIncoming                         *:LspCallHierarchyIncoming*
 
 Find incoming call hierarchy for the symbol under cursor.
@@ -1561,7 +1696,7 @@ LspCallHierarchyOutgoing                         *:LspCallHierarchyOutgoing*
 
 Find outgoing call hierarchy for the symbol under cursor.
 
-LspCodeAction [{CodeActionKind}]                            *:LspCodeAction*
+LspCodeAction [--ui=float|preview] [{CodeActionKind}]       *:LspCodeAction*
 
 Gets a list of possible commands that can be applied to a file so it can be
 fixed (quick fix).
@@ -1569,7 +1704,7 @@ fixed (quick fix).
 If the optional {CodeActionKind} specified, will invoke code action
 immediately when matched code action is one only.
 
-LspCodeActionSync [{CodeActionKind}]                    *:LspCodeActionSync*
+LspCodeActionSync [--ui=float|preview] [{CodeActionKind}] *:LspCodeActionSync*
 
 Same as |:LspCodeAction| but synchronous. Useful when running |:autocmd|
 commands such as organize imports before save.
@@ -1684,7 +1819,7 @@ LspNextReference                                         *:LspNextReference*
 
 Jump to the next reference of the symbol under cursor.
 
-LspNextWarning [-wrap=0]                              :LspNextWarning*
+LspNextWarning [-wrap=0]                              *:LspNextWarning*
 
 Jump to Next warning diagnostics
 With '-wrap=0', stop wrapping around the end of file.
@@ -1778,11 +1913,32 @@ Servers may choose to return empty results if the search query is empty.
 
 LspStatus                                                       *:LspStatus*
 
-Prints the status of all registered servers.
+Prints the status of all registered servers. Use `:verbose LspStatus` to
+additionally show each server's workspace_config.
+See also |vim-lsp-healthcheck|.
 
-LspStopServer                                                *:LspStopServer*
+LspStopServer[!] [name]                                      *:LspStopServer*
 
-Stop all active servers.
+:LspStopServer
+
+Stops all active servers that handle files matching the current buffer type.
+This is often what you want.  For example, if you have multiple files of
+different types open, `LspStopServer` will only stop the server for the
+current buffer.  Shows an error if there are no active LSP servers for the
+current buffer.
+
+:LspStopServer!
+
+Stops all active servers, regardless of the current buffer type.  Shows a
+message for every stopped server.
+
+:LspStopServer name
+
+Stops a server named 'name', comparing the provided ID with the value of the
+the 'name' property in the |lsp#register_server()| call.  Shows an error if
+'name' does not match a defined and currently running server.
+
+Completion should list only currently running servers for the 'name' argument.
 
 ==============================================================================
 Autocommands                                          *vim-lsp-autocommands*
@@ -1873,6 +2029,8 @@ Available plug mappings are following:
   nnoremap <plug>(lsp-call-hierarchy-incoming)
   nnoremap <plug>(lsp-call-hierarchy-outgoing)
   nnoremap <plug>(lsp-code-action)
+  nnoremap <plug>(lsp-code-action-float)
+  nnoremap <plug>(lsp-code-action-preview)
   nnoremap <plug>(lsp-code-lens)
   nnoremap <plug>(lsp-declaration)
   nnoremap <plug>(lsp-peek-declaration)
@@ -2027,7 +2185,7 @@ To use semantic highlighting, you need Neovim highlights, or Vim with the
 To enable semantic highlighting, |g:lsp_semantic_enabled| should be set to `1`
 (it is `0` by default). You can check if semantic highlighting is enabled
 by running: >
-    echo lsp#ui#vim#semantic#is_enabled()
+    echo lsp#internal#semantic#is_enabled()
 
 vim-lsp provides |highlight| groups for each of the token types supported by
 the current LSP server. This includes highlight groups for each of the

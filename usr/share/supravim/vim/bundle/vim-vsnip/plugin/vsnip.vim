@@ -12,6 +12,7 @@ let g:vsnip_snippet_dir = get(g:, 'vsnip_snippet_dir', expand('~/.vsnip'))
 let g:vsnip_snippet_dirs = get(g:, 'vsnip_snippet_dirs', [])
 let g:vsnip_sync_delay = get(g:, 'vsnip_sync_delay', 0)
 let g:vsnip_choice_delay = get(g:, 'vsnip_choice_delay', 500)
+let g:vsnip_append_final_tabstop = get(g:, 'vsnip_append_final_tabstop', v:true)
 let g:vsnip_namespace = get(g:, 'vsnip_namespace', '')
 let g:vsnip_filetypes = get(g:, 'vsnip_filetypes', {})
 let g:vsnip_filetypes.typescriptreact = get(g:vsnip_filetypes, 'typescriptreact', ['typescript'])
@@ -27,11 +28,11 @@ augroup END
 "
 " command
 "
-command! -bang VsnipOpen call s:open_command(<bang>0, 'vsplit')
-command! -bang VsnipOpenEdit call s:open_command(<bang>0, 'edit')
-command! -bang VsnipOpenVsplit call s:open_command(<bang>0, 'vsplit')
-command! -bang VsnipOpenSplit call s:open_command(<bang>0, 'split')
-function! s:open_command(bang, cmd)
+command! -nargs=* -bang VsnipOpen call s:open_command(<bang>0, 'vsplit', <q-args>)
+command! -nargs=* -bang VsnipOpenEdit call s:open_command(<bang>0, 'edit', <q-args>)
+command! -nargs=* -bang VsnipOpenVsplit call s:open_command(<bang>0, 'vsplit', <q-args>)
+command! -nargs=* -bang VsnipOpenSplit call s:open_command(<bang>0, 'split', <q-args>)
+function! s:open_command(bang, cmd, arg)
   let l:candidates = vsnip#source#filetypes(bufnr('%'))
   if a:bang
     let l:idx = 1
@@ -52,9 +53,12 @@ function! s:open_command(bang, cmd)
     endif
   endif
 
-  execute printf('%s %s', a:cmd, fnameescape(printf('%s/%s.json',
+  let l:ext = a:arg =~# '-format\s\+snipmate' ? 'snippets' : 'json'
+
+  execute printf('%s %s', a:cmd, fnameescape(printf('%s/%s.%s',
   \   resolve(l:expanded_dir),
-  \   l:candidates[l:idx - 1]
+  \   l:candidates[l:idx - 1],
+  \   l:ext
   \ )))
 endfunction
 
@@ -73,7 +77,7 @@ endfunction
 " extra mapping
 "
 if g:vsnip_extra_mapping
-  snoremap <expr> <BS> ("\<BS>" . (getcurpos()[2] == col('$') - 1 ? 'a' : 'i'))
+  snoremap <expr> <BS> ("\<BS>" . (&virtualedit ==# '' && getcurpos()[2] >= col('$') - 1 ? 'a' : 'i'))
 endif
 
 "
@@ -94,7 +98,7 @@ function! s:expand_or_jump()
   endfunction
 
   " This is needed to keep normal-mode during 0ms to prevent CompleteDone handling by LSP Client.
-  let l:maybe_complete_done = !empty(v:completed_item) && !empty(v:completed_item.user_data)
+  let l:maybe_complete_done = !empty(v:completed_item) && has_key(v:completed_item, 'user_data') && !empty(v:completed_item.user_data)
   if l:maybe_complete_done
     call timer_start(0, { -> l:ctx.callback() })
   else
@@ -114,7 +118,7 @@ function! s:expand() abort
   endfunction
 
   " This is needed to keep normal-mode during 0ms to prevent CompleteDone handling by LSP Client.
-  let l:maybe_complete_done = !empty(v:completed_item) && !empty(v:completed_item.user_data)
+  let l:maybe_complete_done = !empty(v:completed_item) && has_key(v:completed_item, 'user_data') && !empty(v:completed_item.user_data)
   if l:maybe_complete_done
     call timer_start(0, { -> l:ctx.callback() })
   else
@@ -187,9 +191,9 @@ endfunction
 augroup vsnip
   autocmd!
   autocmd InsertLeave * call s:on_insert_leave()
-  autocmd InsertCharPre * call s:on_insert_char_pre()
   autocmd TextChanged,TextChangedI,TextChangedP * call s:on_text_changed()
   autocmd BufWritePost * call s:on_buf_write_post()
+  autocmd BufRead,BufNewFile *.snippets setlocal filetype=snippets
 augroup END
 
 "
@@ -199,16 +203,6 @@ function! s:on_insert_leave() abort
   let l:session = vsnip#get_session()
   if !empty(l:session)
     call l:session.on_insert_leave()
-  endif
-endfunction
-
-"
-" on_insert_char_pre
-"
-function! s:on_insert_char_pre() abort
-  let l:session = vsnip#get_session()
-  if !empty(l:session)
-    call l:session.on_insert_char_pre(v:char)
   endif
 endfunction
 
