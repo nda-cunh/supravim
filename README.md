@@ -1,4 +1,4 @@
-# SupraVim 5.05 
+# SupraVim 5.12 
 
 # [Le SupraWiki (Documentation et Aide)](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 La documentation de Supravim est ici : 
