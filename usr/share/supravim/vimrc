@@ -86,8 +86,6 @@ nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 noremap <c-@>		:LspHover<cr>
-noremap <a-up>		:vim9cmd g:SwaplineUp()<cr>
-noremap <a-down>	:vim9cmd g:SwaplineDown()<cr>
 
 if expand("$XDG_SESSION_TYPE") == "wayland"
 	inoremap <c-v>	<esc>:r !wl-paste<cr>i
@@ -168,24 +166,6 @@ g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
-def g:SwaplineUp()
-	var cursor: number = line('.')
-	var a: string = getline(cursor)
-	var b: string = getline(cursor - 1)
-	setline(cursor, b)
-	setline(cursor - 1, a)
-	normal k
-enddef
-
-def g:SwaplineDown()
-	var cursor: number = line('.')
-	var a: string = getline(cursor)
-	var b: string = getline(cursor + 1)
-	setline(cursor, b)
-	setline(cursor + 1, a)
-	normal j
-enddef
-
 def g:Save()
 	silent w!
 	echo "save ! " .. expand('%c')
