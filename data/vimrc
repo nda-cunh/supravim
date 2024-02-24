@@ -71,11 +71,11 @@ inoremap <TAB>		<TAB>
 imap <C-g>			<esc>:NERDTreeTabsToggle<CR>
 map <C-g>			:NERDTreeTabsToggle<CR>
 map <S-T> <Esc>:term ++rows=15<CR>
-map <S-Tab>			<<
-map <Tab>			>>
+nnoremap <S-Tab>	<<
+nnoremap <Tab>		>>
+vnoremap <S-Tab>	<<<esc>gv
+vnoremap <Tab>		>><esc>gv
 nmap <c-@>  :LspHover<cr>
-map <a-up>		:vim9cmd g:SwaplineUp()<cr>
-map <a-down>	:vim9cmd g:SwaplineDown()<cr>
 inoremap <c-v>	<esc>:r !xclip -o -selection clipboard<cr>i
 vnoremap <c-c>	:silent! w !xclip -i -selection clipboard<cr>i
 
@@ -161,23 +161,43 @@ autocmd TabLeave * AirFresh()
 
 #--------------- FONCTION ---------------"
 
-def g:SwaplineUp()
-	var cursor: number = line('.')
-	var a: string = getline(cursor)
-	var b: string = getline(cursor - 1)
-	setline(cursor, b)
-	setline(cursor - 1, a)
-	normal k
+def g:MoveLineUp(mode: string)
+	var array = getline(line("'<"), line("'>"))
+	var len = len(array)
+	var begin = line('.')
+	
+	if begin == 1
+		return
+	elseif mode == 'n'
+		var tmp = getline(line('.') - 1)
+		setline(line('.') - 1, getline(line('.')))
+		setline(line('.'), tmp)
+		normal k
+		return
+	endif
+	
+	if line("'<") != begin 
+		return
+	endif
+
+	var tmp = getline(line('.') - 1)
+	var i = begin
+	for str in array
+		setline(i - 1, str)
+	 	i = i + 1	
+	endfor
+	setline(i - 1, tmp)
+	
+	setpos("'<", [0, begin - 1, 0, 0])
+	setpos("'>", [0, begin + len - 2, 0, 0])
+	normal! gv
 enddef
 
-def g:SwaplineDown()
-	var cursor: number = line('.')
-	var a: string = getline(cursor)
-	var b: string = getline(cursor + 1)
-	setline(cursor, b)
-	setline(cursor + 1, a)
-	normal j
-enddef
+
+vnoremap <A-Down> :<c-u>call MoveLineDown("v")<CR>
+vnoremap <A-Up> :<c-u>call MoveLineUp("v")<CR>
+nnoremap <A-Down> :<c-u>call MoveLineDown("n")<CR>
+nnoremap <A-Up> :<c-u>call MoveLineUp("n")<CR>
 
 def g:Save()
 	silent w!
