@@ -162,7 +162,7 @@ g:mucomplete#enable_auto_at_startup = 1
 #--------------- PL NERDTREE ---------------"
 g:rainbow_active = 1
 if g:sp_tree == true
-#*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* #*nerdtree* 	g:nerdtree_tabs_open_on_console_startup = 1
+g:nerdtree_tabs_open_on_console_startup = 1
 endif
 g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
