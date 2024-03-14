@@ -1,16 +1,15 @@
 #!/bin/bash
 
 if command -v ccls &>/dev/null; then
-    ccls "$@"
+	ccls --init='{"cache": {"directory": "/tmp/ccls-cache"}}' "$@"
 	if [ $? == 0 ]; then
 		exit 0
 	fi
 fi
 
 if command -v clangd &>/dev/null; then
-    clangd "-j" "8" "$@"
+	clangd "-j" "8" "$@"
 	if [ $? == 0 ]; then
 		exit 0;
 	fi
 fi
-
