@@ -175,16 +175,6 @@ def g:Quit()
 	q!
 enddef
 
-command -nargs=+ -bar MakeHeader :call FctsToHeader( split('<args>') )
-
-#TODO
-def FctsToHeader(...itemlist: list<string>)
-	for files_input in itemlist
-		var f = files_input
-		exec ":r !IFS=$'\\n'; for fct in $(cat "files_input" | grep -Eo \"^[a-z].*)$\" | grep -v \"[^*a-z\_]main(\" | grep -v \"^static\"); do echo \"$fct;\"; done"
-	endfor
-enddef
-
 command -nargs=+ -bar Make :call Make( '<args>' )
 
 def g:Make(rules: string)
@@ -411,7 +401,6 @@ def g:MoveLineUp(mode: string)
 	setpos("'>", [0, begin + len - 2, 0, 0])
 	normal! gv
 enddef
-
 
 vnoremap <A-Down> :<c-u>call MoveLineDown("v")<CR>
 vnoremap <A-Up> :<c-u>call MoveLineUp("v")<CR>
