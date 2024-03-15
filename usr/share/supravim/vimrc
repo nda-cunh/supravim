@@ -11,12 +11,13 @@ g:sp_swap = true
 g:sp_tree = false 
 g:sp_norme = true 
 g:sp_nobackground = true 
+g:sp_theme = 'onehalf'
 
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"
 syntax on
 
-colorscheme onehalf
+exec 'colorscheme ' .. g:sp_theme
 set background=dark
 set t_Co=256
 
