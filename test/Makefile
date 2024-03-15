@@ -1,0 +1,2 @@
+run:
+	./py_supravim
