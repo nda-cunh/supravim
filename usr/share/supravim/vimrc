@@ -9,7 +9,6 @@ pathogen#helptags()
 g:sp_mouse = true
 g:sp_swap = true
 g:sp_tree = false 
-g:sp_norme = true 
 g:sp_nobackground = true 
 g:sp_theme = 'onehalf'
 
