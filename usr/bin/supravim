@@ -144,6 +144,10 @@ def enable_disable(elements: list[str], replacement: str):
         to_replace = 'sp_' + elem + ' = ' + sv_options[elem][1]
         replacement = 'sp_' + elem + ' = ' + replace_value
         replace_in_file(filename, to_replace, replacement)
+        if replace_value == 'true':
+            print(f'{elem}: \033[92;1mon\033[m')
+        else:
+            print(f'{elem}: \033[91;1moff\033[m')
 
 
 # ------------------
