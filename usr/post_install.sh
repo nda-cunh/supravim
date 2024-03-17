@@ -15,7 +15,8 @@ main() {
 	rm -rf $HOME/.vimrc $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vim $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vimrc $HOME/.vimrc
-	$PKGDIR/share/supravim/apply_cfg "$PKGDIR/share/supravim/supravim.cfg"
+	# $PKGDIR/share/supravim/apply_cfg "$PKGDIR/share/supravim/supravim.cfg"
+	$PKGDIR/bin/supravim --apply-config
 	print_ascii
 }
 
