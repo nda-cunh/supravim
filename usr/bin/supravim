@@ -1,210 +1,210 @@
-#!/bin/bash
+#!/bin/python
+import re
+import os
+import optparse as op
 
-red="\033[91m"
-green="\033[92m"
-blue="\033[94m"
-white="\033[37m"
-bold="\033[1m"
-reset="\033[0m"
+# ---------
+#   UTILS
+# ---------
+home = os.getenv('HOME')
+cfg_fpath = home + '/.local/share/supravim/supravim.cfg'
+sv_options = {}
 
-enable_fct(){
-	case $1 in
-		mouse) sed -i 's/^g:sp_mouse.*$/g:sp_mouse = true/' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		swap) sed -i 's/^g:sp_swap.*$/g:sp_swap = true/' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		tree) sed -i 's/^g:sp_tree.*$/g:sp_tree = true/' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		norme) sed -i 's/^g:sp_norme.*$/g:sp_norme = true/' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		nobackground) sed -i 's/^g:sp_nobackground.*$/g:sp_nobackground = true/' ~/.vimrc;
-			echo -e "${bold}${green}[$1]${reset} correctly enabled";;
-		"") echo -e "Please enter something to enable.";;
-		*) echo -e "${bold}[$1]${reset} : cannot enable."
-	esac
-}
 
-disable_fct(){
-	case $1 in
-		mouse) sed -i 's/^g:sp_mouse.*$/g:sp_mouse = false/' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		swap) sed -i 's/^g:sp_swap.*$/g:sp_swap = false/' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		tree) sed -i 's/^g:sp_tree.*$/g:sp_tree = false/' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		norme) sed -i 's/^g:sp_norme.*$/g:sp_norme = false/' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		nobackground) sed -i 's/^g:sp_nobackground.*$/g:sp_nobackground = false/' ~/.vimrc;
-			echo -e "${bold}${red}[$1]${reset} correctly disabled";;
-		"") echo -e "Please enter something to disable.";;
-		*) echo -e "${bold}[$1]${reset} : cannot disable."
-		esac
-	}
+def print_error(msg: str):
+    print(f"\033[1;91mError: \033[0;91m{msg}\033[m")
 
-theme_fct(){
-	case $1 in
-		1 | gruvbox) sed -i 's/^colorscheme .*$/colorscheme gruvbox/' ~/.vimrc; echo -e "Vim theme set to ${bold}gruvbox${reset}.";;
-		2 | molokai) sed -i 's/^colorscheme .*$/colorscheme molokai/' ~/.vimrc; echo -e "Vim theme set to ${bold}molokai${reset}.";;
-		3 | dracula) sed -i 's/^colorscheme .*$/colorscheme dracula/' ~/.vimrc; echo -e "Vim theme set to ${bold}dracula${reset}.";;
-		4 | atom)  sed -i 's/^colorscheme .*$/colorscheme atom/' ~/.vimrc; echo -e "Vim theme set to ${bold}atom${reset}.";;
-		5 | iceberg)  sed -i 's/^colorscheme .*$/colorscheme iceberg/' ~/.vimrc; echo -e "Vim theme set to ${bold}iceberg${reset}.";;
-		6 | onedark)  sed -i 's/^colorscheme .*$/colorscheme onedark/' ~/.vimrc; echo -e "Vim theme set to ${bold}onedark${reset}.";;
-		7 | onehalf)  sed -i 's/^colorscheme .*$/colorscheme onehalf/' ~/.vimrc; echo -e "Vim theme set to ${bold}onehalf${reset}.";;
-		8 | onelight)  sed -i 's/^colorscheme .*$/colorscheme onelight/' ~/.vimrc; echo -e "Vim theme set to ${bold}onelight${reset}.";;
-		9 | pablo)  sed -i 's/^colorscheme .*$/colorscheme pablo/' ~/.vimrc; echo -e "Vim theme set to ${bold}pablo${reset}.";;
-		10 | Tomorrow-Night)  sed -i 's/^colorscheme .*$/colorscheme Tomorrow-Night/' ~/.vimrc; echo -e "Vim theme set to ${bold}Tomorrow-Night${reset}.";;
-		11 | Tomorrow-Night-Eighties)  sed -i 's/^colorscheme .*$/colorscheme Tomorrow-Night-Eighties/' ~/.vimrc; echo -e "Vim theme set to ${bold}Tomorrow-Night-Eighties${reset}.";;
-		light | white) sed -i "s/^set background=.*/set background=light/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[47;30mlight${reset} background.";;
-		dark | black) sed -i "s/^set background=.*/set background=dark/g" ~/.vimrc; echo -e "Vim set to ${bold}\033[40mdark${reset} background.";;
-		"")echo "Retry adding one of following theme:"; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo "light:	for light background"; echo "dark:	for dark background";;
-		*) echo "Theme name didn't match with any, please try with one of these."; cat ~/.vimrc | grep -E "\" [0-9]+: [a-z]+" | grep -oE "[0-9]+: [a-z]+" | cat; echo -e "light:	for light background"; echo "dark:	for dark background";;
-	esac
-}
+def replace_in_file(file: str, to_replace: str, replacement: str):
+    with open(file, 'r') as f:
+        content = f.read()
+    content = content.replace(to_replace, replacement)
+    with open(file, 'w') as f:
+        f.write(content)
 
-switch(){
-	if [ -f ~/.vimrc ]
-	then
-		if [ `grep -c "SUPRAVIM" ~/.vimrc` -gt 0 ]
-		then
-			echo -e "SupraVim configuration: ${bold}${red}disabled${reset}"
+def parse_options(opts: list[str]) -> list[str]:
+    return [elem for opt in opts for elem in opt.split(',')]
 
-			# Create vimrc_user config if does not exist
-			! [ -f ~/.vimrc_user ] && touch ~/.vimrc_user
-			
-			ln -sf ~/.vimrc_user ~/.vimrc
-			echo -e "Your vim configuration: ${bold}${green}enabled${reset}"
-		else
-			# Create vimrc_user with config
-			mv ~/.vimrc ~/.vimrc_user 2>/dev/null
+def getOptions() -> type(op.OptionGroup):
+    parser = op.OptionParser()
+    # Add options
+    description = 'Program to personnalize your supravim.'
+    parser.set_description(description)
 
-			echo  -e "Your vim configuration: ${bold}${red}disabled${reset}"
-			ln -sf ~/.local/share/SupraVim/vimrc ~/.vimrc
-			echo -e "SupraVim configuration: ${bold}${green}enabled${reset}"
-		fi
-	else
-		if [ -f  ~/.vimrc_supravim_off ]
-		then
-			mv ~/.vimrc_supravim_off ~/.vimrc
-			echo -e "Supravim configuration: ${bold}${green}enabled${reset}"
-		fi
-	fi
-}
+    parser.add_option("-s", "--status",
+                      action="store_true", dest="status",
+                      help="Display status of your supravim config.")
+    parser.add_option("--save-config",
+                      action="store_true", dest="save_conf")
+    parser.add_option("--apply-config",
+                      action="store_true", dest="apply_conf")
+    parser.add_option("-d", "--disable",
+                      action='append', type="string", dest="disabled",
+                      help="Disable options.", metavar='optA[,optB]')
+    parser.add_option("-e", "--enable",
+                      action="append", type="string", dest="enabled",
+                      help="Enable options.", metavar='optA[,optB]')
+    parser.add_option("-t", "--theme",
+                      action="store", type="string", dest="theme",
+                      help="Set theme.", metavar='theme')
+    parser.add_option("-S", "--set",
+                      action="append", type="string", dest="set",
+                      help="Set plugin variables.", metavar='var=value')
 
-print_status(){
-	if grep -q "sv_$1:0" "$HOME/.local/share/supravim/supravim.cfg"; then
-		echo -e "${bold}${red}$1${reset} "
-	else
-		echo -e "${bold}${green}$1${reset}"
-	fi
-}
+    # Parse the command-line arguments
+    (options, args) = parser.parse_args()
+    return options
 
-status_fct(){
+# ----------
+# Pre launch --> Generating options with plugins installed
+# ----------
+def load_options_from_file(file_name: str):
+    with open(file_name, 'r') as file:
+        content = file.read()
+        matches = re.findall(r'^g:sp_[a-zA-Z_]+ = (?:[a-zA-Z0-9\']+).+$',
+                             content, re.RegexFlag.MULTILINE)
+        for match in matches:
+            name, _, value = match[5:].split()[0:3]
+            sv_options[name] = [file_name, value]
+            if '#' in match:
+                _, desc = match.split('#')
+            else:
+                desc = ''
+            sv_options[name].append(desc)
 
-	$HOME/.local/share/supravim/create_cfg $HOME/.local/share/supravim/supravim.cfg
-	
-	echo -e "${bold}-- Options --${reset}"
-	
-	print_status mouse
-	print_status norme 
-	print_status tree
-	print_status swap 
-	print_status nobackground 
 
-	THEME=$(cat $HOME/.local/share/supravim/supravim.cfg | grep sv_theme | sed 's/sv_theme://')
-	echo -e "\n${bold}-- Theme --${reset}"
-	echo "Your vim theme is: $THEME"
-	
-	echo -e "\n${bold}-- Version --${reset}"
-	version_fct
-}
+def load_options():
+    load_options_from_file(home + '/.vimrc')
+    for (base_dir, _, plugin_files) in os.walk(home + '/.vim/plugin'):
+        for plugin in plugin_files:
+            plugin_fname = base_dir + '/' + plugin
+            load_options_from_file(plugin_fname)
 
-version_fct() {
-	version=$(suprapack info supravim | grep Version | cut -d ':' -f 2)
-	printf $version
-}
+# -----------------
+# CONFIG Generation
+# -----------------
+def generate_cfg(toStdout: bool = True):
+    if not toStdout:
+        try:
+            fd = os.open(cfg_fpath, os.O_WRONLY | os.O_TRUNC | os.O_CREAT)
+        except Exception as e:
+            print(f'\033[91;1mError: \033[m {e.msg}', file=os.sys.stderr)
 
-uninstall_fct() {
-	suprapack uninstall supravim
-}
+    for name in sv_options.keys():
+        file, value, desc = sv_options[name]
+        if toStdout:
+            print(f"{name}:{file}:{value}")
+        else:
+            os.write(fd, f"{name}:{file}:{value}\n".encode())
 
-update(){
-	suprapack update supravim
-}
+# ------------------
+# CONFIG Application
+# ------------------
+def apply_cfg():
+    if not os.access(cfg_fpath, os.F_OK):
+        print_error('Config file not generated')
+    else:
+        with open(cfg_fpath, 'r') as cfg:
+            for line in cfg.readlines():
+                option, file, value = line[:-1].split(':')
 
-on_supravim(){
-	if ! [[ ( -f ~/.vimrc ) && ( `grep -c "** SUPRAVIM **" ~/.vimrc` -gt 0 ) ]]
-	then
-		return 0;
-	else
-		return 1;
-	fi
-}
+                with open(file, 'r') as f:
+                    content = f.read()
 
-help_fct(){
-	echo -e "${bold}#### SUPRAVIM EDITOR ####${reset}
-	You are able to configure your supravim as wished: enable/ disable tools, edit theme.
+                    to_replace = re.findall(fr'^g:sp_{option} = [a-zA-Z_\-0-9\']+',
+                                            content, re.M)[0]
+                replacement = to_replace.split('=')[0] + '= ' + value
+                replace_in_file(file, to_replace, replacement)
+        os.unlink(cfg_fpath)
 
-	${bold}SETTINGS${reset}
-		supravim <options>
 
-		<options>:
-		-s | status		see what is enabled/ disabled and theme using
-		update			update supravim
-		uninstall		uninstall supravim
-		switch			switch to vim 
+# ---------------
+# Enable/ Disable
+# ---------------
+def enable_disable(elements: list[str], replacement: str):
+    replace_value = replacement
+    for elem in elements:
+        if elem not in sv_options.keys():
+            print_error(f"'{elem}' not a correct option.")
+            continue
+        filename = sv_options[elem][0]
+        to_replace = 'sp_' + elem + ' = ' + sv_options[elem][1]
+        replacement = 'sp_' + elem + ' = ' + replace_value
+        replace_in_file(filename, to_replace, replacement)
 
-	${bold}ENABLE/ DISABLE${reset}
-		supravim <${bold}${green}enable${reset} | -e> <option>
-		supravim <${bold}${red}disable${reset} | -d> <option>
-		
-		<options>:
-		mouse			use of mouse to move/ copy and paste in your file
-		norme			norme in your vim
-		normeHeader		display error for header 42 in your files
-		tree			left window automatically opened with files in the current directory
-		icons			icon in nerdtree for different type/file directory
-		swap			disable swapfile (file.swp)
 
-	${bold}THEME CHOOSING${reset}
-		supravim <theme | -t> <name_theme> <background>
-	"
-}
+# ------------------
+#  Change Variables
+# ------------------
+def change_variables(elements: list[list[str]]):
+    for elem in elements:
+        var, val = elem
+        if var not in sv_options.keys():
+            print_error(f"\033[91;1m'{var}'\033[91;0m not a correct option.")
+            continue
+        filename = sv_options[var][0]
+        to_replace = 'sp_' + var + ' = ' + sv_options[var][1]
+        replacement = 'sp_' + var + " = '" + val + "'"
+        replace_in_file(filename, to_replace, replacement)
 
-if [ $# -eq 0 ]; then
-	help_fct
-elif [[ $# -eq 1 && ( "$1" =  "update"  ||  "$1" = "--update" ) ]]; then
-	update 
-elif [[ $# -ge 1 && ( "$1" =  "server"  ||  "$1" = "--server" ) ]]; then
-	clangd_install $2
-	exit
-fi
 
-for opt in $@; do
-	possibility=$0
-	for possibility in  "-h" "--help" "help"		\
-						"enable" "-e" "--enable" 	\
-						"disable" "-d" "--disable" 	\
-						"theme" "-t" "--theme" 		\
-						"update" "--update" 		\
-						"status" "--status" "-s" 	\
-						"switch" "--switch" 		\
-						"--uninstall" "uninstall" 	\
-						"-v" "--version"
-	do
-		if [ "$opt" = "$possibility" ]; then
-			latest_opt=$opt
-		fi
-	done
-	case $latest_opt in 
-		-e | --enable | enable)   on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; [ $latest_opt != $opt ] && enable_fct $opt;;
-		-d | --disable | disable) on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; [ $latest_opt != $opt ] && disable_fct $opt;;
-		-t | --theme | theme)     on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; [ $latest_opt != $opt ] && theme_fct $opt;;
-		-s | --status | status)   on_supravim && printf "Please reactivate supravim (\033[1msupravim --switch\033[0m)\n" && exit; status_fct;;
-		-h | --help | help)       help_fct;;
-		--uninstall | uninstall)  uninstall_fct;;
-		--update | update)        [ $opt = "dev" ] && update $opt;;
-		--version | -v)           version_fct $2;;
-		switch | --switch)        switch;;
-		*) echo "Uncorrect argument: '$opt' (help option can help you maybe?)";;
-	esac
-done
+# ---------------
+#  Change Theme
+# ---------------
+def changeTheme(value):
+    to_replace = 'sp_theme = ' + sv_options['theme'][1]
+    replacement = "sp_theme = '" + value + "'"
+    replace_in_file(home + '/.vimrc', to_replace, replacement)
+    print(f"Setting theme to: \033[96;1m{value}\033[m")
+
+
+# ---------------
+#     Status
+# ---------------
+def status_display(dic: dict):
+    for opt, val in dic.items():
+        print(f'{opt:13} ', end='')
+        if val[1] == 'true':
+            print('\033[92;1mon \033[m', end='')
+        elif val[1] == 'false':
+            print('\033[91;1moff\033[m', end='')
+        else:
+            print(f'\033[96;1m{val[1]}\033[m', end='')
+        print(f' ({val[2].strip()})' if val[2] else '')
+
+
+def status():
+    general = {k: v for k, v in sv_options.items() if home + '/.vimrc' == v[0]}
+    print("\033[1m-- GENERAL --\033[m")
+    status_display(general)
+    plugins = {k: v for k, v in sv_options.items() if home + '/.vimrc' != v[0]}
+    if plugins:
+        print("\033[1m\n-- PLUGINS --\033[m")
+        status_display(plugins)
+
+
+if __name__ == '__main__':
+    load_options()
+    # generate_cfg(False)
+    # apply_cfg()
+
+    opts = getOptions()
+
+    # Implement the logic for each option
+    generate_cfg(False)
+    if opts.status:
+        status()
+    elif opts.save_conf:
+        generate_cfg(False)
+    elif opts.apply_conf:
+        apply_cfg()
+    else:
+        if opts.disabled:
+            disabled = parse_options(opts.disabled)
+            enable_disable(disabled, 'false')
+        if opts.enabled:
+            enabled = parse_options(opts.enabled)
+            enable_disable(enabled, 'true')
+        if opts.set:
+            change_variables([elem.split('=') for elem in opts.set])
+        if opts.theme:
+            changeTheme(opts.theme)
