@@ -28,6 +28,10 @@ if g:sp_nobackground == true
 	hi Normal guibg=NONE ctermbg=NONE
 endif
 
+&t_SI = "\<Esc>[5 q"
+&t_SR = "\<Esc>[3 q"
+&t_EI = "\<Esc>[2 q"
+autocmd VimLeave * !echo -ne "\e[0 q"
 
 #-------------- Save Undo  ------------"
 silent! system("!chmod 777 -R ~/.cache/vim && chown -R $USER ~/.cache/vim")
