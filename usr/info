@@ -6,4 +6,4 @@ description: un supraediteur sur vim
 dependency: suprapack supramake suprabear ccls ubuntu-nerdfont-ttf plugin-norminette
 optional_dependency: 
 size_tar: 
-size_installed: 3005439
+size_installed: 3006404

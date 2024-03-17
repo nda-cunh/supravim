@@ -33,6 +33,15 @@ def getOptions() -> type(op.OptionGroup):
     parser.add_option("-s", "--status",
                       action="store_true", dest="status",
                       help="Display status of your supravim config.")
+    parser.add_option("-v", "--version",
+                      action="store_true", dest="version",
+                      help="Give your supravim version")
+    parser.add_option("-u", "--update",
+                      action="store_true", dest="update",
+                      help="Update supravim")
+    parser.add_option("-D", "--uninstall",
+                      action="store_true", dest="uninstall",
+                      help="Uninstall supravim")
     parser.add_option("--save-config",
                       action="store_true", dest="save_conf")
     parser.add_option("--apply-config",
@@ -54,10 +63,15 @@ def getOptions() -> type(op.OptionGroup):
     (options, args) = parser.parse_args()
     return options
 
+def suprapack_launcher(command: str):
+    os.system('suprapack ' + command + ' supravim')
+
 # ----------
 # Pre launch --> Generating options with plugins installed
 # ----------
 def load_options_from_file(file_name: str):
+    if not os.access(file_name, os.F_OK):
+        return
     with open(file_name, 'r') as file:
         content = file.read()
         matches = re.findall(r'^g:sp_[a-zA-Z_]+ = (?:[a-zA-Z0-9\']+).+$',
@@ -109,9 +123,9 @@ def apply_cfg():
 
                 with open(file, 'r') as f:
                     content = f.read()
-
-                    to_replace = re.findall(fr'^g:sp_{option} = [a-zA-Z_\-0-9\']+',
-                                            content, re.M)[0]
+                    to_replace = re.findall(
+                        fr'^g:sp_{option} = [a-zA-Z_\-0-9\']+',
+                        content, re.M)[0]
                 replacement = to_replace.split('=')[0] + '= ' + value
                 replace_in_file(file, to_replace, replacement)
         os.unlink(cfg_fpath)
@@ -193,10 +207,16 @@ if __name__ == '__main__':
     generate_cfg(False)
     if opts.status:
         status()
+    elif opts.version:
+        suprapack_launcher('info')
     elif opts.save_conf:
         generate_cfg(False)
     elif opts.apply_conf:
         apply_cfg()
+    elif opts.uninstall:
+        suprapack_launcher('uninstall')
+    elif opts.update:
+        suprapack_launcher('update')
     else:
         if opts.disabled:
             disabled = parse_options(opts.disabled)
