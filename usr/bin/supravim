@@ -127,6 +127,7 @@ def apply_cfg():
                         fr'^g:sp_{option} = [a-zA-Z_\-0-9\']+',
                         content, re.M)[0]
                 replacement = to_replace.split('=')[0] + '= ' + value
+
                 replace_in_file(file, to_replace, replacement)
         os.unlink(cfg_fpath)
 
@@ -208,7 +209,6 @@ if __name__ == '__main__':
     opts = getOptions()
 
     # Implement the logic for each option
-    generate_cfg(False)
     if opts.status:
         status()
     elif opts.version:
