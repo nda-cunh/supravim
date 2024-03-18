@@ -3,8 +3,10 @@
 _arguments -C -S -s $endopt \
 	'(-s --status)'{-s,--status}'[show your configuration]' \
 	'(-v --version)'{-v,--version}'[Giving supravim version]' \
-	'(-u --update)'{-u,--update}'[Updating supravim]' \
-	'(-D --uninstall)'{-D,--uninstall}'[Uninstalling supravim]' \
+	'--save-config[Generate config file to be applyes with --apply-config]' \
+	'--apply-config[Apply config generated with --save-config]' \
+	'--update[Updating supravim]' \
+	'--uninstall[Uninstalling supravim]' \
 	'(-t --theme)'{-t,--theme}'[change your vim theme]: :->theme' \
 	'(-e --enable)'{-e,--enable}'[enable options]: :->option'	\
 	'(-d --disable)'{-d,--disable}'[disable options]: :->option' \
