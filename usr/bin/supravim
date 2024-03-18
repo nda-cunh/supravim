@@ -96,6 +96,8 @@ def load_options():
 # -----------------
 # CONFIG Generation
 # -----------------
+YOUR_CONF_BEG = '#====================== YOUR CONFIG ======================='
+YOUR_CONF_END = '#=========================================================='
 def generate_cfg(toStdout: bool = True):
     if not toStdout:
         try:
@@ -109,6 +111,14 @@ def generate_cfg(toStdout: bool = True):
             print(f"{name}:{file}:{value}")
         else:
             os.write(fd, f"{name}:{file}:{value}\n".encode())
+    with open(home + '/.vimrc', 'r') as f:
+        content = f.read()
+        os.write(fd, '\n'.encode())
+        reg = rf'{YOUR_CONF_BEG}\n(.*?){YOUR_CONF_END}'
+        match = re.findall(reg, content, re.DOTALL)
+        if match:
+            os.write(fd, match[0].encode())
+    os.close(fd)
 
 # ------------------
 # CONFIG Application
@@ -117,8 +127,19 @@ def apply_cfg():
     if not os.access(cfg_fpath, os.F_OK):
         print_error('Config file not generated')
     else:
+        vimrc_f = open(home + '/.vimrc', 'a+')
+        vimrc_f.write(f"{YOUR_CONF_BEG}\n")
         with open(cfg_fpath, 'r') as cfg:
+            is_personnal_config = False
             for line in cfg.readlines():
+                # Handling your config
+                if not line.strip():
+                    is_personnal_config = True
+                    continue
+                elif is_personnal_config:
+                    vimrc_f.write(line)
+                    continue
+
                 option, file, value = line[:-1].split(':')
 
                 with open(file, 'r') as f:
@@ -129,6 +150,8 @@ def apply_cfg():
                 replacement = to_replace.split('=')[0] + '= ' + value
 
                 replace_in_file(file, to_replace, replacement)
+        vimrc_f.write(f"{YOUR_CONF_END}\n")
+        vimrc_f.close()
         os.unlink(cfg_fpath)
 
 
