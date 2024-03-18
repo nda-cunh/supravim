@@ -4,6 +4,7 @@ author: nda-cunh
 binary: vim
 description: un supraediteur sur vim
 dependency: suprapack supramake suprabear ccls ubuntu-nerdfont-ttf plugin-norminette
+exclude_package: 
 optional_dependency: 
 size_tar: 
-size_installed: 3006816
+size_installed: 3007723
