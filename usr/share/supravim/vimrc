@@ -28,6 +28,7 @@ if g:sp_nobackground == true
 	hi Normal guibg=NONE ctermbg=NONE
 endif
 
+#------------- Cursor Parts ------------"
 &t_SI = "\<Esc>[5 q"
 &t_SR = "\<Esc>[3 q"
 &t_EI = "\<Esc>[2 q"
@@ -44,19 +45,18 @@ set undodir=~/.cache/vim/undo
 set undofile
 
 # -------------  DBG integration  --------------"
-
 packadd! termdebug
 g:termdebug_wide = 1
 
 #-------------- Auto Pairs ---------------------"
-inoremap <silent><CR>		<CR><Plug>AutoPairsReturn
+inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
 
 #--------------- Onglets ---------------------"
-noremap <c-n>					<esc>:tabnew 
-noremap <C-Right>				:tabnext<CR>
-noremap <C-Left>				:tabprevious<CR>
-inoremap <C-Right>				<esc>:tabnext<CR>
-inoremap <C-Left>				<esc>:tabprevious<CR>
+noremap <c-n>			<esc>:tabnew 
+noremap <C-Right>		:tabnext<CR>
+noremap <C-Left>		:tabprevious<CR>
+inoremap <C-Right>		<esc>:tabnext<CR>
+inoremap <C-Left>		<esc>:tabprevious<CR>
 
 #--------------- Racourcis --------------"
 map		<c-f>		fl
@@ -91,6 +91,7 @@ vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 noremap <c-@>		:LspHover<cr>
 
+#---------------      Copy - Paste      ---------------"
 if expand("$XDG_SESSION_TYPE") == "wayland"
 	inoremap <c-v>	<esc>:r !wl-paste<cr>i
 	vnoremap <c-c>	y:call Copy_func('wl-copy')<cr>i
@@ -149,16 +150,9 @@ set encoding=utf-8
 set splitbelow
 set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-g:UltiSnipsExpandTrigger = "<Tab>"
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
 silent! system($HOME .. "/.local/share/supravim/add_config_rc")
-
-
-#------------------ Snipets --------------------"
-g:UltiSnipsExpandTrigger = "<tab>"
-g:UltiSnipsJumpForwardTrigger = "<tab>"
-g:UltiSnipsJumpBackwardTrigger = "<S-tab>"
 
 #--------------- CLANG COMPLETER ---------------"
 set noinfercase
@@ -299,7 +293,7 @@ def CreatePopit()
 	var s = system("suprapack have_update supravim > /tmp/xdfe-" .. g:file_tmp .. "&")
 	var timer = timer_start(3000, (_) => {
 		CreatePop()
-	     })
+	})
 enddef
 
 def RemovePopit()
@@ -314,42 +308,7 @@ def CreatePop()
     popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s, "run: `suprapack update`" ], {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
 enddef
 
-if executable('lsp_c')
-	au User lsp_setup call lsp#register_server({
-				\ name: 'lsp_c',                                              
-				\ cmd: (server_info) => ['lsp_c'],
-				\ allowlist: ['cpp', 'c'],
-				\ })
-endif
-
-if executable('vala-language-server')
-	au User lsp_setup call lsp#register_server({
-				\ name: 'vala-language-server',                                              
-				\ cmd: (server_info) => ['vala-language-server'],
-				\ allowlist: ['vala'],
-				\ })
-endif
-
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ name: 'file',
-    \ allowlist: ['*'],
-    \ priority: 2,
-    \ completor: function('asyncomplete#sources#file#completor')
-    \ }))
-
-imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-
-g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
-g:vsnip_snippet_dir = '$HOME/.local/share/supravim/data/snippets'
-g:lsp_document_code_action_signs_enabled = 0
-g:lsp_diagnostics_echo_cursor = 1
-g:lsp_diagnostics_echo_delay = 50
-g:lsp_diagnostics_virtual_text_enabled = 0
-
-
+# -----------------   Alt Up/Down   ------------------ #
 def g:MoveLineDown(mode: string)
 	var array = getline(line("'<"), line("'>"))
 	var len = len(array)
