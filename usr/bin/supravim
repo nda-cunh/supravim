@@ -36,10 +36,10 @@ def getOptions() -> type(op.OptionGroup):
     parser.add_option("-v", "--version",
                       action="store_true", dest="version",
                       help="Give your supravim version")
-    parser.add_option("-u", "--update",
+    parser.add_option("--update",
                       action="store_true", dest="update",
                       help="Update supravim")
-    parser.add_option("-D", "--uninstall",
+    parser.add_option("--uninstall",
                       action="store_true", dest="uninstall",
                       help="Uninstall supravim")
     parser.add_option("--save-config",
