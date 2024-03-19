@@ -1,4 +1,4 @@
-# SupraVim 4.6.0
+# SupraVim 4.X c'est terminée -> curl https://gitlab.com/hydrasho/SupraVim/-/raw/suprapack/install.sh | sh
 
 # [Le SupraWiki (Documentation et Aide)](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 La documentation de Supravim est ici : 
