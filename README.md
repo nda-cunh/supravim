@@ -28,7 +28,7 @@ curl https://gitlab.com/hydrasho/SupraVim/-/raw/suprapack/install.sh | sh
 
 N'hésitez pas à découvrir d'autre éditeur de texte, ou d'ide ou de construire votre propre configuration VIM la seule limite et votre pensée. savoir configurer ses outils , c'est aussi être plus à l'aise avec votre travail.
 
-<img src="data/README.png"/>
+<img src="readme.png"/>
 
 # Autre chose ? une idée ?
 ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
