@@ -22,7 +22,7 @@ def g:Commentary()
 		else
 			Comment(';', line)
 		endif
-	elseif e == 'cpp' || e == 'cs' || e == 'vala' || e == 'vapi' || e == 'hpp' || e == 'tpp' || e == 'h' || e == 'c' || e == 'vue' || e == 'js' || e == 'ts'
+	elseif e == 'cpp' || e == 'cs' || e == 'vala' || e == 'vapi' || e == 'hpp' || e == 'tpp' || e == 'h' || e == 'c' || e == 'vue' || e == 'js' || e == 'ts' || e == 'blp'
 		if line =~ '^\s*[/][/].*$'
 			UnComment('//', line)
 		else
