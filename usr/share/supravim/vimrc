@@ -378,3 +378,9 @@ nnoremap <A-Up> :<c-u>call MoveLineUp("n")<CR>
 # Search Ctrl + F
 map <c-f> \fl
 imap <c-f> \fl
+
+inoremap <F12>	<esc>:call SettingsSupravim()<cr>
+noremap <F12>	<esc>:call SettingsSupravim()<cr>
+def g:SettingsSupravim()
+	system("supravim-gui&")
+enddef
