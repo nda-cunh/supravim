@@ -1,27 +1,25 @@
 # SupraVim 5.15
 
-# [Le SupraWiki (Documentation et Aide)](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
-La documentation de Supravim est ici : 
-[>> Clique sur moi <<](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
+# [The SupraWiki (help and documentation) Click here](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 
+### Dependencies
+| Zsh | Vim 9 | Vala |
+|-----|-------|------|
 
-### Dépendances
-| Zsh | Clang | Vim 9 | Vala |
-|-----|-------|-------|------|
-## Installation:
+## First Install:
 ```bash
 curl https://gitlab.com/hydrasho/SupraVim/-/raw/suprapack/install.sh | sh
 ```
 
-#### Mise à jour:
+#### Update:
 ```bash
-    supravim update
+supravim update
 ```
 
-#### Désinstallation
+#### Uninstall
 
 ```bash
-    supravim uninstall
+supravim uninstall
 ```
 # note
 
@@ -35,3 +33,18 @@ ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directeme
 je suis à l'écoute d'un peu tout :)
 
 MP moi sur le discord/slack de 42 si besoin (nda-cunh)
+
+# Developper
+
+## How build ?
+
+you need suprapack to build it
+```bash
+git clone https://gitlab.com/hydrasho/SupraVim
+cd SupraVim
+# Modifiy
+suprapack build usr
+# Install the new version with it
+suprapack add supravim-*.suprapack
+```
+
