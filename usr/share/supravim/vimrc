@@ -102,7 +102,7 @@ endif
 
 def g:Copy_func(copy_os: string)
 	var escape_text = shellescape(getreg('0'))
-	system('echo -n ' .. escape_text .. ' | ' .. copy_os)
+	system('echo -En ' .. escape_text .. ' | ' .. copy_os)
 enddef
 
 #---------------      Command        ---------------"
