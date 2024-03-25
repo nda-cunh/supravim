@@ -72,18 +72,21 @@ def suprapack_launcher(command: str):
 def load_options_from_file(file_name: str):
     if not os.access(file_name, os.F_OK):
         return
-    with open(file_name, 'r') as file:
-        content = file.read()
-        matches = re.findall(r'^g:sp_[a-zA-Z_]+ = (?:[a-zA-Z0-9\']+).+$',
-                             content, re.RegexFlag.MULTILINE)
-        for match in matches:
-            name, _, value = match[5:].split()[0:3]
-            sv_options[name] = [file_name, value]
-            if '#' in match:
-                _, desc = match.split('#')
-            else:
-                desc = ''
-            sv_options[name].append(desc)
+    try:
+        with open(file_name, 'r') as file:
+            content = file.read()
+            matches = re.findall(r'^g:sp_[a-zA-Z_]+ = (?:[a-zA-Z0-9\']+).+$',
+                                 content, re.RegexFlag.MULTILINE)
+            for match in matches:
+                name, _, value = match[5:].split()[0:3]
+                sv_options[name] = [file_name, value]
+                if '#' in match:
+                    _, desc = match.split('#')
+                else:
+                    desc = ''
+                sv_options[name].append(desc)
+    except FileNotFoundError:
+           print("")
 
 
 def load_options():
@@ -111,14 +114,17 @@ def generate_cfg(toStdout: bool = True):
             print(f"{name}:{file}:{value}")
         else:
             os.write(fd, f"{name}:{file}:{value}\n".encode())
-    with open(home + '/.vimrc', 'r') as f:
-        content = f.read()
-        os.write(fd, '\n'.encode())
-        reg = rf'{YOUR_CONF_BEG}\n(.*?){YOUR_CONF_END}'
-        match = re.findall(reg, content, re.DOTALL)
-        if match:
-            os.write(fd, match[0].encode())
-    os.close(fd)
+    try:
+        with open(home + '/.vimrc', 'r') as f:
+            content = f.read()
+            os.write(fd, '\n'.encode())
+            reg = rf'{YOUR_CONF_BEG}\n(.*?){YOUR_CONF_END}'
+            match = re.findall(reg, content, re.DOTALL)
+            if match:
+                os.write(fd, match[0].encode())
+        os.close(fd)
+    except FileNotFoundError:
+           print("")
 
 # ------------------
 # CONFIG Application
