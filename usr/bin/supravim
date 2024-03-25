@@ -7,6 +7,7 @@ import optparse as op
 #   UTILS
 # ---------
 home = os.getenv('HOME')
+cfg_dir = home + '/.local/share/supravim'
 cfg_fpath = home + '/.local/share/supravim/supravim.cfg'
 sv_options = {}
 
@@ -104,7 +105,12 @@ YOUR_CONF_END = '#=========================================================='
 def generate_cfg(toStdout: bool = True):
     if not toStdout:
         try:
+            if not os.path.exists(cfg_dir) or not os.path.isdir(cfg_dir):
+                os.mkdir(cfg_dir)
             fd = os.open(cfg_fpath, os.O_WRONLY | os.O_TRUNC | os.O_CREAT)
+
+            if not os.path.exists(home + '/.vimrc'):
+                open(home + '/.vimrc', 'w').close()
         except Exception as e:
             print(f'\033[91;1mError: \033[m {e.msg}', file=os.sys.stderr)
 
