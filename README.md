@@ -8,7 +8,7 @@
 
 ## First Install:
 ```bash
-curl https://gitlab.com/hydrasho/SupraVim/-/raw/suprapack/install.sh | sh
+curl https://gitlab.com/nda-cunh/SupraVim/-/raw/suprapack/install.sh | sh
 ```
 
 #### Update:
@@ -40,7 +40,7 @@ MP moi sur le discord/slack de 42 si besoin (nda-cunh)
 
 you need suprapack to build it
 ```bash
-git clone https://gitlab.com/hydrasho/SupraVim
+git clone https://gitlab.com/nda-cunh/SupraVim
 cd SupraVim
 # Modifiy
 suprapack build usr
