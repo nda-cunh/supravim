@@ -384,3 +384,6 @@ noremap <F12>	<esc>:call SettingsSupravim()<cr>
 def g:SettingsSupravim()
 	system("supravim-gui&")
 enddef
+
+autocmd VimEnter * redraw!
+
