@@ -385,5 +385,27 @@ def g:SettingsSupravim()
 	system("supravim-gui&")
 enddef
 
+set mousemodel=popup
+autocmd BufEnter * call Init_menu()
+def Init_menu()
+	unmenu *
+	unmenu! *
+	aunmenu *
+
+	menu PopUp.Save-All :wall<CR>
+	menu PopUp.AutoNorm <F2>
+	menu PopUp.SwitchNorm <F3>
+	menu PopUp.-sep0- <Nop>
+	vmenu PopUp.Copy y
+	menu PopUp.Past p
+	menu PopUp.Undo u
+	menu PopUp.Redo <C-r>
+	menu PopUp.-sep2- <Nop>
+	menu PopUp.Run <F5>
+	menu PopUp.Debug <C-F5>
+	menu PopUp.-sep3- <Nop>
+	menu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
+enddef
+
 autocmd VimEnter * redraw!
 
