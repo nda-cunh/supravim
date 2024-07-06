@@ -3,26 +3,26 @@
 # [The SupraWiki (help and documentation) Click here](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 
 ### Dependencies
-| Zsh | Vim 9 | Vala |
-|-----|-------|------|
+| Vim 9 | C or Vala compiler |
+|-------| ------------------ |
 
-## First Install:
+## Install with Curl
 ```bash
-curl https://gitlab.com/nda-cunh/SupraVim/-/raw/suprapack/install.sh | sh
+curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | sh
 ```
 
 #### Update:
 ```bash
-supravim update
+supravim --update
 ```
 
 #### Uninstall
 
 ```bash
-supravim uninstall
+supravim --uninstall
 ```
-# note
 
+# note
 
 N'hésitez pas à découvrir d'autre éditeur de texte, ou d'ide ou de construire votre propre configuration VIM la seule limite et votre pensée. savoir configurer ses outils , c'est aussi être plus à l'aise avec votre travail.
 
