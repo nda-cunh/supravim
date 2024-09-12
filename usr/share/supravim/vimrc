@@ -100,6 +100,23 @@ else
 	vnoremap <c-c>	y:call Copy_func('xclip -i -selection clipboard')<cr>i
 endif
 
+def g:Copy()
+	echo "Copy"
+	if expand("$XDG_SESSION_TYPE") == "wayland"
+		g:Copy_func('wl-copy')
+	else
+		g:Copy_func('xclip -i -selection clipboard')
+	endif
+enddef
+
+def g:Paste()
+	if expand("$XDG_SESSION_TYPE") == "wayland"
+		r!wl-paste
+	else
+		r!xclip -o -selection clipboard
+	endif
+enddef
+
 def g:Copy_func(copy_os: string)
 	var escape_text = shellescape(getreg('0'))
 	system('echo -En ' .. escape_text .. ' | ' .. copy_os)
@@ -396,13 +413,13 @@ def Init_menu()
 	menu PopUp.AutoNorm <F2>
 	menu PopUp.SwitchNorm <F3>
 	menu PopUp.-sep0- <Nop>
-	vmenu PopUp.Copy y
-	menu PopUp.Past p
+	vmenu PopUp.Copy y:call Copy()<cr><esc>
+	menu PopUp.Past :call Paste()<cr><esc>
 	menu PopUp.Undo u
 	menu PopUp.Redo <C-r>
 	menu PopUp.-sep2- <Nop>
-	menu PopUp.Run <F5>
-	menu PopUp.Debug <C-F5>
+	# menu PopUp.Run <F5> # TODO fix me
+	menu PopUp.Debug :call Gdbf()<cr>
 	menu PopUp.-sep3- <Nop>
 	menu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
 enddef
