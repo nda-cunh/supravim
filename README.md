@@ -1,4 +1,4 @@
-# SupraVim 5.15
+# SupraVim 5.21
 
 # [The SupraWiki (help and documentation) Click here](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 
@@ -10,6 +10,12 @@
 ```bash
 curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | sh
 ```
+
+## Install with suprapack
+```bash
+suprapack install supravim
+```
+
 
 #### Update:
 ```bash
