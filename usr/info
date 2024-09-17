@@ -7,4 +7,4 @@ dependency: supramake suprabear ccls ubuntu-nerdfont-ttf plugin-norminette plugi
 exclude_package: 
 optional_dependency: 
 size_tar: 
-size_installed: 1858156
+size_installed: 1914543
