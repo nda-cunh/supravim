@@ -6,7 +6,7 @@ filetype off
 pathogen#infect()
 pathogen#helptags()
 
-g:sp_mouse = true			# Mouse support
+g:sp_mouse = true			# mouse support
 g:sp_swap = true			# doesn't create swapfile (.swp)
 g:sp_tree = true			# display folder tree at left
 g:sp_nobackground = false	# remove background color and use your terminal background
