@@ -129,7 +129,7 @@ cmap <F5>	Make
 cmap <c-v>	<c-r>0<del>
 
 #---------------      Terminal        ---------------"
-tnoremap <C-q> q<CR>
+tnoremap <C-q> exit<CR>
 tnoremap <F3> clear -x ; norminette<CR>
 tnoremap <F5> supramake run<CR>
 tnoremap <F6> supramake run2<CR>
