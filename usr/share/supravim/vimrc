@@ -59,10 +59,10 @@ noremap <C-Up>		<Esc>:call Ctags()<CR>
 noremap <C-Down>	<Esc><C-T>
 inoremap <C-Up>		<Esc>:call Ctags()<CR>i
 inoremap <C-Down>	<Esc><C-T>i
-inoremap <c-q>		<esc>:call Quit()<CR>
-inoremap <c-s>		<esc>:call Save()<CR>
-noremap <c-q>		<esc>:call Quit()<CR>
-noremap <c-s>		<esc>:call Save()<CR>
+inoremap <c-q>		<esc>:q!<CR>
+noremap <c-q>		<esc>:q!<CR>
+inoremap <c-s>		<esc>:w!<CR>
+noremap <c-s>		<esc>:w!<CR>
 noremap <C-F5> 		:Termdebug -n <CR>
 noremap <F5> 		:call Make("run")<CR>
 inoremap <F5>		<Esc>:call Make("run")<CR>
@@ -181,12 +181,15 @@ g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
-def g:Save()
+
+auto BufWritePost * call Save_post()
+
+def g:Save_post()
 	if &filetype == 'nerdtree'
         echo "Pourquoi vouloir sauvegarder l'arborescence ???"
     else
-		silent w!
-		echo "save ! " .. expand('%c')
+		silent! NERDTreeRefreshRoot
+		silent! NERDTreeRefreshRoot
 	endif
 enddef
 
