@@ -35,11 +35,6 @@ endif
 autocmd VimLeave * !echo -ne "\e[0 q"
 
 #-------------- Save Undo  ------------"
-silent! system("!chmod 777 -R ~/.cache/vim && chown -R $USER ~/.cache/vim")
-if !isdirectory($HOME .. "/.cache/vim/undo")
-	silent! mkdir($HOME .. "/.cache/vim/", "", 0770)
-	silent! mkdir($HOME .. "/.cache/vim/undo", "", 0770)
-endif
 
 set undodir=~/.cache/vim/undo
 set undofile
@@ -77,10 +72,10 @@ noremap <F7> 		:call Make("run3")<CR>
 inoremap <F7>		<Esc>:call Make("run3")<CR>
 noremap <C-d>		:vs 
 noremap <S-d>		:split 
-noremap <S-Right>	<C-w><Right><Esc>:AirlineRefresh<CR>
-noremap <S-Left>	<C-w><Left><Esc>:AirlineRefresh<CR>
-noremap <S-Up>		<C-w><Up><Esc>:AirlineRefresh<CR>
-noremap <S-Down>	<C-w><Down><Esc>:AirlineRefresh<CR>
+noremap <S-Right>	<C-w><Right>
+noremap <S-Left>	<C-w><Left>
+noremap <S-Up>		<C-w><Up>
+noremap <S-Down>	<C-w><Down>
 inoremap <TAB>		<TAB>
 inoremap <C-g>		<esc>:NERDTreeTabsToggle<CR>
 noremap <C-g>		:NERDTreeTabsToggle<CR>
@@ -136,10 +131,10 @@ tnoremap <F6> supramake run2<CR>
 tnoremap <F7> supramake run3<CR>
 tnoremap <esc>	<c-\><c-n>
 
-tnoremap <S-Right>		<C-W>N<C-w><Right><Esc>:AirlineRefresh<CR>
-tnoremap <S-Left>		<C-W>N<C-w><Left><Esc>:AirlineRefresh<CR>
-tnoremap <S-Up>			<C-W>N<C-w><Up><Esc>:AirlineRefresh<CR>
-tnoremap <S-Down>		<C-W>N<C-w><Down><Esc>:AirlineRefresh<CR>
+tnoremap <S-Right>		<C-W>N<C-w><Right>
+tnoremap <S-Left>		<C-W>N<C-w><Left>
+tnoremap <S-Up>			<C-W>N<C-w><Up>
+tnoremap <S-Down>		<C-W>N<C-w><Down>
 
 #--------------- utilitaires basiques ---------------"
 if g:sp_mouse == true
@@ -319,6 +314,7 @@ enddef
 
 def CreatePop()
     var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)
+	redraw!
     if s == ""
         return
     endif
@@ -418,11 +414,16 @@ def Init_menu()
 	menu PopUp.Undo u
 	menu PopUp.Redo <C-r>
 	menu PopUp.-sep2- <Nop>
-	# menu PopUp.Run <F5> # TODO fix me
 	menu PopUp.Debug :call Gdbf()<cr>
 	menu PopUp.-sep3- <Nop>
 	menu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
 enddef
 
-autocmd VimEnter * redraw!
+autocmd VimEnter * call Welcome()
 
+def Welcome()
+	redraw!
+	var timer = timer_start(100, (_) => {
+		echo 'Welcome to SupraVim ! Press <F12> for help'
+	})
+enddef
