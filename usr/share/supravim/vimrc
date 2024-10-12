@@ -182,8 +182,12 @@ g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
 def g:Save()
-	silent w!
-	echo "save ! " .. expand('%c')
+	if &filetype == 'nerdtree'
+        echo "Pourquoi vouloir sauvegarder l'arborescence ???"
+    else
+		silent w!
+		echo "save ! " .. expand('%c')
+	endif
 enddef
 
 def g:Quit()
