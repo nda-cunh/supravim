@@ -10,7 +10,14 @@ print_ascii() {
 	print_ascii_line "|____/ \\__,_| .__/|_|  \\__,_| \\_/  |_|_| |_| |_|" '\e[34m'
 	print_ascii_line "            |_|" '\e[35m'
 }
-	
+
+create_folder_undo () {
+	DIR="$HOME/.cache/vim/"
+
+	mkdir -p "$DIR/undo" 2 > /dev/null | true
+	chmod 755 -R "$DIR" 2 > /dev/null | true
+}
+
 main() {
 	rm -rf $HOME/.vimrc $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vim $HOME/.vim
@@ -18,6 +25,7 @@ main() {
 	# $PKGDIR/share/supravim/apply_cfg "$PKGDIR/share/supravim/supravim.cfg"
 	$PKGDIR/bin/supravim --apply-config 2>/dev/null | true
 	print_ascii
+	create_folder_undo
 }
 
 main
