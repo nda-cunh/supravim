@@ -239,7 +239,8 @@ enddef
 
 command -nargs=0 -bar Ctags :call Ctags()
 
-set tags=$HOME/.local/share/tags
+set tags=$HOME/.cache/tags
+nnoremap <C-LeftMouse> :call Ctags()<CR>
 
 g:notags = false
 def g:Ctags()
@@ -247,7 +248,7 @@ def g:Ctags()
 		LspDefinition
 		return
 	endif
-	system("suprapack run supratags " .. expand('%:e'))
+	system("suprapack run supratags -y")
 	if v:shell_error == 42
 		LspDefinition
 		g:notags = true
