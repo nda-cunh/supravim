@@ -47,44 +47,45 @@ g:termdebug_wide = 1
 inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
 
 #--------------- Onglets ---------------------"
-noremap <c-n>			<esc>:tabnew 
-noremap <C-Right>		:tabnext<CR>
-noremap <C-Left>		:tabprevious<CR>
+nnoremap <c-n>			<esc>:tabnew 
+nnoremap <C-Right>		:tabnext<CR>
+nnoremap <C-Left>		:tabprevious<CR>
 inoremap <C-Right>		<esc>:tabnext<CR>
 inoremap <C-Left>		<esc>:tabprevious<CR>
 
 #--------------- Racourcis --------------"
-map		<c-f>		fl
-noremap <C-Up>		<Esc>:call Ctags()<CR>
-noremap <C-Down>	<Esc><C-T>
+nmap		<c-f>		fl
+nnoremap <C-Up>		<Esc>:call Ctags()<CR>
+nnoremap <C-Down>	<Esc><C-T>
 inoremap <C-Up>		<Esc>:call Ctags()<CR>i
 inoremap <C-Down>	<Esc><C-T>i
 inoremap <c-q>		<esc>:q!<CR>
-noremap <c-q>		<esc>:q!<CR>
+nnoremap <c-q>		<esc>:q!<CR>
 inoremap <c-s>		<esc>:w!<CR>
-noremap <c-s>		<esc>:w!<CR>
-noremap <C-F5> 		:Termdebug -n <CR>
-noremap <F5> 		:call Make("run")<CR>
+nnoremap <c-s>		<esc>:w!<CR>
+nnoremap <C-F5> 		:Termdebug -n <CR>
+nnoremap <F5> 		:call Make("run")<CR>
 inoremap <F5>		<Esc>:call Make("run")<CR>
-noremap <F6>		:call Make("run2")<CR>
+nnoremap <F6>		:call Make("run2")<CR>
 inoremap <F6>		<Esc>:call Make("run2")<CR>
-noremap <F7> 		:call Make("run3")<CR>
+nnoremap <F7> 		:call Make("run3")<CR>
 inoremap <F7>		<Esc>:call Make("run3")<CR>
-noremap <C-d>		:vs 
-noremap <S-d>		:split 
-noremap <S-Right>	<C-w><Right>
-noremap <S-Left>	<C-w><Left>
-noremap <S-Up>		<C-w><Up>
-noremap <S-Down>	<C-w><Down>
+nnoremap <C-d>		:vs 
+nnoremap <S-d>		:split 
+nnoremap <S-Right>	<C-w><Right>
+nnoremap <S-Left>	<C-w><Left>
+nnoremap <S-Up>		<C-w><Up>
+nnoremap <S-Down>	<C-w><Down>
 inoremap <TAB>		<TAB>
 inoremap <C-g>		<esc>:NERDTreeTabsToggle<CR>
-noremap <C-g>		:NERDTreeTabsToggle<CR>
-noremap <S-T>		<Esc>:term ++rows=15<CR>
+nnoremap <C-g>		:NERDTreeTabsToggle<CR>
+nnoremap <S-t>		<Esc>:term ++rows=15<CR>
 nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
-noremap <c-@>		:LspHover<cr>
+nnoremap <c-@>		:LspHover<cr>
+
 
 #---------------      Copy - Paste      ---------------"
 if expand("$XDG_SESSION_TYPE") == "wayland"
