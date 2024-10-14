@@ -202,10 +202,8 @@ command -nargs=+ -bar Make :call Make( '<args>' )
 
 def g:Make(rules: string)
 	w!
-	silent exec "!clear -x"
-	redraw!
 	setenv('rulesmake', rules)
-	! supramake $rulesmake
+	! supramake --clean $rulesmake
 enddef
 
 def g:Compile()
