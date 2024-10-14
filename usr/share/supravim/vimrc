@@ -183,20 +183,22 @@ g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
 
+auto BufEnter * call LoadBuf()
+def LoadBuf()
+	var l = line('.')
+	silent! loadview
+	cursor(l, 1)
+enddef
+
 auto BufWritePost * call Save_post()
-
-def g:Save_post()
-	if &filetype == 'nerdtree'
-        echo "Pourquoi vouloir sauvegarder l'arborescence ???"
-    else
-		silent! NERDTreeRefreshRoot
-		silent! NERDTreeRefreshRoot
-	endif
+def Save_post()
+	silent! NERDTreeRefreshRoot
+	silent! NERDTreeRefreshRoot
+	mkview
 enddef
 
-def g:Quit()
-	q!
-enddef
+
+# Compilation and SupraMake
 
 command -nargs=+ -bar Make :call Make( '<args>' )
 
@@ -405,6 +407,7 @@ def g:SettingsSupravim()
 	system("supravim-gui&")
 enddef
 
+nnoremap <RightMouse> <esc><LeftMouse><RightMouse>
 set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
@@ -423,6 +426,8 @@ def Init_menu()
 	menu PopUp.-sep2- <Nop>
 	menu PopUp.Debug :call Gdbf()<cr>
 	menu PopUp.-sep3- <Nop>
+	menu PopUp.Plier zc
+	menu PopUp.-sep4- <Nop>
 	menu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
 enddef
 
