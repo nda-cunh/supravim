@@ -448,4 +448,5 @@ def Welcome()
 	var timer = timer_start(100, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
 	})
+	set foldmethod=manual
 enddef
