@@ -434,12 +434,25 @@ def Init_menu()
 	nmenu PopUp.Debug			:call Gdbf()<cr>
 	nmenu PopUp.RenameSymbol	:LspRename<cr> 
 	nmenu PopUp.-sep3- <Nop>
-	nmenu PopUp.Fold			zc
-	nmenu PopUp.Fold-All		zm
+	nmenu PopUp.Fold			:call g:Fold()<CR>
+	nmenu PopUp.UnFold			zo
+	nmenu PopUp.Fold-All		:call g:FoldAll()<CR>
+	nmenu PopUp.UnFold-All		zr
 	nmenu PopUp.-sep4- <Nop>
 	nmenu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
 enddef
 
+def g:Fold()
+	set foldmethod=syntax
+	execute "normal! zc"
+	set foldmethod=manual
+enddef
+
+def g:FoldAll()
+	set foldmethod=syntax
+	execute "normal! zM"
+	set foldmethod=manual
+enddef
 
 autocmd VimEnter * call Welcome()
 
