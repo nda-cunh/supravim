@@ -6,9 +6,9 @@ filetype off
 pathogen#infect()
 pathogen#helptags()
 
-g:sp_mouse = true			# mouse support
-g:sp_swap = true			# doesn't create swapfile (.swp)
+g:sp_swap = false			# create swapfile (.swp)
 g:sp_tree = true			# display folder tree at left
+g:sp_fold = false			# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
 g:sp_theme = 'onehalf'
 
@@ -116,6 +116,7 @@ enddef
 def g:Copy_func(copy_os: string)
 	var escape_text = shellescape(getreg('0'))
 	system('echo -En ' .. escape_text .. ' | ' .. copy_os)
+	redraw!
 enddef
 
 #---------------      Command        ---------------"
@@ -138,9 +139,7 @@ tnoremap <S-Up>			<C-W>N<C-w><Up>
 tnoremap <S-Down>		<C-W>N<C-w><Down>
 
 #--------------- utilitaires basiques ---------------"
-if g:sp_mouse == true
-	set mouse=a
-endif
+set mouse=a
 if g:sp_swap == false 
 	set noswapfile
 endif
@@ -183,19 +182,21 @@ g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
 
-auto BufEnter * call LoadBuf()
-def LoadBuf()
-	var l = line('.')
-	silent! loadview
-	cursor(l, 1)
-enddef
+if g:sp_fold == true
+	auto BufEnter * call LoadBuf()
+	def LoadBuf()
+		var l = line('.')
+		silent! loadview
+		cursor(l, 1)
+	enddef
 
-auto BufWritePost * call Save_post()
-def Save_post()
-	silent! NERDTreeRefreshRoot
-	silent! NERDTreeRefreshRoot
-	mkview
-enddef
+	auto BufWritePost * call Save_post()
+	def Save_post()
+		silent! NERDTreeRefreshRoot
+		silent! NERDTreeRefreshRoot
+		mkview
+	enddef
+endif
 
 
 # Compilation and SupraMake
@@ -206,6 +207,7 @@ def g:Make(rules: string)
 	w!
 	setenv('rulesmake', rules)
 	! supramake --clean $rulesmake
+	redraw!
 enddef
 
 def g:Compile()
@@ -407,8 +409,8 @@ def g:SettingsSupravim()
 	system("supravim-gui&")
 enddef
 
-nnoremap <RightMouse> <esc><LeftMouse><RightMouse>
-inoremap <RightMouse> <esc><LeftMouse><RightMouse>
+nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
+inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
@@ -419,7 +421,9 @@ def Init_menu()
 	vmenu PopUp.Copy			y:call Copy()<cr><esc>
 	vmenu PopUp.Cut				ygvd:call Copy()<cr><esc>
 	vmenu PopUp.Past			:call Paste()<cr><esc>
-	vmenu PopUp.Fold			zf 
+	if g:sp_fold
+		vmenu PopUp.Fold			zf 
+	endif
 	vmenu PopUp.Equalize		=
 	vmenu PopUp.-sep4- <Nop>
 
@@ -433,26 +437,30 @@ def Init_menu()
 	nmenu PopUp.-sep2- <Nop>
 	nmenu PopUp.Debug			:call Gdbf()<cr>
 	nmenu PopUp.RenameSymbol	:LspRename<cr> 
-	nmenu PopUp.-sep3- <Nop>
-	nmenu PopUp.Fold			:call g:Fold()<CR>
-	nmenu PopUp.UnFold			zo
-	nmenu PopUp.Fold-All		:call g:FoldAll()<CR>
-	nmenu PopUp.UnFold-All		zr
+	if g:sp_fold
+		nmenu PopUp.-sep3- <Nop>
+		nmenu PopUp.Fold			:call g:Fold()<CR>
+		nmenu PopUp.UnFold			zo
+		nmenu PopUp.Fold-All		:call g:FoldAll()<CR>
+		nmenu PopUp.UnFold-All		zR
+	endif
 	nmenu PopUp.-sep4- <Nop>
 	nmenu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
 enddef
 
-def g:Fold()
-	set foldmethod=syntax
-	execute "normal! zc"
-	set foldmethod=manual
-enddef
+if g:sp_fold == true
+	def g:Fold()
+		set foldmethod=syntax
+		execute "normal! zc"
+		set foldmethod=manual
+	enddef
 
-def g:FoldAll()
-	set foldmethod=syntax
-	execute "normal! zM"
-	set foldmethod=manual
-enddef
+	def g:FoldAll()
+		set foldmethod=syntax
+		execute "normal! zM"
+		set foldmethod=manual
+	enddef
+endif 
 
 autocmd VimEnter * call Welcome()
 
@@ -461,5 +469,7 @@ def Welcome()
 	var timer = timer_start(100, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
 	})
-	set foldmethod=manual
+	if g:sp_fold
+		set foldmethod=manual
+	endif
 enddef
