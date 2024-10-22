@@ -320,12 +320,13 @@ def CreatePopit()
 enddef
 
 def RemovePopit()
-	var s = system("rm -f /tmp/xdfe-" .. g:file_tmp)
+	call delete('/tmp/xdfe-' .. g:file_tmp)
 enddef
 
 def CreatePop()
-    var s = system("cat /tmp/xdfe-" .. g:file_tmp .. " ; rm /tmp/xdfe-" .. g:file_tmp)
-	redraw!
+	var lst_s = readfile('/tmp/xdfe-' .. g:file_tmp)
+	call delete('/tmp/xdfe-' .. g:file_tmp)
+	var s = join(lst_s, "\n")
     if s == ""
         return
     endif
