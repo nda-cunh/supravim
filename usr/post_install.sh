@@ -14,10 +14,10 @@ print_ascii() {
 create_folder_undo () {
 	DIR="$HOME/.cache/vim/"
 
-	mkdir -p "$DIR/undo" 2 > /dev/null | true
-	chmod 755 -R "$DIR" 2 > /dev/null | true
-	mkdir -p "$DIR/undo" 2 > /dev/null | true
-	chmod 755 -R "$DIR" 2 > /dev/null | true
+	mkdir -p "$DIR/undo" 2> /dev/null | true
+	chmod 755 -R "$DIR" 2> /dev/null | true
+	mkdir -p "$DIR/undo" 2> /dev/null | true
+	chmod 755 -R "$DIR" 2> /dev/null | true
 }
 
 main() {
