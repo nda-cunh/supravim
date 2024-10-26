@@ -2,20 +2,24 @@
 
 # [The SupraWiki (help and documentation) Click here](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
 
+
+# How Install 
 ### Dependencies
+
 | Vim 9 | C or Vala compiler |
 |-------| ------------------ |
 
-## Install with Curl
+## with curl
 ```bash
 curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | sh
 ```
 
-## Install with suprapack
+## with suprapack
 ```bash
 suprapack install supravim
 ```
 
+# Update & Uninstall
 
 #### Update:
 ```bash
@@ -27,6 +31,45 @@ supravim --update
 ```bash
 supravim --uninstall
 ```
+
+# SupraProject
+
+## Suprapack
+
+Suprapack est le gestionnaire de paquets de Supravim. Il permet d'installer, de désinstaller et de gérer des plugins, des binaires et des librairies. Avec Suprapack, tu peux exécuter des commandes telles que :
+
+-  `suprapack install` pour installer un plugin.
+-  `suprapack remove`  pour désinstaller un plugin.
+-  `suprapack list`    pour afficher la liste des packages installés.
+-  `suprapack update`  pour mettre à jour les plugins.
+
+## Suprabear
+Suprabear est un programme qui génère un fichier compile_commands.json. Il permet donc de parser le Makefile du projet pour generer le compile_commands.json. ce fichier est utilisé par la majorité des IDE dont VScode, Vim et la Jetbrain suite
+avec ce json l'ide peut comprendre comment votre projet fonctionne et apporte une meilleur aide.
+
+## Suprabrain
+    
+## Supramake
+supramake est une commande qui fonctionne de manière similaire à make, mais elle est spécifiquement conçue pour rechercher le Makefile associé au projet. Cela permet de compiler et d'exécuter des programmes de manière efficace
+
+Compatibility:
+  - Makefile
+  - Meson build
+  - Vala
+  - C and C++
+  - Python
+  - Shell
+  - Rust
+  - Assembly
+
+supramake ajoute les arguments dans $(ARGS)
+pour l'appeler il suffit d'ajouter `--`
+ex: `supramake all -- 5 4 3 2 1`
+```makefile
+all:
+    echo $(ARGS)
+```
+
 
 # note
 
