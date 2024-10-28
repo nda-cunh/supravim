@@ -1,11 +1,11 @@
 name: supravim
-version: 5.31
+version: 5.32
 author: nda-cunh
 binary: vim
 description: un supraediteur sur vim (linux version)
 dependency: supramake ccls ubuntu-nerdfont-ttf plugin-norminette plugin-autobear plugin-lsp-client supravim-gui
-arch: amd64-Linux
+arch: any
 exclude_package: 
 optional_dependency: 
 size_tar: 
-size_installed: 1915635
+size_installed: 1915627
