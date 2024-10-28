@@ -146,7 +146,13 @@ endif
 set cursorline
 set nu
 set incsearch
-set autochdir
+set noautochdir
+silent! var project_root = system('suprabear -p')
+if v:shell_error == 0
+	silent! exec 'chdir ' .. project_root
+else
+	set autochdir
+endif
 set title
 set wildmenu
 set tabstop=4
