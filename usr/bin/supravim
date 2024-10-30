@@ -76,10 +76,6 @@ def load_options_from_file(file_name: str):
     try:
         with open(file_name, 'r') as file:
             content = file.read()
-            config = re.findall(r'[#=]+ YOUR CONFIG [#=]+.+?[#=]+',
-                                content, re.DOTALL)
-            if config:
-                content = content.replace(config[0], '')
             matches = re.findall(r'^g:sp_[a-zA-Z_]+ = (?:[a-zA-Z0-9\']+).+$',
                                  content, re.RegexFlag.MULTILINE)
             for match in matches:
@@ -142,6 +138,7 @@ def apply_cfg():
     if not os.access(cfg_fpath, os.F_OK):
         print_error('Config file not generated')
     else:
+        # Add personnal config
         vimrc_f = open(home + '/.vimrc', 'a+')
         vimrc_f.write(f"{YOUR_CONF_BEG}\n")
         with open(cfg_fpath, 'r') as cfg:
@@ -151,9 +148,18 @@ def apply_cfg():
                 if not line.strip():
                     is_personnal_config = True
                     continue
-                elif is_personnal_config:
-                    vimrc_f.write(line)
+                elif not is_personnal_config:
                     continue
+                vimrc_f.write(line)
+        vimrc_f.write(f"{YOUR_CONF_END}\n")
+        vimrc_f.close()
+
+        # Apply the config for each option
+        with open(cfg_fpath, 'r') as cfg:
+            for line in cfg.readlines():
+                # Your config beggining
+                if not line.strip():
+                    break
 
                 option, file, value = line[:-1].split(':')
 
@@ -165,8 +171,6 @@ def apply_cfg():
                 replacement = to_replace.split('=')[0] + '= ' + value
 
                 replace_in_file(file, to_replace, replacement)
-        vimrc_f.write(f"{YOUR_CONF_END}\n")
-        vimrc_f.close()
         os.unlink(cfg_fpath)
 
 
