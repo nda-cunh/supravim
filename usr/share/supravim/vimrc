@@ -426,10 +426,23 @@ vnoremap <A-Up> :<c-u>call MoveLineUp("v")<CR>
 nnoremap <A-Down> :<c-u>call MoveLineDown("n")<CR>
 nnoremap <A-Up> :<c-u>call MoveLineUp("n")<CR>
 
+# Fuzzy Finder 
+nnoremap <silent> <space>g :FuzzyGrep<CR>
+nnoremap <silent> <space>f :FuzzyFiles<CR>
+nnoremap <silent> <space>s :FuzzyInBuffer<CR>
+nnoremap <silent> <space>c :FuzzyCommands<CR>
+nnoremap <silent> <space>b :FuzzyBuffers<CR>
+nnoremap <silent> <space>h :FuzzyHighlights<CR>
+nnoremap <silent> <space>m :FuzzyMRUFiles<CR>
 # Search Ctrl + F
-map <c-f> \fl
-imap <c-f> \fl
+nnoremap <silent> <space><space> :FuzzyBuffers<CR>
+nnoremap <silent><c-f> <esc>:FuzzyGrep<CR>
+inoremap <silent><c-f> <esc>:FuzzyGrep<CR>
+g:files_respect_gitignore = 1
+g:fuzzyy_files_ignore_file = ['compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp']
+g:fuzzyy_files_ignore_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
+# SupraVim Settings Sync
 inoremap <F12>	<esc>:call SettingsSupravim()<cr>
 noremap <F12>	<esc>:call SettingsSupravim()<cr>
 

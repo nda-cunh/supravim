@@ -1,5 +1,5 @@
 name: supravim
-version: 5.34
+version: 5.40
 author: nda-cunh
 binary: vim
 description: un supraediteur sur vim (linux version)
@@ -8,4 +8,4 @@ arch: any
 exclude_package: 
 optional_dependency: 
 size_tar: 
-size_installed: 1916111
+size_installed: 1969594
