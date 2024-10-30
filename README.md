@@ -1,6 +1,6 @@
-# SupraVim 5.32
+# SupraVim 5.41
 
-# [The SupraWiki (help and documentation) Click here](https://gitlab.com/hydrasho/SupraVim/-/wikis/home)
+# [The SupraWiki (help and documentation) Click here](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home)
 
 
 # How Install 
@@ -47,8 +47,6 @@ Suprapack est le gestionnaire de paquets de Supravim. Il permet d'installer, de 
 Suprabear est un programme qui génère un fichier compile_commands.json. Il permet donc de parser le Makefile du projet pour generer le compile_commands.json. ce fichier est utilisé par la majorité des IDE dont VScode, Vim et la Jetbrain suite
 avec ce json l'ide peut comprendre comment votre projet fonctionne et apporte une meilleur aide.
 
-## Suprabrain
-    
 ## Supramake
 supramake est une commande qui fonctionne de manière similaire à make, mais elle est spécifiquement conçue pour rechercher le Makefile associé au projet. Cela permet de compiler et d'exécuter des programmes de manière efficace
 
