@@ -188,6 +188,24 @@ g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
 
+def GotOutput(channel: channel, msg: string)
+	# change_theme: [onehalf] <dark>
+	if matchstr(msg, '^change_theme: ') != ''
+		var theme = matchstr(msg, '\[\zs.*\ze\]')
+		var typemode = matchstr(msg, '<\zs.*\ze>')
+
+		exec 'colorscheme ' .. theme
+		exec 'set background=' .. typemode
+		AirlineRefresh
+	endif
+enddef
+
+def g:SettingsSupravim()
+	job_start(["supravim-gui"], {
+		out_cb: GotOutput,
+	})
+enddef
+
 if g:sp_fold == true
 	auto BufEnter * call LoadBuf()
 	def LoadBuf()
@@ -412,9 +430,6 @@ imap <c-f> \fl
 
 inoremap <F12>	<esc>:call SettingsSupravim()<cr>
 noremap <F12>	<esc>:call SettingsSupravim()<cr>
-def g:SettingsSupravim()
-	system("supravim-gui&")
-enddef
 
 nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
