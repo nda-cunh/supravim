@@ -3,9 +3,9 @@ version: 5.41
 arch: any
 author: nda-cunh
 description: un supraediteur sur vim (linux version)
-dependency: supramake
+dependency: supramake suprabear
 optional_dependency: ccls ubuntu-nerdfont-ttf plugin-autobear plugin-lsp-client supravim-gui plugin-norminette
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 1969650
+size_installed: 1969661
