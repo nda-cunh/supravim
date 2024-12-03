@@ -8,6 +8,7 @@ var cwd: string
 var menu_wid: number
 var prompt_str: string
 var matched_hl_offset = 0
+var menu_hl_list: list<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
@@ -42,23 +43,35 @@ var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 # - opts: dict of options
 #       - add devicons: add devicons to every entry
 export def UpdateMenu(str_list: list<string>, hl_list: list<list<any>>, ...opts: list<any>)
+    var new_list = copy(str_list)
     if enable_devicons
         if len(opts) > 0 && opts[0] == 1
-            devicons.AddDevicons(str_list)
+            devicons.AddDevicons(new_list)
         endif
-        popup.MenuSetText(str_list)
+        popup.MenuSetText(new_list)
         popup.MenuSetHl('select', hl_list)
         devicons.AddColor(menu_wid)
     else
-        popup.MenuSetText(str_list)
+        popup.MenuSetText(new_list)
         popup.MenuSetHl('select', hl_list)
     endif
 enddef
 
-export def MenuGetCursorItem(): string
+# This function is used to get the line under the cursor in the menu window.
+# params:
+# - stripped: get the line after striping the devicon or any other prefix
+# return:
+# - the line under the cursor
+export def MenuGetCursorItem(stripped: bool): string
     var bufnr = winbufnr(windows.menu)
     var cursorlinepos = line('.', windows.menu)
-    return getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+    if stripped
+        if enable_devicons
+            bufline = strcharpart(bufline, devicon_char_width + 1)
+        endif
+    endif
+    return bufline
 enddef
 
 export def Split(str: string): list<string>
@@ -256,27 +269,33 @@ export def Exit()
     popup_close(menu_wid)
 enddef
 
+export def UpdateFzfList(li: list<string>)
+    fzf_list = li
+enddef
+
 def Input(wid: number, args: dict<any>, ...li: list<any>)
-    var val = args.str
-    prompt_str = val
-    var hl_list = []
-    menu_wid = args.win_opts.partids.menu
+    prompt_str = args.str
+    menu_hl_list = []
     var ret: list<string>
-    [ret, hl_list] = FuzzySearch(fzf_list, val)
+    [ret, menu_hl_list] = FuzzySearch(fzf_list, prompt_str)
 
     if enable_devicons
          map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
-         hl_list = reduce(hl_list, (a, v) => {
+         menu_hl_list = reduce(menu_hl_list, (a, v) => {
             v[1] += matched_hl_offset
             return add(a, v)
          }, [])
     endif
 
     popup.MenuSetText(ret)
-    popup.MenuSetHl('select', hl_list)
+    popup.MenuSetHl('select', menu_hl_list)
     if enable_devicons
         devicons.AddColor(menu_wid)
     endif
+enddef
+
+export def RefreshMenu()
+    Input(menu_wid, {'str': prompt_str})
 enddef
 
 def Cleanup()
@@ -373,6 +392,9 @@ export var split_edit_callbacks = {
 #        preview: preview_wid,
 #    }
 export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
+    if popup.active
+        return { 'menu': -1, 'prompt': -1, 'preview': -1 }
+    endif
     cwd = getcwd()
     prompt_str = ''
 
