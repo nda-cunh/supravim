@@ -46,7 +46,7 @@ def Select(wid: number, result: list<any>)
     if enable_devicons
         path = strcharpart(path, devicon_char_width + 1)
     endif
-    execute('edit ' .. path)
+    exe 'edit ' .. path
 enddef
 
 def AsyncCb(result: list<any>)
@@ -208,6 +208,10 @@ export def Start(windows: dict<any>, ...args: list<any>)
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,
     })
+    menu_wid = wids.menu
+    if menu_wid == -1
+        return
+    endif
     var cmd: string
     if len(args) > 0 && type(args[0]) == 1
         cmd = args[0]
@@ -215,7 +219,6 @@ export def Start(windows: dict<any>, ...args: list<any>)
         cmd = cmdstr
     endif
     FilesJobStart(cwd, cmd)
-    menu_wid = wids.menu
     timer_start(50, function('FilesUpdateMenu'))
     files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
     # Profiling()
