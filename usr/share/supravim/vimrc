@@ -85,7 +85,7 @@ nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 nnoremap <c-@>		:LspHover<cr>
-
+inoremap <c-a>		<esc>gg<s-v>G
 
 #---------------      Copy - Paste      ---------------"
 if expand("$XDG_SESSION_TYPE") == "wayland"
@@ -458,12 +458,14 @@ def Init_menu()
 	vmenu PopUp.Copy			y:call Copy()<cr><esc>
 	vmenu PopUp.Cut				ygvd:call Copy()<cr><esc>
 	vmenu PopUp.Past			:call Paste()<cr><esc>
+	vmenu PopUp.SelectAll		<esc>gg<s-v>G
 	if g:sp_fold
 		vmenu PopUp.Fold			zf 
 	endif
 	vmenu PopUp.Equalize		=
 	vmenu PopUp.-sep4- <Nop>
 
+	nmenu PopUp.SelectAll		<esc>gg<s-v>G
 	nmenu PopUp.Save-All		:wall<CR>
 	nmenu PopUp.AutoNorm		<F2>
 	nmenu PopUp.SwitchNorm		<F3>
