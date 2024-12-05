@@ -1,4 +1,4 @@
-# SupraVim 5.43
+# SupraVim 5.44
 
 # [The SupraWiki (help and documentation) Click here](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home)
 
