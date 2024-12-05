@@ -48,28 +48,28 @@ inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
 
 #--------------- Onglets ---------------------"
 nnoremap <c-n>			<esc>:tabnew 
-nnoremap <C-Right>		:tabnext<CR>
-nnoremap <C-Left>		:tabprevious<CR>
-inoremap <C-Right>		<esc>:tabnext<CR>
-inoremap <C-Left>		<esc>:tabprevious<CR>
+nnoremap <C-Right>		<scriptcmd>tabnext<CR>
+nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
+inoremap <C-Right>		<scriptcmd>tabnext<CR>
+inoremap <C-Left>		<scriptcmd>tabprevious<CR>
 
 #--------------- Racourcis --------------"
-nmap		<c-f>		fl
-nnoremap <C-Up>		<Esc>:call Ctags()<CR>
+nmap	<c-f>		fl
+nnoremap <C-Up>		<ScriptCmd>call Ctags()<CR>
 nnoremap <C-Down>	<Esc><C-T>
 inoremap <C-Up>		<Esc>:call Ctags()<CR>i
 inoremap <C-Down>	<Esc><C-T>i
-inoremap <c-q>		<esc>:q!<CR>
-noremap <c-q>		<esc>:q!<CR>
-inoremap <c-s>		<esc>:w!<CR>
-noremap <c-s>		<esc>:w!<CR>
-nnoremap <C-F5> 		:Termdebug -n <CR>
-nnoremap <F5> 		:call Make("run")<CR>
-inoremap <F5>		<Esc>:call Make("run")<CR>
-nnoremap <F6>		:call Make("run2")<CR>
-inoremap <F6>		<Esc>:call Make("run2")<CR>
-nnoremap <F7> 		:call Make("run3")<CR>
-inoremap <F7>		<Esc>:call Make("run3")<CR>
+inoremap <c-q>		<cmd>q!<CR>
+noremap <c-q>		<cmd>q!<CR>
+inoremap <c-s>		<cmd>w!<CR>
+noremap <c-s>		<cmd>w!<CR>
+nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
+nnoremap <F5> 		<ScriptCmd>call Make("run")<CR>
+inoremap <F5>		<ScriptCmd>call Make("run")<CR>
+nnoremap <F6>		<ScriptCmd>call Make("run2")<CR>
+inoremap <F6>		<ScriptCmd>call Make("run2")<CR>
+nnoremap <F7> 		<ScriptCmd>call Make("run3")<CR>
+inoremap <F7>		<ScriptCmd>call Make("run3")<CR>
 nnoremap <C-d>		:vs 
 nnoremap <S-d>		:split 
 nnoremap <S-Right>	<C-w><Right>
@@ -77,14 +77,14 @@ nnoremap <S-Left>	<C-w><Left>
 nnoremap <S-Up>		<C-w><Up>
 nnoremap <S-Down>	<C-w><Down>
 inoremap <TAB>		<TAB>
-inoremap <C-g>		<esc>:NERDTreeTabsToggle<CR>
-nnoremap <C-g>		:NERDTreeTabsToggle<CR>
+inoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
+nnoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
 nnoremap <S-t>		<Esc>:term ++rows=15<CR>
 nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
-nnoremap <c-@>		:LspHover<cr>
+nnoremap <c-@>		<cmd>LspHover<cr>
 inoremap <c-a>		<esc>gg<s-v>G
 
 #---------------      Copy - Paste      ---------------"
@@ -268,7 +268,6 @@ enddef
 command -nargs=0 -bar Ctags :call Ctags()
 
 set tags=$HOME/.cache/tags
-nnoremap <C-LeftMouse> :call Ctags()<CR>
 
 g:notags = false
 def g:Ctags()
@@ -421,33 +420,36 @@ def g:MoveLineUp(mode: string)
 	normal! gv
 enddef
 
-vnoremap <A-Down> :<c-u>call MoveLineDown("v")<CR>
-vnoremap <A-Up> :<c-u>call MoveLineUp("v")<CR>
-nnoremap <A-Down> :<c-u>call MoveLineDown("n")<CR>
-nnoremap <A-Up> :<c-u>call MoveLineUp("n")<CR>
+vnoremap <silent> <A-Down>	:<c-u>call MoveLineDown("v")<CR>
+vnoremap <silent> <A-Up>	:<c-u>call MoveLineUp("v")<CR>
+nnoremap <silent> <A-Down>	:<c-u>call MoveLineDown("n")<CR>
+nnoremap <silent> <A-Up>	:<c-u>call MoveLineUp("n")<CR>
 
-# Fuzzy Finder 
-nnoremap <silent> <space>g :FuzzyGrep<CR>
-nnoremap <silent> <space>f :FuzzyFiles<CR>
-nnoremap <silent> <space>s :FuzzyInBuffer<CR>
-nnoremap <silent> <space>c :FuzzyCommands<CR>
-nnoremap <silent> <space>b :FuzzyBuffers<CR>
-nnoremap <silent> <space>h :FuzzyHighlights<CR>
-nnoremap <silent> <space>m :FuzzyMRUFiles<CR>
+
+# Fuzzy Finder
+nnoremap <silent> <space>g <scriptcmd>FuzzyGrep<CR>
+nnoremap <silent> <space>f <scriptcmd>FuzzyFiles<CR>
+nnoremap <silent> <space>s <scriptcmd>FuzzyInBuffer<CR>
+nnoremap <silent> <space>c <scriptcmd>FuzzyCommands<CR>
+nnoremap <silent> <space>b <scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent> <space>h <scriptcmd>FuzzyHighlights<CR>
+nnoremap <silent> <space>m <scriptcmd>FuzzyMRUFiles<CR>
 # Search Ctrl + F
-nnoremap <silent> <space><space> :FuzzyBuffers<CR>
-nnoremap <silent><c-f> <esc>:FuzzyGrep<CR>
-inoremap <silent><c-f> <esc>:FuzzyGrep<CR>
+nnoremap <silent> <space><space> <scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent><c-f> <scriptcmd>FuzzyGrep<CR>
+
 g:files_respect_gitignore = 1
 g:fuzzyy_files_ignore_file = ['compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp']
 g:fuzzyy_files_ignore_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 
 # SupraVim Settings Sync
-inoremap <F12>	<esc>:call SettingsSupravim()<cr>
-noremap <F12>	<esc>:call SettingsSupravim()<cr>
+inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
+noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
+
 
 nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
+nnoremap <c-leftmouse>	<leftmouse><cmd>call Ctags()<cr>
 set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
