@@ -425,7 +425,6 @@ vnoremap <silent> <A-Up>	:<c-u>call MoveLineUp("v")<CR>
 nnoremap <silent> <A-Down>	:<c-u>call MoveLineDown("n")<CR>
 nnoremap <silent> <A-Up>	:<c-u>call MoveLineUp("n")<CR>
 
-
 # Fuzzy Finder
 nnoremap <silent> <space>g <scriptcmd>FuzzyGrep<CR>
 nnoremap <silent> <space>f <scriptcmd>FuzzyFiles<CR>
@@ -446,10 +445,12 @@ g:fuzzyy_files_ignore_dir = ['.git', '.hg', '.svn', '.rebar', '.eunit']
 inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 
-
 nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 nnoremap <c-leftmouse>	<leftmouse><cmd>call Ctags()<cr>
+
+# Popup Menu --------------------------------------
+
 set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
@@ -467,17 +468,20 @@ def Init_menu()
 	vmenu PopUp.Equalize		=
 	vmenu PopUp.-sep4- <Nop>
 
-	nmenu PopUp.SelectAll		<esc>gg<s-v>G
+	nmenu PopUp.Show-References	<esc>:LspReferences<cr>
+	nmenu PopUp.-sep5- <Nop>
 	nmenu PopUp.Save-All		:wall<CR>
-	nmenu PopUp.AutoNorm		<F2>
-	nmenu PopUp.SwitchNorm		<F3>
+	nmenu PopUp.Auto-Norm		<F2>
+	nmenu PopUp.Switch-Norm		<F3>
 	nmenu PopUp.-sep0- <Nop>
+	nmenu PopUp.Select-All		<esc>gg<s-v>G
 	nmenu PopUp.Past			:call Paste()<cr><esc>
 	nmenu PopUp.Undo			u
 	nmenu PopUp.Redo			<C-r>
 	nmenu PopUp.-sep2- <Nop>
 	nmenu PopUp.Debug			:call Gdbf()<cr>
-	nmenu PopUp.RenameSymbol	:LspRename<cr> 
+	nmenu PopUp.Rename-Symbol	:LspRename<cr>
+
 	if g:sp_fold
 		nmenu PopUp.-sep3- <Nop>
 		nmenu PopUp.Fold			:call g:Fold()<CR>
@@ -488,6 +492,8 @@ def Init_menu()
 	nmenu PopUp.-sep4- <Nop>
 	nmenu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
 enddef
+
+# Fold support --------------------------------------
 
 if g:sp_fold == true
 	def g:Fold()
@@ -505,6 +511,17 @@ endif
 
 autocmd VimEnter * call Welcome()
 
+# SetArgv --------------------------------------
+command -nargs=* SetArgv :call SetArgv(<f-args>)
+command -nargs=* SetArgs :call SetArgv(<f-args>)
+
+def SetArgv(...args: list<string>)
+	var str = join(args, ' ')
+	$ARGS = str
+enddef
+
+
+# Welcome --------------------------------------
 def Welcome()
 	redraw!
 	var timer = timer_start(100, (_) => {
