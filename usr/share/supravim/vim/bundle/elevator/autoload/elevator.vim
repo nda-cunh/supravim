@@ -1,5 +1,7 @@
 vim9script noclear
 
+autocmd WinLeave * call S__close()
+ 
 # defaults:
 if !exists('g:elevator#timeout_msec')
   g:elevator#timeout_msec = 2000
