@@ -454,10 +454,6 @@ nnoremap <c-leftmouse>	<leftmouse><cmd>call Ctags()<cr>
 set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
-	unmenu *
-	unmenu! *
-	aunmenu *
-
 	vmenu PopUp.Copy			y:call Copy()<cr><esc>
 	vmenu PopUp.Cut				ygvd:call Copy()<cr><esc>
 	vmenu PopUp.Past			:call Paste()<cr><esc>
