@@ -461,36 +461,36 @@ def Init_menu()
 	vmenu PopUp.Copy			y:call Copy()<cr><esc>
 	vmenu PopUp.Cut				ygvd:call Copy()<cr><esc>
 	vmenu PopUp.Past			:call Paste()<cr><esc>
-	vmenu PopUp.SelectAll		<esc>gg<s-v>G
+	vmenu PopUp.Select\ All		<esc>gg<s-v>G
 	if g:sp_fold
-		vmenu PopUp.Fold			zf 
+		vmenu PopUp.Fold			zf
 	endif
 	vmenu PopUp.Equalize		=
 	vmenu PopUp.-sep4- <Nop>
 
-	nmenu PopUp.Show-References	<esc>:LspReferences<cr>
+	nmenu PopUp.Show\ References	<esc>:LspReferences<cr>
 	nmenu PopUp.-sep5- <Nop>
-	nmenu PopUp.Save-All		:wall<CR>
-	nmenu PopUp.Auto-Norm		<F2>
-	nmenu PopUp.Switch-Norm		<F3>
+	nmenu PopUp.Save\ All		:wall<CR>
+	nmenu PopUp.Auto\ Norm		<F2>
+	nmenu PopUp.Switch\ Norm		<F3>
 	nmenu PopUp.-sep0- <Nop>
-	nmenu PopUp.Select-All		<esc>gg<s-v>G
+	nmenu PopUp.Select\ All		<esc>gg<s-v>G
 	nmenu PopUp.Past			:call Paste()<cr><esc>
 	nmenu PopUp.Undo			u
 	nmenu PopUp.Redo			<C-r>
 	nmenu PopUp.-sep2- <Nop>
 	nmenu PopUp.Debug			:call Gdbf()<cr>
-	nmenu PopUp.Rename-Symbol	:LspRename<cr>
+	nmenu PopUp.Rename\ Symbol	:LspRename<cr>
 
 	if g:sp_fold
 		nmenu PopUp.-sep3- <Nop>
 		nmenu PopUp.Fold			:call g:Fold()<CR>
 		nmenu PopUp.UnFold			zo
-		nmenu PopUp.Fold-All		:call g:FoldAll()<CR>
-		nmenu PopUp.UnFold-All		zR
+		nmenu PopUp.Fold\ All		:call g:FoldAll()<CR>
+		nmenu PopUp.UnFold\ All		zR
 	endif
 	nmenu PopUp.-sep4- <Nop>
-	nmenu PopUp.SupraVim-Settings :call SettingsSupravim()<CR>
+	nmenu PopUp.SupraVim\ Settings :call SettingsSupravim()<CR>
 enddef
 
 # Fold support --------------------------------------
