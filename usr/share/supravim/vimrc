@@ -227,7 +227,14 @@ endif
 
 # Compilation and SupraMake
 
-command -nargs=+ -bar Make :call Make( '<args>' )
+command -nargs=+ -complete=customlist,AutoComplete_gMake -bar Make :call Make( '<args>' )
+
+def AutoComplete_gMake(lead: string, cmdline: string, cursorpos: number): list<string>
+	var content = system("grep -o '^[^%$=]*:' $(suprabear -p)/Makefile | sed 's/\s*://'")
+	var res2 = split(content, '\n')
+	return res2
+enddef
+
 
 def g:Make(rules: string)
 	w!
@@ -508,8 +515,9 @@ endif
 autocmd VimEnter * call Welcome()
 
 # SetArgv --------------------------------------
-command -nargs=* SetArgv :call SetArgv(<f-args>)
-command -nargs=* SetArgs :call SetArgv(<f-args>)
+command -nargs=* -complete=file SetArgv :call SetArgv(<f-args>)
+command -nargs=* -complete=file SetArgs :call SetArgv(<f-args>)
+
 
 def SetArgv(...args: list<string>)
 	var str = join(args, ' ')
