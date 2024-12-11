@@ -14,10 +14,16 @@
 curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | sh
 ```
 
+
 ## with suprapack
+
+### 🐧 Linux:
 ```bash
 suprapack install supravim
 ```
+### 🍎 MacOs
+For MacOs support please read this: https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os
+
 
 # Update & Uninstall
 
