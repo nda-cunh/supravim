@@ -61,8 +61,8 @@ inoremap <C-Up>		<Esc>:call Ctags()<CR>i
 inoremap <C-Down>	<Esc><C-T>i
 inoremap <c-q>		<cmd>q!<CR>
 noremap <c-q>		<cmd>q!<CR>
-inoremap <c-s>		<cmd>w!<CR>
-noremap <c-s>		<cmd>w!<CR>
+inoremap <c-s>		<cmd>w!<CR><esc>
+noremap <c-s>		<cmd>w!<CR><esc>
 nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
 nnoremap <F5> 		<ScriptCmd>call Make("run")<CR>
 inoremap <F5>		<ScriptCmd>call Make("run")<CR>
