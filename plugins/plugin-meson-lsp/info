@@ -1,0 +1,11 @@
+name: plugin-meson-lsp
+version: 3.1.3
+author: nda-cunh
+binary: plugin-meson-lsp
+description: meson.build support
+dependency: meson-lsp supravim
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 475

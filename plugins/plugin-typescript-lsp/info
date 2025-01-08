@@ -1,0 +1,11 @@
+name: plugin-typescript-lsp
+version: 4.3.2
+author: nda-cunh
+binary: plugin-typescript-lsp
+description: typescript support
+dependency: supravim
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 529

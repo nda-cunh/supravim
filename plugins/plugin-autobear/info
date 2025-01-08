@@ -1,0 +1,11 @@
+name: plugin-autobear
+version: 1.2
+author: nda-cunh
+binary: suprabear
+description: auto generate a compile_commands.json for your project
+dependency: suprabear
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 526

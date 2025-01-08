@@ -1,0 +1,11 @@
+name: plugin-syntastic
+version: 3.10.1
+author: vim-syntastic
+binary: plugin-syntastic
+description: OLD supravim plugin for help (C,C++,Ts,Js,Java,Vala...)
+dependency: plugin-lsp-client
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 637436

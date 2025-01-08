@@ -1,0 +1,11 @@
+name: plugin-asm-lsp
+version: 0.6.0
+author: nda-cunh
+binary: plugin-asm-lsp
+description: NASM/GAS/GO (ASM) support
+dependency: asm-lsp supravim
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 462
