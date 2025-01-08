@@ -1,4 +1,4 @@
-# SupraVim 5.45
+# SupraVim 5.49
 
 # [The SupraWiki (help and documentation) Click here](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home)
 
@@ -6,8 +6,7 @@
 # How Install 
 ### Dependencies
 
-| Vim 9 | C or Vala compiler |
-|-------| ------------------ |
+vim9, valac, glib-networking, fakeroot
 
 ## with curl
 ```bash
