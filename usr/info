@@ -1,5 +1,5 @@
 name: supravim
-version: 5.47
+version: 5.49
 arch: any
 author: nda-cunh
 description: un supraediteur sur vim (linux version)
@@ -8,4 +8,4 @@ optional_dependency: ccls ubuntu-nerdfont-ttf plugin-autobear plugin-lsp-client 
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 1979875
+size_installed: 1982059
