@@ -1,0 +1,11 @@
+name: plugin-nasm-linter
+version: 1.0
+author: nda-cunh
+binary: plugin-nasm-linter
+description: supravim plugin for nasm linter
+dependency: supravim
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 1884

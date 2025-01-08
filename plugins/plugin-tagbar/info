@@ -1,0 +1,11 @@
+name: plugin-tagbar
+version: 5.5
+author: caleb maclennan
+binary: plugin-tagbar
+description: a class outline viewer for vim, press <F8> to show the window
+dependency: exuberant-ctags supravim
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 383939
