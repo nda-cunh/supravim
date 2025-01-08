@@ -1,0 +1,11 @@
+name: plugin-norminette
+version: 1.2
+author: nda-cunh
+binary: plugin-norminette
+description: press <F3> to disable/enable plugin for norminette support
+dependency: 
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 2193

@@ -1,0 +1,11 @@
+name: plugin-blueprint
+version: 1.1
+author: nda-cunh
+binary: plugin-blueprint
+description: supravim plugin for blueprint support
+dependency: supravim
+arch: any
+exclude_package: 
+optional_dependency: 
+size_tar: 
+size_installed: 3920
