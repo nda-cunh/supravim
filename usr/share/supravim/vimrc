@@ -396,7 +396,7 @@ def g:MoveLineDown(mode: string)
 		var tmp = getline(line('.') + 1)
 		setline(line('.') + 1, getline(line('.')))
 		setline(line('.'), tmp)
-		normal j
+		normal j==
 		return
 	elseif line("'<") != begin 
 		return
@@ -413,7 +413,7 @@ def g:MoveLineDown(mode: string)
 	setline(begin, tmp)
 	setpos("'<", [0, begin + 1, 0, 0])
 	setpos("'>", [0, begin + len, 0, 0])
-	normal! gv
+	normal! gv=gv
 enddef
 
 def g:MoveLineUp(mode: string)
@@ -427,7 +427,7 @@ def g:MoveLineUp(mode: string)
 		var tmp = getline(line('.') - 1)
 		setline(line('.') - 1, getline(line('.')))
 		setline(line('.'), tmp)
-		normal k
+		normal k==
 		return
 	endif
 	
@@ -445,7 +445,7 @@ def g:MoveLineUp(mode: string)
 	
 	setpos("'<", [0, begin - 1, 0, 0])
 	setpos("'>", [0, begin + len - 2, 0, 0])
-	normal! gv
+	normal! gv=gv
 enddef
 
 vnoremap <silent> <A-Down>	:<c-u>call MoveLineDown("v")<CR>
