@@ -1,7 +1,5 @@
 vim9script noclear
 
-autocmd WinLeave * call S__close()
- 
 # defaults:
 if !exists('g:elevator#timeout_msec')
   g:elevator#timeout_msec = 2000
@@ -9,8 +7,12 @@ endif
 if !exists('g:elevator#width')
   g:elevator#width = 1
 endif
+if !exists('g:elevator#highlight')
+  g:elevator#highlight = 'Pmenu'
+endif
 
 var s_state = {
+  enabled: true,
   scrolloff: -1,
   screenrow: -1,
   topline: -1,
@@ -35,7 +37,23 @@ def S__calculate_scale(winid__a: number): float
   return 1.0 * winheight / (line('$', winid__a) + winheight)
 enddef
 
+export def Toggle()
+  s_state.enabled = !s_state.enabled
+
+  if !s_state.enabled
+    S__close()
+  else
+    Show(win_getid())
+  endif
+
+  echo 'Elevator ' .. (s_state.enabled ? 'enabled' : 'disabled')
+enddef
+
 export def Show(winid__a: number)
+  if !s_state.enabled
+    return
+  endif
+
   if s_state.dragging
     return
   endif
@@ -62,6 +80,7 @@ export def Show(winid__a: number)
     s_state.popup_id = popup_create('', {
       pos: 'topleft',
       minwidth: g:elevator#width,
+      highlight: g:elevator#highlight,
       dragall: true,
       zindex: 1,
     })
@@ -80,7 +99,10 @@ enddef
 
 def S__restart_timer()
   S__stop_timer()
-  s_state.timer_id = timer_start(g:elevator#timeout_msec, (_) => S__close())
+
+  if g:elevator#timeout_msec > 0
+    s_state.timer_id = timer_start(g:elevator#timeout_msec, (_) => S__close())
+  endif
 enddef
 
 def S__close()
