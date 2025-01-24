@@ -1,0 +1,11 @@
+name: plugin-python-lsp
+version: 1.0
+arch: any
+author: nda-cunh
+description: python support
+dependency: supravim
+optional_dependency: 
+exclude_package: 
+binary: plugin-python-lsp
+size_tar: 
+size_installed: 432
