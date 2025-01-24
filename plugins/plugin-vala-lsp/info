@@ -1,5 +1,5 @@
 name: plugin-vala-lsp
-version: 0.48.7
+version: 0.48.8
 author: nda-cunh
 binary: plugin-vala-lsp
 description: vala support
