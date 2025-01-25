@@ -177,35 +177,61 @@ def apply_cfg():
 # ---------------
 # Enable/ Disable
 # ---------------
-def enable_disable(elements: list[str], replacement: str):
-    replace_value = replacement
+def enable_disable(elements: list[str], new_value: str):
+    # Read the file
+    with open('/nfs/homes/thmarin/.vimrc', 'r') as file:
+        data = file.read()
+
     for elem in elements:
-        if elem not in sv_options.keys():
-            print_error(f"'{elem}' not a correct option.")
+        reg = re.compile(f'\ng:sp_{elem} = (true|false)')
+
+        matches = reg.findall(data)
+
+        if not matches:
+            if f'\ng:sp_{elem} ' not in data:
+                print(f"Option \033[93;1m{elem}\033[m not found.")
+            else:
+                print(f"Option \033[93;1m{elem}\033[m value isn't a boolean.")
             continue
-        filename = sv_options[elem][0]
-        to_replace = 'sp_' + elem + ' = ' + sv_options[elem][1]
-        replacement = 'sp_' + elem + ' = ' + replace_value
-        replace_in_file(filename, to_replace, replacement)
-        if replace_value == 'true':
+
+        data = re.sub(reg, f'\ng:sp_{elem} = {new_value}', data)
+
+        if new_value == 'true':
             print(f'{elem}: \033[92;1mon\033[m')
         else:
             print(f'{elem}: \033[91;1moff\033[m')
+
+    # Edit the file
+    with open('/nfs/homes/thmarin/.vimrc', 'w') as file:
+        file.write(data)
 
 
 # ------------------
 #  Change Variables
 # ------------------
 def change_variables(elements: list[list[str]]):
+    # Read the file
+    with open('/nfs/homes/thmarin/.vimrc', 'r') as file:
+        data = file.read()
+
     for elem in elements:
-        var, val = elem
-        if var not in sv_options.keys():
-            print_error(f"\033[91;1m'{var}'\033[91;0m not a correct option.")
+        name, value = elem
+
+        reg = re.compile(f'\ng:sp_{name} = \'.*\'')
+
+        matches = reg.findall(data)
+
+        if not matches:
+            if f'\ng:sp_{name} ' not in data:
+                print(f"Option \033[93;1m{name}\033[m not found.")
+            else:
+                print(f"Option \033[93;1m{name}\033[m value isn't a string.")
             continue
-        filename = sv_options[var][0]
-        to_replace = 'sp_' + var + ' = ' + sv_options[var][1]
-        replacement = 'sp_' + var + " = '" + val + "'"
-        replace_in_file(filename, to_replace, replacement)
+
+        data = re.sub(reg, f'\ng:sp_{name} = \'{value}\'', data)
+
+    with open('/nfs/homes/thmarin/.vimrc', 'w') as file:
+        file.write(data)
 
 
 # ---------------
