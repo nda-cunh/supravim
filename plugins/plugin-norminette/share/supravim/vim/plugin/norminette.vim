@@ -41,6 +41,20 @@ enddef
 
 g:errors = []
 
+def CountLine(linenb: number): number
+	var count = 0
+	var i = linenb
+	while i > 0
+		var line = getline(i)
+		if line =~# '^{'
+			break
+		endif
+		count += 1
+		i -= 1
+	endwhile
+	return count - 1
+enddef
+
 def HighlightNorm(filename: string)
 	if g:sp_norme == false 
 		return
@@ -50,10 +64,16 @@ def HighlightNorm(filename: string)
 	sign unplace *
 	if g:sp_norme == true
 		for error in g:errors
-			if error[3] == "Missing or invalid 42 header"	#HEADER
-				continue									#HEADER
-			endif										#HEADER
-			exe ":sign place 2 line=" .. error[1] " name=NormLinter file=" .. filename
+			if error[3] == "Missing or invalid 42 header"
+				continue
+			endif
+			if error[3] == "Function has more than 25 lines"
+				var txt = CountLine(str2nr(error[1]))
+				exec "sign define FunctionLines_" .. txt .. " text=" .. txt .. " icon=FunctionLines texthl=DapBreakpoint"
+				exe ":sign place 1 line=" .. error[1] " name=FunctionLines_" .. txt .. " file=" .. filename
+			else
+				exe ":sign place 2 line=" .. error[1] " name=NormLinter file=" .. filename
+			endif
 		endfor
 	endif
 enddef
@@ -83,4 +103,3 @@ enddef
 command Norm HighlightNorm(expand("%"))
 autocmd CursorMoved *.c,*.h DisplayErrorMsg()
 autocmd BufEnter,BufWritePost *.c,*.h Norm
-
