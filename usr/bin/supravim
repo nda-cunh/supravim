@@ -209,13 +209,17 @@ def enable_disable(elements: list[str], new_value: str):
 # ------------------
 #  Change Variables
 # ------------------
-def change_variables(elements: list[list[str]]):
+def change_variables(elements: list[str]):
     # Read the file
     with open('/nfs/homes/thmarin/.vimrc', 'r') as file:
         data = file.read()
 
     for elem in elements:
-        name, value = elem
+        if '=' not in elem:
+            print(f"Option \033[93;1m{elem}\033[m must have a value.")
+            continue
+        name, value = elem.split('=')
+        value = value.replace('\n', '')
 
         reg = re.compile(f'\ng:sp_{name} = \'.*\'')
 
@@ -297,6 +301,6 @@ if __name__ == '__main__':
             enabled = parse_options(opts.enabled)
             enable_disable(enabled, 'true')
         if opts.set:
-            change_variables([elem.split('=') for elem in opts.set])
+            change_variables(opts.set)
         if opts.theme:
             changeTheme(opts.theme)
