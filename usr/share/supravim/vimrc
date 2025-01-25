@@ -215,14 +215,14 @@ if g:sp_fold == true
 		silent! loadview
 		cursor(l, 1)
 	enddef
-
-	auto BufWritePost * call Save_post()
-	def Save_post()
-		silent! NERDTreeRefreshRoot
-		silent! NERDTreeRefreshRoot
-		mkview
-	enddef
 endif
+
+auto BufWritePost * call Save_post()
+def Save_post()
+	silent! NERDTreeRefreshRoot
+	silent! NERDTreeRefreshRoot
+	mkview
+enddef
 
 
 # Compilation and SupraMake
