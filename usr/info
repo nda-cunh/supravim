@@ -3,7 +3,7 @@ version: 5.51
 arch: any
 author: nda-cunh
 description: un supraediteur sur vim
-dependency: supramake suprabear
+dependency: supramake suprabear supravim-server
 optional_dependency: ccls ubuntu-nerdfont-ttf plugin-autobear plugin-lsp-client supravim-gui plugin-norminette
 exclude_package: 
 binary: vim
