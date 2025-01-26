@@ -2,7 +2,7 @@ name: supravim
 version: 5.51
 arch: any
 author: nda-cunh
-description: un supraediteur sur vim (linux version)
+description: un supraediteur sur vim
 dependency: supramake suprabear
 optional_dependency: ccls ubuntu-nerdfont-ttf plugin-autobear plugin-lsp-client supravim-gui plugin-norminette
 exclude_package: 
