@@ -150,6 +150,17 @@ set noautochdir
 silent! var project_root = system('suprabear -p')
 if v:shell_error == 0
 	silent! exec 'chdir ' .. project_root
+	def GotOutputSupravimServer(channel: channel, msg: string)
+		if matchstr(msg, '^refresh') != ''
+			silent! :NERDTreeRefreshRoot
+			silent! :NERDTreeRefreshRoot
+		endif
+	enddef
+
+	job_start(["supravim-server", project_root], {
+		out_cb: GotOutputSupravimServer,
+	})
+
 else
 	set autochdir
 endif
