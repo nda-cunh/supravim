@@ -3,9 +3,9 @@ version: 2.0
 arch: any
 author: nda-cunh
 description: press <F3> to disable/enable plugin for norminette support
-dependency: 
+dependency: supravim 
 optional_dependency: 
 exclude_package: 
 binary: plugin-norminette
 size_tar: 
-size_installed: 2201
+size_installed: 2677
