@@ -1,11 +1,11 @@
 name: plugin-makeheader
 version: 1.4
-author: nda-cunh
-binary: plugin-makeheader
-description: add `// your_file.c` and press <F9>. with this plugin you don't need write all prototypes !
-dependency: makeheader
 arch: any
-exclude_package: 
+author: nda-cunh
+description: add `// your_file.c` and press <F9>. with this plugin you don't need write all prototypes !
+dependency: supravim makeheader
 optional_dependency: 
+exclude_package: 
+binary: plugin-makeheader
 size_tar: 
-size_installed: 702
+size_installed: 721
