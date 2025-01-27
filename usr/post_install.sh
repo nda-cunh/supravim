@@ -9,6 +9,10 @@ print_ascii() {
 	print_ascii_line " ___) | |_| | |_) | | | (_| |\\ V / | | | | | | |" '\e[32m'
 	print_ascii_line "|____/ \\__,_| .__/|_|  \\__,_| \\_/  |_|_| |_| |_|" '\e[34m'
 	print_ascii_line "            |_|" '\e[35m'
+	printf 'If you like my work, please star the project on GitHub:
+\e[36;1m\e[5mLink: \e[0m\e[36;1mhttps://github.com/nda-cunh/supravim \e[0m
+Thank you!\n'
+
 }
 
 create_folder_undo () {

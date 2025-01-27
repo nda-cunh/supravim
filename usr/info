@@ -8,4 +8,4 @@ optional_dependency: ccls ubuntu-nerdfont-ttf plugin-autobear plugin-lsp-client 
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 2574344
+size_installed: 2574914
