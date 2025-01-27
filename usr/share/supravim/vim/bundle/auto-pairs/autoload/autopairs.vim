@@ -18,7 +18,7 @@ endif
 " meant as a number associated with the version. Semantic meaning on the first
 " digit will take place. See the documentation for more details.
 
-let g:AutoPairsVersion = 40002
+let g:AutoPairsVersion = 40004
 
 let s:save_cpo = &cpoptions
 set cpoptions&vim
@@ -247,10 +247,11 @@ func! autopairs#AutoPairsInsert(key, ...)
     return a:key
 endf
 
-func! autopairs#AutoPairsDelete()
+func! autopairs#AutoPairsDelete(...)
+    let fallbackEvent = get(a:, 1, "\<BS>")
     if !b:autopairs_enabled || b:AutoPairsIgnoreSingle
         let b:AutoPairsIgnoreSingle = 0
-        return "\<BS>"
+        return fallbackEvent
     end
 
     let [before, after, ig] = autopairs#Strings#getline(b:AutoPairsMultilineBackspace)
@@ -270,7 +271,7 @@ func! autopairs#AutoPairsDelete()
                     if a[0] == ' '
                         return "\<BS>\<DELETE>"
                     else
-                        return "\<BS>"
+                        return fallbackEvent
                     end
                 end
                 return autopairs#Strings#backspace(b) .. autopairs#Strings#delete(a)
@@ -302,7 +303,7 @@ func! autopairs#AutoPairsDelete()
                         let b ..= getline(line('.') - offset) .. ' '
                         let offset += 1
                         if (line('.') - offset <= 0)
-                            return "\<BS>"
+                            return fallbackEvent
                         endif
                     endwhile
                     let a = matchstr(getline(line('.') - offset), autopairs#Utils#escape(open, opt) .. '\v\s*$') .. ' '
@@ -313,7 +314,7 @@ func! autopairs#AutoPairsDelete()
             end
         endfor
     endif
-    return "\<BS>"
+    return fallbackEvent
 endf
 
 " Fast wrap the word in brackets
@@ -553,7 +554,7 @@ func! autopairs#AutoPairsMap(key, ...)
     if l:explicit && len(maparg(key, "i")) != 0
         return
     endif
-    execute 'inoremap <buffer> <silent>' key "<C-R>=autopairs#AutoPairsInsert('" .. escaped_key .. "')<cr>"
+    execute 'inoremap <buffer> <silent>' key "<C-]><C-R>=autopairs#AutoPairsInsert('" .. escaped_key .. "')<cr>"
 endf
 
 func! autopairs#AutoPairsToggle()
