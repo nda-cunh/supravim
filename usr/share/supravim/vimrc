@@ -150,17 +150,6 @@ set noautochdir
 silent! var project_root = system('suprabear -p')
 if v:shell_error == 0
 	silent! exec 'chdir ' .. project_root
-	def GotOutputSupravimServer(channel: channel, msg: string)
-		if matchstr(msg, '^refresh') != ''
-			silent! :NERDTreeRefreshRoot
-			silent! :NERDTreeRefreshRoot
-		endif
-	enddef
-
-	job_start(["supravim-server", project_root], {
-		out_cb: GotOutputSupravimServer,
-	})
-
 else
 	set autochdir
 endif
@@ -268,17 +257,19 @@ def MakeSpecial(...args: list<string>)
 	endif
 enddef
 
+var is_supramake = false
 def g:Make(rules: string)
 	w!
+	is_supramake = true 
 	setenv('rulesmake', rules)
 	! supramake --clean $rulesmake
+	is_supramake = false
 	redraw!
 enddef
 
 def g:Compile()
 	w!
 	silent g:Make('all')
-	redraw!
 enddef
 
 imap <C-F5>		<esc>:Gdbs<CR>
@@ -322,6 +313,21 @@ def g:Ctags()
 		execute "tag " .. expand("<cword>")
 	endif
 enddef
+
+
+# ------ Running Supravim-Server ------"
+def GotOutputSupravimServer(channel: channel, msg: string)
+	if matchstr(msg, '^refresh') != ''
+		if is_supramake == false 
+			silent! :NERDTreeRefreshRoot
+			silent! :NERDTreeRefreshRoot
+		endif
+	endif
+enddef
+
+job_start(["supravim-server", project_root], {
+	out_cb: GotOutputSupravimServer,
+})
 
 # -------------- COLORS FILE ----------------"
 def NERDTreeHighlightFile(extension: string, fg: string, bg: string)
