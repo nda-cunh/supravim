@@ -1,8 +1,8 @@
 vim9script
 
-import autoload 'utils/selector.vim'
-import autoload 'utils/devicons.vim'
-import autoload 'utils/cmdbuilder.vim'
+import autoload './utils/selector.vim'
+import autoload './utils/devicons.vim'
+import autoload './utils/cmdbuilder.vim'
 
 var last_result_len: number
 var cur_pattern: string
@@ -25,8 +25,6 @@ if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 
-var cmdstr = cmdbuilder.Build()
-
 def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
     var limit = -1
     var li: list<string>
@@ -36,16 +34,22 @@ def ProcessResult(list_raw: list<string>, ...args: list<any>): list<string>
         li = list_raw
     endif
     if enable_devicons
-         return map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+         map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
     endif
+    # Hack for Git-Bash / Mingw-w64, Cygwin, and possibly other friends
+    # External commands like rg may return paths with Windows file separator,
+    # but Vim thinks it has a UNIX environment, so needs UNIX file separator
+    map(li, (_, val) => fnamemodify(val, ':.'))
     return li
 enddef
 
 def Select(wid: number, result: list<any>)
-    var path = result[0]
+    var relative_path = result[0]
     if enable_devicons
-        path = strcharpart(path, devicon_char_width + 1)
+        relative_path = strcharpart(relative_path, devicon_char_width + 1)
     endif
+    var path = cwd .. '/' .. relative_path
+    selector.MoveToUsableWindow()
     exe 'edit ' .. path
 enddef
 
@@ -81,9 +85,8 @@ def Input(wid: number, val: dict<any>, ...li: list<any>)
         selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
     else
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-        popup_setoptions(menu_wid, {'title': len(cur_result)})
+        popup_setoptions(menu_wid, {title: len(cur_result)})
     endif
-
 enddef
 
 def Preview(wid: number, opts: dict<any>)
@@ -95,7 +98,9 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_wid = opts.win_opts.partids['preview']
-    if !filereadable(result)
+    win_execute(preview_wid, 'syntax clear')
+    var path = cwd .. '/' .. result
+    if !filereadable(path)
         if result == ''
             popup_settext(preview_wid, '')
         else
@@ -104,18 +109,17 @@ def Preview(wid: number, opts: dict<any>)
         return
     endif
     var preview_bufnr = winbufnr(preview_wid)
-    var fileraw = readfile(result, '', 70)
-    var ext = fnamemodify(result, ':e')
-    var ft = selector.GetFt(ext)
-    popup_settext(preview_wid, fileraw)
-    # set syntax won't invoke some error cause by filetype autocmd
-    try
-        setbufvar(preview_bufnr, '&syntax', ft)
-    catch
-    endtry
+    if selector.IsBinary(path)
+        noautocmd popup_settext(preview_wid, 'Cannot preview binary file')
+    else
+        noautocmd popup_settext(preview_wid, readfile(path, '', 1000))
+        win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
+        noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
+    endif
+    win_execute(preview_wid, 'norm! gg')
 enddef
 
-def FilesJobStart(path: string, cmd: string)
+def JobStart(path: string, cmd: string)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
@@ -130,29 +134,30 @@ def FilesJobStart(path: string, cmd: string)
         return
     endif
     jid = job_start(cmd, {
-        out_cb: function('JobHandler'),
+        out_cb: function('JobOutCb'),
         out_mode: 'raw',
-        exit_cb: function('ExitCb'),
-        err_cb: function('ErrCb'),
+        exit_cb: function('JobExitCb'),
+        err_cb: function('JobErrCb'),
         cwd: path
     })
 enddef
 
-def ErrCb(channel: channel, msg: string)
-enddef
-
-def ExitCb(j: job, status: number)
-    in_loading = 0
-    timer_stop(files_update_tid)
-	if last_result_len <= 0
-        selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-	endif
-    popup_setoptions(menu_wid, {'title': len(cur_result)})
-enddef
-
-def JobHandler(channel: channel, msg: string)
+def JobOutCb(channel: channel, msg: string)
     var lists = selector.Split(msg)
     cur_result += lists
+enddef
+
+def JobErrCb(channel: channel, msg: string)
+    echoerr msg
+enddef
+
+def JobExitCb(id: job, status: number)
+    in_loading = 0
+    timer_stop(files_update_tid)
+    if last_result_len <= 0
+        selector.UpdateMenu(ProcessResult(cur_result, 100), [])
+    endif
+    popup_setoptions(menu_wid, {title: len(cur_result)})
 enddef
 
 def Profiling()
@@ -161,24 +166,24 @@ def Profiling()
     profile func Reducer
     profile func Preview
     profile func JobHandler
-    profile func FilesUpdateMenu
+    profile func UpdateMenu
 enddef
 
-def FilesUpdateMenu(...li: list<any>)
+def UpdateMenu(...li: list<any>)
     var cur_result_len = len(cur_result)
-    popup_setoptions(menu_wid, {'title': string(len(cur_result))})
+    popup_setoptions(menu_wid, {title: string(len(cur_result))})
     if cur_result_len == last_result_len
         return
     endif
     last_result_len = cur_result_len
 
-        if cur_pattern != last_pattern
-            selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
-            if cur_pattern == ''
-                selector.UpdateMenu(ProcessResult(cur_result, 100), [])
-            endif
-            last_pattern = cur_pattern
+    if cur_pattern != last_pattern
+        selector.FuzzySearchAsync(cur_result, cur_pattern, 200, function('AsyncCb'))
+        if cur_pattern == ''
+            selector.UpdateMenu(ProcessResult(cur_result, 100), [])
         endif
+        last_pattern = cur_pattern
+    endif
 enddef
 
 def Close(wid: number, opts: dict<any>)
@@ -188,39 +193,35 @@ def Close(wid: number, opts: dict<any>)
     timer_stop(files_update_tid)
 enddef
 
-export def Start(windows: dict<any>, ...args: list<any>)
+export def Start(opts: dict<any> = {})
     last_result_len = -1
     cur_result = []
     cur_pattern = ''
     last_pattern = '@!#-='
-    cwd = getcwd()
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     cwdlen = len(cwd)
     in_loading = 1
-    var wids = selector.Start([], {
-        select_cb:  function('Select'),
-        preview_cb:  function('Preview'),
-        input_cb:  function('Input'),
-        close_cb:  function('Close'),
-        preview:  windows.preview,
-        width: windows.width,
-        preview_ratio: windows.preview_ratio,
-        scrollbar: 0,
+    var wids = selector.Start([], extend(opts, {
+        select_cb: function('Select'),
+        preview_cb: function('Preview'),
+        input_cb: function('Input'),
+        close_cb: function('Close'),
         enable_devicons: enable_devicons,
         key_callbacks: selector.split_edit_callbacks,
-    })
+    }))
     menu_wid = wids.menu
     if menu_wid == -1
         return
     endif
     var cmd: string
-    if len(args) > 0 && type(args[0]) == 1
-        cmd = args[0]
+    if len(get(opts, 'command', '')) > 0
+        cmd = opts.command
     else
-        cmd = cmdstr
+        cmd = cmdbuilder.Build()
     endif
-    FilesJobStart(cwd, cmd)
-    timer_start(50, function('FilesUpdateMenu'))
-    files_update_tid = timer_start(400, function('FilesUpdateMenu'), {'repeat': -1})
+    JobStart(cwd, cmd)
+    timer_start(50, function('UpdateMenu'))
+    files_update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
 
