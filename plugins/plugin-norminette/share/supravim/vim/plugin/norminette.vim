@@ -42,17 +42,15 @@ enddef
 g:errors = []
 
 def CountLine(linenb: number): number
-	var count = 0
+	var start = linenb
 	var i = linenb
 	while i > 0
-		var line = getline(i)
-		if line =~# '^{'
+		if getline(i) =~# '^{'
 			break
 		endif
-		count += 1
 		i -= 1
 	endwhile
-	return count - 1
+	return start - i - 1
 enddef
 
 def HighlightNorm(filename: string)
