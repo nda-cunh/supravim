@@ -7,8 +7,9 @@ import optparse as op
 #   UTILS
 # ---------
 home = os.getenv('HOME')
-cfg_dir = home + '/.local/share/supravim'
-cfg_fpath = home + '/.local/share/supravim/supravim.cfg'
+cfg_dir = f'{home}/.local/share/supravim'
+cfg_fpath = f'{home}/.local/share/supravim/supravim.cfg'
+rc_path = f'{home}/.vimrc'
 sv_options = {}
 
 
@@ -91,7 +92,7 @@ def load_options_from_file(file_name: str):
 
 
 def load_options():
-    load_options_from_file(home + '/.vimrc')
+    load_options_from_file(rc_path)
     for (base_dir, _, plugin_files) in os.walk(home + '/.vim/plugin'):
         for plugin in plugin_files:
             plugin_fname = base_dir + '/' + plugin
@@ -109,8 +110,8 @@ def generate_cfg(toStdout: bool = True):
                 os.mkdir(cfg_dir)
             fd = os.open(cfg_fpath, os.O_WRONLY | os.O_TRUNC | os.O_CREAT)
 
-            if not os.path.exists(home + '/.vimrc'):
-                open(home + '/.vimrc', 'w').close()
+            if not os.path.exists(rc_path):
+                open(rc_path, 'w').close()
         except Exception as e:
             print(f'\033[91;1mError: \033[m {e.msg}', file=os.sys.stderr)
     else:
@@ -120,7 +121,7 @@ def generate_cfg(toStdout: bool = True):
         file, value, desc = sv_options[name]
         os.write(fd, f"{name}:{file}:{value}\n".encode())
     try:
-        with open(home + '/.vimrc', 'r') as f:
+        with open(rc_path, 'r') as f:
             content = f.read()
             os.write(fd, '\n'.encode())
             reg = rf'{YOUR_CONF_BEG}\n(.*?){YOUR_CONF_END}'
@@ -139,7 +140,7 @@ def apply_cfg():
         print_error('Config file not generated')
     else:
         # Add personnal config
-        vimrc_f = open(home + '/.vimrc', 'a+')
+        vimrc_f = open(rc_path, 'a+')
         vimrc_f.write(f"{YOUR_CONF_BEG}\n")
         with open(cfg_fpath, 'r') as cfg:
             is_personnal_config = False
@@ -177,35 +178,65 @@ def apply_cfg():
 # ---------------
 # Enable/ Disable
 # ---------------
-def enable_disable(elements: list[str], replacement: str):
-    replace_value = replacement
+def enable_disable(elements: list[str], new_value: str):
+    # Read the file
+    with open(rc_path, 'r') as file:
+        data = file.read()
+
     for elem in elements:
-        if elem not in sv_options.keys():
-            print_error(f"'{elem}' not a correct option.")
+        reg = re.compile(f'\ng:sp_{elem} = (true|false)')
+
+        matches = reg.findall(data)
+
+        if not matches:
+            if f'\ng:sp_{elem} ' not in data:
+                print(f"Option \033[93;1m{elem}\033[m not found.")
+            else:
+                print(f"Option \033[93;1m{elem}\033[m value isn't a boolean.")
             continue
-        filename = sv_options[elem][0]
-        to_replace = 'sp_' + elem + ' = ' + sv_options[elem][1]
-        replacement = 'sp_' + elem + ' = ' + replace_value
-        replace_in_file(filename, to_replace, replacement)
-        if replace_value == 'true':
+
+        data = re.sub(reg, f'\ng:sp_{elem} = {new_value}', data)
+
+        if new_value == 'true':
             print(f'{elem}: \033[92;1mon\033[m')
         else:
             print(f'{elem}: \033[91;1moff\033[m')
+
+    # Edit the file
+    with open(rc_path, 'w') as file:
+        file.write(data)
 
 
 # ------------------
 #  Change Variables
 # ------------------
-def change_variables(elements: list[list[str]]):
+def change_variables(elements: list[str]):
+    # Read the file
+    with open(rc_path, 'r') as file:
+        data = file.read()
+
     for elem in elements:
-        var, val = elem
-        if var not in sv_options.keys():
-            print_error(f"\033[91;1m'{var}'\033[91;0m not a correct option.")
+        if '=' not in elem:
+            print(f"Option \033[93;1m{elem}\033[m must have a value.")
             continue
-        filename = sv_options[var][0]
-        to_replace = 'sp_' + var + ' = ' + sv_options[var][1]
-        replacement = 'sp_' + var + " = '" + val + "'"
-        replace_in_file(filename, to_replace, replacement)
+        name, value = elem.split('=')
+        value = value.replace('\n', '')
+
+        reg = re.compile(f'\ng:sp_{name} = \'.*\'')
+
+        matches = reg.findall(data)
+
+        if not matches:
+            if f'\ng:sp_{name} ' not in data:
+                print(f"Option \033[93;1m{name}\033[m not found.")
+            else:
+                print(f"Option \033[93;1m{name}\033[m value isn't a string.")
+            continue
+
+        data = re.sub(reg, f'\ng:sp_{name} = \'{value}\'', data)
+
+    with open(rc_path, 'w') as file:
+        file.write(data)
 
 
 # ---------------
@@ -214,7 +245,7 @@ def change_variables(elements: list[list[str]]):
 def changeTheme(value):
     to_replace = 'sp_theme = ' + sv_options['theme'][1]
     replacement = "sp_theme = '" + value + "'"
-    replace_in_file(home + '/.vimrc', to_replace, replacement)
+    replace_in_file(rc_path, to_replace, replacement)
     print(f"Setting theme to: \033[96;1m{value}\033[m")
 
 
@@ -234,10 +265,10 @@ def status_display(dic: dict):
 
 
 def status():
-    general = {k: v for k, v in sv_options.items() if home + '/.vimrc' == v[0]}
+    general = {k: v for k, v in sv_options.items() if rc_path == v[0]}
     print("\033[1m-- GENERAL --\033[m")
     status_display(general)
-    plugins = {k: v for k, v in sv_options.items() if home + '/.vimrc' != v[0]}
+    plugins = {k: v for k, v in sv_options.items() if rc_path != v[0]}
     if plugins:
         print("\033[1m\n-- PLUGINS --\033[m")
         status_display(plugins)
@@ -267,10 +298,7 @@ if __name__ == '__main__':
         if opts.disabled:
             disabled = parse_options(opts.disabled)
             enable_disable(disabled, 'false')
-        if opts.enabled:
-            enabled = parse_options(opts.enabled)
-            enable_disable(enabled, 'true')
         if opts.set:
-            change_variables([elem.split('=') for elem in opts.set])
+            change_variables(opts.set)
         if opts.theme:
             changeTheme(opts.theme)
