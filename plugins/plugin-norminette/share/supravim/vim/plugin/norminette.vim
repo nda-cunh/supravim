@@ -1,13 +1,13 @@
 vim9script
 
-noremap <F3>		<Esc>:call ToggleNorm()<CR>
-inoremap <F3>		<Esc>:call ToggleNorm()<CR>i
+inoremap <F3>		<scriptcmd>tabnext<CR>i
+nnoremap <F3>		<scriptcmd>tabnext<CR>
 
 highlight DapBreakpoint ctermfg=135
 sign define NormLinter text=✖ texthl=DapBreakpoint
 g:sp_norme = true # norminette hint, press F3 to switch
 
-def g:ToggleNorm()
+def ToggleNorm()
 	g:sp_norme = !g:sp_norme
 	sign unplace *
 	silent w!
@@ -39,7 +39,7 @@ def GetErrors(filename: string): list<any>
 	return errors
 enddef
 
-g:errors = []
+var g_errors: list<list<string>> = []
 
 def CountLine(linenb: number): number
 	var start = linenb
@@ -57,11 +57,11 @@ def HighlightNorm(filename: string)
 	if g:sp_norme == false
 		return
 	endif
-	g:errors = GetErrors(filename)
+	g_errors = GetErrors(filename)
 	hi def link NormErrors Underlined
 	sign unplace *
 	if g:sp_norme == true
-		for error in g:errors
+		for error in g_errors
 			if error[3] == "Missing or invalid 42 header"
 				continue
 			endif
@@ -78,7 +78,7 @@ enddef
 
 def DisplayErrorMsg()
 	if g:sp_norme == true
-		for error in g:errors
+		for error in g_errors
 			if line(".") == str2nr(error[1])
 				echo "[Norminette]: " .. error[3]
 				break
