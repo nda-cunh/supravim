@@ -1,5 +1,5 @@
 name: plugin-norminette
-version: 2.1
+version: 2.2
 arch: any
 author: nda-cunh
 description: press <F3> to disable/enable plugin for norminette support
