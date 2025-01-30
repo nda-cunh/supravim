@@ -88,7 +88,7 @@ def load_options_from_file(file_name: str):
                     desc = ''
                 sv_options[name].append(desc)
     except FileNotFoundError:
-           print("")
+        print("")
 
 
 def load_options():
@@ -97,6 +97,7 @@ def load_options():
         for plugin in plugin_files:
             plugin_fname = base_dir + '/' + plugin
             load_options_from_file(plugin_fname)
+
 
 # -----------------
 # CONFIG Generation
