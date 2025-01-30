@@ -1,5 +1,5 @@
 name: plugin-norminette
-version: 2.2
+version: 2.3
 arch: any
 author: nda-cunh
 description: press <F3> to disable/enable plugin for norminette support
@@ -8,4 +8,4 @@ optional_dependency:
 exclude_package: 
 binary: plugin-norminette
 size_tar: 
-size_installed: 2686
+size_installed: 2967
