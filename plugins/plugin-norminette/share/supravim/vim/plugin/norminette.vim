@@ -54,7 +54,7 @@ def CountLine(linenb: number): number
 enddef
 
 def HighlightNorm(filename: string)
-	if g:sp_norme == false 
+	if g:sp_norme == false
 		return
 	endif
 	g:errors = GetErrors(filename)
@@ -101,3 +101,18 @@ enddef
 command Norm HighlightNorm(expand("%"))
 autocmd CursorMoved *.c,*.h DisplayErrorMsg()
 autocmd BufEnter,BufWritePost *.c,*.h Norm
+
+def SimpleSupravimChangeOption()
+	if g:supravim_option_changed == 'norme'
+		sign unplace *
+		if g:supravim_option_value == 'true'
+			g:sp_norme = true
+			Norm
+		else
+			g:sp_norme = false
+		endif
+		silent w!
+	endif
+enddef
+
+autocmd User SupravimChangeOption call SimpleSupravimChangeOption()
