@@ -10,6 +10,7 @@ g:sp_swap = false			# create swapfile (.swp)
 g:sp_tree = true			# display folder tree at left
 g:sp_fold = false			# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
+g:sp_wrap = true 			# do not wrap the text if the line is too long
 g:sp_theme = 'onehalf'
 
 filetype plugin indent on
@@ -143,6 +144,11 @@ set mouse=a
 if g:sp_swap == false 
 	set noswapfile
 endif
+if g:sp_wrap == true
+	set wrap
+else
+	set nowrap
+endif
 set cursorline
 set nu
 set incsearch
@@ -189,7 +195,8 @@ g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
-
+g:supravim_option_changed = 'null'
+g:supravim_option_value = 'null'
 def GotOutput(channel: channel, msg: string)
 	# change_theme: [onehalf] <dark>
 	if matchstr(msg, '^change_theme: ') != ''
@@ -199,8 +206,50 @@ def GotOutput(channel: channel, msg: string)
 		exec 'colorscheme ' .. theme
 		exec 'set background=' .. typemode
 		AirlineRefresh
+	# onChangeOption: [tree] <true>
+	elseif matchstr(msg, '^onChangeOption: ') != ''
+		g:supravim_option_changed = matchstr(msg, '\[\zs.*\ze\]')
+		g:supravim_option_value = matchstr(msg, '<\zs.*\ze>')
+		doautocmd User SupravimChangeOption
 	endif
 enddef
+
+def SimpleSupravimChangeOption()
+	if g:supravim_option_changed == 'tree'
+		if g:supravim_option_value == 'false'
+			:NERDTreeClose
+		else
+			:NERDTreeTabsOpen
+		endif
+	elseif g:supravim_option_changed == 'swap'
+		if g:supravim_option_value == 'false'
+			set noswapfile
+		else
+			set swapfile
+		endif
+	elseif g:supravim_option_changed == 'fold'
+		if g:supravim_option_value == 'false'
+			set nofoldenable
+		else
+			set foldenable
+		endif
+	elseif g:supravim_option_changed == 'nobackground'
+		if g:supravim_option_value == 'false'
+			exec 'colorscheme ' .. g:sp_theme
+			exec 'set background=' .. &background
+		else
+			hi Normal guibg=NONE ctermbg=NONE
+		endif
+	elseif g:supravim_option_changed == 'wrap'
+		if g:supravim_option_value == 'false'
+			set nowrap
+		else
+			set wrap
+		endif
+	endif
+enddef
+
+autocmd User SupravimChangeOption call SimpleSupravimChangeOption()
 
 def g:SettingsSupravim()
 	job_start(["supravim-gui"], {
@@ -335,17 +384,31 @@ def NERDTreeHighlightFile(extension: string, fg: string, bg: string)
 	exec 'autocmd filetype nerdtree syn match ' .. extension .. ' #^\s\+.*' .. extension .. '$#'
 enddef
 
-NERDTreeHighlightFile('.c', 'blue', 'none')
-NERDTreeHighlightFile('h', 'green', 'none')
-NERDTreeHighlightFile('.cpp', 'blue', 'none')
-NERDTreeHighlightFile('.hpp', 'green', 'none')
-NERDTreeHighlightFile('vala', 'magenta', 'none')
-NERDTreeHighlightFile('vapi', 'darkmagenta', 'none')
-NERDTreeHighlightFile('py', 'yellow', 'none')
-NERDTreeHighlightFile('java', 'red', 'none')
-NERDTreeHighlightFile('sh', 'green', 'none')
-NERDTreeHighlightFile('go', 'cyan', 'none')
-NERDTreeHighlightFile('Makefile', 'red', 'none')
+def g:NerdTreeRefresh(force: bool)
+	if exists('b:NERDTree') == 0 && force == false
+		return
+	endif
+	NERDTreeHighlightFile('.c', 'blue', 'none')
+	NERDTreeHighlightFile('h', 'green', 'none')
+	NERDTreeHighlightFile('.cpp', 'blue', 'none')
+	NERDTreeHighlightFile('.hpp', 'green', 'none')
+	NERDTreeHighlightFile('vala', 'magenta', 'none')
+	NERDTreeHighlightFile('vapi', 'darkmagenta', 'none')
+	NERDTreeHighlightFile('py', 'yellow', 'none')
+	NERDTreeHighlightFile('java', 'red', 'none')
+	NERDTreeHighlightFile('sh', 'green', 'none')
+	NERDTreeHighlightFile('go', 'cyan', 'none')
+	NERDTreeHighlightFile('Makefile', 'red', 'none')
+	NERDTreeHighlightFile('.rs', 'red', 'none')
+
+	if force == false
+		NERDTreeTabsClose
+		NERDTreeTabsOpen
+	endif
+enddef
+
+autocmd VimEnter * call g:NerdTreeRefresh(true)
+autocmd ColorScheme * call g:NerdTreeRefresh(false)
 
 augroup nerdtreeconcealbrackets
 	autocmd!
