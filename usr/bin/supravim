@@ -180,22 +180,22 @@ def apply_cfg():
 # Enable/ Disable
 # ---------------
 def enable_disable(elements: list[str], new_value: str):
-    # Read the file
-    with open(rc_path, 'r') as file:
-        data = file.read()
-
     for elem in elements:
-        reg = re.compile(f'\ng:sp_{elem} = (true|false)')
-
-        matches = reg.findall(data)
-
-        if not matches:
-            if f'\ng:sp_{elem} ' not in data:
-                print(f"Option \033[93;1m{elem}\033[m not found.")
-            else:
-                print(f"Option \033[93;1m{elem}\033[m value isn't a boolean.")
+        if elem not in sv_options:
+            print(f"Option \033[93;1m{elem}\033[m not found.")
             continue
 
+        filename, value = sv_options[elem][0], sv_options[elem][1]
+
+        if value not in ['true', 'false']:
+            print(f"Option \033[93;1m{elem}\033[m isn't a boolean.")
+            continue
+
+        # Read the file
+        with open(filename, 'r') as file:
+            data = file.read()
+
+        reg = re.compile(f'\ng:sp_{elem} = (true|false)')
         data = re.sub(reg, f'\ng:sp_{elem} = {new_value}', data)
 
         if new_value == 'true':
@@ -203,24 +203,33 @@ def enable_disable(elements: list[str], new_value: str):
         else:
             print(f'{elem}: \033[91;1moff\033[m')
 
-    # Edit the file
-    with open(rc_path, 'w') as file:
-        file.write(data)
+        # Edit the file
+        with open(filename, 'w') as file:
+            file.write(data)
 
 
 # ------------------
 #  Change Variables
 # ------------------
 def change_variables(elements: list[str]):
-    # Read the file
-    with open(rc_path, 'r') as file:
-        data = file.read()
 
     for elem in elements:
         if '=' not in elem:
             print(f"Option \033[93;1m{elem}\033[m must have a value.")
             continue
-        name, value = elem.split('=')
+
+        name, new_value = elem.split('=')
+
+        if name not in sv_options:
+            print(f"Option \033[93;1m{name}\033[m not found.")
+            continue
+
+        filename, value = sv_options[name][0], sv_options[name][1]
+
+        # Read the file
+        with open(filename, 'r') as file:
+            data = file.read()
+
         value = value.replace('\n', '')
 
         reg = re.compile(f'\ng:sp_{name} = \'.*\'')
@@ -228,16 +237,13 @@ def change_variables(elements: list[str]):
         matches = reg.findall(data)
 
         if not matches:
-            if f'\ng:sp_{name} ' not in data:
-                print(f"Option \033[93;1m{name}\033[m not found.")
-            else:
-                print(f"Option \033[93;1m{name}\033[m value isn't a string.")
+            print(f"Option \033[93;1m{name}\033[m value isn't a string.")
             continue
 
-        data = re.sub(reg, f'\ng:sp_{name} = \'{value}\'', data)
+        data = re.sub(reg, f'\ng:sp_{name} = \'{new_value}\'', data)
 
-    with open(rc_path, 'w') as file:
-        file.write(data)
+        with open(filename, 'w') as file:
+            file.write(data)
 
 
 # ---------------
@@ -299,6 +305,9 @@ if __name__ == '__main__':
         if opts.disabled:
             disabled = parse_options(opts.disabled)
             enable_disable(disabled, 'false')
+        if opts.enabled:
+            enabled = parse_options(opts.enabled)
+            enable_disable(enabled, 'true')
         if opts.set:
             change_variables(opts.set)
         if opts.theme:
