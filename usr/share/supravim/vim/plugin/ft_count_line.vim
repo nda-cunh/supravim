@@ -1,6 +1,6 @@
 vim9script
 
-g:sp_count_line = true # shows how many lines have functions
+g:sp_count_line = false # shows how many lines have functions
 
 
 highlight Ft_count_line cterm=bold
