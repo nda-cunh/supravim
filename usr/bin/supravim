@@ -18,7 +18,7 @@ def print_error(msg: str):
 def replace_in_file(file: str, to_replace: str, replacement: str):
     with open(file, 'r') as f:
         content = f.read()
-    content = content.replace(to_replace, replacement)
+    content = content.replace(to_replace, replacement, 1)
     with open(file, 'w') as f:
         f.write(content)
 
