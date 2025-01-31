@@ -442,26 +442,41 @@ hi MyPopupColor ctermfg=cyan
 
 autocmd VimLeave * RemovePopit()
 
+var file_tmp: string
 def CreatePopit()
-	g:file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
-	var s = system("suprapack have_update supravim > /tmp/xdfe-" .. g:file_tmp .. "&")
+	file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
+	const s = system("suprapack have_update supravim > /tmp/xdfe-" .. file_tmp .. "&")
 	var timer = timer_start(3000, (_) => {
 		CreatePop()
 	})
 enddef
 
 def RemovePopit()
-	call delete('/tmp/xdfe-' .. g:file_tmp)
+	call delete('/tmp/xdfe-' .. file_tmp)
 enddef
 
 def CreatePop()
-	var lst_s = readfile('/tmp/xdfe-' .. g:file_tmp)
-	call delete('/tmp/xdfe-' .. g:file_tmp)
-	var s = join(lst_s, "\n")
+    const lst_s = readfile('/tmp/xdfe-' .. file_tmp)
+    call delete('/tmp/xdfe-' .. file_tmp)
+    const s = join(lst_s, "\n")
     if s == ""
         return
     endif
-    popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s, "run: `suprapack update`" ], {line: 1, col: 500, pos: 'topright', time: 5000, tabpage: -1, zindex: 300, drag: 1, highlight: 'MyPopupColor', border: [], close: 'click', padding: [0, 1, 0, 1], })
+    popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s, "run: `suprapack update`" ], {
+        line: 1,
+        col: 500,
+        pos: 'topright',
+        time: 5500,
+        tabpage: -1,
+        zindex: 300,
+        drag: 1,
+        border: [1],
+        close: 'click',
+        borderhighlight: ['Normal', 'Normal'],
+        borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+        highlight: 'Normal',
+        padding: [0, 1, 0, 1]
+    })
 enddef
 
 # -----------------   Alt Up/Down   ------------------ #
