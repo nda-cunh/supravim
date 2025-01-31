@@ -1,7 +1,7 @@
 vim9script
 
-inoremap <F3>		<scriptcmd>tabnext<CR>i
-nnoremap <F3>		<scriptcmd>tabnext<CR>
+inoremap <F3>		<scriptcmd>ToggleNorm()<CR>
+noremap <F3>		<scriptcmd>ToggleNorm()<CR>
 
 highlight DapBreakpoint ctermfg=135
 sign define NormLinter text=✖ texthl=DapBreakpoint
