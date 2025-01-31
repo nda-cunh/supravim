@@ -279,11 +279,11 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     return async_tid
 enddef
 
-def ReplaceCloseCb(Close_cb: func)
+export def ReplaceCloseCb(Close_cb: func)
     popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
 enddef
 
-def Close()
+export def Close()
     popup_close(menu_wid)
 enddef
 
@@ -322,13 +322,13 @@ enddef
 
 # For split callbacks
 def CloseTab(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr > 0
+        if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
             execute 'tabnew'
             execute 'buffer ' .. bufnr
@@ -346,15 +346,17 @@ def CloseTab(wid: number, result: dict<any>)
 enddef
 
 def CloseVSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr > 0
+        if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
-            execute 'vert sb ' .. bufnr
+            # avoid :sbuffer to bypass 'switchbuf=useopen'
+            execute 'vnew'
+            execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
             execute 'vsp ' .. buf
         else
@@ -369,15 +371,17 @@ def CloseVSplit(wid: number, result: dict<any>)
 enddef
 
 def CloseSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
+    if !empty(get(result, 'cursor_item', ''))
         var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr > 0
+        if bufnr > 0 && !filereadable(buf)
             # for special buffers that cannot be edited
-            execute 'sb ' .. bufnr
+            # avoid :sbuffer to bypass 'switchbuf=useopen'
+            execute 'new'
+            execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
             execute 'sp ' .. buf
         else
@@ -412,11 +416,15 @@ export var split_edit_callbacks = {
     "\<c-t>": function('SetTabClose'),
 }
 
-export def MoveToUsableWindow()
+export def MoveToUsableWindow(buf: any = null)
     var c = 0
     var wincount = winnr('$')
-    while ( !empty(&buftype) && index(reuse_windows, &buftype) == -1 &&
-            index(reuse_windows, &filetype) == -1 && c < wincount )
+    var buftype = !empty(buf) && !getbufvar(buf, '&buftype') ?
+        getbufvar(buf, '&buftype') : null
+    var filetype = !empty(buf) && !getbufvar(buf, '&filetype') ?
+        getbufvar(buf, '&filetype') : null
+    while ( !empty(&buftype) && index(reuse_windows + [buftype], &buftype) == -1 &&
+            index(reuse_windows + [filetype], &filetype) == -1 && c < wincount )
         wincmd w
         c = c + 1
     endwhile
