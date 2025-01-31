@@ -29,7 +29,7 @@ def Ft_count_line()
 		begin = begin_view_line
 	endif
 
-	for row in range(begin, end_view_line - 1)
+	for row in range(begin, end_view_line)
 		var current: string = getline(row)
 		if match(current, '^{') == 0
 			found_function = true
