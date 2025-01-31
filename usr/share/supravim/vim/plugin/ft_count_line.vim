@@ -17,7 +17,7 @@ def Ft_count_line()
 	prop_clear(begin_view_line, end_view_line, {type: 'ft_count_line'})
 
 	for row in range(begin_view_line, end_view_line)
-		var current: string = getline(row)
+		const current: string = getline(row)
 		if current =~# '^{'
 			found_function = true
 			start_line = row
@@ -27,7 +27,7 @@ def Ft_count_line()
 			if found_function == false
 				var i = begin_view_line
 				while i != 1
-					var prev_line: string = getline(i)
+					const prev_line: string = getline(i)
 					if prev_line =~# '^{'
 						start_line = i
 						break
