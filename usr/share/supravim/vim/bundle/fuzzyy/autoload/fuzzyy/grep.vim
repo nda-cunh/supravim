@@ -76,7 +76,10 @@ enddef
 def Build_grep(): string
     var result = 'grep -n -r -I --max-count=' .. max_count .. ' -F'
     if follow_symlinks
-        result ..= ' -S'
+        result = substitute(result, ' -r ', ' -R ', '')
+        if system('grep --version | head -1') =~# 'BSD'
+            result ..= ' -S'
+        endif
     endif
     var dir_list_parsed = reduce(dir_exclude,
         (acc, dir) => acc .. "--exclude-dir " .. dir .. " ", "")
@@ -86,7 +89,7 @@ def Build_grep(): string
 enddef
 
 # Neither git-grep nor findstr support custom excludes
-var git_cmd = 'git grep -n -I --column --untracked --exclude-standard  --max-count=' .. max_count .. ' -F %s "%s" "%s"'
+var git_cmd = 'git grep -n -I --column --untracked --exclude-standard -F %s "%s" "%s"'
 var findstr_cmd = 'FINDSTR /S /N /O /P /L %s "%s" "%s/*"'
 
 # Script scoped vars reset for each invocation of Start(). Allows directory
