@@ -12,27 +12,20 @@ var menu_hl_list: list<any>
 var devicon_char_width = devicons.GetDeviconCharWidth()
 var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
     g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var reuse_windows = exists('g:fuzzyy_reuse_windows')
+    && type(g:fuzzyy_reuse_windows) == v:t_list ?
+    g:fuzzyy_reuse_windows : ['netrw']
+var async_step = exists('g:fuzzyy_async_step')
+    && type(g:fuzzyy_async_step) == v:t_number ?
+    g:fuzzyy_async_step : 10000
+var root_patterns = exists('g:fuzzyy_root_patterns')
+    && type(g:fuzzyy_root_patterns) == v:t_list ?
+    g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
 
 if enable_devicons
     matched_hl_offset = devicons.GetDeviconWidth() + 1
 endif
 export var windows: dict<any>
-
-var filetype_table = {
-    h:  'c',
-    hpp:  'cpp',
-    cc:  'cpp',
-    hh:  'cpp',
-    py:  'python',
-    js:  'javascript',
-    ts:  'typescript',
-    tsx:  'typescript',
-    jsx:  'typescript',
-    rs:  'rust',
-    json:  'json',
-    yml:  'yaml',
-    md:  'markdown',
-}
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 
@@ -84,12 +77,42 @@ export def Split(str: string): list<string>
     return split(str, sep)
 enddef
 
-export def GetFt(ft: string): string
-    if has_key(filetype_table, ft)
-        return filetype_table[ft]
-    endif
-    return ft
+export def GetRootDir(): string
+  var dir = getcwd()
+  var cur: string
+  while 1
+    for pattern in root_patterns
+      if !empty(globpath(dir, pattern, 1))
+        return dir
+      endif
+    endfor
+    [cur, dir] = [dir, fnamemodify(dir, ':h')]
+    if cur == dir | break | endif
+  endwhile
+  return getcwd()
 enddef
+
+export def IsBinary(path: string): bool
+    # NUL byte check for binary files, used to avoid showing preview
+    # Assumes a file encoding that does not allow NUL bytes, so will
+    # generate false positives for UTF-16 and UTF-32, but the preview
+    # window doesn't work for these encodings anyway, even with a BOM
+    if !has('patch-9.0.0810')
+        # Workaround for earlier versions of Vim with limited readblob()
+        # Option to read only part of file finalised in patch 9.0.0810
+        return match(readfile(path, '', 10), '\%x00') != -1
+    endif
+    return IsBinaryBlob(path)
+enddef
+
+# Note: use of legacy function a workaround for compilation failing when
+# readblob() would be called with invalid args on earlier Vim versions
+function IsBinaryBlob(path)
+    for byte in readblob(a:path, 0, 128)
+        if byte == 0 | return v:true | endif
+    endfor
+    return v:false
+endfunction
 
 # Search pattern @pattern in a list of strings @li
 # if pattern is empty, return [li, []]
@@ -180,8 +203,7 @@ def MergeContinusNumber(li: list<number>): list<any>
 enddef
 
 def Worker(tid: number)
-    const ASYNC_STEP = 1000
-    var li = async_list[: ASYNC_STEP]
+    var li = async_list[: async_step]
     var results: list<any> = matchfuzzypos(li, async_pattern)
     var processed_results = []
 
@@ -222,7 +244,7 @@ def Worker(tid: number)
     endif
     AsyncCb(async_results)
 
-    async_list = async_list[ASYNC_STEP + 1 :]
+    async_list = async_list[async_step + 1 :]
     if len(async_results) >= async_limit || len(async_list) == 0
         timer_stop(tid)
         return
@@ -252,20 +274,16 @@ export def FuzzySearchAsync(li: list<string>, pattern: string, limit: number, Cb
     async_pattern = pattern
     async_results = []
     AsyncCb = Cb
-    async_tid = timer_start(50, function('Worker'), {'repeat': -1})
+    async_tid = timer_start(50, function('Worker'), {repeat: -1})
     Worker(async_tid)
     return async_tid
-enddef
-
-export def GetPrompt(): string
-    return prompt_str
 enddef
 
 export def ReplaceCloseCb(Close_cb: func)
     popup.SetPopupWinProp(menu_wid, 'close_cb', Close_cb)
 enddef
 
-export def Exit()
+export def Close()
     popup_close(menu_wid)
 enddef
 
@@ -295,7 +313,7 @@ def Input(wid: number, args: dict<any>, ...li: list<any>)
 enddef
 
 export def RefreshMenu()
-    Input(menu_wid, {'str': prompt_str})
+    Input(menu_wid, {str: prompt_str})
 enddef
 
 def Cleanup()
@@ -304,66 +322,113 @@ enddef
 
 # For split callbacks
 def CloseTab(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
-        if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
-        endif
-        execute 'tabnew ' .. buf
-    endif
-enddef
-
-def CloseVSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
+    if !empty(get(result, 'cursor_item', ''))
+        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr >= 0
-            # this is necessary for special buffer like terminal buffers
-            execute 'vert sb ' .. bufnr
+        if bufnr > 0 && !filereadable(buf)
+            # for special buffers that cannot be edited
+            execute 'tabnew'
+            execute 'buffer ' .. bufnr
+        elseif cwd ==# getcwd()
+            execute 'tabnew ' .. buf
         else
+            var path = cwd .. '/' .. buf
+            execute 'tabnew ' .. path
+        endif
+        if str2nr(linenr) > 0
+            exe 'norm! ' .. linenr .. 'G'
+            exe 'norm! zz'
+        endif
+    endif
+enddef
+
+def CloseVSplit(wid: number, result: dict<any>)
+    if !empty(get(result, 'cursor_item', ''))
+        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        if enable_devicons
+            buf = strcharpart(buf, devicon_char_width + 1)
+        endif
+        var bufnr = bufnr(buf)
+        if bufnr > 0 && !filereadable(buf)
+            # for special buffers that cannot be edited
+            # avoid :sbuffer to bypass 'switchbuf=useopen'
+            execute 'vnew'
+            execute 'buffer ' .. bufnr
+        elseif cwd ==# getcwd()
             execute 'vsp ' .. buf
+        else
+            var path = cwd .. '/' .. buf
+            execute 'vsp ' .. path
+        endif
+        if str2nr(linenr) > 0
+            exe 'norm! ' .. linenr .. 'G'
+            exe 'norm! zz'
         endif
     endif
 enddef
 
 def CloseSplit(wid: number, result: dict<any>)
-    if has_key(result, 'cursor_item')
-        var buf = result.cursor_item
+    if !empty(get(result, 'cursor_item', ''))
+        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
         var bufnr = bufnr(buf)
-        if bufnr >= 0
-            execute 'sb ' .. bufnr
-        else
+        if bufnr > 0 && !filereadable(buf)
+            # for special buffers that cannot be edited
+            # avoid :sbuffer to bypass 'switchbuf=useopen'
+            execute 'new'
+            execute 'buffer ' .. bufnr
+        elseif cwd ==# getcwd()
             execute 'sp ' .. buf
+        else
+            var path = cwd .. '/' .. buf
+            execute 'sp ' .. path
+        endif
+        if str2nr(linenr) > 0
+            exe 'norm! ' .. linenr .. 'G'
+            exe 'norm! zz'
         endif
     endif
 enddef
 
 def SetVSplitClose()
     ReplaceCloseCb(function('CloseVSplit'))
-    Exit()
+    Close()
 enddef
 
 def SetSplitClose()
     ReplaceCloseCb(function('CloseSplit'))
-    Exit()
+    Close()
 enddef
 
-def SetTab()
+def SetTabClose()
     ReplaceCloseCb(function('CloseTab'))
-    Exit()
+    Close()
 enddef
 
 export var split_edit_callbacks = {
     "\<c-v>": function('SetVSplitClose'),
     "\<c-s>": function('SetSplitClose'),
-    "\<c-t>": function('SetTab'),
+    "\<c-t>": function('SetTabClose'),
 }
+
+export def MoveToUsableWindow(buf: any = null)
+    var c = 0
+    var wincount = winnr('$')
+    var buftype = !empty(buf) && !getbufvar(buf, '&buftype') ?
+        getbufvar(buf, '&buftype') : null
+    var filetype = !empty(buf) && !getbufvar(buf, '&filetype') ?
+        getbufvar(buf, '&filetype') : null
+    while ( !empty(&buftype) && index(reuse_windows + [buftype], &buftype) == -1 &&
+            index(reuse_windows + [filetype], &filetype) == -1 && c < wincount )
+        wincmd w
+        c = c + 1
+    endwhile
+enddef
 
 # This function spawn a popup picker for user to select an item from a list.
 # params:
@@ -393,15 +458,15 @@ export var split_edit_callbacks = {
 #    }
 export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     if popup.active
-        return { 'menu': -1, 'prompt': -1, 'preview': -1 }
+        return { menu: -1, prompt: -1, preview: -1 }
     endif
-    cwd = getcwd()
+    cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
     prompt_str = ''
 
     enable_devicons = has_key(opts, 'enable_devicons') ? opts.enable_devicons : 0
 
-    opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : v:null
-    opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : v:null
+    opts.move_cb = has_key(opts, 'preview_cb') ? opts.preview_cb : null
+    opts.select_cb = has_key(opts, 'select_cb') ? opts.select_cb : null
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
     opts.dropdown = enable_dropdown
 
@@ -415,6 +480,12 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     popup.MenuSetText(li)
     if enable_devicons
         devicons.AddColor(menu_wid)
+    endif
+
+    if exists('g:__fuzzyy_warnings_found') && g:__fuzzyy_warnings_found
+        echohl WarningMsg
+        echo 'Fuzzyy started with warnings, use :FuzzyShowWarnings command to see details'
+        echohl None
     endif
 
     autocmd User PopupClosed ++once Cleanup()
