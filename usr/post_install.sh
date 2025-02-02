@@ -9,9 +9,12 @@ print_ascii() {
 	print_ascii_line " ___) | |_| | |_) | | | (_| |\\ V / | | | | | | |" '\e[32m'
 	print_ascii_line "|____/ \\__,_| .__/|_|  \\__,_| \\_/  |_|_| |_| |_|" '\e[34m'
 	print_ascii_line "            |_|" '\e[35m'
-	printf 'If you like my work, please star the project on GitHub:
-\e[36;1m\e[5mLink: \e[0m\e[36;1mhttps://github.com/nda-cunh/supravim \e[0m
-Thank you!\n'
+
+	printf '╭─────────────────────────────────────────────────────────╮\n'
+	printf '│ If you like my work, please star the project on GitHub: │\n'
+	printf '│ Link: \e[1;94mhttps://github.com/nda-cunh/supravim\e[;0m              │\n'
+	printf '│ Thank you !!!                                           │\n'
+	printf '╰─────────────────────────────────────────────────────────╯\n'
 
 }
 
@@ -20,6 +23,7 @@ create_folder_undo () {
 
 	mkdir -p "$DIR/undo" 2>/dev/null | true
 	chmod 755 -R "$DIR" 2>/dev/null | true
+	# bug for 42 school (nfs)
 	mkdir -p "$DIR/undo" 2>/dev/null | true
 	chmod 755 -R "$DIR" 2>/dev/null | true
 }
@@ -28,7 +32,6 @@ main() {
 	rm -rf $HOME/.vimrc $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vim $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vimrc $HOME/.vimrc
-	# $PKGDIR/share/supravim/apply_cfg "$PKGDIR/share/supravim/supravim.cfg"
 	$PKGDIR/bin/supravim --apply-config 2>/dev/null | true
 	print_ascii
 	create_folder_undo
