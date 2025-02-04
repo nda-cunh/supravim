@@ -455,9 +455,9 @@ if has('nvim')
     if !empty(l:border)
       if type(l:border) != type([])
         if &ambiwidth ==# 'single'
-          let a:style.border = ['┌', '─', '┐', '│', '┘', '─', '└', '│']
+          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
         else
-          let a:style.border = ['+', '-', '+', '|', '+', '-', '+', '|']
+          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
         endif
       endif
     elseif has_key(a:style, 'border')
@@ -471,9 +471,9 @@ else
     if !empty(get(a:style, 'border', v:null))
       if type(l:border) != type([])
         if &ambiwidth ==# 'single'
-          let a:style.border = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
+          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
         else
-          let a:style.border = ['-', '|', '-', '|', '+', '+', '+', '+']
+          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
         endif
       else
         " Emulate nvim behavior for lists of 1/2/4 elements

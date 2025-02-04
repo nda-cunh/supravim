@@ -26,3 +26,8 @@ g:lsp_document_code_action_signs_enabled = 0
 g:lsp_diagnostics_echo_cursor = 1
 g:lsp_diagnostics_echo_delay = 50
 g:lsp_diagnostics_virtual_text_enabled = 0
+g:lsp_diagnostics_signs_error = {'text': '✖'}
+g:lsp_diagnostics_signs_warning = {'text': '✖'}
+# g:lsp_diagnostics_signs_error = {'text': '┃'}
+# g:lsp_diagnostics_signs_warning = {'text': '┃'}
+
