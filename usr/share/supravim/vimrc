@@ -601,9 +601,9 @@ def Init_menu()
 
 	if g:sp_fold
 		nmenu PopUp.-sep3- <Nop>
-		nmenu PopUp.Fold			:call g:Fold()<CR>
+		nmenu PopUp.Fold			<scriptcmd>Fold()<CR>
 		nmenu PopUp.UnFold			zo
-		nmenu PopUp.Fold\ All		:call g:FoldAll()<CR>
+		nmenu PopUp.Fold\ All		<scriptcmd>FoldAll()<CR>
 		nmenu PopUp.UnFold\ All		zR
 	endif
 	nmenu PopUp.-sep4- <Nop>
@@ -613,31 +613,28 @@ enddef
 # Fold support --------------------------------------
 
 if g:sp_fold == true
-	def g:Fold()
+	def Fold()
 		set foldmethod=syntax
 		execute "normal! zc"
 		set foldmethod=manual
 	enddef
 
-	def g:FoldAll()
+	def FoldAll()
 		set foldmethod=syntax
 		execute "normal! zM"
 		set foldmethod=manual
 	enddef
 endif 
 
-autocmd VimEnter * call Welcome()
 
 # SetArgv --------------------------------------
 command -nargs=* -complete=file SetArgv :call SetArgv(<f-args>)
 command -nargs=* -complete=file SetArgs :call SetArgv(<f-args>)
 
-
 def SetArgv(...args: list<string>)
 	var str = join(args, ' ')
 	$ARGS = str
 enddef
-
 
 # Welcome --------------------------------------
 def Welcome()
@@ -649,3 +646,5 @@ def Welcome()
 		set foldmethod=manual
 	endif
 enddef
+
+autocmd VimEnter * call Welcome()
