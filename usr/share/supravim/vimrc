@@ -480,7 +480,7 @@ def CreatePop()
 enddef
 
 # -----------------   Alt Up/Down   ------------------ #
-def g:MoveLineDown(mode: string)
+def MoveLineDown(mode: string)
 	var array = getline(line("'<"), line("'>"))
 	var len = len(array)
 	var begin = line('.')
@@ -509,7 +509,7 @@ def g:MoveLineDown(mode: string)
 	normal! gv=gv
 enddef
 
-def g:MoveLineUp(mode: string)
+def MoveLineUp(mode: string)
 	var array = getline(line("'<"), line("'>"))
 	var len = len(array)
 	var begin = line('.')
@@ -541,10 +541,10 @@ def g:MoveLineUp(mode: string)
 	normal! gv=gv
 enddef
 
-vnoremap <silent> <A-Down>	:<c-u>call MoveLineDown("v")<CR>
-vnoremap <silent> <A-Up>	:<c-u>call MoveLineUp("v")<CR>
-nnoremap <silent> <A-Down>	:<c-u>call MoveLineDown("n")<CR>
-nnoremap <silent> <A-Up>	:<c-u>call MoveLineUp("n")<CR>
+vnoremap <silent> <A-Down>	:<scriptcmd>MoveLineDown("v")<CR><cr>
+vnoremap <silent> <A-Up>	:<scriptcmd>MoveLineUp("v")<CR><cr>
+nnoremap <silent> <A-Down>	<scriptcmd>MoveLineDown("n")<CR>
+nnoremap <silent> <A-Up>	<scriptcmd>MoveLineUp("n")<CR>
 
 # Fuzzy Finder
 nnoremap <silent> <space>g <scriptcmd>FuzzyGrep<CR>
