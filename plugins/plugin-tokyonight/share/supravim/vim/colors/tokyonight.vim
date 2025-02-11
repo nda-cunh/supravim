@@ -20,7 +20,6 @@ let g:colors_name = 'tokyonight'
 " }}}
 " Configuration: {{{
 let s:configuration = {}
-let s:configuration.style = get(g:, 'tokyonight_style', 'night')
 let s:configuration.transparent_background = get(g:, 'tokyonight_transparent_background', 0)
 let s:configuration.menu_selection_background = get(g:, 'tokyonight_menu_selection_background', 'green')
 let s:configuration.disable_italic_comment = get(g:, 'tokyonight_disable_italic_comment', 0)
@@ -30,8 +29,8 @@ let s:configuration.current_word = get(g:, 'tokyonight_current_word', get(g:, 't
 " }}}
 " Palette: {{{
 "
-if s:configuration.style ==# 'night'
-  let s:palette = {
+
+let s:palette = {
         \ 'black':      ['#06080a',   '237',  'DarkGrey'],
         \ 'bg0':        ['#1a1b26',   '235',  'Black'],
         \ 'bg1':        ['#232433',   '236',  'DarkGrey'],
@@ -54,31 +53,6 @@ if s:configuration.style ==# 'night'
         \ 'grey':       ['#444B6A',   '246',  'LightGrey'],
         \ 'none':       ['NONE',      'NONE', 'NONE']
         \ }
-elseif s:configuration.style ==# 'storm'
-  let s:palette = {
-        \ 'black':      ['#06080a',   '237',  'DarkGrey'],
-        \ 'bg0':        ['#24283b',   '235',  'Black'],
-        \ 'bg1':        ['#282d42',   '236',  'DarkGrey'],
-        \ 'bg2':        ['#2f344d',   '236',  'DarkGrey'],
-        \ 'bg3':        ['#333954',   '237',  'DarkGrey'],
-        \ 'bg4':        ['#3a405e',   '237',  'Grey'],
-        \ 'bg_red':     ['#ff7a93',   '203',  'Red'],
-        \ 'diff_red':   ['#803d49',   '52',   'DarkRed'],
-        \ 'bg_green':   ['#b9f27c',   '107',  'Green'],
-        \ 'diff_green': ['#618041',   '22',   'DarkGreen'],
-        \ 'bg_blue':    ['#7da6ff',   '110',  'Blue'],
-        \ 'diff_blue':  ['#3e5380',   '17',   'DarkBlue'],
-        \ 'fg':         ['#a9b1d6',   '250',  'White'],
-        \ 'red':        ['#F7768E',   '203',  'Red'],
-        \ 'orange':     ['#FF9E64',   '215',  'Orange'],
-        \ 'yellow':     ['#E0AF68',   '179',  'Yellow'],
-        \ 'green':      ['#9ECE6A',   '107',  'Green'],
-        \ 'blue':       ['#7AA2F7',   '110',  'Blue'],
-        \ 'purple':     ['#ad8ee6',   '176',  'Magenta'],
-        \ 'grey':       ['#444B6A',   '246',  'LightGrey'],
-        \ 'none':       ['NONE',      'NONE', 'NONE']
-        \ }
-endif
 
 " }}}
 " Function: {{{
