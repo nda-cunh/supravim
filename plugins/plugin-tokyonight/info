@@ -8,4 +8,4 @@ optional_dependency:
 exclude_package: 
 binary: plugin-tokyonight
 size_tar: 
-size_installed: 152656
+size_installed: 146784

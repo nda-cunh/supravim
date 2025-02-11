@@ -6,17 +6,17 @@
 " License: MIT License
 " =============================================================================
 
-let g:airline#themes#tokyonight#palette = {}
+let g:airline#themes#tokyostorm#palette = {}
 
 let s:foreground = [ '#a9b1d6', 250 ]
-let s:background = [ '#1a1b26', 235 ]
-let s:background_alt = [ '#232433', 236 ]
-let s:background_grey = [ '#444B6A', 238 ]
-let s:red = [ '#F7768E', 203 ]
-let s:yellow = [ '#E0AF68', 179 ]
-let s:green = [ '#9ECE6A', 107 ]
-let s:blue = [ '#7AA2F7', 110 ]
-let s:purple = [ '#ad8ee6', 176 ]
+	let s:background = [ '#24283b', 235 ]
+	let s:background_alt = [ '#2c3047', 236 ]
+	let s:background_grey = [ '#444B6A', 238 ]
+	let s:red = [ '#F7768E', 203 ]
+	let s:yellow = [ '#E0AF68', 179 ]
+	let s:green = [ '#9ECE6A', 107 ]
+	let s:blue = [ '#7AA2F7', 110 ]
+	let s:purple = [ '#ad8ee6', 176 ]
 "                                     guifg            guibg                 ctermfg          ctermbg
 let s:airline_mode_normal         = [ s:background[0], s:blue[0],            s:background[1], s:blue[1]            ]
 let s:airline_mode_insert         = [ s:background[0], s:green[0],           s:background[1], s:green[1]           ]
@@ -31,12 +31,12 @@ function! s:tokyonight_color_map(mode)
 	return airline#themes#generate_color_map(a:mode, s:airline_info, s:airline_statusline)
 endfunction
 
-let g:airline#themes#tokyonight#palette.normal = s:tokyonight_color_map(s:airline_mode_normal)
-let g:airline#themes#tokyonight#palette.insert = s:tokyonight_color_map(s:airline_mode_insert)
-let g:airline#themes#tokyonight#palette.replace = s:tokyonight_color_map(s:airline_mode_replace)
-let g:airline#themes#tokyonight#palette.inactive = s:tokyonight_color_map(s:airline_mode_inactive)
-let g:airline#themes#tokyonight#palette.visual = s:tokyonight_color_map(s:airline_mode_visual)
-let g:airline#themes#tokyonight#palette.terminal = s:tokyonight_color_map(s:airline_mode_insert)
-let g:airline#themes#tokyonight#palette.normal.airline_term = s:airline_statusline
-let g:airline#themes#tokyonight#palette.terminal.airline_term = s:airline_statusline
-let g:airline#themes#tokyonight#palette.visual.airline_term = s:airline_statusline
+let g:airline#themes#tokyostorm#palette.normal = s:tokyonight_color_map(s:airline_mode_normal)
+let g:airline#themes#tokyostorm#palette.insert = s:tokyonight_color_map(s:airline_mode_insert)
+let g:airline#themes#tokyostorm#palette.replace = s:tokyonight_color_map(s:airline_mode_replace)
+let g:airline#themes#tokyostorm#palette.inactive = s:tokyonight_color_map(s:airline_mode_inactive)
+let g:airline#themes#tokyostorm#palette.visual = s:tokyonight_color_map(s:airline_mode_visual)
+let g:airline#themes#tokyostorm#palette.terminal = s:tokyonight_color_map(s:airline_mode_insert)
+let g:airline#themes#tokyostorm#palette.normal.airline_term = s:airline_statusline
+let g:airline#themes#tokyostorm#palette.terminal.airline_term = s:airline_statusline
+let g:airline#themes#tokyostorm#palette.visual.airline_term = s:airline_statusline
