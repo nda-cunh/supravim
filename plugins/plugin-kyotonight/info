@@ -1,0 +1,11 @@
+name: plugin-kyotonight
+version: 1.0
+arch: any
+author: https://github.com/shrikecode/kyotonight.vim/tree/master
+description: It's a theme
+dependency: 
+optional_dependency: 
+exclude_package: 
+binary: 
+size_tar: 
+size_installed: 39225
