@@ -17,9 +17,6 @@ filetype plugin indent on
 #--------------- jeu de couleur ---------------"
 syntax on
 
-exec 'colorscheme ' .. g:sp_theme
-set background=dark
-set t_Co=256
 
 if (has("termguicolors"))
 	set termguicolors
@@ -28,6 +25,10 @@ endif
 if g:sp_nobackground == true
 	hi Normal guibg=NONE ctermbg=NONE
 endif
+
+set t_Co=256
+exec 'colorscheme ' .. g:sp_theme
+set background=dark
 
 #------------- Cursor Parts ------------"
 &t_SI = "\<Esc>[5 q"
