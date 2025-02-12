@@ -1,11 +1,11 @@
 name: plugin-tokyonight
 version: 1.0
 arch: amd64-Linux
-author: mpendilh
-description: It's a theme
+author: mpendilh https://github.com/ghifarit53/tokyonight-vim
+description: A clean dark vim colors
 dependency: 
 optional_dependency: 
 exclude_package: 
 binary: plugin-tokyonight
 size_tar: 
-size_installed: 146784
+size_installed: 146823
