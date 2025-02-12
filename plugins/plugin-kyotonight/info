@@ -1,11 +1,11 @@
 name: plugin-kyotonight
 version: 1.0
 arch: any
-author: https://github.com/shrikecode/kyotonight.vim/tree/master
-description: It's a theme
+author: https://github.com/shrikecode/kyotonight.vim
+description: theme that is a marriage of Tokyo Night and Nord Theme.
 dependency: 
 optional_dependency: 
 exclude_package: 
-binary: 
+binary: plugin-kyotonight
 size_tar: 
-size_installed: 39225
+size_installed: 39489
