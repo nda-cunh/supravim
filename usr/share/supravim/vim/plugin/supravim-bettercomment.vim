@@ -20,4 +20,4 @@ def HighlightComments()
 
 enddef
 
-autocmd BufReadPost,BufNewFile *.c,*.cpp,*.js,*.vala,*.ts,*.rs call HighlightComments()
+autocmd BufReadPost,BufNewFile *.h,*.hpp,*.c,*.cpp,*.js,*.vala,*.ts,*.rs call HighlightComments()
