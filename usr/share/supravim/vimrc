@@ -57,10 +57,10 @@ inoremap <C-Left>		<scriptcmd>tabprevious<CR>
 
 #--------------- Racourcis --------------"
 nmap	<c-f>		fl
-nnoremap <C-Up>		<ScriptCmd>call Ctags()<CR>
-nnoremap <C-Down>	<Esc><C-T>
-inoremap <C-Up>		<Esc>:call Ctags()<CR>i
-inoremap <C-Down>	<Esc><C-T>i
+nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
+nnoremap <C-Down>	<scriptcmd>pop<cr>
+inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
+inoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <c-q>		<cmd>q!<CR>
 noremap <c-q>		<cmd>q!<CR>
 inoremap <c-s>		<cmd>w!<CR><esc>
@@ -81,7 +81,7 @@ nnoremap <S-Down>	<C-w><Down>
 inoremap <TAB>		<TAB>
 inoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
 nnoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
-nnoremap <S-t>		<Esc>:term ++rows=15<CR>
+nnoremap <S-t>		<scriptcmd>term ++rows=15<CR>
 nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
@@ -320,12 +320,12 @@ def g:Compile()
 	silent g:Make('all')
 enddef
 
-imap <C-F5>		<esc>:Gdbs<CR>
-map <C-F5>		<esc>:Gdbs<CR>
+imap <C-F5>		<ScriptCmd>Gdbs<CR>
+map <C-F5>		<ScriptCmd>Gdbs<CR>
 
 command -nargs=0 -bar Gdbs :call Gdbf()
 
-def g:Gdbf()
+def Gdbf()
 	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
 		echo "Tu veux débugguer quoi là ?"
 	else
