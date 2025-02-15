@@ -164,10 +164,15 @@ def apply_cfg():
                     break
 
                 option, file, value = line[:-1].split(':')
-                if value in ['true', 'false']:
-                    enable_disable([option], value)
-                else:
-                    change_variables([f'{option} = {value}'])
+
+                with open(file, 'r') as f:
+                    content = f.read()
+                    to_replace = re.findall(
+                        fr'^g:sp_{option} = .+?$',
+                        content, re.M | re.DOTALL)[0]
+                replacement = to_replace.split('=')[0] + '= ' + value
+
+                replace_in_file(file, to_replace, replacement)
         os.unlink(cfg_fpath)
 
 
