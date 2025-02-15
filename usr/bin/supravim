@@ -76,17 +76,17 @@ def load_options_from_file(file_name: str):
         return
     try:
         with open(file_name, 'r') as file:
-            content = file.read()
-            matches = re.findall(r'^g:sp_[a-zA-Z_]+ = (?:[a-zA-Z0-9\']+).+$',
-                                 content, re.RegexFlag.MULTILINE)
-            for match in matches:
-                name, _, value = match[5:].split()[0:3]
-                sv_options[name] = [file_name, value]
-                if '#' in match:
-                    _, desc = match.split('#')
-                else:
-                    desc = ''
-                sv_options[name].append(desc)
+            for line in file.readlines():
+                matches = re.match(r'^g:sp_(?P<name>[a-zA-Z_]+)\s*?=\s*?'
+                                   r'(?P<value>true|false|\d+(\.\d+)?|\'.*?\'|".*?")\s*?'
+                                   r'(#\s*(?P<comment>.+?)\s*)?$', line,
+                                   re.DOTALL)
+                if not matches:
+                    continue
+                name = matches.group('name')
+                value = matches.group('value')
+                desc = matches.group('comment')
+                sv_options[name] = [file_name, value, desc]
     except FileNotFoundError:
         print("")
 
@@ -170,7 +170,10 @@ def apply_cfg():
                     to_replace = re.findall(
                         fr'^g:sp_{option} = .+?$',
                         content, re.M | re.DOTALL)[0]
-                replacement = to_replace.split('=')[0] + '= ' + value
+                if sv_options[option][2]:
+                    replacement = f'g:sp_{option} = {value} # {sv_options[option][2]}'
+                else:
+                    replacement = f'g:sp_{option} = {value}'
 
                 replace_in_file(file, to_replace, replacement)
         os.unlink(cfg_fpath)
@@ -232,7 +235,7 @@ def change_variables(elements: list[str]):
 
         value = value.replace('\n', '')
 
-        reg = re.compile(f'\ng:sp_{name} = \'.*\'')
+        reg = re.compile(f'\ng:sp_{name} = (?:\'.*?\'|".*?")')
 
         matches = reg.findall(data)
 
