@@ -253,11 +253,24 @@ def change_variables(elements: list[str]):
 #  Change Theme
 # ---------------
 def changeTheme(value):
-    to_replace = 'sp_theme = ' + sv_options['theme'][1]
-    replacement = "sp_theme = '" + value + "'"
-    replace_in_file(rc_path, to_replace, replacement)
-    print(f"Setting theme to: \033[96;1m{value}\033[m")
+    reg_theme = re.compile(r'^g:sp_theme = (?:\'.+?\'|".+?")', re.M | re.DOTALL)
+    reg_theme_bg = re.compile(r'^set background=(?:dark|light)', re.M | re.DOTALL)
 
+    theme_elems = value.rsplit('-', 1)
+    theme_bg = 'dark'
+    if len(theme_elems) > 1 and theme_elems[1] in ['light', 'dark']:
+        value = theme_elems[0]
+        theme_bg = theme_elems[1]
+
+    with open(rc_path, 'r') as file:
+        data = file.read()
+        data = re.sub(reg_theme, f'g:sp_theme = \'{value}\'', data)
+        data = re.sub(reg_theme_bg, f'set background={theme_bg}', data)
+
+    with open(rc_path, 'w') as file:
+        file.write(data)
+
+    print(f"Setting theme to: \033[96;1m{value} {theme_bg}\033[m")
 
 # ---------------
 #     Status
