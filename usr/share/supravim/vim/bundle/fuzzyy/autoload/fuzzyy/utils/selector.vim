@@ -114,6 +114,34 @@ function IsBinaryBlob(path)
     return v:false
 endfunction
 
+# Get filetype from modelines, use when not detected via filetypedetect autocmd
+export def FTDetectModelines(content: list<string>): string
+    if ( !&modeline || &modelines == 0 ) && !exists('g:loaded_securemodelines')
+        return ''
+    endif
+    if empty(content)
+        return ''
+    endif
+    try
+        var modelines = len(content) >= &modelines ? &modelines : len(content)
+        var pattern = '\M\C\s\?\(Vim\|vim\|vi\|ex\):\.\*\(ft\|filetype\)=\w\+'
+        var matched = content[0 : modelines - 1]->matchstr(pattern)
+        if empty(matched)
+            matched = content[len(content) - modelines : -1]->matchstr(pattern)
+        endif
+        if !empty(matched)
+            return matched->trim()->split('\M\(\s\+\|:\)')->filter((_, val) => {
+                    return val =~# '^\M\C\(ft\|filetype\)=\w\+$'
+                })[-1]->split('=')[-1]
+        endif
+    catch
+        echohl ErrorMsg
+        echom 'fuzzyy:' v:exception .. ' ' .. v:throwpoint
+        echohl None
+    endtry
+    return ''
+enddef
+
 # Search pattern @pattern in a list of strings @li
 # if pattern is empty, return [li, []]
 # params:
@@ -323,7 +351,7 @@ enddef
 # For split callbacks
 def CloseTab(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
-        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
@@ -333,13 +361,14 @@ def CloseTab(wid: number, result: dict<any>)
             execute 'tabnew'
             execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
-            execute 'tabnew ' .. buf
+            execute 'tabnew ' .. fnameescape(buf)
         else
             var path = cwd .. '/' .. buf
-            execute 'tabnew ' .. path
+            execute 'tabnew ' .. fnameescape(path)
         endif
-        if str2nr(linenr) > 0
-            exe 'norm! ' .. linenr .. 'G'
+        if str2nr(line) > 0
+            cursor(str2nr(line), str2nr(col))
+            exe 'norm! ^'
             exe 'norm! zz'
         endif
     endif
@@ -347,7 +376,7 @@ enddef
 
 def CloseVSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
-        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
@@ -358,13 +387,14 @@ def CloseVSplit(wid: number, result: dict<any>)
             execute 'vnew'
             execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
-            execute 'vsp ' .. buf
+            execute 'vsp ' .. fnameescape(buf)
         else
             var path = cwd .. '/' .. buf
-            execute 'vsp ' .. path
+            execute 'vsp ' .. fnameescape(path)
         endif
-        if str2nr(linenr) > 0
-            exe 'norm! ' .. linenr .. 'G'
+        if str2nr(line) > 0
+            cursor(str2nr(line), str2nr(col))
+            exe 'norm! ^'
             exe 'norm! zz'
         endif
     endif
@@ -372,7 +402,7 @@ enddef
 
 def CloseSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
-        var [buf, linenr] = split(result.cursor_item .. ':0', ':')[0 : 1]
+        var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
             buf = strcharpart(buf, devicon_char_width + 1)
         endif
@@ -383,13 +413,14 @@ def CloseSplit(wid: number, result: dict<any>)
             execute 'new'
             execute 'buffer ' .. bufnr
         elseif cwd ==# getcwd()
-            execute 'sp ' .. buf
+            execute 'sp ' .. fnameescape(buf)
         else
             var path = cwd .. '/' .. buf
-            execute 'sp ' .. path
+            execute 'sp ' .. fnameescape(path)
         endif
-        if str2nr(linenr) > 0
-            exe 'norm! ' .. linenr .. 'G'
+        if str2nr(line) > 0
+            cursor(str2nr(line), str2nr(col))
+            exe 'norm! ^'
             exe 'norm! zz'
         endif
     endif
