@@ -9,11 +9,10 @@ var cur_pattern: string
 var last_pattern: string
 var in_loading: number
 var cwd: string
-var cwdlen: number
 var cur_result: list<string>
 var jid: job
 var menu_wid: number
-var files_update_tid: number
+var update_tid: number
 var cache: dict<any>
 var matched_hl_offset = 0
 var devicon_char_width = devicons.GetDeviconCharWidth()
@@ -50,7 +49,7 @@ def Select(wid: number, result: list<any>)
     endif
     var path = cwd .. '/' .. relative_path
     selector.MoveToUsableWindow()
-    exe 'edit ' .. path
+    exe 'edit ' .. fnameescape(path)
 enddef
 
 def AsyncCb(result: list<any>)
@@ -112,9 +111,17 @@ def Preview(wid: number, opts: dict<any>)
     if selector.IsBinary(path)
         noautocmd popup_settext(preview_wid, 'Cannot preview binary file')
     else
-        noautocmd popup_settext(preview_wid, readfile(path, '', 1000))
+        var content = readfile(path, '', 1000)
+        noautocmd popup_settext(preview_wid, content)
+        setwinvar(preview_wid, '&filetype', '')
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
-        noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
+        noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist nowrap')
+        if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
+            var modelineft = selector.FTDetectModelines(content)
+            if !empty(modelineft)
+                win_execute(preview_wid, 'set filetype=' .. modelineft)
+            endif
+        endif
     endif
     win_execute(preview_wid, 'norm! gg')
 enddef
@@ -153,7 +160,7 @@ enddef
 
 def JobExitCb(id: job, status: number)
     in_loading = 0
-    timer_stop(files_update_tid)
+    timer_stop(update_tid)
     if last_result_len <= 0
         selector.UpdateMenu(ProcessResult(cur_result, 100), [])
     endif
@@ -190,7 +197,7 @@ def Close(wid: number, opts: dict<any>)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
-    timer_stop(files_update_tid)
+    timer_stop(update_tid)
 enddef
 
 export def Start(opts: dict<any> = {})
@@ -199,7 +206,6 @@ export def Start(opts: dict<any> = {})
     cur_pattern = ''
     last_pattern = '@!#-='
     cwd = len(get(opts, 'cwd', '')) > 0 ? opts.cwd : getcwd()
-    cwdlen = len(cwd)
     in_loading = 1
     var wids = selector.Start([], extend(opts, {
         select_cb: function('Select'),
@@ -221,7 +227,6 @@ export def Start(opts: dict<any> = {})
     endif
     JobStart(cwd, cmd)
     timer_start(50, function('UpdateMenu'))
-    files_update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
+    update_tid = timer_start(400, function('UpdateMenu'), {repeat: -1})
     # Profiling()
 enddef
-

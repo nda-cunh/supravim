@@ -6,7 +6,6 @@ var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
 var hlcursor: dict<any>
-var exists_buffers = []
 export var active = false
 
 # user can register callback for any key
@@ -39,16 +38,28 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     endif
 enddef
 
-# restore things to normal
-def Restore()
-    # restore cursor
+# Use to hide the cursor while popups active
+def HideCursor()
+    # terminal cursor
+    t_ve = &t_ve
+    setlocal t_ve=
+    # gui cursor
+    if len(hlget('Cursor')) > 0
+        hlcursor = hlget('Cursor')[0]
+        hlset([{name: 'Cursor', cleared: true}])
+    endif
+enddef
+
+# Use to restore cursor when closing popups
+def ShowCursor()
+    # terminal cursor
     if &t_ve != t_ve
         &t_ve = t_ve
     endif
+    # gui cursor
     if len(hlget('Cursor')) > 0 && get(hlget('Cursor')[0], 'cleared', false)
         hlset([hlcursor])
     endif
-    active = false
 enddef
 
 # Called usually when popup window is closed
@@ -67,7 +78,10 @@ def GeneralPopupCallback(wid: number, select: any)
         wins[key] = -1
     endfor
 
-    Restore()
+    # restore things to normal
+    ShowCursor()
+    active = false
+
     # only press enter select will be a list
     var has_selection = false
     if type(select) == v:t_list
@@ -312,7 +326,7 @@ def CreatePopup(args: dict<any>): number
     endif
 
     # we will put user callback in close_funcs, and call it in GeneralPopupCallback
-    for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars', 
+    for key in ['filter', 'border', 'borderhighlight', 'highlight', 'borderchars',
     'scrollbar', 'padding', 'wrap', 'zindex', 'title']
         if has_key(args, key)
             opts[key] = args[key]
@@ -401,7 +415,6 @@ def NewPopup(args: dict<any>): list<number>
     setbufvar(bufnr, '&modifiable', 1)
 
     popup_wins[wid].bufnr = bufnr
-    add(exists_buffers, bufnr)
 
     return [wid, bufnr]
 enddef
@@ -687,12 +700,7 @@ export def PopupSelection(opts: dict<any>): dict<any>
     popup_wins[wins.menu].partids = wins
     popup_wins[wins.prompt].partids = wins
 
-    t_ve = &t_ve
-    setlocal t_ve=
-    # hide cursor in macvim or other guivim
-    if len(hlget('Cursor')) > 0
-        hlcursor = hlget('Cursor')[0]
-        hlset([{name: 'Cursor', cleared: true}])
-    endif
+    HideCursor()
+
     return wins
 enddef

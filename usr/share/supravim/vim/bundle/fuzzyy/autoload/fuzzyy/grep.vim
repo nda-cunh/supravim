@@ -147,13 +147,13 @@ def Build()
 enddef
 
 var cwd: string
-var cwdlen = -1
+var cwdlen: number
 var cur_pattern = ''
 var cur_result = []
 var menu_wid = -1
 var cur_menu_item = ''
 var job_running = 0
-var ag_update_tid = 0
+var update_tid = 0
 var last_pattern = ''
 var last_result_len = -1
 var last_result = []
@@ -201,7 +201,7 @@ def Reducer(pattern: string, acc: dict<any>, val: string): dict<any>
     var absolute_path = fnamemodify(path, ':p')
     var str = strpart(val, seq[2])
     var centerd_str = str
-    var relative_path = strpart(absolute_path, len(cwd) + 1)
+    var relative_path = strpart(absolute_path, cwdlen + 1)
 
     var prefix = relative_path .. seq[0]
     var col_list = [col + len(prefix), len(pattern)]
@@ -327,9 +327,17 @@ def Preview(wid: number, opts: dict<any>)
 
     if path != last_path
         var preview_bufnr = winbufnr(preview_wid)
-        noautocmd popup_settext(preview_wid, readfile(path))
+        var content = readfile(path)
+        noautocmd popup_settext(preview_wid, content)
+        setwinvar(preview_wid, '&filetype', '')
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
         noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
+        if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
+            var modelineft = selector.FTDetectModelines(content)
+            if !empty(modelineft)
+                win_execute(preview_wid, 'set filetype=' .. modelineft)
+            endif
+        endif
     endif
     if path != last_path || linenr != last_linenr
         win_execute(preview_wid, 'norm! ' .. linenr .. 'G')
@@ -339,7 +347,7 @@ def Preview(wid: number, opts: dict<any>)
 enddef
 
 def Select(wid: number, result: list<any>)
-    var [relative_path, linenr, _] = ParseResult(result[0])
+    var [relative_path, line, col] = ParseResult(result[0])
     if relative_path == null
         return
     endif
@@ -347,8 +355,10 @@ def Select(wid: number, result: list<any>)
         relative_path = strcharpart(relative_path, devicon_char_width + 1)
     endif
     var path = cwd .. '/' .. relative_path
-    exe 'edit ' .. path
-    exe 'norm! ' .. linenr .. 'G'
+    selector.MoveToUsableWindow()
+    exe 'edit ' .. fnameescape(path)
+    cursor(line, col)
+    exe 'norm! ^'
     exe 'norm! zz'
 enddef
 
@@ -410,7 +420,7 @@ def UpdateMenu(...li: list<any>)
 enddef
 
 def CloseCb(...li: list<any>)
-    timer_stop(ag_update_tid)
+    timer_stop(update_tid)
     if type(jid) == v:t_job && job_status(jid) == 'run'
         job_stop(jid)
     endif
@@ -436,7 +446,7 @@ export def Start(opts: dict<any> = {})
     cur_menu_item = ''
     job_running = 0
 
-    ag_update_tid = 0
+    update_tid = 0
     last_pattern = ''
     last_result_len = -1
     last_result = []
@@ -456,7 +466,7 @@ export def Start(opts: dict<any> = {})
     endif
     preview_wid = wids.preview
     setwinvar(menu_wid, '&wrap', 0)
-    ag_update_tid = timer_start(100, function('UpdateMenu'), {repeat: -1})
+    update_tid = timer_start(100, function('UpdateMenu'), {repeat: -1})
     if len(get(opts, 'search', '')) > 0
         popup.SetPrompt(opts.search)
     endif
