@@ -1,0 +1,14 @@
+.cross_type {
+	background-color: #66F;
+	border-radius:10px;
+}
+
+.circle_type {
+	border-radius:10px;
+	background-color: #F66;
+}
+
+.none_type {
+	border-radius:10px;
+	background-color: grey;
+}

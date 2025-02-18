@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+	<gresource prefix="/">
+		<file compressed="true">data/style.css</file>
+		<file compressed="true">data/circle.svg</file>
+		<file compressed="true">data/cross.svg</file>
+  </gresource>
+</gresources>
