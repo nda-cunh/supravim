@@ -416,13 +416,11 @@ augroup nerdtreeconcealbrackets
 augroup END
 
 # ----------------- AIR LINE ------------------"
-g:airline_section_z = airline#section#create(['%p/100%%', ' Line: %l', 'hunks', ' Col:%c', ' SupraVim'])
+g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
 if expand('%:e') == ''
-	g:airline_section_warning = airline#section#create(['SupraVim'])
-	g:airline_section_z = airline#section#create(['%p/100%%', ' Line: %l', 'hunks', ' Col:%c'])
-	g:airline_section_b = airline#section#create([' im'])
+	g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
 endif
-g:airline_section_b = airline#section#create([' im'])
+g:airline_section_b = airline#section#create(['SupraVim'])
 g:airline_left_sep = ''
 g:airline_left_alt_sep = ''
 g:airline_right_sep = ''
