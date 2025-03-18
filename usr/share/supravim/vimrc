@@ -327,7 +327,7 @@ command -nargs=0 -bar Gdbs :call Gdbf()
 
 def Gdbf()
 	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
-		echo "Tu veux débugguer quoi là ?"
+		echo "Tu veux debugger quoi là ?"
 	else
 		set splitbelow nosplitbelow
 		set splitright nosplitright
