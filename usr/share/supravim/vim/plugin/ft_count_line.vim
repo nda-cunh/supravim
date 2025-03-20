@@ -46,16 +46,21 @@ if g:sp_count_line == true
 	autocmd BufEnter *.c,*.h call Ft_count_line()
 endif
 
-autocmd CursorMoved,CursorMovedI,TextChanged,TextChangedI,WinScrolled,VimResized *.c,*.h silent! call Ft_count_line()
+augroup Ft_count_line
+	autocmd!
+	autocmd CursorMoved,CursorMovedI,TextChanged,TextChangedI,WinScrolled,VimResized *.c,*.h silent! call Ft_count_line()
+augroup END
 
 def SimpleSupravimChangeOption()
 	if g:supravim_option_changed == 'count_line'
 		if g:supravim_option_value == 'true'
 			g:sp_count_line = true
 			call Ft_count_line()
+			auto Ft_count_line
 		else
 			g:sp_count_line = false
 			prop_clear(1, line('$'), {type: 'ft_count_line'})
+			auto! Ft_count_line
 		endif
 	endif
 enddef
