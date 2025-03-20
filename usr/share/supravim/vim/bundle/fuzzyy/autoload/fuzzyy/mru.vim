@@ -4,14 +4,11 @@ import autoload './utils/selector.vim'
 import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
-var devicon_char_width = devicons.GetDeviconCharWidth()
+var enable_devicons = devicons.enabled
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
 var menu_wid: number
-
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
 
 # Options
 var file_exclude = exists('g:fuzzyy_mru_exclude_file')
@@ -24,7 +21,7 @@ var dir_exclude = exists('g:fuzzyy_mru_exclude_dir')
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
     if enable_devicons
-        result = strcharpart(result, devicon_char_width + 1)
+        result = devicons.RemoveDevicon(result)
     endif
     if !has_key(opts.win_opts.partids, 'preview')
         return
@@ -43,13 +40,13 @@ def Preview(wid: number, opts: dict<any>)
     endif
     var preview_bufnr = winbufnr(preview_wid)
     if selector.IsBinary(path)
-        noautocmd popup_settext(preview_wid, 'Cannot preview binary file')
+        popup_settext(preview_wid, 'Cannot preview binary file')
     else
         var content = readfile(path)
-        noautocmd popup_settext(preview_wid, content)
+        popup_settext(preview_wid, content)
         setwinvar(preview_wid, '&filetype', '')
         win_execute(preview_wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
-        noautocmd win_execute(preview_wid, 'silent! setlocal nospell nolist')
+        win_execute(preview_wid, 'silent! setlocal nospell nolist')
         if empty(getwinvar(preview_wid, '&filetype')) || getwinvar(preview_wid, '&filetype') == 'conf'
             var modelineft = selector.FTDetectModelines(content)
             if !empty(modelineft)
@@ -64,7 +61,7 @@ def Close(wid: number, result: dict<any>)
     if has_key(result, 'selected_item')
         var path = result['selected_item']
         if enable_devicons
-            path = strcharpart(path, devicon_char_width + 1)
+            path = devicons.RemoveDevicon(path)
         endif
         selector.MoveToUsableWindow()
         if cwd_only

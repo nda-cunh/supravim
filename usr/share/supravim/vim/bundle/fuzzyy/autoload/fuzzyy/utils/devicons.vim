@@ -1,11 +1,26 @@
 vim9script
 
 var devicon_char_width = 0
-var devicon_width = 0
-if exists('g:WebDevIconsGetFileTypeSymbol')
-    var test_devicon = g:WebDevIconsGetFileTypeSymbol('a.lua')
+var devicon_byte_width = 0
+
+# Options
+var glyph_func = exists('g:fuzzyy_devicons_glyph_func') ? g:fuzzyy_devicons_glyph_func : (
+    exists('g:WebDevIconsGetFileTypeSymbol') ? 'g:WebDevIconsGetFileTypeSymbol' : ''
+)
+var color_func = exists('g:fuzzyy_devicons_color_func') ? g:fuzzyy_devicons_color_func : ''
+
+export var enabled = exists('g:fuzzyy_devicons') && !empty(glyph_func) ?
+    g:fuzzyy_devicons : !empty(glyph_func)
+
+export var GetDevicon: func
+if !empty(glyph_func)
+    GetDevicon = function(glyph_func)
+endif
+
+if enabled
+    var test_devicon = GetDevicon('a.lua')
     devicon_char_width = strcharlen(test_devicon)
-    devicon_width = len(test_devicon)
+    devicon_byte_width = strlen(test_devicon)
 endif
 
 def SetHl()
@@ -62,8 +77,12 @@ var devicons_color_table = {
 var others_color = 'fuzzyy_yellow'
 
 export def AddColor(wid: number)
+    if !empty(color_func)
+        win_execute(wid, color_func .. '()')
+        return
+    endif
     for ft in keys(devicons_color_table)
-        var icon = g:WebDevIconsGetFileTypeSymbol(ft)
+        var icon = GetDevicon(ft)
         var charnr = char2nr(icon)
         var charhex = printf('%x', charnr)
         try
@@ -72,15 +91,21 @@ export def AddColor(wid: number)
     endfor
 enddef
 
-export def GetDeviconCharWidth(): number
-    return devicon_char_width
+export def GetDeviconOffset(): number
+    return devicon_byte_width + 1
 enddef
 
-export def GetDeviconWidth(): number
-    return devicon_width
+export def RemoveDevicon(str: string): string
+    return strcharpart(str, devicon_char_width + 1)
 enddef
 
 export def AddDevicons(li: list<string>): list<string>
-    map(li, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+    if !empty(li) && stridx(li[0], ':') != -1
+        map(li, (_, val) => {
+            return GetDevicon(split(val, ':')[0]) .. ' ' .. val
+        })
+    else
+        map(li, 'GetDevicon(v:val) .. " " .. v:val')
+    endif
     return li
 enddef
