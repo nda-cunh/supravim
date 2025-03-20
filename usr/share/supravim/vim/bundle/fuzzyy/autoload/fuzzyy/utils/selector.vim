@@ -3,15 +3,12 @@ vim9script
 import autoload './popup.vim'
 import './devicons.vim'
 
-var fzf_list: list<string>
+var raw_list: list<string>
 var cwd: string
 var menu_wid: number
 var prompt_str: string
-var matched_hl_offset = 0
 var menu_hl_list: list<any>
-var devicon_char_width = devicons.GetDeviconCharWidth()
-var enable_devicons = exists('g:fuzzyy_devicons') && exists('g:WebDevIconsGetFileTypeSymbol') ?
-    g:fuzzyy_devicons : exists('g:WebDevIconsGetFileTypeSymbol')
+var enable_devicons: bool
 var reuse_windows = exists('g:fuzzyy_reuse_windows')
     && type(g:fuzzyy_reuse_windows) == v:t_list ?
     g:fuzzyy_reuse_windows : ['netrw']
@@ -22,10 +19,7 @@ var root_patterns = exists('g:fuzzyy_root_patterns')
     && type(g:fuzzyy_root_patterns) == v:t_list ?
     g:fuzzyy_root_patterns : ['.git', '.hg', '.svn']
 
-if enable_devicons
-    matched_hl_offset = devicons.GetDeviconWidth() + 1
-endif
-export var windows: dict<any>
+var wins: dict<any>
 
 var enable_dropdown = exists('g:fuzzyy_dropdown') ? g:fuzzyy_dropdown : 0
 
@@ -56,12 +50,12 @@ enddef
 # return:
 # - the line under the cursor
 export def MenuGetCursorItem(stripped: bool): string
-    var bufnr = winbufnr(windows.menu)
-    var cursorlinepos = line('.', windows.menu)
+    var bufnr = winbufnr(wins.menu)
+    var cursorlinepos = line('.', wins.menu)
     var bufline = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
     if stripped
         if enable_devicons
-            bufline = strcharpart(bufline, devicon_char_width + 1)
+            bufline = devicons.RemoveDevicon(bufline)
         endif
     endif
     return bufline
@@ -315,20 +309,21 @@ export def Close()
     popup_close(menu_wid)
 enddef
 
-export def UpdateFzfList(li: list<string>)
-    fzf_list = li
+export def UpdateList(li: list<string>)
+    raw_list = li
 enddef
 
 def Input(wid: number, args: dict<any>, ...li: list<any>)
     prompt_str = args.str
     menu_hl_list = []
     var ret: list<string>
-    [ret, menu_hl_list] = FuzzySearch(fzf_list, prompt_str)
+    [ret, menu_hl_list] = FuzzySearch(raw_list, prompt_str)
 
     if enable_devicons
-         map(ret, 'g:WebDevIconsGetFileTypeSymbol(v:val) .. " " .. v:val')
+        devicons.AddDevicons(ret)
+        var hl_offset = devicons.GetDeviconOffset()
          menu_hl_list = reduce(menu_hl_list, (a, v) => {
-            v[1] += matched_hl_offset
+            v[1] += hl_offset
             return add(a, v)
          }, [])
     endif
@@ -353,7 +348,7 @@ def CloseTab(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
         var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
+            buf = devicons.RemoveDevicon(buf)
         endif
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
@@ -367,8 +362,11 @@ def CloseTab(wid: number, result: dict<any>)
             execute 'tabnew ' .. fnameescape(path)
         endif
         if str2nr(line) > 0
-            cursor(str2nr(line), str2nr(col))
-            exe 'norm! ^'
+            if str2nr(col) > 0
+                cursor(str2nr(line), str2nr(col))
+            else
+                exe 'norm! ' .. line .. 'G'
+            endif
             exe 'norm! zz'
         endif
     endif
@@ -378,7 +376,7 @@ def CloseVSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
         var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
+            buf = devicons.RemoveDevicon(buf)
         endif
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
@@ -393,8 +391,11 @@ def CloseVSplit(wid: number, result: dict<any>)
             execute 'vsp ' .. fnameescape(path)
         endif
         if str2nr(line) > 0
-            cursor(str2nr(line), str2nr(col))
-            exe 'norm! ^'
+            if str2nr(col) > 0
+                cursor(str2nr(line), str2nr(col))
+            else
+                exe 'norm! ' .. line .. 'G'
+            endif
             exe 'norm! zz'
         endif
     endif
@@ -404,7 +405,7 @@ def CloseSplit(wid: number, result: dict<any>)
     if !empty(get(result, 'cursor_item', ''))
         var [buf, line, col] = split(result.cursor_item .. ':0:0', ':')[0 : 2]
         if enable_devicons
-            buf = strcharpart(buf, devicon_char_width + 1)
+            buf = devicons.RemoveDevicon(buf)
         endif
         var bufnr = bufnr(buf)
         if bufnr > 0 && !filereadable(buf)
@@ -419,11 +420,39 @@ def CloseSplit(wid: number, result: dict<any>)
             execute 'sp ' .. fnameescape(path)
         endif
         if str2nr(line) > 0
-            cursor(str2nr(line), str2nr(col))
-            exe 'norm! ^'
+            if str2nr(col) > 0
+                cursor(str2nr(line), str2nr(col))
+            else
+                exe 'norm! ' .. line .. 'G'
+            endif
             exe 'norm! zz'
         endif
     endif
+enddef
+
+def CloseQuickFix(wid: number, result: dict<any>)
+    var bufnr = winbufnr(wid)
+    var lines: list<any>
+    lines = reverse(getbufline(bufnr, 1, "$"))
+    filter(lines, (_, val) => !empty(val))
+    map(lines, (_, val) => {
+        var [path, line, col] = split(val .. ':1:1', ':')[0 : 2]
+        var text = split(val, ':' .. line .. ':' .. col .. ':')[-1]
+        if enable_devicons
+            if path == text
+                text = devicons.RemoveDevicon(text)
+            endif
+            path = devicons.RemoveDevicon(path)
+        endif
+        var dict = {
+            filename: path,
+            lnum: str2nr(line),
+            col: str2nr(col),
+            text: text }
+        return dict
+    })
+    setqflist(lines)
+    exe 'copen'
 enddef
 
 def SetVSplitClose()
@@ -441,10 +470,16 @@ def SetTabClose()
     Close()
 enddef
 
+def SetQuickFixClose()
+    ReplaceCloseCb(function('CloseQuickFix'))
+    Close()
+enddef
+
 export var split_edit_callbacks = {
     "\<c-v>": function('SetVSplitClose'),
     "\<c-s>": function('SetSplitClose'),
     "\<c-t>": function('SetTabClose'),
+    "\<c-q>": function('SetQuickFixClose'),
 }
 
 export def MoveToUsableWindow(buf: any = null)
@@ -501,9 +536,9 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     opts.input_cb = has_key(opts, 'input_cb') ? opts.input_cb : function('Input')
     opts.dropdown = enable_dropdown
 
-    windows = popup.PopupSelection(opts)
-    menu_wid = windows.menu
-    fzf_list = li_raw
+    wins = popup.PopupSelection(opts)
+    menu_wid = wins.menu
+    raw_list = li_raw
     var li = copy(li_raw)
     if enable_devicons
          devicons.AddDevicons(li)
@@ -520,5 +555,5 @@ export def Start(li_raw: list<string>, opts: dict<any>): dict<any>
     endif
 
     autocmd User PopupClosed ++once Cleanup()
-    return windows
+    return wins
 enddef
