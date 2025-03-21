@@ -4,7 +4,7 @@ import autoload './utils/selector.vim'
 import autoload './utils/popup.vim'
 import autoload './utils/devicons.vim'
 
-var enable_devicons = devicons.enabled
+var enable_devicons = devicons.Enabled()
 
 # Options
 var respect_gitignore = exists('g:fuzzyy_grep_respect_gitignore') ?
@@ -368,7 +368,7 @@ def UpdateMenu(...li: list<any>)
         selector.UpdateMenu([], [])
         last_pattern = cur_pattern
         last_result_len = cur_result_len
-        popup_setoptions(menu_wid, {title: 0})
+        popup_setoptions(menu_wid, {title: ''})
         return
     endif
 
