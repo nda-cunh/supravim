@@ -4,7 +4,7 @@ import autoload './utils/selector.vim'
 import autoload './utils/devicons.vim'
 
 var mru_origin_list: list<string>
-var enable_devicons = devicons.enabled
+var enable_devicons = devicons.Enabled()
 var cwd: string
 var cwd_only: bool
 var cwdlen: number
@@ -90,7 +90,6 @@ def ToggleScope()
         }, [])
     endif
     selector.UpdateMenu(mru_list, [], 1)
-    popup_setoptions(menu_wid, {title: len(mru_list)})
 enddef
 
 var key_callbacks = {
@@ -153,5 +152,4 @@ export def Start(opts: dict<any> = {})
         key_callbacks: extend(key_callbacks, selector.split_edit_callbacks),
     }))
     menu_wid = wids.menu
-    popup_setoptions(menu_wid, {title: len(mru_list)})
 enddef
