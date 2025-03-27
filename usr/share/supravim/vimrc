@@ -155,11 +155,8 @@ set nu
 set incsearch
 set noautochdir
 silent! var project_root = system('suprabear -p')
-if v:shell_error == 0
-	silent! exec 'chdir ' .. project_root
-else
-	set autochdir
-endif
+var suprabear_return = v:shell_error
+silent! exec 'chdir ' .. project_root
 set title
 set wildmenu
 set tabstop=4
@@ -347,18 +344,12 @@ command -nargs=0 -bar Ctags :call Ctags()
 
 set tags=$HOME/.cache/tags
 
-g:notags = false
-def g:Ctags()
-	if g:notags == true 
-		LspDefinition
-		return
-	endif
-	system("suprapack run supratags -y")
-	if v:shell_error == 42
-		LspDefinition
-		g:notags = true
-	else
+def Ctags()
+	if suprabear_return == 0
+		system("supratags --output=" .. expand("$HOME") .. "/.cache/tags")
 		execute "tag " .. expand("<cword>")
+	else
+		LspDefinition
 	endif
 enddef
 
@@ -567,7 +558,7 @@ noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 
 nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
-nnoremap <c-leftmouse>	<leftmouse><cmd>call Ctags()<cr>
+nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
 
 # Popup Menu --------------------------------------
 
