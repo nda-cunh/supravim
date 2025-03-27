@@ -1,11 +1,11 @@
 name: supravim
-version: 5.64
+version: 5.65
 arch: any
 author: nda-cunh
 description: un supraediteur sur vim
-dependency: supramake suprabear supravim-server
+dependency: supramake suprabear supravim-server supratags
 optional_dependency: ccls plugin-autobear plugin-lsp-client supravim-gui plugin-norminette
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 2211082
+size_installed: 2211740
