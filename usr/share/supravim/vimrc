@@ -141,6 +141,7 @@ tnoremap <S-Up>			<C-W>N<C-w><Up>
 tnoremap <S-Down>		<C-W>N<C-w><Down>
 
 #--------------- utilitaires basiques ---------------"
+g:lsp_log_verbose = 0
 set mouse=a
 if g:sp_swap == false 
 	set noswapfile
@@ -176,7 +177,6 @@ set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
-silent! system($HOME .. "/.local/share/supravim/add_config_rc")
 
 #--------------- CLANG COMPLETER ---------------"
 set noinfercase
@@ -312,11 +312,6 @@ def g:Make(rules: string)
 	redraw!
 enddef
 
-def g:Compile()
-	w!
-	silent g:Make('all')
-enddef
-
 imap <C-F5>		<ScriptCmd>Gdbs<CR>
 map <C-F5>		<ScriptCmd>Gdbs<CR>
 
@@ -428,30 +423,16 @@ g:airline#extensions#tabline#right_alt_sep = ''
 
 # ----------------- POPUP ------------------ #
 autocmd VimEnter * CreatePopit()
-hi MyPopupColor ctermfg=cyan
 
-autocmd VimLeave * RemovePopit()
-
-var file_tmp: string
 def CreatePopit()
-	file_tmp = system("strings -n 1 < /dev/urandom | grep -o '[[:alpha:][:digit:]]' | head -c15 | tr -d '\n'")
-	const s = system("suprapack have_update supravim > /tmp/xdfe-" .. file_tmp .. "&")
-	var timer = timer_start(3000, (_) => {
-		CreatePop()
+	job_start(["suprapack", "have_update", "supravim"], {
+		out_cb: (ch: channel, msg: string) => {
+			call CreatePop(msg)
+		}
 	})
 enddef
 
-def RemovePopit()
-	call delete('/tmp/xdfe-' .. file_tmp)
-enddef
-
-def CreatePop()
-    const lst_s = readfile('/tmp/xdfe-' .. file_tmp)
-    call delete('/tmp/xdfe-' .. file_tmp)
-    const s = join(lst_s, "\n")
-    if s == ""
-        return
-    endif
+def CreatePop(s: string)
     popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s, "run: `suprapack update`" ], {
         line: 1,
         col: 500,
@@ -468,7 +449,6 @@ def CreatePop()
         padding: [0, 1, 0, 1]
     })
 enddef
-
 # -----------------   Alt Up/Down   ------------------ #
 def MoveLineDown(mode: string)
 	var array = getline(line("'<"), line("'>"))
