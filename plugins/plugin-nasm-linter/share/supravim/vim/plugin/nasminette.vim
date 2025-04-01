@@ -1,14 +1,11 @@
 vim9script
 
-au BufWritePost *.s,*.asm,*.nasm call Nasminette()
-au BufEnter *.s,*.asm,*.nasm call Nasminette()
-
 highlight NasmPointColor ctermfg=9
 highlight NasmPointColorWarn ctermfg=227
 sign define NasmLinter text=\ ✖ texthl=NasmPointColor
 sign define NasmLinterWarn text=\ ✖ texthl=NasmPointColorWarn
 
-g:error = []
+var g_error = []
 const g:user_name = expand('$USER')
 
 def NasminetteLine(line: string)
@@ -33,24 +30,17 @@ def NasminetteLine(line: string)
 		endif
 	endif
 	var group = [line_nu, msg]
-	call add(g:error, group)
+	call add(g_error, group)
 enddef
 
-def g:Nasminette()
-	sign unplace * 
-	g:error = []
-	var file: string = expand("%:p")
-	var out = system('nasm -L+ -w+all -f elf64 ' .. file .. ' -o /tmp/' .. expand('$USER') .. '_supranasm 1>/dev/stderr')
-	var lines = split(out, '\n')
-	for line in lines
-		call NasminetteLine(line)
-	endfor
+def GotOutput(channel: channel, msg: string)
+	call NasminetteLine(msg)
 enddef
 
 def DisplayNasmErrorMsg()
 	final line_now: number = line('.')
 	final line_end: number = line('$') + 1
-	for error in g:error
+	for error in g_error
 		final line_err = str2nr(error[0])
 		if line_now == 1 && line_err == line_end
 			echo "[Nasm]: " .. error[1]
@@ -64,4 +54,23 @@ def DisplayNasmErrorMsg()
 	endfor
 enddef
 
-autocmd CursorMoved *.s DisplayNasmErrorMsg()
+def g:Nasminette()
+	sign unplace * 
+	g_error = []
+	var file = expand('%:p')
+	if findfile(file, &rtp) == ''
+		return
+	endif
+	job_start(['nasm', '-L+', '-w+all', '-f elf64', expand("%:p"), '-o /tmp/' .. expand('$USER') .. '_supranasm'], {
+		out_cb: GotOutput,
+		err_cb: GotOutput,
+		out_timeout: 3000
+	})
+enddef
+
+augroup Nasminette
+	autocmd!
+	au BufWritePost *.s,*.asm,*.nasm call Nasminette()
+	au BufEnter *.s,*.asm,*.nasm call Nasminette()
+	au CursorMoved *.s DisplayNasmErrorMsg()
+augroup END

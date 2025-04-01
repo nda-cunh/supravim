@@ -1,5 +1,5 @@
 name: plugin-nasm-linter
-version: 1.0
+version: 1.1
 author: nda-cunh
 binary: plugin-nasm-linter
 description: supravim plugin for nasm linter
