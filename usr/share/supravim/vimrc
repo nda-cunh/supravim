@@ -274,7 +274,7 @@ enddef
 
 command -nargs=* -complete=customlist,AutoComplete_gMake Make :call MakeSpecial(<f-args>)
 def AutoComplete_gMake(lead: string, cmdline: string, cursorpos: number): list<string>
-	var content = system("grep -o '^[^%$=]*:' $(suprabear -p)/Makefile | sed 's/\s*://'")
+	var content = system("supramake --print-rules")
 	var index = match(cmdline, '\s')
 	index = match(cmdline, '\s', index + 1)
 	if index == -1
