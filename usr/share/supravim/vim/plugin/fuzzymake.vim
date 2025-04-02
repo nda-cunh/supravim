@@ -7,7 +7,7 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def Items(): list<string>
-	var content = system("grep -o '^[^%$=]*:' $(suprabear -p)/Makefile 2>/dev/null | sed 's/\s*://'")
+	var content = system("supramake --print-rules")
 	var lines = split(content, '\n')
 	return lines
 enddef
@@ -23,3 +23,4 @@ export def Start()
 enddef
 
 noremap <space><f5> <scriptcmd>Start()<cr>
+
