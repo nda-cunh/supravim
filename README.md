@@ -6,6 +6,7 @@ Supravim support a lot of languages and tools, it's a good choice for a beginner
 - C
 - C++
 - vala
+- Asm (nasm)
 - python
 And more... with suprapack module !
 
