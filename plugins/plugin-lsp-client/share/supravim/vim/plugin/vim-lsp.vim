@@ -4,7 +4,7 @@ if executable('lsp_c')
 	au User lsp_setup call lsp#register_server({
 				\ name: 'lsp_c',                                              
 				\ cmd: (server_info) => ['lsp_c'],
-				\ allowlist: ['cpp', 'c'],
+				\ allowlist: ['cpp', 'c', 'tpp'],
 				\ })
 endif
 
