@@ -433,21 +433,7 @@ def CreatePopit()
 enddef
 
 def CreatePop(s: string)
-    popup_create([ strpart("       ", 0, len(s) / 2 - 7) .. "Supravim update", s, "run: `suprapack update`" ], {
-        line: 1,
-        col: 500,
-        pos: 'topright',
-        time: 5500,
-        tabpage: -1,
-        zindex: 300,
-        drag: 1,
-        border: [1],
-        close: 'click',
-        borderhighlight: ['Normal', 'Normal'],
-        borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-        highlight: 'Normal',
-        padding: [0, 1, 0, 1]
-    })
+	call g:SupraNotification(["SupraVim Update", s, "run: `suprapack update`" ])
 enddef
 # -----------------   Alt Up/Down   ------------------ #
 def MoveLineDown(mode: string)
