@@ -26,6 +26,9 @@ if g:sp_checkfetch == true
 
 	def Fetch()
 		if executable("git") == 1 
+			if !filereadable('.git/HEAD')
+				return
+			endif
 			var branch_name_lst = readfile('.git/HEAD', 'r')
 			branch_name = substitute(branch_name_lst[0], 'ref:\s*refs/heads/', '', '')
 			if (empty(branch_name_lst))
