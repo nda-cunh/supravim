@@ -22,14 +22,13 @@ if (has("termguicolors"))
 	set termguicolors
 endif
 
-if g:sp_nobackground == true
-	hi Normal guibg=NONE ctermbg=NONE
-endif
-
 set t_Co=256
 exec 'colorscheme ' .. g:sp_theme
 set background=dark
 
+if g:sp_nobackground == true
+	hi Normal guibg=NONE ctermbg=NONE
+endif
 #------------- Cursor Parts ------------"
 &t_SI = "\<Esc>[5 q"
 &t_SR = "\<Esc>[3 q"
@@ -204,6 +203,9 @@ def GotOutput(channel: channel, msg: string)
 		exec 'colorscheme ' .. theme
 		exec 'set background=' .. typemode
 		AirlineRefresh
+		if g:sp_nobackground == true
+			hi Normal guibg=NONE ctermbg=NONE
+		endif
 	# onChangeOption: [tree] <true>
 	elseif matchstr(msg, '^onChangeOption: ') != ''
 		g:supravim_option_changed = matchstr(msg, '\[\zs.*\ze\]')
@@ -235,8 +237,10 @@ def SimpleSupravimChangeOption()
 		if g:supravim_option_value == 'false'
 			exec 'colorscheme ' .. g:sp_theme
 			exec 'set background=' .. &background
+			g:sp_nobackground = false
 		else
 			hi Normal guibg=NONE ctermbg=NONE
+			g:sp_nobackground = true 
 		endif
 	elseif g:supravim_option_changed == 'wrap'
 		if g:supravim_option_value == 'false'
