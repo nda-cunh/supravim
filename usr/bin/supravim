@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import re
 import os
-import optparse as op
+import argparse
 
 # ---------
 #   UTILS
@@ -23,47 +23,32 @@ def replace_in_file(file: str, to_replace: str, replacement: str):
     with open(file, 'w') as f:
         f.write(content)
 
+
 def parse_options(opts: list[str]) -> list[str]:
     return [elem for opt in opts for elem in opt.split(',')]
 
-def getOptions() -> type(op.OptionGroup):
-    parser = op.OptionParser()
-    # Add options
-    description = 'Program to personnalize your supravim.'
-    parser.set_description(description)
 
-    parser.add_option("-s", "--status",
-                      action="store_true", dest="status",
-                      help="Display status of your supravim config.")
-    parser.add_option("-v", "--version",
-                      action="store_true", dest="version",
-                      help="Give your supravim version")
-    parser.add_option("--update",
-                      action="store_true", dest="update",
-                      help="Update supravim")
-    parser.add_option("--uninstall",
-                      action="store_true", dest="uninstall",
-                      help="Uninstall supravim")
-    parser.add_option("--save-config",
-                      action="store_true", dest="save_conf")
-    parser.add_option("--apply-config",
-                      action="store_true", dest="apply_conf")
-    parser.add_option("-d", "--disable",
-                      action='append', type="string", dest="disabled",
-                      help="Disable options.", metavar='optA[,optB]')
-    parser.add_option("-e", "--enable",
-                      action="append", type="string", dest="enabled",
-                      help="Enable options.", metavar='optA[,optB]')
-    parser.add_option("-t", "--theme",
-                      action="store", type="string", dest="theme",
-                      help="Set theme.", metavar='theme')
-    parser.add_option("-S", "--set",
-                      action="append", type="string", dest="set",
-                      help="Set plugin variables.", metavar='var=value')
 
-    # Parse the command-line arguments
-    (options, args) = parser.parse_args()
-    return options
+def getOptions() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description='Program to personalize your supravim.')
+
+    # Add visible options
+    parser.add_argument("-s", "--status", action="store_true", help="Display status of your supravim config.")
+    parser.add_argument("-v", "--version", action="store_true", help="Give your supravim version")
+    parser.add_argument("--update", action="store_true", help="Update supravim")
+    parser.add_argument("--uninstall", action="store_true", help="Uninstall supravim")
+    parser.add_argument("--save-config", action="store_true", dest="save_conf", help=argparse.SUPPRESS)
+    parser.add_argument("--apply-config", action="store_true", dest="apply_conf", help=argparse.SUPPRESS)
+    parser.add_argument("-d", "--disable", action='append', type=str, metavar='optA[,optB]', help="Disable options.")
+    parser.add_argument("-e", "--enable", action="append", type=str, metavar='optA[,optB]', help="Enable options.")
+    parser.add_argument("-t", "--theme", action="store", type=str, metavar='theme', help="Set theme.")
+    parser.add_argument("-S", "--set", action="append", type=str, metavar='var=value', help="Set plugin variables.")
+
+    # Add hidden option
+    parser.add_argument("-supravala3", "--print-options", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("-supravala2", "--print-themes", action="store_true", help=argparse.SUPPRESS)
+
+    return parser
 
 def suprapack_launcher(command: str):
     os.system('suprapack ' + command + ' supravim')
@@ -272,6 +257,7 @@ def changeTheme(value):
 
     print(f"Setting theme to: \033[96;1m{value} {theme_bg}\033[m")
 
+
 # ---------------
 #     Status
 # ---------------
@@ -288,21 +274,41 @@ def status_display(dic: dict):
 
 
 def status():
-    general = {k: v for k, v in sv_options.items() if rc_path == v[0]}
+    general = {}
+    plugins = {}
+    for k, v in sv_options.items():
+        if v[0] == rc_path:
+            general[k] = v
+        else:
+            plugins[k] = v
     print("\033[1m-- GENERAL --\033[m")
     status_display(general)
-    plugins = {k: v for k, v in sv_options.items() if rc_path != v[0]}
+
     if plugins:
         print("\033[1m\n-- PLUGINS --\033[m")
         status_display(plugins)
 
 
+def print_all_theme():
+    colors_dir = os.path.expanduser('~/.vim/colors')
+
+    if not os.path.isdir(colors_dir):
+        print (f"\033[91;1mError: \033[m {colors_dir} doesn't exist")
+        return 
+
+    for filename in os.listdir(colors_dir):
+        if not filename.endswith('.vim'):
+            continue
+        if os.path.isfile(os.path.join(colors_dir, filename)):
+            print(filename[0:-4], end = ' ')
+    
+
+
 if __name__ == '__main__':
     load_options()
-    # generate_cfg(False)
-    # apply_cfg()
 
-    opts = getOptions()
+    parser = getOptions()
+    opts = parser.parse_args()
 
     # Implement the logic for each option
     if opts.status:
@@ -317,13 +323,19 @@ if __name__ == '__main__':
         suprapack_launcher('uninstall')
     elif opts.update:
         suprapack_launcher('update')
+    elif opts.print_options:
+        # itere sv_options without value
+        for k, v in sv_options.items():
+            print(f'{k}', end = ' ')
+    elif opts.print_themes:
+        print_all_theme()
     else:
-        if opts.disabled:
-            disabled = parse_options(opts.disabled)
-            enable_disable(disabled, 'false')
-        if opts.enabled:
-            enabled = parse_options(opts.enabled)
-            enable_disable(enabled, 'true')
+        if opts.disable:
+            disable = parse_options(opts.disable)
+            enable_disable(disable, 'false')
+        if opts.enable:
+            enable = parse_options(opts.enable)
+            enable_disable(enable, 'true')
         if opts.set:
             change_variables(opts.set)
         if opts.theme:
