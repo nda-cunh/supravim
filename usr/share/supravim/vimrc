@@ -311,7 +311,7 @@ def g:Make(rules: string)
 	w!
 	is_supramake = true 
 	setenv('rulesmake', rules)
-	! supramake --clean $rulesmake
+	! supramake --run-clean $rulesmake
 	is_supramake = false
 	redraw!
 enddef
