@@ -54,12 +54,12 @@ def HighlightNorm(filename: string)
 enddef
 
 def DisplayErrorMsg()
+	echo ""
+	var current_line = line(".")
 	for error in g_errors
-		if line(".") == str2nr(error[2])
+		if current_line == str2nr(error[2])
 			echo "[Norminette]: " .. error[4]
 			break
-		else
-			echo ""
 		endif
 	endfor
 enddef
