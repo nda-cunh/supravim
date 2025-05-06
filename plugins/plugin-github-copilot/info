@@ -1,11 +1,12 @@
 name: plugin-github-copilot
-version: 1.41.0.1
+version: 1.48.0
+arch: any
 author: github.com
-binary: plugin-github-copilot
 description: supravim plugin for github-copilot
 dependency: supravim
-arch: any
-exclude_package: 
 optional_dependency: 
+exclude_package: 
+binary: plugin-github-copilot
 size_tar: 
-size_installed: 14781957
+size_installed: 32069303
+wanted: no
