@@ -72,7 +72,7 @@ enddef
 def NerdTreeRefreshRoot()
 	if (is_open == true)
 		silent! NERDTreeRefreshRoot
-		silent! call NerdTreeRefreshColor()
+		silent! NERDTreeRefreshRoot
 	endif
 enddef
 
