@@ -185,9 +185,6 @@ g:mucomplete#enable_auto_at_startup = 1
 
 #--------------- PL NERDTREE ---------------"
 g:rainbow_active = 1
-if g:sp_tree == true
-g:nerdtree_tabs_open_on_console_startup = 1
-endif
 g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
 
@@ -217,9 +214,9 @@ enddef
 def SimpleSupravimChangeOption()
 	if g:supravim_option_changed == 'tree'
 		if g:supravim_option_value == 'false'
-			:NERDTreeClose
+			NERDTreeTabsClose
 		else
-			:NERDTreeTabsOpen
+			NERDTreeTabsOpen
 		endif
 	elseif g:supravim_option_changed == 'swap'
 		if g:supravim_option_value == 'false'
@@ -327,7 +324,7 @@ def Gdbf()
 	else
 		set splitbelow nosplitbelow
 		set splitright nosplitright
-		exec ":NERDTreeTabsClose"
+		NERDTreeTabsClose
 		if !filereadable("Makefile")
 			exec ":Termdebug -n ./a.out"
 		else
@@ -352,13 +349,11 @@ def Ctags()
 	endif
 enddef
 
-
 # ------ Running Supravim-Server ------"
 def GotOutputSupravimServer(channel: channel, msg: string)
 	if matchstr(msg, '^refresh') != ''
 		if is_supramake == false 
-			silent! :NERDTreeRefreshRoot
-			silent! :NERDTreeRefreshRoot
+			NERDTreeTabsRefresh
 		endif
 	endif
 enddef
@@ -366,44 +361,6 @@ enddef
 job_start(["supravim-server", project_root], {
 	out_cb: GotOutputSupravimServer,
 })
-
-# -------------- COLORS FILE ----------------"
-def NERDTreeHighlightFile(extension: string, fg: string, bg: string)
-	exec 'autocmd filetype nerdtree highlight ' .. extension .. ' ctermbg=' .. bg .. ' ctermfg=' .. fg
-	exec 'autocmd filetype nerdtree syn match ' .. extension .. ' #^\s\+.*' .. extension .. '$#'
-enddef
-
-def g:NerdTreeRefresh(force: bool)
-	if exists('b:NERDTree') == 0 && force == false
-		return
-	endif
-	NERDTreeHighlightFile('.c', 'blue', 'none')
-	NERDTreeHighlightFile('h', 'green', 'none')
-	NERDTreeHighlightFile('.cpp', 'blue', 'none')
-	NERDTreeHighlightFile('.hpp', 'green', 'none')
-	NERDTreeHighlightFile('vala', 'magenta', 'none')
-	NERDTreeHighlightFile('vapi', 'darkmagenta', 'none')
-	NERDTreeHighlightFile('py', 'yellow', 'none')
-	NERDTreeHighlightFile('java', 'red', 'none')
-	NERDTreeHighlightFile('sh', 'green', 'none')
-	NERDTreeHighlightFile('go', 'cyan', 'none')
-	NERDTreeHighlightFile('Makefile', 'red', 'none')
-	NERDTreeHighlightFile('.rs', 'red', 'none')
-
-	if force == false
-		NERDTreeTabsClose
-		NERDTreeTabsOpen
-	endif
-enddef
-
-autocmd VimEnter * call g:NerdTreeRefresh(true)
-autocmd ColorScheme * call g:NerdTreeRefresh(false)
-
-augroup nerdtreeconcealbrackets
-	autocmd!
-	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
-	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
-augroup END
 
 # ----------------- AIR LINE ------------------"
 g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
