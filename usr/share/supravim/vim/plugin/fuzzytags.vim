@@ -12,10 +12,13 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-	var lst = taglist(result[0])
+	var lst = taglist(result)
 	var tagname: string
 	var path: string
 	var excmd: string
+	if empty(result) || empty(lst)
+		return
+	endif
 	for i in lst
 		if i.name == result
 			tagname = i.name
