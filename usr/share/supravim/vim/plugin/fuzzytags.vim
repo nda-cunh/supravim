@@ -3,7 +3,13 @@ vim9script
 import autoload 'fuzzyy/utils/selector.vim'
 
 def Select(wid: number, result: list<any>)
-	execute "tag " .. result[0] 
+	var res = result[0]
+	if empty(res)
+		return
+	endif
+	var sp = res->split(' ')
+	var nb = str2nr(sp[1]) + 1
+	execute ":" .. nb .. "tag " .. sp[0]
 enddef
 
 def EscQuotes(str: string): string
@@ -12,19 +18,33 @@ enddef
 
 def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
-	var lst = taglist(result)
+
+	var sp = result->split(' ', )
+	var name = sp[0]
+	var id = str2nr(sp[1])
+
+	var lst = taglist(name)
 	var tagname: string
 	var path: string
 	var excmd: string
-	if empty(result) || empty(lst)
+
+
+	if empty(name) || empty(lst)
 		return
 	endif
+
+	var _id = 0
 	for i in lst
-		if i.name == result
-			tagname = i.name
-			path = i.filename
-			excmd = i.cmd
-			break
+		if i.name == name 
+			if _id == id
+				tagname = i.name
+				path = i.filename
+				excmd = i.cmd
+				break
+			else
+				_id += 1
+				continue
+			endif
 		endif
 	endfor
 
@@ -33,14 +53,14 @@ def Preview(wid: number, opts: dict<any>)
     endif
 
     var preview_wid = opts.win_opts.partids['preview']
-    if result == ''
+    if name == ''
         popup_settext(preview_wid, '')
         return
     endif
 
     win_execute(preview_wid, 'syntax clear')
     if !filereadable(path)
-        if result != ''
+        if name != ''
             popup_settext(preview_wid, path .. ' not found')
         endif
         return
