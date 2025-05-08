@@ -1,0 +1,12 @@
+name: plugin-rust-lsp
+version: 1.0
+arch: any
+author: nda-cunh
+description: rust support
+dependency: supravim
+optional_dependency: rust-analyzer
+exclude_package: 
+binary: plugin-rust-lsp
+size_tar: 
+size_installed: 442
+wanted: no
