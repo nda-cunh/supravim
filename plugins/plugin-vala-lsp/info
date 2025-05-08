@@ -6,6 +6,6 @@ description: vala support
 dependency: supravim
 arch: any
 exclude_package: 
-optional_dependency: 
+optional_dependency: vala-language-server
 size_tar: 
 size_installed: 10454
