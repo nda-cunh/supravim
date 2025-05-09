@@ -9,7 +9,11 @@ var is_open = false
 def OpenTreeTabs()
 	var id = win_getid()
 	is_open = true
-	NERDTree
+	if g:NERDTree.IsOpen() == 0
+		silent! NERDTree
+	else
+		NERDTreeMirror
+	endif
 	call win_gotoid(id)
 enddef
 
