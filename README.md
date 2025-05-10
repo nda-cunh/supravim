@@ -1,4 +1,4 @@
-# SupraVim 5.76
+# SupraVim 5.77
 
 SupraVim is a vim distribution for 42 students (and other), it's a simple and easy to use vim distribution with a lot of features. it is based on vim9 and vala.
 it's highly customizable with pre-designed modules and options.
@@ -8,6 +8,7 @@ Supravim support a lot of languages and tools, it's a good choice for a beginner
 - vala
 - Asm (nasm)
 - python
+- rust
 And more... with suprapack module !
 
 # [The SupraWiki (help and documentation) Click here](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home)
@@ -16,7 +17,8 @@ And more... with suprapack module !
 # How Install 
 ### Dependencies
 
-vim9, zsh, glib-networking
+Supravim: (vim9, zsh)
+Suprapack (glib-networking) 
 
 ## with curl
 ```bash
