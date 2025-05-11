@@ -20,6 +20,9 @@ def Preview(wid: number, opts: dict<any>)
     var result = opts.cursor_item
 
 	var lst = ParseResult(result)
+	if empty(lst)
+		return
+	endif
 
 	var tagname: string = lst[0]
 	var path: string = lst[1]
@@ -118,6 +121,9 @@ def CloseTab(wid: number, opts: dict<any>)
     if !empty(get(opts, 'cursor_item', ''))
     var result = opts.cursor_item
 	var lst = ParseResult(result)
+	if empty(lst)
+		return
+	endif
 	var path = lst[1]
 
 	exe 'tabnew ' .. lst[1]
@@ -129,6 +135,9 @@ def CloseSplit(wid: number, opts: dict<any>)
     if !empty(get(opts, 'cursor_item', ''))
     var result = opts.cursor_item
 	var lst = ParseResult(result)
+	if empty(lst)
+		return
+	endif
 	var path = lst[1]
 
 	exe 'split ' .. lst[1]
@@ -140,6 +149,9 @@ def CloseVSplit(wid: number, opts: dict<any>)
     if !empty(get(opts, 'cursor_item', ''))
     var result = opts.cursor_item
 	var lst = ParseResult(result)
+	if empty(lst)
+		return
+	endif
 	var path = lst[1]
 
 	exe 'vsplit ' .. lst[1]
