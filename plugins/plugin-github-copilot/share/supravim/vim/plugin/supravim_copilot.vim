@@ -12,7 +12,7 @@ def SimpleSupravimChangeOption()
 			g:sp_copilot = true
 			Copilot enable
 		else
-			g:sp_copilot= false
+			g:sp_copilot = false
 			Copilot disable
 		endif
 	endif
