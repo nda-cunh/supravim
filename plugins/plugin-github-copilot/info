@@ -1,5 +1,5 @@
 name: plugin-github-copilot
-version: 1.48.0
+version: 1.48.0.1
 arch: any
 author: github.com
 description: supravim plugin for github-copilot
