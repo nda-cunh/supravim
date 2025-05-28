@@ -1,11 +1,19 @@
 vim9script
 
 if executable('lsp_c')
-	au User lsp_setup call lsp#register_server({
-				\ name: 'lsp_c',                                              
-				\ cmd: (server_info) => ['lsp_c'],
-				\ allowlist: ['cpp', 'c', 'tpp'],
-				\ })
+	system('lsp_c --version 1>/dev/null 2> /dev/null')
+
+	if v:shell_error == 42
+		call SupraNotification(['Compiler C not found !', '', 'try install clangd or ccls', 'from your package manager'], 'error')
+	elseif v:shell_error != 0
+		call SupraNotification(['Compiler C crash !', '', 'try install clangd or ccls', 'from your package manager'], 'error')
+	else
+		au User lsp_setup call lsp#register_server({
+					\ name: 'lsp_c',
+					\ cmd: (server_info) => ['lsp_c'],
+					\ allowlist: ['cpp', 'c', 'tpp'],
+					\ })
+	endif
 endif
 
 au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
