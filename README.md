@@ -1,4 +1,4 @@
-# SupraVim 5.77.1
+# SupraVim 5.78
 
 SupraVim is a vim distribution for 42 students (and other), it's a simple and easy to use vim distribution with a lot of features. it is based on vim9 and vala.
 it's highly customizable with pre-designed modules and options.
