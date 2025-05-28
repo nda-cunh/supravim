@@ -1,59 +1,43 @@
 vim9script
 
-var queue: list<any>  # Liste pour stocker les éléments de la file
+highlight default link SupraNotificationError ErrorMsg
+highlight default link SupraNotificationWarning WarningMsg
 
-def Enqueue(item: any)
-	add(queue, item)
-enddef
+def g:SupraNotification(msg: list<string>, type: string = 'info')
 
-def QueuePop(): any
-	if len(queue) > 0
-		return queue[0]
+	var color_popup: string
+
+	if type == 'error'
+		color_popup = 'SupraNotificationError'
+	elseif type == 'warning'
+		color_popup = 'SupraNotificationWarning'
 	else
-		return 0 
+		color_popup = 'Normal'
 	endif
-enddef
 
-def Dequeue()
-	if len(queue) > 0
-		remove(queue, 0)
-	endif
-enddef
-
-def Size(): number
-	return len(queue)
-enddef
-
-def QuitCallback(id: number, idx: number)
-	echo "QuitCallback " .. id .. " " .. idx
-	Dequeue()
-	if Size() > 0
-		ShowNotification()
-	endif
-enddef
-
-def ShowNotification()
-	var msg = QueuePop()
-	popup_dialog(
+	var popup = popup_notification(
 		msg[1 : ],
 		{
-			line: 3, col: 999, pos: 'topright', time: 8000, tabpage: -1, zindex: 300, drag: 1, border: [1],
+			col: 999,
+			pos: 'topright',
+			time: 8000,
+			tabpage: -1,
+			zindex: 300,
+			drag: 1,
+			border: [1],
 			close: 'click',
 			title: '─ ' .. msg[0] .. ' ─',
-			borderhighlight: ['Normal', 'Normal'],
+			borderhighlight: [color_popup, color_popup, color_popup, color_popup],
 			borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-			highlight: 'Normal',
+			highlight: color_popup,
 			padding: [0, 1, 0, 1],
-			callback: QuitCallback,
+			maxwidth: 50,
+			scrollbar: 1,
 		})
-enddef
 
-def g:SupraNotification(msg: list<string>)
-	echo Size()
-	if Size() == 0
-		Enqueue(msg)
-		ShowNotification()
-	else
-		Enqueue(msg)
+	var opts = popup_getoptions(popup)
+	if opts.line == 1
+		popup_move(popup, {line: 2})
 	endif
+
 enddef
