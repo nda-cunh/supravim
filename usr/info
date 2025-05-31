@@ -1,5 +1,5 @@
 name: supravim
-version: 5.78
+version: 5.79
 arch: any
 author: nda-cunh
 description: un supraediteur sur vim
