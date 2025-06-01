@@ -11,7 +11,7 @@ g:sp_tree = true			# display folder tree at left
 g:sp_fold = false			# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
 g:sp_wrap = true 			# do not wrap the text if the line is too long
-g:sp_theme = 'onehalf'
+g:sp_theme = 'onedark'
 
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"
