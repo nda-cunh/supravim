@@ -559,6 +559,11 @@ def Welcome()
 	var timer = timer_start(100, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
 	})
+	if executable('suprapack') == 0
+		call g:SupraNotification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], "warning")
+		$PATH = expand('$HOME') .. '/.local/bin:' .. $PATH
+	endif
+
 	if g:sp_fold
 		set foldmethod=manual
 	endif
