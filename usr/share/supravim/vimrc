@@ -154,6 +154,12 @@ set cursorline
 set nu
 set incsearch
 set noautochdir
+if executable('suprapack') == 0
+	var timer = timer_start(1000, (_) => {
+		call g:SupraNotification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {color: 'warning'})
+	})
+	$PATH = $PATH .. ':' .. expand('$HOME') .. '/.local/bin:'
+endif
 silent! var project_root = system('suprabear -p')
 var suprabear_return = v:shell_error
 silent! exec 'chdir ' .. project_root
@@ -393,8 +399,14 @@ def CreatePopit()
 	})
 enddef
 
+def ClickMeUpdate()
+	!suprapack update
+enddef
+
 def CreatePop(s: string)
-	call g:SupraNotification(["SupraVim Update", s, "run: `suprapack update`" ])
+	call g:SupraNotification(["SupraVim Update", s, "run: `suprapack update`", "Click here to update"], {
+		left_click: ClickMeUpdate,
+	})
 enddef
 # -----------------   Alt Up/Down   ------------------ #
 def MoveLineDown(mode: string)
@@ -554,16 +566,12 @@ def SetArgv(...args: list<string>)
 enddef
 
 # Welcome --------------------------------------
+
 def Welcome()
 	redraw!
 	var timer = timer_start(100, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
 	})
-	if executable('suprapack') == 0
-		call g:SupraNotification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], "warning")
-		$PATH = expand('$HOME') .. '/.local/bin:' .. $PATH
-	endif
-
 	if g:sp_fold
 		set foldmethod=manual
 	endif
