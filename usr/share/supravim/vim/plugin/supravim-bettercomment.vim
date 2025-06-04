@@ -2,8 +2,6 @@ vim9script
 
 def HighlightComments()
 
-	syntax clear cTodo
-
 	syntax match NoteComment "\v(\/*|[*]|\s*)\s*NOTE.*$" contained contained containedin=cComment,cCommentL,cMulti
 	syntax match WarningComment "\v(\/*|[*]|\s*)\s*WARN.*$" contained containedin=cComment,cCommentL,cMulti
 	syntax match FixComment "\v(\/*|[*]|\s*)\s*FIX.*$" contained containedin=cComment,cCommentL,cMulti
@@ -37,3 +35,4 @@ def HighlightComments()
 enddef
 
 autocmd BufReadPost,BufNewFile *.h,*.hpp,*.c,*.cpp,*.js,*.vala,*.ts,*.rs call HighlightComments()
+autocmd BufReadPost,BufNewFile *.h,*.hpp,*.c,*.cpp syntax clear cTodo
