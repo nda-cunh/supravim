@@ -1,5 +1,5 @@
 name: supravim
-version: 5.82.1
+version: 5.83
 arch: any
 author: nda-cunh
 description: un supraediteur sur vim
@@ -8,5 +8,5 @@ optional_dependency: ccls plugin-autobear plugin-lsp-client supravim-gui plugin-
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 2199002
+size_installed: 2199523
 wanted: no
