@@ -89,33 +89,40 @@ nnoremap <c-@>		<cmd>LspHover<cr>
 inoremap <c-a>		<esc>gg<s-v>G
 
 #---------------      Copy - Paste      ---------------"
-if expand("$XDG_SESSION_TYPE") == "wayland"
-	inoremap <c-v>	<esc>:r !wl-paste<cr>i
-	vnoremap <c-c>	y:call Copy_func('wl-copy')<cr>i
+
+inoremap <c-v>	<scriptcmd>norm p<cr>
+vnoremap <c-c>	y
+if has('macunix')
+    autocmd TextYankPost * call SupraCopy('pbcopy')
+    autocmd FocusGained * call SupraPaste('pbpaste')
+elseif expand("$XDG_SESSION_TYPE") == "wayland"
+	if executable('wl-copy') == 0
+		timer_start(1000, (_) => {
+			call g:SupraNotification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {color: 'error'})
+		})
+	else
+		autocmd TextYankPost * call SupraCopy('wl-copy')
+		autocmd FocusGained * call SupraPaste('wl-paste')
+	endif
 else
-	inoremap <c-v>	<esc>:r !xclip -o -selection clipboard<cr>i
-	vnoremap <c-c>	y:call Copy_func('xclip -i -selection clipboard')<cr>i
+	if executable('xclip') == 0
+		timer_start(1000, (_) => {
+			call g:SupraNotification(["xclip not found", "Please install xclip for copy/paste support"], {color: 'error'})
+		})
+	else
+		autocmd TextYankPost * call SupraCopy('xclip -i -selection clipboard')
+		autocmd FocusGained * call SupraPaste('xclip -o -selection clipboard')
+	endif
 endif
 
-def g:Copy()
-	echo "Copy"
-	if expand("$XDG_SESSION_TYPE") == "wayland"
-		g:Copy_func('wl-copy')
-	else
-		g:Copy_func('xclip -i -selection clipboard')
-	endif
+def SupraPaste(copy_os: string)
+	var escape_text = shellescape(getreg('@'))
+	setreg('@', system('echo -En ' .. escape_text .. ' | ' .. copy_os))
+	redraw!
 enddef
 
-def g:Paste()
-	if expand("$XDG_SESSION_TYPE") == "wayland"
-		r!wl-paste
-	else
-		r!xclip -o -selection clipboard
-	endif
-enddef
-
-def g:Copy_func(copy_os: string)
-	var escape_text = shellescape(getreg('0'))
+def SupraCopy(copy_os: string)
+	var escape_text = shellescape(getreg('@'))
 	system('echo -En ' .. escape_text .. ' | ' .. copy_os)
 	redraw!
 enddef
