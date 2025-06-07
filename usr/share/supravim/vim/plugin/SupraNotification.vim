@@ -22,17 +22,26 @@ enddef
 
 def g:SupraNotification(msg: list<string>, opts: dict<any> = {})
 
+
+	var icon: string
 	# Get the color options
 	var color_popup = 'Normal'
 
 	if (has_key(opts, 'color'))
 		if opts.color == 'error'
 			color_popup = 'SupraNotificationError'
+			icon = ''
 		elseif opts.color == 'warning'
 			color_popup = 'SupraNotificationWarning'
+			icon = ''
+		else
+			icon = ''
 		endif
 	endif
 
+	if (has_key(opts, 'icon'))
+		icon = opts.icon
+	endif
 	# Create the popup
 
 	var popup = popup_notification(
@@ -57,7 +66,7 @@ def g:SupraNotification(msg: list<string>, opts: dict<any> = {})
 
 	# Center the title in the popup
 	var options_of_popup = popup_getpos(popup)
-	var title = repeat('─', ((options_of_popup.width / 2) - len(msg[0]) / 2) - 2) .. ' ' .. msg[0] .. ' '
+	var title =  ' ' .. icon .. '  ' .. repeat('─', ((options_of_popup.width / 2) - len(msg[0]) / 2) - 6) .. ' ' .. msg[0] .. ' '
 
 	popup_setoptions(popup, {
 		title: title
