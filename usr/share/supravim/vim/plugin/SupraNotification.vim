@@ -21,20 +21,23 @@ def FilterNotification(wid: number, key: string): number
 enddef
 
 def g:SupraNotification(msg: list<string>, opts: dict<any> = {})
+	call Notification(msg, opts)
+enddef
 
-
+export def Notification(msg: list<string>, opts: dict<any> = {})
 	var icon: string
 	# Get the color options
-	var color_popup = 'Normal'
+	var color_popup: string
 
-	if (has_key(opts, 'color'))
-		if opts.color == 'error'
+	if (has_key(opts, 'type'))
+		if opts.type == 'error'
 			color_popup = 'SupraNotificationError'
 			icon = ''
-		elseif opts.color == 'warning'
+		elseif opts.type == 'warning'
 			color_popup = 'SupraNotificationWarning'
 			icon = ''
 		else
+			color_popup = 'Normal'
 			icon = ''
 		endif
 	endif
