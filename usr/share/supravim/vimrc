@@ -3,6 +3,8 @@ vim9script
 set nocompatible
 filetype off
 
+import '.vim/plugin/SupraNotification.vim' as Notify
+
 pathogen#infect()
 pathogen#helptags()
 
@@ -16,7 +18,6 @@ g:sp_theme = 'onedark'
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"
 syntax on
-
 
 if (has("termguicolors"))
 	set termguicolors
@@ -97,18 +98,14 @@ if has('macunix')
     autocmd FocusGained * call SupraPaste('pbpaste')
 elseif expand("$XDG_SESSION_TYPE") == "wayland"
 	if executable('wl-copy') == 0
-		timer_start(1000, (_) => {
-			call g:SupraNotification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {color: 'error'})
-		})
+		call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
 	else
 		autocmd TextYankPost * call SupraCopy('wl-copy')
 		autocmd FocusGained * call SupraPaste('wl-paste')
 	endif
 else
 	if executable('xclip') == 0
-		timer_start(1000, (_) => {
-			call g:SupraNotification(["xclip not found", "Please install xclip for copy/paste support"], {color: 'error'})
-		})
+		call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
 	else
 		autocmd TextYankPost * call SupraCopy('xclip -i -selection clipboard')
 		autocmd FocusGained * call SupraPaste('xclip -o -selection clipboard')
@@ -162,9 +159,7 @@ set nu
 set incsearch
 set noautochdir
 if executable('suprapack') == 0
-	var timer = timer_start(1000, (_) => {
-		call g:SupraNotification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {color: 'warning'})
-	})
+	call Notify.Notification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {type: 'warning'})
 	$PATH = $PATH .. ':' .. expand('$HOME') .. '/.local/bin:'
 endif
 silent! var project_root = system('suprabear -p')
@@ -411,8 +406,9 @@ def ClickMeUpdate()
 enddef
 
 def CreatePop(s: string)
-	call g:SupraNotification(["SupraVim Update", s, "run: `suprapack update`", "Click here to update"], {
+	call Notify.Notification(["SupraVim Update", s, "run: `suprapack update`", "Click here to update"], {
 		left_click: ClickMeUpdate,
+		icon: '󰚰',
 	})
 enddef
 # -----------------   Alt Up/Down   ------------------ #
