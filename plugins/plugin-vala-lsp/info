@@ -1,11 +1,12 @@
 name: plugin-vala-lsp
-version: 0.48.8
+version: 0.48.8.1
+arch: any
 author: nda-cunh
-binary: plugin-vala-lsp
 description: vala support
 dependency: supravim
-arch: any
-exclude_package: 
 optional_dependency: vala-language-server
+exclude_package: 
+binary: plugin-vala-lsp
 size_tar: 
-size_installed: 10454
+size_installed: 10802
+wanted: no

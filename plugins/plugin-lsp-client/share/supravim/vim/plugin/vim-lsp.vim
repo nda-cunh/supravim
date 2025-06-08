@@ -1,18 +1,20 @@
 vim9script
 
+import './SupraNotification.vim' as Notify
+
 if executable('lsp_c')
 	system('lsp_c --version 1>/dev/null 2> /dev/null')
 
 	if v:shell_error == 42
-		call SupraNotification(['Compiler C not found !', '', 'try install clangd or ccls', 'from your package manager'], {color: 'error'})
+		call Notify.Notification(['Compiler C not found !', '', 'try install clangd or ccls', 'from your package manager'], {type: 'error'})
 	elseif v:shell_error != 0
-		call SupraNotification(['Compiler C crash !', '', 'try install clangd or ccls', 'from your package manager'], {color: 'error'})
+		call Notify.Notification(['Compiler C crash !', '', 'try install clangd or ccls', 'from your package manager'], {type: 'error'})
 	else
 		au User lsp_setup call lsp#register_server({
-					\ name: 'lsp_c',
-					\ cmd: (server_info) => ['lsp_c'],
-					\ allowlist: ['cpp', 'c', 'tpp'],
-					\ })
+			\ name: 'lsp_c',
+			\ cmd: (server_info) => ['lsp_c'],
+			\ allowlist: ['cpp', 'c', 'tpp'],
+		\ })
 	endif
 endif
 
