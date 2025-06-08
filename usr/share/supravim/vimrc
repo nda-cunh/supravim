@@ -511,9 +511,9 @@ nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
 set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
-	vmenu PopUp.Copy			y:call Copy()<cr><esc>
-	vmenu PopUp.Cut				ygvd:call Copy()<cr><esc>
-	vmenu PopUp.Past			:call Paste()<cr><esc>
+	vmenu PopUp.Copy			y
+	vmenu PopUp.Cut				d	
+	vmenu PopUp.Past			p
 	vmenu PopUp.Select\ All		<esc>gg<s-v>G
 	if g:sp_fold
 		vmenu PopUp.Fold			zf
@@ -528,7 +528,7 @@ def Init_menu()
 	nmenu PopUp.Switch\ Norm		<F3>
 	nmenu PopUp.-sep0- <Nop>
 	nmenu PopUp.Select\ All		<esc>gg<s-v>G
-	nmenu PopUp.Past			:call Paste()<cr><esc>
+	nmenu PopUp.Past			p
 	nmenu PopUp.Undo			u
 	nmenu PopUp.Redo			<C-r>
 	nmenu PopUp.-sep2- <Nop>
