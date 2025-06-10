@@ -118,7 +118,12 @@ def SupraPaste(copy_os: string)
 	redraw!
 enddef
 
+nnoremap <del> i<del><right><esc>
 def SupraCopy(copy_os: string)
+	if v:event.operator == 'c'
+		setreg('@', getreg('0'))
+		return
+	endif
 	var escape_text = shellescape(getreg('@'))
 	system('echo -En ' .. escape_text .. ' | ' .. copy_os)
 	redraw!
