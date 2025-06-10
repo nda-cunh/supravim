@@ -22,7 +22,7 @@ Suprapack (glib-networking)
 
 ## with curl
 ```bash
-curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | sh
+curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | bash
 ```
 
 ## with suprapack
