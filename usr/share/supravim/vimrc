@@ -97,12 +97,12 @@ if has('macunix')
     autocmd TextYankPost * call SupraCopy('pbcopy')
     autocmd FocusGained * call SupraPaste('pbpaste')
 elseif expand("$XDG_SESSION_TYPE") == "wayland"
-	if executable('wl-copy') == 0
-		call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
-	else
-		autocmd TextYankPost * call SupraCopy('wl-copy')
-		autocmd FocusGained * call SupraPaste('wl-paste')
-	endif
+	# if executable('wl-copy') == 0
+		# call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
+	# else
+		# autocmd TextYankPost * call SupraCopy('wl-copy')
+		# autocmd FocusGained * call SupraPaste('wl-paste')
+	# endif
 else
 	if executable('xclip') == 0
 		call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
