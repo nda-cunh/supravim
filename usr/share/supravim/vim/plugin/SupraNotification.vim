@@ -25,9 +25,9 @@ def g:SupraNotification(msg: list<string>, opts: dict<any> = {})
 enddef
 
 export def Notification(msg: list<string>, opts: dict<any> = {})
-	var icon: string
+	var icon = ''
 	# Get the color options
-	var color_popup: string
+	var color_popup = 'Normal'
 
 	if (has_key(opts, 'type'))
 		if opts.type == 'error'
@@ -36,9 +36,6 @@ export def Notification(msg: list<string>, opts: dict<any> = {})
 		elseif opts.type == 'warning'
 			color_popup = 'SupraNotificationWarning'
 			icon = ''
-		else
-			color_popup = 'Normal'
-			icon = ''
 		endif
 	endif
 
@@ -50,12 +47,13 @@ export def Notification(msg: list<string>, opts: dict<any> = {})
 	var popup = popup_notification(
 		msg[1 : ],
 		{
-			col: 999,
+			col: &columns,
 			pos: 'topright',
-			time: 8000,
+			time: 90000,
 			tabpage: -1,
 			zindex: 300,
 			drag: 1,
+			wrap: 0,
 			border: [1],
 			title: '─ ' .. msg[0] .. ' ─',
 			borderhighlight: [color_popup, color_popup, color_popup, color_popup],
@@ -64,15 +62,37 @@ export def Notification(msg: list<string>, opts: dict<any> = {})
 			padding: [0, 1, 0, 1],
 			maxwidth: 50,
 			filter: FilterNotification,
+			fixed: 0,
 			scrollbar: 1,
+			callback: (wid, _) => {
+				popup_move(wid, {col: 1})
+			},
 		})
+	var pos = popup_getpos(popup)
+	popup_move(popup, {maxwidth: pos.width})
+	var width = pos.width
+	var timer: any 
+	const len_title = len(msg[0])
+	const width_base = pos.width
 
-	# Center the title in the popup
 	var options_of_popup = popup_getpos(popup)
-	var title =  ' ' .. icon .. '  ' .. repeat('─', ((options_of_popup.width / 2) - len(msg[0]) / 2) - 6) .. ' ' .. msg[0] .. ' '
+	var new_title =  ' ' .. icon .. '  ' .. repeat('─', ((options_of_popup.width / 2) - len_title / 2) - 6) .. ' ' .. msg[0] .. ' '
+	popup_setoptions(popup, {title: new_title})
 
-	popup_setoptions(popup, {
-		title: title
+	timer_start(6500, (_) => {
+		timer = timer_start(9, (_) => {
+			popup_move(popup, {maxwidth: width, width: width})
+			width = width - 1
+			if width < len(new_title)
+				var title = new_title[0 : width - 1]
+				popup_setoptions(popup, {title: title})
+			endif
+			
+			if width == -1
+				timer_stop(timer)
+				popup_close(popup)
+			endif
+		}, {repeat: 9999})
 	})
 
 	# Add the Event handler for left click
