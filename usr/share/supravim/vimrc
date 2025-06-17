@@ -103,7 +103,7 @@ elseif expand("$XDG_SESSION_TYPE") == "wayland"
 		# autocmd TextYankPost * call SupraCopy(['wl-copy'])
 		# autocmd FocusGained * call SupraPaste(['wl-paste'])
 	# endif
-else
+elseif expand("$XDG_SESSION_TYPE") == "x11"
 	if executable('xclip') == 0
 		call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
 	else
@@ -122,8 +122,8 @@ def SupraPaste(copy_os: list<string>)
 		close_cb: (ch: channel) => {
 			var info = job_info(job)
 			# echoerr info
-			if info.exitval != 0
-				call Notify.Notification(["Synchronization failed" , "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
+			if info.exitval != 0 && info.exitval != 1
+				call Notify.Notification(["Synchronization failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
 			endif
 			var all = getbufline(tmpbufname, 0, '$')
 			setreg('@', join(all, "\n"))

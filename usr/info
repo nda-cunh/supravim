@@ -8,5 +8,5 @@ optional_dependency: ccls plugin-autobear plugin-lsp-client supravim-gui plugin-
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 2199780
+size_installed: 2211486
 wanted: no
