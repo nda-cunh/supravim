@@ -94,39 +94,63 @@ inoremap <c-a>		<esc>gg<s-v>G
 inoremap <c-v>	<scriptcmd>norm p<cr>
 vnoremap <c-c>	y
 if has('macunix')
-    autocmd TextYankPost * call SupraCopy('pbcopy')
-    autocmd FocusGained * call SupraPaste('pbpaste')
+    autocmd TextYankPost * call SupraCopy(['pbcopy'])
+    autocmd FocusGained * call SupraPaste(['pbpaste'])
 elseif expand("$XDG_SESSION_TYPE") == "wayland"
 	# if executable('wl-copy') == 0
 		# call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
 	# else
-		# autocmd TextYankPost * call SupraCopy('wl-copy')
-		# autocmd FocusGained * call SupraPaste('wl-paste')
+		# autocmd TextYankPost * call SupraCopy(['wl-copy'])
+		# autocmd FocusGained * call SupraPaste(['wl-paste'])
 	# endif
 else
 	if executable('xclip') == 0
 		call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
 	else
-		autocmd TextYankPost * call SupraCopy('xclip -i -selection clipboard')
-		autocmd FocusGained * call SupraPaste('xclip -o -selection clipboard')
+		autocmd TextYankPost * call SupraCopy(['xclip', '-i', '-selection', 'clipboard'])
+		autocmd FocusGained * call SupraPaste(['xclip', '-o', '-selection', 'clipboard'])
 	endif
 endif
 
-def SupraPaste(copy_os: string)
-	var escape_text = shellescape(getreg('@'))
-	setreg('@', system('echo -En ' .. escape_text .. ' | ' .. copy_os))
-	redraw!
+def SupraPaste(copy_os: list<string>)
+	var tmpbufname = bufadd(tempname())
+	var job: job
+	job = job_start(copy_os, {
+		out_io: 'buffer',
+		out_buf: tmpbufname,
+		out_mode: 'raw',
+		close_cb: (ch: channel) => {
+			var info = job_info(job)
+			# echoerr info
+			if info.exitval != 0
+				call Notify.Notification(["Synchronization failed" , "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
+			endif
+			var all = getbufline(tmpbufname, 0, '$')
+			setreg('@', join(all, "\n"))
+			execute('bwipeout! ' .. tmpbufname)
+		},
+	})
 enddef
 
 nnoremap <del> i<del><right><esc>
-def SupraCopy(copy_os: string)
+def SupraCopy(copy_os: list<string>)
 	if v:event.operator == 'c'
 		setreg('@', getreg('0'))
 		return
 	endif
-	var escape_text = shellescape(getreg('@'))
-	system('echo -En ' .. escape_text .. ' | ' .. copy_os)
-	redraw!
+	var job: job
+	job = job_start(copy_os, {
+		in_mode: 'raw',
+		close_cb: (ch: channel) => {
+			var info = job_info(job)
+			# echoerr info
+			if info.exitval != 0
+				call Notify.Notification(["Copy failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
+			endif
+		},
+	})
+	vim9cmd call ch_sendraw(job, getreg('@'))
+	vim9cmd call ch_close_in(job)
 enddef
 
 #---------------      Command        ---------------"
