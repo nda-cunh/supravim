@@ -88,7 +88,7 @@ if exists('g:fuzzyy_window_layout') && type(g:fuzzyy_window_layout) == v:t_dict
     endfor
 endif
 
-highlight default link fuzzyyCursor Search
+highlight default link fuzzyyCursor Cursor
 highlight default link fuzzyyNormal Normal
 highlight default link fuzzyyBorder Normal
 highlight default link fuzzyyMatching Special
@@ -162,3 +162,9 @@ if g:fuzzyy_enable_mappings
         endif
     endfor
 endif
+
+# Load compatibility hacks on VimEnter, after other plugins are loaded
+augroup fuzzyyCompat
+  au!
+  autocmd VimEnter * runtime! compat/fuzzyy.vim
+augroup END

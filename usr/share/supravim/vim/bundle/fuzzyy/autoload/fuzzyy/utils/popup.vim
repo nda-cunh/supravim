@@ -2,6 +2,8 @@ vim9script
 
 scriptencoding utf-8
 
+import autoload './colors.vim'
+
 var popup_wins: dict<any>
 var wins = { menu: -1, prompt: -1, preview: -1, info: -1 }
 var t_ve: string
@@ -26,9 +28,14 @@ var keymaps: dict<any> = {
     'delete_prefix': [],
     'exit': ["\<Esc>", "\<c-c>", "\<c-[>"],
 }
-
 keymaps = exists('g:fuzzyy_keymaps') && type(g:fuzzyy_keymaps) == v:t_dict ?
     extend(keymaps, g:fuzzyy_keymaps) : keymaps
+
+var borderchars = exists('g:fuzzyy_borderchars') &&
+    type(g:fuzzyy_borderchars) == v:t_list &&
+    len(g:fuzzyy_borderchars) == 8 ?
+    g:fuzzyy_borderchars :
+    ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
 
 export def SetPopupWinProp(wid: number, key: string, val: any)
     if has_key(popup_wins, wid) && has_key(popup_wins[wid], key)
@@ -36,6 +43,59 @@ export def SetPopupWinProp(wid: number, key: string, val: any)
     else
         echoerr 'SetPopupWinProp: key not exist'
     endif
+enddef
+
+def Warn(msg: string)
+    if has('patch-9.0.0321')
+        echow msg
+    else
+        timer_start(100, (_) => {
+            echohl WarningMsg | echo msg | echohl None
+        }, { repeat: 0 })
+    endif
+enddef
+
+def ResolveCursor()
+    hlset([{name: 'fuzzyyCursor', cleared: true}])
+    var fallback = {
+        name: 'fuzzyyCursor',
+        term: { 'reverse': true },
+        cterm: { 'reverse': true },
+        gui: { 'reverse': true },
+    }
+    var attrs = hlget('Cursor', true)->get(0, {})
+    if !attrs->get('guifg') && !attrs->get('guibg')
+        hlset([fallback])
+        return
+    endif
+    var special = ['NONE', 'bg', 'fg', 'background', 'foreground']
+    var guifg = attrs->get('guifg', 'NONE')
+    var guibg = attrs->get('guibg', 'NONE')
+    if has('gui')
+        hlset([{name: 'fuzzyyCursor', guifg: guifg, guibg: guibg}])
+        return
+    endif
+    var ctermfg = attrs->get('ctermfg',
+        index(special, guifg) != -1 ? guifg : string(colors.TermColor(guifg))
+    )
+    var ctermbg = attrs->get('ctermbg',
+        index(special, guibg) != -1 ? guibg : string(colors.TermColor(guibg))
+    )
+    try
+        hlset([{
+            name: 'fuzzyyCursor',
+            guifg: guifg,
+            guibg: guibg,
+            ctermfg: ctermfg,
+            ctermbg: ctermbg
+        }])
+    catch /\v:(E419|E420|E453):/
+        # foreground and/or background not known and used as ctermfg or ctermbg
+        hlset([fallback])
+    catch
+        Warn('Fuzzyy: failed to resolve cursor highlight: ' .. v:exception)
+        hlset([fallback])
+    endtry
 enddef
 
 # Use to hide the cursor while popups active
@@ -102,11 +162,10 @@ def GeneralPopupCallback(wid: number, select: any)
         opt.cursor_item = popup_wins[wid].cursor_item
         popup_wins[wid].close_cb(wid, opt)
     endif
-    if exists('#User#PopupClosed')
-        doautocmd User PopupClosed
-    endif
 
     popup_wins = {}
+
+    silent doautocmd <nomodeline> User FuzzyyClosed
 enddef
 
 # Handle situation when Text under cursor in menu window is changed
@@ -170,6 +229,17 @@ def PromptFilter(wid: number, key: string): number
         cur_pos = max([ 0, cur_pos - 1 ])
     elseif key == "\<Right>" || key == "\<c-f>"
         cur_pos = min([ max_pos, cur_pos + 1 ])
+    elseif key ==? "\<Del>"
+        if cur_pos == max_pos
+            return 1
+        endif
+        if cur_pos == 0
+            line = line[1 : ]
+        else
+            var before = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : []
+            line = before + line[cur_pos + 1 :]
+        endif
+        max_pos -= 1
     elseif index(keymaps['cursor_begining'], key) >= 0
         cur_pos = 0
     elseif index(keymaps['cursor_end'], key) >= 0
@@ -180,6 +250,19 @@ def PromptFilter(wid: number, key: string): number
     elseif index(keymaps['delete_prefix'], key) >= 0
         line = line[cur_pos :]
         cur_pos = 0
+    elseif key ==? "\<LeftMouse>" || key ==? "\<2-LeftMouse>"
+        var pos = getmousepos()
+        if pos.winid != wid
+            return 0
+        endif
+        var promptchar_len = popup_wins[wid].cursor_args.promptchar_len
+        cur_pos = pos.wincol - promptchar_len - 2
+        if cur_pos > max_pos
+            cur_pos = max_pos
+        endif
+        if cur_pos < 0
+            cur_pos = 0
+        endif
     else
         # catch all unhandled keys
         return 1
@@ -241,21 +324,35 @@ def MenuFilter(wid: number, key: string): number
         endif
     elseif key ==? "\<LeftMouse>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, 'norm! ' .. pos.line .. 'G')
-            moved = 1
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, 'norm! ' .. pos.line .. 'G')
+        moved = 1
     elseif key ==? "\<2-LeftMouse>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, 'norm! ' .. pos.line .. 'G')
-            var linetext = getbufline(bufnr, pos.line, pos.line)[0]
-            if linetext == ''
-                popup_close(wid)
-            else
-                popup_close(wid, [linetext])
-            endif
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, 'norm! ' .. pos.line .. 'G')
+        var linetext = getbufline(bufnr, pos.line, pos.line)[0]
+        if linetext == ''
+            popup_close(wid)
+        else
+            popup_close(wid, [linetext])
+        endif
+    elseif key ==? "\<ScrollWheelUp>"
+        var pos = getmousepos()
+        if pos.winid != wid
+            return 0
+        endif
+        win_execute(wid, "norm! 3\<c-y>")
+    elseif key ==? "\<ScrollWheelDown>"
+        var pos = getmousepos()
+        if pos.winid != wid
+            return 0
+        endif
+        win_execute(wid, "norm! 3\<c-e>")
     elseif index(keymaps['menu_select'], key) >= 0
         # if not passing second argument, popup_close will call user callback
         # with func(window-id, 0)
@@ -292,14 +389,16 @@ def PreviewFilter(wid: number, key: string): number
         win_execute(wid, "norm! \<c-d>")
     elseif key ==? "\<ScrollWheelUp>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, "norm! 3\<c-y>")
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, "norm! 3\<c-y>")
     elseif key ==? "\<ScrollWheelDown>"
         var pos = getmousepos()
-        if pos.winid == wid
-            win_execute(wid, "norm! 3\<c-e>")
+        if pos.winid != wid
+            return 0
         endif
+        win_execute(wid, "norm! 3\<c-e>")
     else
         return 0
     endif
@@ -322,9 +421,13 @@ def CreatePopup(args: dict<any>): number
        cursorline: 0,
        callback: function('GeneralPopupCallback'),
        border: [1],
-       borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+       borderchars: borderchars,
        borderhighlight: ['fuzzyyBorder'],
        highlight: 'fuzzyyNormal', }
+
+    if &encoding != 'utf-8'
+        remove(opts, 'borderchars')
+    endif
 
     if has_key(args, 'enable_border') && !args.enable_border
         remove(opts, 'border')
@@ -498,6 +601,10 @@ export def MenuSetHl(name: string, hl_list_raw: list<any>)
 enddef
 
 def PopupPrompt(args: dict<any>): number
+    if hlget('fuzzyyCursor')->get(0, {})->get('linksto', '') ==? 'Cursor'
+        ResolveCursor()
+    endif
+
     var opts = {
      width: 0.4,
      height: 1,
@@ -708,6 +815,8 @@ export def PopupSelection(opts: dict<any>): dict<any>
     popup_wins[wins.prompt].partids = wins
 
     HideCursor()
+
+    silent doautocmd <nomodeline> User FuzzyyOpened
 
     return wins
 enddef
