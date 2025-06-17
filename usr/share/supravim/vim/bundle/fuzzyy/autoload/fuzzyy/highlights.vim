@@ -26,14 +26,14 @@ enddef
 
 def TogglePreviewBg()
     var old = getwinvar(preview_wid, '&wincolor')
-    if old == 'fuzzyywhite'
+    if old == 'fuzzyyHighlights_whitebg'
         setwinvar(preview_wid, '&wincolor', 'Normal')
     else
-        setwinvar(preview_wid, '&wincolor', 'fuzzyywhite')
+        setwinvar(preview_wid, '&wincolor', 'fuzzyyHighlights_whitebg')
     endif
 enddef
 
-hi fuzzyywhite ctermbg=white ctermfg=black guibg=white guifg=black
+hi fuzzyyHighlights_whitebg ctermbg=white ctermfg=black guibg=white guifg=black
 var key_callbacks = {
     "\<c-k>": function('TogglePreviewBg'),
 }
@@ -45,7 +45,7 @@ export def Start(opts: dict<any> = {})
         highlights->add(s)
         return 1
     enddef
-    substitute(highlights_raw, '\zs\w\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s\+\w\+\s*xxx',
+    substitute(highlights_raw, '\zs[a-zA-Z0-9_.-]\+\s\+xxx[[:alnum:][:blank:]=#,]\{-}\ze\s\+\w\+\s*xxx',
         '\=Helper(submatch(0))', 'g')
 
     hl_meta = {}
