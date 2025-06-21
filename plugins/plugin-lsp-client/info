@@ -1,5 +1,5 @@
 name: plugin-lsp-client
-version: 1.4.3
+version: 1.4.4
 arch: any
 author: prabirshrestha
 description: supravim plugin for LSP-support (C,C++,Java,Rust,Ts,Js,Vala...)
@@ -8,5 +8,5 @@ optional_dependency:
 exclude_package: 
 binary: plugin-lsp-client
 size_tar: 
-size_installed: 555921
+size_installed: 557647
 wanted: no
