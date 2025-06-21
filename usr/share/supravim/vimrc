@@ -88,6 +88,7 @@ vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 nnoremap <c-@>		<cmd>LspHover<cr>
 inoremap <c-a>		<esc>gg<s-v>G
+nmap <2-LeftMouse>		:LspHover<cr>
 
 #---------------      Copy - Paste      ---------------"
 
@@ -435,7 +436,7 @@ def ClickMeUpdate()
 enddef
 
 def CreatePop(s: string)
-	call Notify.Notification(["SupraVim Update", s, "run: `suprapack update`", "Click here to update"], {
+	call Notify.Notification(["Update", s, "run: `suprapack update`", "Click here to update"], {
 		left_click: ClickMeUpdate,
 		icon: '󰚰',
 	})
