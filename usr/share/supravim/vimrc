@@ -189,7 +189,7 @@ set nu
 set incsearch
 set noautochdir
 if executable('suprapack') == 0
-	call Notify.Notification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {type: 'warning'})
+	autocmd VimEnter * call Notify.Notification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {type: 'warning'})
 	$PATH = $PATH .. ':' .. expand('$HOME') .. '/.local/bin:'
 endif
 silent! var project_root = system('suprabear -p')

@@ -47,17 +47,19 @@ enddef
 
 # Stack of notifications for Asynchronous notifications
 var lst_notification: list<any> = []
-var timer_notification: any 
+var timer_notification: number 
 # the actual line where the next notification will be displayed
 var actual_line = 2
 
 # Timer Asynchronous notification display function (check if there is a notification to display)
-def CheckDisplayNotifications()
-	if actual_line <= &lines - 6
-		call NNotification(lst_notification[0].msg, lst_notification[0])
-		remove(lst_notification, 0)
-		if len(lst_notification) == 0
-			timer_pause(timer_notification, 1)
+def CheckDisplayNotifications(id: number)
+	if exists('lst_notification') && len(lst_notification) != 0 
+		if actual_line <= &lines - 6
+			call NNotification(lst_notification[0].msg, lst_notification[0])
+			remove(lst_notification, 0)
+			if len(lst_notification) == 0
+				timer_pause(id, 1)
+			endif
 		endif
 	endif
 enddef
@@ -68,9 +70,7 @@ export def Notification(msg: list<string>, opts: dict<any> = {})
 	opts.msg = msg
 	add(lst_notification, opts)
 	if timer_notification == 0
-		timer_notification = timer_start(100, (_) => {
-			CheckDisplayNotifications()
-		}, {repeat: -1})
+		timer_notification = timer_start(100, CheckDisplayNotifications, {repeat: -1})
 	endif
 	timer_pause(timer_notification, 0)
 enddef
