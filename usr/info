@@ -4,9 +4,9 @@ arch: any
 author: nda-cunh
 description: un supraediteur sur vim
 dependency: supramake suprabear supravim-server supratags
-optional_dependency: ccls plugin-autobear plugin-lsp-client supravim-gui plugin-norminette
+optional_dependency: ccls plugin-autobear plugin-lsp-client supravim-gui
 exclude_package: 
 binary: vim
 size_tar: 
-size_installed: 2213027
+size_installed: 2214968
 wanted: no
