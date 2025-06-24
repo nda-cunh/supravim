@@ -34,6 +34,11 @@ suprapack install supravim
 ### 🍎 MacOs
 For MacOs support please read this: https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os
 
+just run for compiling all the modules and install supravim:
+
+```bash
+curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/create_package.sh | bash
+```
 
 # Update & Uninstall
 
@@ -70,4 +75,9 @@ cd SupraVim
 suprapack build usr
 # Install the new version with it
 suprapack add supravim-*.suprapack
+```
+
+for build all the supravim and modules
+```bash
+curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/create_package.sh | bash
 ```
