@@ -1,8 +1,8 @@
 # SupraVim 5.88
 
-SupraVim is a vim distribution for 42 students (and other), it's a simple and easy to use vim distribution with a lot of features. it is based on vim9 and vala.
-it's highly customizable with pre-designed modules and options.
-Supravim support a lot of languages and tools, it's a good choice for a beginner and a pro.
+a simple vim distribution, easy to use and packed with features. It is coded in vim9 and vala.
+It is highly customizable with pre-designed modules and options.
+Supravim supports many languages and tools.
 - C
 - C++
 - vala
