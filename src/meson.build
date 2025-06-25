@@ -6,6 +6,7 @@ srcs = files (
    'Theme.vala',
    'General.vala',
    'Element.vala'
+   'Modificator.vala',
 )
 
 executable('supravim',
