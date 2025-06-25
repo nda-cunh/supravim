@@ -57,11 +57,18 @@ public class Main {
 		}
 
 		if (theme != null)
-			return change_theme (theme);
+			return Theme.change (theme);
 		return true;
 	}
 
 
+	/**
+	 * Main function to run the supravim application.
+	 * Parses command line options and executes the appropriate actions.
+	 *
+	 * @param args Command line arguments.
+	 * @return Exit status code.
+	 */
 	public static int main (string[] args) {
 		Intl.setlocale ();
 		HOME = Environment.get_home_dir ();
