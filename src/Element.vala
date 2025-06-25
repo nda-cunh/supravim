@@ -2,6 +2,12 @@ public errordomain ErrorQuote {
 	UNMATCHED_QUOTE,
 }
 
+public enum OptionType {
+	STRING,
+	NUMBER,
+	BOOLEAN
+}
+
 [Compact]
 public class Element {
 	/**
@@ -19,11 +25,15 @@ public class Element {
 
 		// if the value is a string
 		if (ptr[0] == '\'' || ptr[0] == '"') {
+			this.type = OptionType.STRING;
 			end = search_closed_quote (ptr[0], ptr, out begin_comment);
 			start = 1;
 		}
 		else {
 			// if the value is a number or boolean
+			this.type = OptionType.BOOLEAN;
+			if (ptr[end].isdigit())
+				this.type = OptionType.NUMBER;
 			while (ptr[end].isspace () == false)
 				++end;
 			begin_comment = ptr.index_of_char ('#', end);
@@ -85,6 +95,7 @@ public class Element {
 	
 	public string line; // The Malloc'd line from the file
 	public string file; // The file where this element was found, if applicable
+	public OptionType type;
 	public unowned string name; // The name of the element, e.g., "g:sp_option"
 	public unowned string value; // The value of the element, e.g., "1" or "true"
 	public unowned string? comment = null; // The comment after the value, if any
