@@ -1,0 +1,38 @@
+{
+  "name": "vim-vsnip",
+  "version": "1.0.0",
+  "description": "This aims to plugin like Visual Studio Code's Snippet feature.",
+  "scripts": {
+    "open": "nvim -u .vimrc",
+    "test": "run-s test:*",
+    "test:01": "THEMIS_VIM=vim EXCLUSIVE=0 VIRTUALEDIT=0 themis ./spec",
+    "test:02": "THEMIS_VIM=vim EXCLUSIVE=0 VIRTUALEDIT=1 themis ./spec",
+    "test:03": "THEMIS_VIM=vim EXCLUSIVE=1 VIRTUALEDIT=0 themis ./spec",
+    "test:04": "THEMIS_VIM=vim EXCLUSIVE=1 VIRTUALEDIT=1 themis ./spec",
+    "test:05": "THEMIS_VIM=nvim EXCLUSIVE=0 VIRTUALEDIT=0 themis ./spec",
+    "test:06": "THEMIS_VIM=nvim EXCLUSIVE=0 VIRTUALEDIT=1 themis ./spec",
+    "test:07": "THEMIS_VIM=nvim EXCLUSIVE=1 VIRTUALEDIT=0 themis ./spec",
+    "test:08": "THEMIS_VIM=nvim EXCLUSIVE=1 VIRTUALEDIT=1 themis ./spec",
+    "lint": "vint ."
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run test"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hrsh7th/vim-test-snips.git"
+  },
+  "author": "hrsh7th",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hrsh7th/vim-test-snips/issues"
+  },
+  "homepage": "https://github.com/hrsh7th/vim-test-snips#readme",
+  "devDependencies": {
+    "husky": "^3.0.5",
+    "npm-run-all": "^4.1.5",
+    "watch": "^1.0.2"
+  }
+}
