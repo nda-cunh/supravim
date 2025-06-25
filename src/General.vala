@@ -58,6 +58,7 @@ namespace General {
 				contents.data[end] = '\0';
 				try {
 					var element = new Element(contents.offset(start));
+					element.file = file;
 					_sv_options[element.name] = (owned)element;
 				}
 				catch (ErrorQuote e) {
