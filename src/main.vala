@@ -46,15 +46,12 @@ public class Main {
 		else if (is_uninstall)
 			return Process.spawn_command_line_sync ("suprapack remove supravim");
 
-		print ("Disabled options: \n");
-		foreach (unowned string str in disable) {
-			print ("'%s' ", str);
-		}
+		foreach (unowned string str in disable)
+			Modificator.disable (str);
 
-		print ("\nEnabled options: \n");
-		foreach (unowned string str in enable) {
-			print ("'%s' ", str);
-		}
+		foreach (unowned string str in enable)
+			Modificator.enable (str);
+
 
 		if (theme != null)
 			return Theme.change (theme);
@@ -76,11 +73,13 @@ public class Main {
 		cfg_fpath = @"$(HOME)/.local/share/supravim/supravim.cfg";
 		rc_path = @"$(HOME)/.vimrc";
 		try {
+			// Init options Entry 
 			var opt_context = new OptionContext ("- OptionContext example");
 			opt_context.set_help_enabled (true);
 			opt_context.add_main_entries (options, null);
 			opt_context.parse (ref args);
 
+			// Get options object
 			var sp = General.get();
 			print ("Supravim Options:\n");
 			foreach (unowned string key in sp.get_keys ()) {
@@ -90,7 +89,7 @@ public class Main {
 			return (run () == true ? 0 : -1);
 		}
 		catch (Error e) {
-			printerr ("Error parsing options: %s\n", e.message);
+			printerr ("Error parsing option: %s\n", e.message);
 			return -1;
 		}
 	}
