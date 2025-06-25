@@ -1,12 +1,11 @@
-
-
+# The Config.vala file is generated from the Config.vala.in template
 config_vala_file = configure_file(input : 'Config.vala.in', output : 'Config.vala', configuration : conf_data)
-
 
 srcs = files (
    'main.vala',
    'Theme.vala',
    'General.vala',
+   'Element.vala'
 )
 
 executable('supravim',
