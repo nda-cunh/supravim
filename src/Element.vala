@@ -62,13 +62,13 @@ public class Element {
 
 	/**
 	 * Searches for the closing quote of a string in a line.
-	 * @param type The type of quote to search for (either single or double).
+	 * @param c_quote The type of quote to search for (either single or double).
 	 * @param line The line to search in.
 	 * @param begin_comment Output parameter to store the position of the comment start, if any.
 	 * @return The position of the closing quote in the line.
 	 * @throws ErrorQuote.UNMATCHED_QUOTE If no matching closing quote is found.
 	 */
-	private static int search_closed_quote(char type, string line, out int begin_comment) throws ErrorQuote {
+	private static int search_closed_quote(char c_quote, string line, out int begin_comment) throws ErrorQuote {
 		bool pair = true;
 		int end = 0;
 		int i = 0;
@@ -79,7 +79,7 @@ public class Element {
 				begin_comment = i;
 				return end - 1;
 			}
-			if (line[i] == type) {
+			if (line[i] == c_quote) {
 				pair = !pair;
 				end = i + 1;
 			}
