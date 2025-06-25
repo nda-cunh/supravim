@@ -1,0 +1,122 @@
+{
+	"main simple": {
+		"prefix": ["mainn"],
+		"description": "main (int ac, char **av)",
+		"body": [
+			"int\tmain(int ac, char *av[])",
+			"{",
+			"\t$0",
+			"\treturn (0);",
+			"}",
+		]
+	},
+
+	"main void": {
+		"prefix": ["mainv"],
+		"description": "main(void)",
+		"body": [
+			"int\tmain(void)",
+			"{",
+			"\t$0",
+			"\treturn (0);",
+			"}",
+		]
+	},
+	
+	"main header": {
+		"prefix": ["mainh"],
+		"description": "main(int ac, char **av) with Header",
+		"body": [
+			"#include <stdio.h>",
+			"#include <string.h>",
+			"#include <unistd.h>",
+			"#include <stdlib.h>",
+			"",
+			"int\tmain(int ac, char **av)",
+			"{",
+			"\t$0",
+			"\treturn (0);",
+			"}",
+		]
+	},
+
+	"while": {
+		"prefix": ["while"],
+		"description": "while ()",
+		"body": [
+			"while ($1)",
+			"{",
+			"\t$0",
+			"}",]
+	},
+
+	"if": {
+		"prefix": ["if"],
+		"description": "if ()",
+		"body": [
+			"if ($1)",
+			"{",
+			"\t$0",
+			"}",]
+	},
+
+	"else if": {
+		"prefix": ["elseif", "elif"],
+		"description": "else if ()",
+		"body": [
+			"else if ($1)",
+			"{",
+			"\t$0",
+			"}",]
+	},
+
+	"loop": {
+		"prefix": ["loop"],
+		"description": "loop x times",
+		"body": [
+			"for (int i = 0; i != $1; i++)",
+			"{",
+			"\t$0",
+			"}",]
+	},
+
+	"for": {
+		"prefix": ["for"],
+		"description": "for",
+		"body": [
+			"for (int ${1:index} = $2; $1 != $3; $1++)",
+			"{",
+			"\t$0",
+			"}",]
+	},
+
+	"ifndef": {
+		"prefix": ["ifndef"],
+		"body": [
+			"#ifndef ${1:$TM_FILENAME_BASE}",
+			"# define ${1}",
+			"$0",
+			"#endif",
+		]
+	},
+	
+	"tstruct": {
+		"prefix": ["tstruct"],
+		"body": [
+			"typedef struct s_${1:my_struct}",
+			"{",
+			"\t$0",
+			"}t_${1};",
+		]
+	},
+	
+	"struct": {
+		"prefix": ["struct"],
+		"body": [
+			"struct s_${1:my_struct}",
+			"{",
+			"\t$0",
+			"};",
+		]
+	},
+}
