@@ -3,9 +3,9 @@ version: @version@
 author: nda-cunh
 binary: @name@
 description: @description@
-dependency: supramake suprabear supravim-server supratags
+dependency: supramake suprabear supratags
 optional_dependency: ccls plugin-autobear plugin-lsp-client supravim-gui
 arch:
-exclude_package:
+exclude_package: supravim-server
 optional_dependency:
 

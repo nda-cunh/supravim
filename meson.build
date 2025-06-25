@@ -2,7 +2,12 @@
 # SupraVim 
 #########################
 
-project('SupraVim', ['c', 'vala'], version : '5.88.1')
+project('supravim', ['c', 'vala'], version : '5.88.1', 
+  default_options : [
+    'buildtype=release',
+    'optimization=3',
+    'b_lto=true',
+  ])
 
 description = 'un supraediteur sur vim'
 
@@ -23,7 +28,14 @@ conf_data.set('version', meson.project_version())
 # Create the supravim executable
 ####################################
 
+vala_dependencies = [
+  dependency('glib-2.0'),
+  dependency('gobject-2.0'),
+  dependency('gio-2.0'),
+]
+
 subdir('src')
+subdir('supravim-server')
 
 
 
