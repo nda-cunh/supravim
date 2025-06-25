@@ -5,16 +5,13 @@ srcs = files (
    'main.vala',
    'Theme.vala',
    'General.vala',
-   'Element.vala'
+   'Element.vala',
    'Modificator.vala',
 )
 
 executable('supravim',
    srcs,
    config_vala_file,
-   dependencies : [
-      dependency('gio-2.0'),
-      dependency('glib-2.0'),
-      dependency('gobject-2.0')],
+   dependencies : vala_dependencies,
    c_args: '-w',
    install : true)
