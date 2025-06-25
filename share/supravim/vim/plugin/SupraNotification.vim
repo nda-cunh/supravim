@@ -134,6 +134,7 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			callback: (wid, _) => {
 				var _pos = popup_getpos(popup)
 				remove(popup_wins, popup)
+				echo 'Up it'
 				actual_line -= _pos.height
 				call MoveUpAllPopups(_pos.height)
 			},

@@ -1,0 +1,3 @@
+rm -rf $PREFIX/share/supravim
+rm -f $HOME/.vimrc
+rm -rf $HOME/.vim

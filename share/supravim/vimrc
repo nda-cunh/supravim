@@ -1,0 +1,613 @@
+vim9script
+#**** SUPRAVIM ****"
+set nocompatible
+filetype off
+
+import '.vim/plugin/SupraNotification.vim' as Notify
+
+pathogen#infect()
+pathogen#helptags()
+
+g:sp_swap = false			# create swapfile (.swp)
+g:sp_tree = true			# display folder tree at left
+g:sp_fold = false			# add fold support 
+g:sp_nobackground = false	# remove background color and use your terminal background
+g:sp_wrap = true 			# do not wrap the text if the line is too long
+g:sp_theme = 'onedark'
+
+filetype plugin indent on
+#--------------- jeu de couleur ---------------"
+syntax on
+
+if (has("termguicolors"))
+	set termguicolors
+endif
+
+set t_Co=256
+exec 'colorscheme ' .. g:sp_theme
+set background=dark
+
+if g:sp_nobackground == true
+	hi Normal guibg=NONE ctermbg=NONE
+endif
+#------------- Cursor Parts ------------"
+&t_SI = "\<Esc>[5 q"
+&t_SR = "\<Esc>[3 q"
+&t_EI = "\<Esc>[2 q"
+autocmd VimLeave * !echo -ne "\e[0 q"
+
+#-------------- Save Undo  ------------"
+
+set undodir=~/.cache/vim/undo
+set undofile
+
+# -------------  DBG integration  --------------"
+packadd! termdebug
+g:termdebug_wide = 1
+
+#-------------- Auto Pairs ---------------------"
+inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
+
+#--------------- Onglets ---------------------"
+nnoremap <c-n>			<esc>:tabnew 
+nnoremap <C-Right>		<scriptcmd>tabnext<CR>
+nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
+inoremap <C-Right>		<scriptcmd>tabnext<CR>
+inoremap <C-Left>		<scriptcmd>tabprevious<CR>
+
+#--------------- Racourcis --------------"
+nmap	<c-f>		fl
+nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
+nnoremap <C-Down>	<scriptcmd>pop<cr>
+inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
+inoremap <C-Down>	<scriptcmd>pop<cr>
+inoremap <c-q>		<cmd>q!<CR>
+noremap <c-q>		<cmd>q!<CR>
+inoremap <c-s>		<cmd>w!<CR><esc>
+noremap <c-s>		<cmd>w!<CR><esc>
+nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
+nnoremap <F5> 		<ScriptCmd>call Make("run")<CR>
+inoremap <F5>		<ScriptCmd>call Make("run")<CR>
+nnoremap <F6>		<ScriptCmd>call Make("run2")<CR>
+inoremap <F6>		<ScriptCmd>call Make("run2")<CR>
+nnoremap <F7> 		<ScriptCmd>call Make("run3")<CR>
+inoremap <F7>		<ScriptCmd>call Make("run3")<CR>
+nnoremap <C-d>		:vs 
+nnoremap <S-d>		:split 
+nnoremap <S-Right>	<C-w><Right>
+nnoremap <S-Left>	<C-w><Left>
+nnoremap <S-Up>		<C-w><Up>
+nnoremap <S-Down>	<C-w><Down>
+inoremap <TAB>		<TAB>
+inoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
+nnoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
+nnoremap <S-t>		<scriptcmd>term ++rows=15<CR>
+nnoremap <S-Tab>	<<
+nnoremap <Tab>		>>
+vnoremap <S-Tab>	<<<esc>gv
+vnoremap <Tab>		>><esc>gv
+nnoremap <c-@>		<cmd>LspHover<cr>
+inoremap <c-a>		<esc>gg<s-v>G
+nmap <2-LeftMouse>		:LspHover<cr>
+
+#---------------      Copy - Paste      ---------------"
+
+inoremap <c-v>	<scriptcmd>norm p<cr>
+vnoremap <c-c>	y
+if has('macunix')
+    autocmd TextYankPost * call SupraCopy(['pbcopy'])
+    autocmd FocusGained * call SupraPaste(['pbpaste'])
+elseif expand("$XDG_SESSION_TYPE") == "wayland"
+	# if executable('wl-copy') == 0
+		# call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
+	# else
+		# autocmd TextYankPost * call SupraCopy(['wl-copy'])
+		# autocmd FocusGained * call SupraPaste(['wl-paste'])
+	# endif
+elseif expand("$XDG_SESSION_TYPE") == "x11"
+	if executable('xclip') == 0
+		call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
+	else
+		autocmd TextYankPost * call SupraCopy(['xclip', '-i', '-selection', 'clipboard'])
+		autocmd FocusGained * call SupraPaste(['xclip', '-o', '-selection', 'clipboard'])
+	endif
+endif
+
+def SupraPaste(copy_os: list<string>)
+	var tmpbufname = bufadd(tempname())
+	var job: job
+	job = job_start(copy_os, {
+		out_io: 'buffer',
+		out_buf: tmpbufname,
+		out_mode: 'raw',
+		close_cb: (ch: channel) => {
+			var info = job_info(job)
+			# echoerr info
+			if info.exitval != 0 && info.exitval != 1
+				call Notify.Notification(["Synchronization failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
+			endif
+			var all = getbufline(tmpbufname, 0, '$')
+			setreg('@', join(all, "\n"))
+			execute('bwipeout! ' .. tmpbufname)
+		},
+	})
+enddef
+
+nnoremap <del> i<del><right><esc>
+def SupraCopy(copy_os: list<string>)
+	if v:event.operator == 'c'
+		setreg('@', getreg('0'))
+		return
+	endif
+	var job: job
+	job = job_start(copy_os, {
+		in_mode: 'raw',
+		close_cb: (ch: channel) => {
+			var info = job_info(job)
+			# echoerr info
+			if info.exitval != 0
+				call Notify.Notification(["Copy failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
+			endif
+		},
+	})
+	vim9cmd call ch_sendraw(job, getreg('@'))
+	vim9cmd call ch_close_in(job)
+enddef
+
+#---------------      Command        ---------------"
+cmap <c-q>	q!<cr>
+cmap <c-s>	w!<cr>
+cmap <F5>	Make 
+cmap <c-v>	<c-r>0<del>
+
+#---------------      Terminal        ---------------"
+tnoremap <C-q> exit<CR>
+tnoremap <F3> clear -x ; norminette<CR>
+tnoremap <F5> supramake run<CR>
+tnoremap <F6> supramake run2<CR>
+tnoremap <F7> supramake run3<CR>
+tnoremap <esc>	<c-\><c-n>
+
+tnoremap <S-Right>		<C-W>N<C-w><Right>
+tnoremap <S-Left>		<C-W>N<C-w><Left>
+tnoremap <S-Up>			<C-W>N<C-w><Up>
+tnoremap <S-Down>		<C-W>N<C-w><Down>
+
+#--------------- utilitaires basiques ---------------"
+g:lsp_log_verbose = 0
+set mouse=a
+if g:sp_swap == false 
+	set noswapfile
+endif
+if g:sp_wrap == true
+	set wrap
+else
+	set nowrap
+endif
+set cursorline
+set nu
+set incsearch
+set noautochdir
+if executable('suprapack') == 0
+	autocmd VimEnter * call Notify.Notification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {type: 'warning'})
+	$PATH = $PATH .. ':' .. expand('$HOME') .. '/.local/bin:'
+endif
+silent! var project_root = system('suprabear -p')
+var suprabear_return = v:shell_error
+silent! exec 'chdir ' .. project_root
+set title
+set wildmenu
+set tabstop=4
+set shiftwidth=4
+set smartindent
+set autoindent
+set shiftround
+set showmode
+set backspace=indent,eol,start
+set pumheight=50
+set notimeout
+set ttimeout
+set timeoutlen=100
+set encoding=utf-8
+set splitbelow
+set splitright
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+set fillchars=vert:│
+auto BufEnter,VimEnter *.tpp set filetype=cpp
+
+#--------------- CLANG COMPLETER ---------------"
+set noinfercase
+set completeopt-=preview
+set completeopt+=menuone,noselect
+g:mucomplete#enable_auto_at_startup = 1
+
+#--------------- PL NERDTREE ---------------"
+g:rainbow_active = 1
+g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
+g:NERDTreeWinSize = 27
+
+#--------------- FONCTION ---------------"
+g:supravim_option_changed = 'null'
+g:supravim_option_value = 'null'
+def GotOutput(channel: channel, msg: string)
+	# change_theme: [onehalf] <dark>
+	if matchstr(msg, '^change_theme: ') != ''
+		var theme = matchstr(msg, '\[\zs.*\ze\]')
+		var typemode = matchstr(msg, '<\zs.*\ze>')
+
+		exec 'colorscheme ' .. theme
+		exec 'set background=' .. typemode
+		AirlineRefresh
+		if g:sp_nobackground == true
+			hi Normal guibg=NONE ctermbg=NONE
+		endif
+	# onChangeOption: [tree] <true>
+	elseif matchstr(msg, '^onChangeOption: ') != ''
+		g:supravim_option_changed = matchstr(msg, '\[\zs.*\ze\]')
+		g:supravim_option_value = matchstr(msg, '<\zs.*\ze>')
+		doautocmd User SupravimChangeOption
+	endif
+enddef
+
+def SimpleSupravimChangeOption()
+	if g:supravim_option_changed == 'tree'
+		if g:supravim_option_value == 'false'
+			NERDTreeTabsClose
+		else
+			NERDTreeTabsOpen
+		endif
+	elseif g:supravim_option_changed == 'swap'
+		if g:supravim_option_value == 'false'
+			set noswapfile
+		else
+			set swapfile
+		endif
+	elseif g:supravim_option_changed == 'fold'
+		if g:supravim_option_value == 'false'
+			set nofoldenable
+		else
+			set foldenable
+		endif
+	elseif g:supravim_option_changed == 'nobackground'
+		if g:supravim_option_value == 'false'
+			exec 'colorscheme ' .. g:sp_theme
+			exec 'set background=' .. &background
+			g:sp_nobackground = false
+		else
+			hi Normal guibg=NONE ctermbg=NONE
+			g:sp_nobackground = true 
+		endif
+	elseif g:supravim_option_changed == 'wrap'
+		if g:supravim_option_value == 'false'
+			set nowrap
+		else
+			set wrap
+		endif
+	endif
+enddef
+
+autocmd User SupravimChangeOption call SimpleSupravimChangeOption()
+
+def g:SettingsSupravim()
+	job_start(["supravim-gui"], {
+		out_cb: GotOutput,
+	})
+enddef
+
+if g:sp_fold == true
+	auto BufEnter * call LoadBuf()
+	def LoadBuf()
+		var l = line('.')
+		silent! loadview
+		cursor(l, 1)
+	enddef
+endif
+
+auto BufWritePost * call Save_post()
+def Save_post()
+	mkview
+enddef
+
+
+# Compilation and SupraMake
+
+command -nargs=* -complete=customlist,AutoComplete_gMake Make :call MakeSpecial(<f-args>)
+def AutoComplete_gMake(lead: string, cmdline: string, cursorpos: number): list<string>
+	var content = system("supramake --print-rules")
+	var index = match(cmdline, '\s')
+	index = match(cmdline, '\s', index + 1)
+	if index == -1
+		var res2 = split(content, '\n')
+		return res2
+    else
+        return glob(lead .. '*', 0, 1)
+    endif
+enddef
+
+
+def MakeSpecial(...args: list<string>)
+	var length = len(args)
+	if length == 0
+		call g:Make('all')
+	elseif length == 1
+		call g:Make(args[0])
+	else
+		var rule = args[0]
+		var last_args = $ARGS
+		var str = join(args[1 : ], ' ')
+		$ARGS = str
+		call g:Make(rule)
+		$ARGS = last_args
+	endif
+enddef
+
+var is_supramake = false
+def g:Make(rules: string)
+	w!
+	is_supramake = true 
+	setenv('rulesmake', rules)
+	! supramake --run-clean $rulesmake
+	is_supramake = false
+	redraw!
+enddef
+
+imap <C-F5>		<ScriptCmd>Gdbs<CR>
+map <C-F5>		<ScriptCmd>Gdbs<CR>
+
+command -nargs=0 -bar Gdbs :call Gdbf()
+
+def Gdbf()
+	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
+		echo "Tu veux debugger quoi là ?"
+	else
+		set splitbelow nosplitbelow
+		set splitright nosplitright
+		NERDTreeTabsClose
+		if !filereadable("Makefile")
+			exec ":Termdebug -n ./a.out"
+		else
+			exec ":Termdebug -n"
+		endif
+	endif
+	set splitbelow
+	set splitright
+enddef               
+# -------------- Ctags ----------------"
+
+command -nargs=0 -bar Ctags :call Ctags()
+
+set tags=$HOME/.cache/tags
+
+def Ctags()
+	if suprabear_return == 0
+		system("supratags --output=" .. expand("$HOME") .. "/.cache/tags")
+		execute "tag " .. expand("<cword>")
+	else
+		LspDefinition
+	endif
+enddef
+
+# ------ Running Supravim-Server ------"
+def GotOutputSupravimServer(channel: channel, msg: string)
+	if matchstr(msg, '^refresh') != ''
+		if is_supramake == false 
+			NERDTreeTabsRefresh
+		endif
+	endif
+enddef
+
+job_start(["supravim-server", project_root], {
+	out_cb: GotOutputSupravimServer,
+})
+
+# ----------------- AIR LINE ------------------"
+g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
+if expand('%:e') == ''
+	g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
+endif
+g:airline_section_b = airline#section#create(['SupraVim'])
+g:airline_left_sep = ''
+g:airline_left_alt_sep = ''
+g:airline_right_sep = ''
+g:airline_right_alt_sep = ''
+g:airline#extensions#tabline#enabled = 1
+g:airline#extensions#tabline#show_buffers = 0
+g:airline#extensions#tabline#tabs_label = 'Tabs'
+g:airline#extensions#tabline#buffer_nr_show = 0
+g:airline#extensions#tabline#tab_nr_type = 1
+g:airline#extensions#tabline#left_sep = ''
+g:airline#extensions#tabline#left_alt_sep = ''
+g:airline#extensions#tabline#right_sep = ''
+g:airline#extensions#tabline#right_alt_sep = ''
+
+# ----------------- POPUP ------------------ #
+autocmd VimEnter * CreatePopit()
+
+def CreatePopit()
+	job_start(["suprapack", "have_update", "supravim"], {
+		out_cb: (ch: channel, msg: string) => {
+			call CreatePop(msg)
+		}
+	})
+enddef
+
+def ClickMeUpdate()
+	!suprapack update
+enddef
+
+def CreatePop(s: string)
+	call Notify.Notification(["Update", s, "run: `suprapack update`", "Click here to update"], {
+		left_click: ClickMeUpdate,
+		icon: '󰚰',
+	})
+enddef
+# -----------------   Alt Up/Down   ------------------ #
+def MoveLineDown(mode: string)
+	var array = getline(line("'<"), line("'>"))
+	var len = len(array)
+	var begin = line('.')
+
+	if mode == 'n'
+		var tmp = getline(line('.') + 1)
+		setline(line('.') + 1, getline(line('.')))
+		setline(line('.'), tmp)
+		normal j==
+		return
+	elseif line("'<") != begin 
+		return
+	endif
+
+	var tmp = getline(begin + len)
+	var i = 0 
+	reverse(array)
+
+	for str in array
+		setline(begin + len - i, str)
+		i = i + 1
+	endfor
+	setline(begin, tmp)
+	setpos("'<", [0, begin + 1, 0, 0])
+	setpos("'>", [0, begin + len, 0, 0])
+	normal! gv=gv
+enddef
+
+def MoveLineUp(mode: string)
+	var array = getline(line("'<"), line("'>"))
+	var len = len(array)
+	var begin = line('.')
+	
+	if begin == 1
+		return
+	elseif mode == 'n'
+		var tmp = getline(line('.') - 1)
+		setline(line('.') - 1, getline(line('.')))
+		setline(line('.'), tmp)
+		normal k==
+		return
+	endif
+	
+	if line("'<") != begin 
+		return
+	endif
+
+	var tmp = getline(line('.') - 1)
+	var i = begin
+	for str in array
+		setline(i - 1, str)
+	 	i = i + 1	
+	endfor
+	setline(i - 1, tmp)
+	
+	setpos("'<", [0, begin - 1, 0, 0])
+	setpos("'>", [0, begin + len - 2, 0, 0])
+	normal! gv=gv
+enddef
+
+vnoremap <silent> <A-Down>	:<scriptcmd>MoveLineDown("v")<CR><cr>
+vnoremap <silent> <A-Up>	:<scriptcmd>MoveLineUp("v")<CR><cr>
+nnoremap <silent> <A-Down>	<scriptcmd>MoveLineDown("n")<CR>
+nnoremap <silent> <A-Up>	<scriptcmd>MoveLineUp("n")<CR>
+
+# Fuzzy Finder
+nnoremap <silent> <space>g <scriptcmd>FuzzyGrep<CR>
+nnoremap <silent> <space>f <scriptcmd>FuzzyFiles<CR>
+nnoremap <silent> <space>s <scriptcmd>FuzzyInBuffer<CR>
+nnoremap <silent> <space>c <scriptcmd>FuzzyCommands<CR>
+nnoremap <silent> <space>b <scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent> <space>h <scriptcmd>FuzzyHighlights<CR>
+nnoremap <silent> <space>m <scriptcmd>FuzzyMRUFiles<CR>
+# Search Ctrl + F
+nnoremap <silent> <space><space> <scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent><c-f> <scriptcmd>FuzzyGrep<CR>
+
+g:fuzzyy_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
+g:fuzzyy_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
+
+
+# SupraVim Settings Sync
+inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
+noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
+
+nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
+inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
+nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
+
+# Popup Menu --------------------------------------
+
+set mousemodel=popup
+autocmd BufEnter * call Init_menu()
+def Init_menu()
+	vmenu PopUp.Copy			y
+	vmenu PopUp.Cut				d	
+	vmenu PopUp.Past			p
+	vmenu PopUp.Select\ All		<esc>gg<s-v>G
+	if g:sp_fold
+		vmenu PopUp.Fold			zf
+	endif
+	vmenu PopUp.Equalize		=
+	vmenu PopUp.-sep4- <Nop>
+
+	nmenu PopUp.Show\ References	<esc>:LspReferences<cr>
+	nmenu PopUp.-sep5- <Nop>
+	nmenu PopUp.Save\ All		:wall<CR>
+	nmenu PopUp.Auto\ Norm		<F2>
+	nmenu PopUp.Switch\ Norm		<F3>
+	nmenu PopUp.-sep0- <Nop>
+	nmenu PopUp.Select\ All		<esc>gg<s-v>G
+	nmenu PopUp.Past			p
+	nmenu PopUp.Undo			u
+	nmenu PopUp.Redo			<C-r>
+	nmenu PopUp.-sep2- <Nop>
+	nmenu PopUp.Debug			:call Gdbf()<cr>
+	nmenu PopUp.Rename\ Symbol	:LspRename<cr>
+
+	if g:sp_fold
+		nmenu PopUp.-sep3- <Nop>
+		nmenu PopUp.Fold			<scriptcmd>Fold()<CR>
+		nmenu PopUp.UnFold			zo
+		nmenu PopUp.Fold\ All		<scriptcmd>FoldAll()<CR>
+		nmenu PopUp.UnFold\ All		zR
+	endif
+	nmenu PopUp.-sep4- <Nop>
+	nmenu PopUp.SupraVim\ Settings :call SettingsSupravim()<CR>
+enddef
+
+# Fold support --------------------------------------
+
+if g:sp_fold == true
+	def Fold()
+		set foldmethod=syntax
+		execute "normal! zc"
+		set foldmethod=manual
+	enddef
+
+	def FoldAll()
+		set foldmethod=syntax
+		execute "normal! zM"
+		set foldmethod=manual
+	enddef
+endif 
+
+
+# SetArgv --------------------------------------
+command -nargs=* -complete=file SetArgv :call SetArgv(<f-args>)
+command -nargs=* -complete=file SetArgs :call SetArgv(<f-args>)
+
+def SetArgv(...args: list<string>)
+	var str = join(args, ' ')
+	$ARGS = str
+enddef
+
+# Welcome --------------------------------------
+
+def Welcome()
+	redraw!
+	var timer = timer_start(100, (_) => {
+		echo 'Welcome to SupraVim ! Press <F12> for help'
+	})
+	if g:sp_fold
+		set foldmethod=manual
+	endif
+enddef
+
+autocmd VimEnter * call Welcome()
