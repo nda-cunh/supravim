@@ -45,7 +45,7 @@ namespace Modificator {
 			throw new ErrorOption.OPTION_NOT_FOUND(@"$var_name: option not found.");
 
 		unowned var type = option_sp[var_name].type;
-		var is_number = /[0-9]+([.][0-9]+)?/.match(new_val);
+		var is_number = /^[0-9]+([.][0-9]+)?$/.match(new_val);
 		var is_bool  = (new_val == "true" || new_val == "false");
 
 		if (is_bool != (type == OptionType.BOOLEAN))
