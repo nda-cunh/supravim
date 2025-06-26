@@ -52,6 +52,8 @@ public class Main {
 		foreach (unowned string str in enable)
 			Modificator.enable (str);
 
+		foreach (unowned string str in variable_set)
+			Modificator.set_value (str);
 
 		if (theme != null)
 			return Theme.change (theme);
