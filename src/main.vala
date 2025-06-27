@@ -45,15 +45,36 @@ public class Main {
 			return Process.spawn_command_line_sync ("suprapack update");
 		else if (is_uninstall)
 			return Process.spawn_command_line_sync ("suprapack remove supravim");
+		else if (is_status) {
+			print_status ();
+		}
+		
+		foreach (unowned string str in disable) {
+			try {
+				Modificator.disable (str);
+			}
+			catch (Error e) {
+				warning (e.message);
+			}
+		}
 
-		foreach (unowned string str in disable)
-			Modificator.disable (str);
+		foreach (unowned string str in enable) {
+			try {
+				Modificator.enable (str);
+			}
+			catch (Error e) {
+				warning (e.message);
+			}
+		}
 
-		foreach (unowned string str in enable)
-			Modificator.enable (str);
-
-		foreach (unowned string str in variable_set)
-			Modificator.set_value (str);
+		foreach (unowned string str in variable_set) {
+			try {
+				Modificator.set_value (str);
+			}
+			catch (Error e) {
+				warning (e.message);
+			}
+		}
 
 		if (theme != null)
 			return Theme.change (theme);
@@ -81,13 +102,6 @@ public class Main {
 			opt_context.add_main_entries (options, null);
 			opt_context.parse (ref args);
 
-			// Get options object
-			var sp = General.get();
-			print ("Supravim Options:\n");
-			foreach (unowned string key in sp.get_keys ()) {
-				unowned Element elem = sp[key];
-				print ("{\033[35m%s\033[0m} = {\033[36m%s\033[0m} {%s}\n", elem.name, elem.value, elem.comment ?? "(null)");
-			}
 			return (run () == true ? 0 : -1);
 		}
 		catch (Error e) {

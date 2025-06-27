@@ -8,7 +8,6 @@ public enum OptionType {
 	BOOLEAN
 }
 
-[Compact]
 public class Element {
 	/**
 	 * Constructs an Element from a line in a file.
@@ -18,46 +17,59 @@ public class Element {
 	 */
 	public Element (string line) throws ErrorQuote {
 		int equal_pos = line.index_of_char ('=') + 1;
-		unowned string ptr = line.offset (equal_pos + 1);
 		int begin_comment = -1;
 		int end = 0;
 		int start = 0;
 
+		unowned string ptr = line.offset (equal_pos + 1);
+
 		// if the value is a string
 		if (ptr[0] == '\'' || ptr[0] == '"') {
 			this.type = OptionType.STRING;
-			end = search_closed_quote (ptr[0], ptr, out begin_comment);
+			end = search_closed_quote (ptr[0], line, equal_pos + 1, out begin_comment);
 			start = 1;
 		}
 		else {
 			// if the value is a number or boolean
-			this.type = OptionType.BOOLEAN;
 			if (ptr[end].isdigit())
 				this.type = OptionType.NUMBER;
+			else
+				this.type = OptionType.BOOLEAN;
 			while (ptr[end].isspace () == false)
 				++end;
-			begin_comment = ptr.index_of_char ('#', end);
+			end += equal_pos + 1; // Adjust end to the position after the '='
+			begin_comment = line.index_of_char ('#', end);
+			if (begin_comment == -1)
+				begin_comment-=5;
 		}
 
 		// Skip space for the comment
 		if (begin_comment != -1) {
 			begin_comment += 1;
-			while (ptr[begin_comment].isspace ())
+			while (line[begin_comment].isspace ())
 				++begin_comment;
 		}
 
 		// The line is on the Heap (malloc'd)
 		this.line = line;
-		// PERF Set '\0' at the end of the line
-		ptr = this.line.offset(equal_pos + 1);
-		this.line.data[equal_pos - 2] = '\0'; 
-		ptr.data[end] = '\0';
-		// Value
+		
+		// NAME PART
 		this.name = this.line.offset(5);
-		this.value = ptr.offset(start);
-		// Comment
-		if (begin_comment != -1)
-			this.comment = ptr.offset(begin_comment);
+		this.line.data[equal_pos - 2] = '\0'; // Set the closing quote at the end of the string
+
+		// Value PART
+		this.value = this.line.offset(equal_pos + start + 1);
+		this.line.data[end] = '\0';
+
+		if (begin_comment != -1) {
+			this.comment = this.line.offset(begin_comment);
+			this.line.data[begin_comment - 1] = '\0'; // Set the closing quote at the end of the comment
+		}
+		else
+			this.comment = null;
+// 
+		// print ("[%s] equal: (%d) end: (%d) comment: (%d)\n", line, equal_pos, end, begin_comment);
+		// print ("{\033[35m%s\033[0m} = {\033[36m%s\033[0m} {\033[93m%s\033[0m}\n", this.name, this.value, this.comment ?? "(null)");
 	}
 
 	/**
@@ -68,10 +80,10 @@ public class Element {
 	 * @return The position of the closing quote in the line.
 	 * @throws ErrorQuote.UNMATCHED_QUOTE If no matching closing quote is found.
 	 */
-	private static int search_closed_quote(char c_quote, string line, out int begin_comment) throws ErrorQuote {
+	private static int search_closed_quote(char c_quote, string line, int start, out int begin_comment) throws ErrorQuote {
 		bool pair = true;
 		int end = 0;
-		int i = 0;
+		int i = start;
 		begin_comment = -1;
 
 		while (line[i] != '\0') {
@@ -93,9 +105,9 @@ public class Element {
 		throw new ErrorQuote.UNMATCHED_QUOTE("Unmatched quote in line: %s", line);
 	}
 	
+	public OptionType type;
 	public string line; // The Malloc'd line from the file
 	public string file; // The file where this element was found, if applicable
-	public OptionType type;
 	public unowned string name; // The name of the element, e.g., "g:sp_option"
 	public unowned string value; // The value of the element, e.g., "1" or "true"
 	public unowned string? comment = null; // The comment after the value, if any

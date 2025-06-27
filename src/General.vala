@@ -1,9 +1,11 @@
-namespace General {
-	private static HashTable<unowned string, Element>? _sv_options = null;
+using Gee;
 
-	public static unowned HashTable<unowned string, Element> get() throws Error {
+namespace General {
+	private static HashMap<unowned string, Element>? _sv_options = null;
+
+	public static unowned HashMap<unowned string, Element> get() throws Error {
 		if (_sv_options == null) {
-			_sv_options = new HashTable<unowned string, Element> (str_hash, str_equal);
+			_sv_options = new HashMap<unowned string, Element> ();
 			init_options ();
 		}
 		return _sv_options;
