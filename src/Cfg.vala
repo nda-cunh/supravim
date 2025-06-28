@@ -31,6 +31,7 @@ namespace Cfg {
 		FileUtils.get_contents (cfg_fpath, out contents);
 
 		var lines = contents.split ("\n");
+		var table = new HashTable<string, string> (str_hash, str_equal);
 
 		foreach (unowned string line in lines) {
 			if (line == "")
@@ -53,9 +54,18 @@ namespace Cfg {
 			else
 				comment = line.offset (index_collon[3] + 3);
 			// NOTE I dont know why it work but it does
-			OptionType opt_type = OptionType.BOOLEAN;
+			var opt_type = OptionType.BOOLEAN;
 
-			Modificator.update_value(name, value, file, opt_type, comment);
+			if ((file in table) == false) {
+				string file_contents;
+				FileUtils.get_contents (file, out file_contents);
+				table[file] = file_contents;
+			}
+			table[file] = Modificator.update_value_with_contents (name, value, opt_type, comment, table[file]);
+		}
+
+		foreach (unowned var file in table.get_keys_as_array ()) {
+			FileUtils.set_contents (file, table[file]);
 		}
 	}
 }
