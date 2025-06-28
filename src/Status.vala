@@ -17,6 +17,15 @@ private void print_list (Gee.ArrayList<Gee.Map.Entry<weak string, Element>> lst)
 	}
 }
 
+int get_score (Map.Entry<unowned string, Element> entry) {
+	if (entry.value.value == "true")
+		return 1;
+	else if (entry.value.value == "false")
+		return 0;
+	else
+		return -1; 
+}
+
 public void print_status () throws Error {
 
 	var lst_all = General.get ();
@@ -25,8 +34,8 @@ public void print_status () throws Error {
 	var lst_general = new ArrayList<Map.Entry<unowned string, Element>> ();
 	var lst_plugins = new ArrayList<Map.Entry<unowned string, Element>> ();
 
-	lst_general.add_all_iterator(lst_all.filter((a) => (a.value.file == rc_path)));
-	lst_plugins.add_all_iterator(lst_all.filter((a) => (a.value.file != rc_path)));
+	lst_general.add_all_iterator(lst_all.filter((a) => (a.value.file == rc_path)).order_by ((a, b) => get_score (b) - get_score (a)));
+	lst_plugins.add_all_iterator(lst_all.filter((a) => (a.value.file != rc_path)).order_by ((a, b) => get_score (b) - get_score (a)));
 
 	print ("\033[;1m -- GENERAL --\033[0m\n");
 	print_list (lst_general);
