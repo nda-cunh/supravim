@@ -16,7 +16,6 @@ add_global_arguments('-w', language : ['c', 'cpp'])
 description = 'un supraediteur sur vim'
 
 
-
 ###################################
 # Configuration
 ###################################
