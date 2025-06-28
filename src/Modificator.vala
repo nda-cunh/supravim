@@ -103,9 +103,16 @@ namespace Modificator {
 	 * @param comment An optional comment to add to the option line.
 	 * @throws Error If the option line cannot be found or if the file cannot be read.
 	 */
-	private void update_value (string name, string new_value, string filename, OptionType type, string? comment) throws Error {
+	public void update_value (string name, string new_value, string filename, OptionType type, string? comment) throws Error {
+		string contents;
+		FileUtils.get_contents (filename, out contents);
+		contents = update_value_with_contents(name, new_value, type, comment, contents);
+		FileUtils.set_contents(filename, contents);
+	}
+
+	public string update_value_with_contents (string name, string new_value, OptionType type, string? comment, string contents) throws Error {
 		// Regex to match the option line
-		var opt_regex = new Regex(@"^g:sp_$(name).+?\n", RegexCompileFlags.DOTALL|RegexCompileFlags.MULTILINE);
+		var opt_regex = new Regex(@"^g:sp_$(name).+?\n", RegexCompileFlags.MULTILINE);
 
 		// Construct new line with the value
 		string replacement;
@@ -121,14 +128,7 @@ namespace Modificator {
 			else
 				replacement = @"g:sp_$(name) = $new_value\n";
 		}
-
-		string contents;
-		FileUtils.get_contents (filename, out contents);
-
-		// Replace contents with new value
 		contents = opt_regex.replace(contents, -1, 0, replacement, 0);
-		FileUtils.set_contents(filename, contents);
-
+		return contents;
 	}
-
 }
