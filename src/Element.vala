@@ -67,9 +67,14 @@ public class Element {
 		}
 		else
 			this.comment = null;
-// 
-		// print ("[%s] equal: (%d) end: (%d) comment: (%d)\n", line, equal_pos, end, begin_comment);
-		// print ("{\033[35m%s\033[0m} = {\033[36m%s\033[0m} {\033[93m%s\033[0m}\n", this.name, this.value, this.comment ?? "(null)");
+	}
+
+	public Element.with_av (string name, OptionType type, string value, string? comment = null, string file) {
+		this.name = name;
+		this.type = type;
+		this.value = value;
+		this.comment = comment;
+		this.file = file;
 	}
 
 	/**

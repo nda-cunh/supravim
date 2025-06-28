@@ -20,6 +20,9 @@ public class Main {
 	private static bool print_opts = false;
 	private static bool print_themes = false;
 	private static string? theme = null;
+	
+	private static bool save_config = false;
+	private static bool apply_config = false;
 
 	private const GLib.OptionEntry[] options = {
 		{ "status", 's',		NONE, 		NONE,			ref is_status,		"Display status of your supravim config.",	null },
@@ -32,6 +35,8 @@ public class Main {
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
 		{ "print-options", 0,	HIDDEN, 	NONE,			ref print_opts,		"Print available options.",					null },
 		{ "print-themes", 0,	HIDDEN, 	NONE,			ref print_themes,	"Print available themes.",					null },
+		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"Just save the config actual",				null },
+		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"Just apply the config actual",				null },
 		{ null }
 	};
 
@@ -41,6 +46,10 @@ public class Main {
 			print ("Supravim version %s\n", Config.VERSION);
 			return true;
 		}
+		else if (save_config)
+			Cfg.save_config ();
+		else if (apply_config)
+			Cfg.apply_config ();
 		else if (is_update)
 			return Process.spawn_command_line_sync ("suprapack update");
 		else if (is_uninstall)
@@ -93,7 +102,7 @@ public class Main {
 		Intl.setlocale ();
 		HOME = Environment.get_home_dir ();
 		cfg_dir = @"$(HOME)/.local/share/supravim";
-		cfg_fpath = @"$(HOME)/.local/share/supravim/supravim.cfg";
+		cfg_fpath = @"$(cfg_dir)/supravim.cfg";
 		rc_path = @"$(HOME)/.vimrc";
 		try {
 			// Init options Entry 
