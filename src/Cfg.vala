@@ -9,8 +9,7 @@ namespace Cfg {
 		var bs = new StringBuilder.sized (2048);
 
 		var lst_all = General.get ();
-		foreach (var entry in lst_all) {
-			unowned var elem = entry.value;
+		foreach (unowned var elem in lst_all) {
 			if (elem.type == BOOLEAN) {
 				bs.append_printf ("%s:bool:%s:%s@#@%s\n", elem.name, elem.file, elem.value, elem.comment ?? "");
 			}

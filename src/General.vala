@@ -1,11 +1,9 @@
-using Gee;
-
 namespace General {
-	private static HashMap<unowned string, Element>? _sv_options = null;
+	private static ArrayElements? _sv_options = null;
 
-	public static unowned HashMap<unowned string, Element> get() throws Error {
+	public static ArrayElements get() throws Error {
 		if (_sv_options == null) {
-			_sv_options = new HashMap<unowned string, Element> ();
+			_sv_options = new ArrayElements ();
 			init_options ();
 		}
 		return _sv_options;
@@ -61,7 +59,7 @@ namespace General {
 				try {
 					var element = new Element(contents.offset(start));
 					element.file = file;
-					_sv_options[element.name] = (owned)element;
+					_sv_options.append(element);
 				}
 				catch (ErrorQuote e) {
 					warning ("File: %s Error %s", file, e.message);

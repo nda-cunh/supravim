@@ -34,7 +34,6 @@ vala_dependencies = [
   dependency('glib-2.0'),
   dependency('gobject-2.0'),
   dependency('gio-2.0'),
-  dependency('gee-0.8', default_options: ['optimization=2'], static: true),
 ]
 
 subdir('src')

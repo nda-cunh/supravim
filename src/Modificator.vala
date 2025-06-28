@@ -65,20 +65,21 @@ namespace Modificator {
 	 * @return The Element corresponding to the option.
 	 * @throws Error If the option is not found or if the type is incompatible.
 	 */
-	private Element check_option_validity (string var_name, string new_val) throws Error {
+	private unowned Element check_option_validity (string var_name, string new_val) throws Error {
 		var option_sp = General.get();
 
-		if ((option_sp.has_key (var_name)) == false)
+		unowned var elem = option_sp.find(var_name);
+		if (elem == null)
 			throw new ErrorOption.OPTION_NOT_FOUND("%s: option not found.", var_name);
 
-		var type = option_sp[var_name].type;
+		var type = elem.type;
 		var is_number = /^[0-9]+([.][0-9]+)?$/.match(new_val);
 		var is_bool  = (new_val == "true" || new_val == "false");
 		if (is_bool != (type == OptionType.BOOLEAN))
 			throw new ErrorOption.INCOMPATIBLE_OPTION_TYPE("%s: incompatible type (boolean expected)", var_name);
 		else if (is_number != (type == OptionType.NUMBER))
 			throw new ErrorOption.INCOMPATIBLE_OPTION_TYPE("%s: incompatible type (number expected)", var_name);
-		return option_sp[var_name];
+		return elem;
 	}
 
 	/**
