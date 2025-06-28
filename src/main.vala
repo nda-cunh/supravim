@@ -106,7 +106,7 @@ public class Main {
 		rc_path = @"$(HOME)/.vimrc";
 		try {
 			// Init options Entry 
-			var opt_context = new OptionContext ("- OptionContext example");
+			var opt_context = new OptionContext ("Program to personalize your supravim");
 			opt_context.set_help_enabled (true);
 			opt_context.add_main_entries (options, null);
 			opt_context.parse (ref args);
