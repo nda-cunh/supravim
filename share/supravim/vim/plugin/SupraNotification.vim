@@ -134,7 +134,6 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			callback: (wid, _) => {
 				var _pos = popup_getpos(popup)
 				remove(popup_wins, popup)
-				echo 'Up it'
 				actual_line -= _pos.height
 				call MoveUpAllPopups(_pos.height)
 			},
@@ -188,7 +187,6 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			if stridx('~~~', str) == 0
 				str = repeat('─', width)
 			elseif str[0] == '~'
-				echon 'centering: ' .. str
 				str = repeat(' ', (width / 2) - strcharlen(str) / 2) .. str[1 : ] 
 			endif
 			add(new_msg, str)
@@ -198,7 +196,6 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			if stridx('~~~', str) == 0
 				str = repeat('─', width)
 			elseif str[0] == '~'
-				echon 'centering: ' .. str
 				str = repeat(' ', (width / 2) - strcharlen(str) / 2) .. str[1 : ] 
 			endif
 			add(new_msg, str)
