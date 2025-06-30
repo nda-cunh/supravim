@@ -89,7 +89,7 @@ syntax region c3LineComment start=/\/\// end=/$/  contains=c3CommentNote, c3Todo
 syntax region c3BlockComment start=/\v\/\*/ end=/\v\*\// contains=c3BlockComment, c3CommentNote, c3Todo, c3Note, c3XXX, c3FixMe, c3NoCheckin, c3Hack
 syntax match c3UserTypes "\<[A-Z][a-zA-Z0-9_]*\>" display
 
-hi UserType term=bold cterm=NONE ctermfg=MistyRose1 ctermbg=NONE
+hi UserType term=bold cterm=NONE guifg=#f0aacc ctermbg=NONE
 
 highlight link c3UserType UserType
 
@@ -143,7 +143,6 @@ highlight link c3Fault Structure
 highlight link c3Union Structure
 highlight link c3Bitstruct Structure
 
-" :FunctionHighlighting
 highlight link c3FunctionDecl Function
 highlight link c3FunctionCall Function
 

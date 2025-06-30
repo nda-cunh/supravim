@@ -1,8 +1,3 @@
-if exists("b:did_indent")
-  finish
-endif
-b:did_indent = 1
-
 setlocal nosmartindent
 setlocal nolisp
 setlocal autoindent
