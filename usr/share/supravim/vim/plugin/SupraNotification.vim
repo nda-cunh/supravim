@@ -187,7 +187,6 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			if stridx('~~~', str) == 0
 				str = repeat('─', width)
 			elseif str[0] == '~'
-				echon 'centering: ' .. str
 				str = repeat(' ', (width / 2) - strcharlen(str) / 2) .. str[1 : ] 
 			endif
 			add(new_msg, str)
@@ -197,7 +196,6 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			if stridx('~~~', str) == 0
 				str = repeat('─', width)
 			elseif str[0] == '~'
-				echon 'centering: ' .. str
 				str = repeat(' ', (width / 2) - strcharlen(str) / 2) .. str[1 : ] 
 			endif
 			add(new_msg, str)
