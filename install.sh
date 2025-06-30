@@ -1,4 +1,20 @@
 #!/bin/bash
+
+#create a finction to install supravim
+
+install_supravim() {
+	export PATH=$TMPDIR/suprapack:$PWD:$PATH
+	echo -e "\033[93;1mInstalling supravim...\033[0m"
+	# if IS42 is true, install plugin-norminette plugin-42formatter
+	if [[ "$IS42" == "true" ]]; then
+		suprapack add supravim plugin-norminette plugin-42formatter --force --yes
+		echo -e "\033[92;1mSupravim and 42 plugins installed successfully!\033[0m"
+	else
+		suprapack add supravim --force --yes
+		echo -e "\033[92;1mSupravim installed successfully!\033[0m"
+	fi
+}
+
 # check if git, make, zstd is installed
 required_commands=("git" "make" "zstd")
 # Vérification de chaque commande
@@ -22,7 +38,7 @@ fi
 
 if [[ "$IS42" != "true" ]]; then
 	# check SESSION_MANAGER if the variable contains "42"
-	if [[ "$SESSION_MANAGER" == *"42"* ]]; then
+	if [[ -n "$FT_HOOK_NAME" ]]; then
 		export IS42="true"
 	fi
 fi
@@ -32,7 +48,6 @@ if [[ "$IS42" == "true" ]]; then
 else
 	echo -e "\033[93;1mNot detected 42 School environment.\033[0m"
 fi
-exit 
 
 # check if suprapack is installed in root directory
 if command -v suprapack &> /dev/null; then
@@ -48,21 +63,11 @@ if command -v suprapack &> /dev/null; then
 	echo -e "\033[93;1mReinstalling suprapack...\033[0m"
 fi
 
+TMPDIR=$(mktemp -d)
+pushd "$TMPDIR"
 git clone https://gitlab.com/nda-cunh/suprapack --depth=1
 cd suprapack
 make install
 install_supravim
+popd
 
-#create a finction to install supravim
-
-install_supravim() {
-	echo -e "\033[93;1mInstalling supravim...\033[0m"
-	# if IS42 is true, install plugin-norminette plugin-42formatter
-	if [[ "$IS42" == "true" ]]; then
-		suprapack add supravim plugin-norminette plugin-42formatter --force --yes
-		echo -e "\033[92;1mSupravim and 42 plugins installed successfully!\033[0m"
-	else
-		suprapack add supravim --force --yes
-		echo -e "\033[92;1mSupravim installed successfully!\033[0m"
-	fi
-}
