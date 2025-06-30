@@ -3,8 +3,8 @@ version: 1.0.0
 arch: amd64-Linux
 author: PalsFreniers
 description: vim9script plugin to add c3 lsp and syntax to Supravim
-dependency: supravim c3lsp
-optional_dependency: 
+dependency: supravim
+optional_dependency: c3lsp c3c
 exclude_package: 
 binary: c3lsp
 size_tar: 
