@@ -1,7 +1,7 @@
 namespace General {
 	private static ArrayElements? _sv_options = null;
 
-	public static ArrayElements get() throws Error {
+	public static unowned ArrayElements get() throws Error {
 		if (_sv_options == null) {
 			_sv_options = new ArrayElements ();
 			init_options ();
