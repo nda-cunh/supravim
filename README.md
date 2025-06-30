@@ -72,7 +72,8 @@ you need suprapack to build it
 git clone https://gitlab.com/nda-cunh/SupraVim
 cd SupraVim
 # Modifiy
-suprapack build usr
+meson build --prefix=$PWD/usr
+ninja install -C build
 # Install the new version with it
 suprapack add supravim-*.suprapack
 ```
