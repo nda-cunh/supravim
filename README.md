@@ -53,9 +53,9 @@ supravim --update
 supravim --uninstall
 ```
 
-<img src="data/readme.png"/>
+<img src="readme_img/readme.png"/>
 
-<img src="data/gui.png"/>
+<img src="readme_img/gui.png"/>
 
 # Autre chose ? une idée ?
 ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
