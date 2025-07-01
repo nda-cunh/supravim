@@ -37,7 +37,6 @@ vala_dependencies = [
 ]
 
 subdir('src')
-subdir('supravim-server')
 
 
 
@@ -45,13 +44,12 @@ subdir('supravim-server')
 # Install
 ###################################
 
-install_subdir('share/supravim', install_dir : 'share')
-install_subdir('share/zsh', install_dir : 'share')
-# share/lsp_c share/post_install.sh share/pre_install.sh share/supravim share/uninstall share/zsh
-install_data('share/lsp_c', install_dir : 'bin')
-install_data('share/post_install.sh', install_dir : '.')
-install_data('share/pre_install.sh', install_dir : '.')
-install_data('share/uninstall', install_dir : '.')
+install_subdir('data/supravim', install_dir : 'data')
+install_subdir('data/zsh', install_dir : 'data')
+install_data('data/lsp_c', install_dir : 'bin')
+install_data('data/post_install.sh', install_dir : '.')
+install_data('data/pre_install.sh', install_dir : '.')
+install_data('data/uninstall', install_dir : '.')
 
 
 
@@ -62,7 +60,7 @@ install_data('share/uninstall', install_dir : '.')
 if find_program('suprapack').found()
   description = 'a makefile compatibility layer. it can do it for you meson|make|none'
 
-  info_file = configure_file(input : 'info.in', output : 'info', configuration : conf_data)
+  info_file = configure_file(input : 'data/info.in', output : 'info', configuration : conf_data)
 
   install_data(info_file, install_dir: '.')
   meson.add_install_script('suprapack_build.sh')
