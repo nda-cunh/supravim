@@ -1,3 +1,5 @@
+vim9script
+
 setlocal nosmartindent
 setlocal nolisp
 setlocal autoindent

@@ -8,5 +8,5 @@ optional_dependency: c3lsp c3c
 exclude_package: 
 binary: c3lsp
 size_tar: 
-size_installed: 6707
+size_installed: 6687
 wanted: no
