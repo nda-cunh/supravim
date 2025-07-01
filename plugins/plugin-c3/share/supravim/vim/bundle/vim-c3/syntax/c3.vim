@@ -66,14 +66,14 @@ syntax match c3FunctionCall "\v\w+\s*(\()@="
 
 syntax match c3TagNote "@\<\w\+\>" display
 
-syntax match c3Constant "\v<[A-Z0-9,_]+>" display
+syntax match c3Constant "\<[A-Z_][A-Z0-9_]*\>" display
 syntax match c3Range "\.\." display
 syntax match c3TernaryQMark "?" display
 syntax match c3DeclAssign "=" display
 
 syntax match c3Integer "\-\?\<\d\+\>" display
 syntax match c3Float "\-\?\<[0-9][0-9_]*\%(\.[0-9][0-9_]*\)\%([eE][+-]\=[0-9_]\+\)\=" display
-syntax match c3Hex "\<0[xX][0-9A-Fa-f]\+\>" display
+#syntax match c3Hex "\<0[xX][0-9A-Fa-f]\+\>" display
 syntax match c3Oct "\<0[oO][0-7]\+\>" display
 syntax match c3Bin "\<0[bB][01]\+\>" display
 
@@ -87,11 +87,9 @@ syntax match c3Template "$\<\w\+\>"
 syntax match c3CommentNote "@\<\w\+\>" contained display
 syntax region c3LineComment start=/\/\// end=/$/  contains=c3CommentNote, c3Todo, c3Note, c3XXX, c3FixMe, c3NoCheckin, c3Hack
 syntax region c3BlockComment start=/\v\/\*/ end=/\v\*\// contains=c3BlockComment, c3CommentNote, c3Todo, c3Note, c3XXX, c3FixMe, c3NoCheckin, c3Hack
-syntax match c3UserTypes "\<[A-Z][a-zA-Z0-9_]*\>" display
 
-hi UserType term=bold cterm=NONE guifg=#f0aacc ctermbg=NONE
-
-highlight link c3UserType UserType
+syntax match UserTypes "\<[A-Z][a-zA-Za-z0-9_]*[a-z][A-Za-z0-9_]*\>" display
+hi UserTypes guifg=#f0aacc
 
 highlight link c3FaultDef Keyword
 highlight link c3Asm Keyword
