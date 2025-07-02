@@ -4,9 +4,9 @@ set nocompatible
 filetype off
 
 import '.vim/plugin/SupraNotification.vim' as Notify
+import autoload 'supraload.vim' as SupraLoad 
 
-pathogen#infect()
-pathogen#helptags()
+SupraLoad.Infect()
 
 g:sp_swap = false			# create swapfile (.swp)
 g:sp_tree = true			# display folder tree at left
@@ -386,19 +386,35 @@ def Ctags()
 		LspDefinition
 	endif
 enddef
-
 # ------ Running Supravim-Server ------"
 def GotOutputSupravimServer(channel: channel, msg: string)
-	if matchstr(msg, '^refresh') != ''
-		if is_supramake == false 
+	if (stridx(msg, 'refresh') == 0)
+		if is_supramake == false
 			NERDTreeTabsRefresh
 		endif
+	elseif (stridx(msg, 'LspGetServer') == 0)
+		var sp = split(msg, '@#@')
+		call lsp#register_server({
+			\ name: sp[1],
+			\ cmd: (server_info) => split(sp[2], ','),
+			\ allowlist: split(sp[3], ','),
+		\ })
+		call lsp#activate()
+	elseif (stridx(msg, 'LspError') == 0)
+		var idx = stridx(msg, ': ')
+		var new_msg = msg[idx + 2 : ]
+		new_msg = substitute(new_msg, '\r', '\n', 'g')
+		call Notify.Notification(["LSP Error", new_msg], {type: 'package'})
 	endif
 enddef
 
-job_start(["supravim-server", project_root], {
+var supravim_server = job_start(["supravim-server", project_root], {
 	out_cb: GotOutputSupravimServer,
+	in_mode: 'raw',
+	in_io: 'pipe'
 })
+
+au BufEnter * ch_sendraw(supravim_server, "OpenFile: " .. &filetype .. "\n")
 
 # ----------------- AIR LINE ------------------"
 g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
