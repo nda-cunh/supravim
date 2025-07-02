@@ -131,6 +131,7 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			filter: FilterNotification,
 			fixed: 1,
 			scrollbar: 1,
+			hidden: 1,
 			callback: (wid, _) => {
 				var _pos = popup_getpos(popup)
 				remove(popup_wins, popup)
@@ -139,14 +140,26 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			},
 		}
 	)
-
+	var dico = {
+		close: 'click',
+		borderhighlight: [color_popup, color_popup, color_popup, color_popup],
+		border: [1],
+		borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+		highlight: color_popup,
+		padding: [1, 1, 1, 1],
+		zindex: 3000,
+	}
+	
 	# Add the Event handler for left click
 	var Leftclick = null_function
 	if has_key(opts, 'left_click')
 		Leftclick = opts.left_click
 	else
 		Leftclick = () => {
-			popup_close(popup)
+			var buf = winbufnr(popup)
+			var txt = getbufline(buf, 0, '$')
+			var new_pop = popup_create(txt, dico)
+			# popup_close(popup)
 		}
 	endif
 
@@ -185,7 +198,7 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 			copy_line = copy_line[space_index + 1 : ]
 			var str = part[0 : space_index]
 			if stridx('~~~', str) == 0
-				str = repeat('─', width)
+				str = repeat('━', width)
 			elseif str[0] == '~'
 				str = repeat(' ', (width / 2) - strcharlen(str) / 2) .. str[1 : ] 
 			endif
@@ -194,7 +207,7 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 		if copy_line != ''
 			var str = copy_line
 			if stridx('~~~', str) == 0
-				str = repeat('─', width)
+				str = repeat('━', width)
 			elseif str[0] == '~'
 				str = repeat(' ', (width / 2) - strcharlen(str) / 2) .. str[1 : ] 
 			endif
@@ -222,9 +235,25 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 	actual_line += pos.height
 
 
+	var actual_width = pos.width
+	width = 1
+	popup_show(popup)
+	timer_start(9, (timer) => {
+		popup_move(popup, {maxwidth: width, width: width})
+		width = width + 1
+		if width < len(new_title)
+			var title = new_title[0 : width - 1]
+			popup_setoptions(popup, {title: title})
+		endif
+		
+		if width == actual_width
+			timer_stop(timer)
+		endif
+	}, {repeat: 9999})
+
 	# The timer to close the popup 
 	var timer: any 
-	timer_start(6500, (_) => {
+	timer_start(7000, (_) => {
 		timer = timer_start(9, (_) => {
 			popup_move(popup, {maxwidth: width, width: width})
 			width = width - 1
