@@ -7,7 +7,7 @@ install_supravim() {
 	echo -e "\033[93;1mInstalling supravim...\033[0m"
 	# if IS42 is true, install plugin-norminette plugin-42formatter
 	if [[ "$IS42" == "true" ]]; then
-		suprapack add supravim plugin-norminette plugin-42formatter --force --yes
+		suprapack add supravim plugin-norminette plugin-42formatter ccls --force --yes
 		echo -e "\033[92;1mSupravim and 42 plugins installed successfully!\033[0m"
 	else
 		suprapack add supravim --force --yes
