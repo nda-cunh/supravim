@@ -1,0 +1,12 @@
+name: plugin-dart
+version: 1.0
+arch: any
+author: nda-cunh
+description: dart language support
+dependency: supravim
+optional_dependency: 
+exclude_package: 
+binary: plugin-dart
+size_tar: 
+size_installed: 415
+wanted: no
