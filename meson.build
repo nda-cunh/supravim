@@ -44,8 +44,8 @@ subdir('src')
 # Install
 ###################################
 
-install_subdir('data/supravim', install_dir : 'data')
-install_subdir('data/zsh', install_dir : 'data')
+install_subdir('data/supravim', install_dir : 'share')
+install_subdir('data/zsh', install_dir : 'share')
 install_data('data/lsp_c', install_dir : 'bin')
 install_data('data/post_install.sh', install_dir : '.')
 install_data('data/pre_install.sh', install_dir : '.')
