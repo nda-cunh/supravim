@@ -32,7 +32,7 @@ syntax keyword c3Import import
 syntax keyword c3Inline inline
 syntax keyword c3Local local
 syntax keyword c3Macro macro 
-syntax keyword c3Module module 
+syntax keyword c3Module module
 syntax keyword c3Nextcase nextcase
 syntax keyword c3Return return
 syntax keyword c3Static static
@@ -49,12 +49,24 @@ syntax keyword c3DataType float double char bool byte short ushort int uint long
 syntax keyword c3Bool true false
 syntax keyword c3Null null
 
+syntax match UserTypes "\<\zs[A-Z][a-zA-Za-z0-9_]*[a-z][A-Za-z0-9_]*\ze\>" display
+hi UserTypes guifg=#f0aacc
+
+syntax match c3ModulesHead "\zs[a-z][A-Za-z0-9_]*\ze\:\:" display
+syntax match c3ModulesTail "\:\:\zs[a-z][A-Za-z0-9_]*\ze" display
+syntax match c3ModuleAlone "\<module\>\s\+\zs[a-z][a-zA-Z0-9_]*\ze;" display
+syntax match c3ImportAlone "\<import\>\s\+\zs[a-z][a-zA-Z0-9_]*\ze;" display
+highlight c3ModulesColor guifg=#ff55cc
+highlight link c3ModulesHead c3ModulesColor
+highlight link c3ModulesTail c3ModulesColor
+highlight link c3ModuleAlone c3ModulesColor
+highlight link c3ImportAlone c3ModulesColor
+
 syntax match c3Todo "TODO"
 syntax match c3Note "NOTE"
 syntax match c3XXX "XXX"
 syntax match c3FixMe "FIXME"
 syntax match c3Hack "HACK"
-
 
 syntax region c3RawString start=+`+ end=+`+
 syntax region c3Char start=+'+ skip=+\\\\\|\\'+ end=+'+
@@ -73,7 +85,7 @@ syntax match c3DeclAssign "=" display
 
 syntax match c3Integer "\-\?\<\d\+\>" display
 syntax match c3Float "\-\?\<[0-9][0-9_]*\%(\.[0-9][0-9_]*\)\%([eE][+-]\=[0-9_]\+\)\=" display
-#syntax match c3Hex "\<0[xX][0-9A-Fa-f]\+\>" display
+syntax match c3Hex "\<0[xX][0-9A-Fa-f]\+\>" display
 syntax match c3Oct "\<0[oO][0-7]\+\>" display
 syntax match c3Bin "\<0[bB][01]\+\>" display
 
@@ -87,9 +99,6 @@ syntax match c3Template "$\<\w\+\>"
 syntax match c3CommentNote "@\<\w\+\>" contained display
 syntax region c3LineComment start=/\/\// end=/$/  contains=c3CommentNote, c3Todo, c3Note, c3XXX, c3FixMe, c3NoCheckin, c3Hack
 syntax region c3BlockComment start=/\v\/\*/ end=/\v\*\// contains=c3BlockComment, c3CommentNote, c3Todo, c3Note, c3XXX, c3FixMe, c3NoCheckin, c3Hack
-
-syntax match UserTypes "\<[A-Z][a-zA-Za-z0-9_]*[a-z][A-Za-z0-9_]*\>" display
-hi UserTypes guifg=#f0aacc
 
 highlight link c3FaultDef Keyword
 highlight link c3Asm Keyword
