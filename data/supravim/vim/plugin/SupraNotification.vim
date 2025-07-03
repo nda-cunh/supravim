@@ -237,6 +237,7 @@ def NNotification(msg: list<string>, opts: dict<any> = {})
 
 	var actual_width = pos.width
 	width = 1
+	popup_move(popup, {maxwidth: width, width: width})
 	popup_show(popup)
 	timer_start(9, (timer) => {
 		popup_move(popup, {maxwidth: width, width: width})
