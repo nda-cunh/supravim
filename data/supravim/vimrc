@@ -386,6 +386,7 @@ def Ctags()
 		LspDefinition
 	endif
 enddef
+
 # ------ Running Supravim-Server ------"
 def GotOutputSupravimServer(channel: channel, msg: string)
 	if (stridx(msg, 'refresh') == 0)
@@ -400,12 +401,97 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 			\ allowlist: split(sp[3], ','),
 		\ })
 		call lsp#activate()
+	elseif (stridx(msg, 'LspServerError:') == 0)
+		var new_msg = msg[15 : ]
+		new_msg = substitute(new_msg, '\r', '\n', 'g')
+		call Notify.Notification(["Error", new_msg], {type: 'error'})
 	elseif (stridx(msg, 'LspError') == 0)
 		var idx = stridx(msg, ': ')
 		var new_msg = msg[idx + 2 : ]
-		new_msg = substitute(new_msg, '\r', '\n', 'g')
-		call Notify.Notification(["LSP Error", new_msg], {type: 'package'})
+		var sp = split(new_msg, '@#@')
+		new_msg = substitute(sp[0], '\r', '\n', 'g')
+		const items = sp[1 : ]
+		for i in items 
+			new_msg = new_msg .. "\n~~\n" .. i
+			endfor
+		call Notify.Notification(['SupraPack', new_msg], {type: 'package', left_click: () => {
+			if len(items) == 1
+				call GetChoice(items[0])
+			else
+				call OpenPopupChoice(copy(items))
+			endif
+		}})
 	endif
+enddef
+
+def GetChoice(choice: string)
+	ch_sendraw(supravim_server, "Install: " .. choice .. "\n")
+enddef
+
+def OpenPopupChoice(items: list<string>)
+	var width = 50
+	const title = '─ Which Lsp to choose? '
+	var popup = popup_create([], {
+		title: repeat('─', (width / 2) - (len(title) / 2) + 2) .. ' Which Lsp to choose? ',
+		minwidth: 50,
+		minheight: 5,
+		tabpage: -1,
+		borderhighlight: ['Normal', 'Normal', 'Normal', 'Normal'],
+		borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+		highlight: 'Normal',
+		border: [1],
+		padding: [0, 1, 0, 1],
+		cursorline: 1,
+		mapping: false,
+		callback: (wid, data) => {
+			if data == []
+				return
+			endif
+			call GetChoice(data[0])
+		},
+		filter: (wid: number, key: string) => {
+			var bufnr = winbufnr(wid)
+			var cursorlinepos = line('.', wid)
+			if key == "\<Esc>"
+				popup_close(wid)
+				return 0
+			elseif key == "\<Up>"
+				win_execute(wid, 'norm! k')
+			elseif key == "\<Down>"
+				win_execute(wid, 'norm! j')
+			elseif key ==? "\<LeftMouse>"
+				var pos = getmousepos()
+				if pos.winid != wid
+					return 0
+				endif
+				win_execute(wid, 'norm! ' .. pos.line .. 'G')
+			elseif key ==? "\<2-LeftMouse>"
+				var pos = getmousepos()
+				if pos.winid != wid
+					return 0
+				endif
+				win_execute(wid, 'norm! ' .. pos.line .. 'G')
+				var linetext = getbufline(bufnr, pos.line, pos.line)[0]
+				if linetext == ''
+					popup_close(wid)
+				else
+					popup_close(wid, [linetext])
+				endif
+			elseif key == "\<CR>"
+				var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
+				if linetext == ''
+					popup_close(wid)
+				else
+					popup_close(wid, [linetext])
+				endif
+			else
+				return 0
+			endif
+			return 1
+		},
+	}
+	)
+	popup_settext(popup, items)
 enddef
 
 var supravim_server = job_start(["supravim-server", project_root], {
