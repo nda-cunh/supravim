@@ -62,31 +62,31 @@ public class LspServer {
 	public const Lsp[] all_servers = {
 		{ "asm", "asm-lsp", "s,asm,nasm",
 			null,
-			"install it with your package manager or with\r~~\rsuprapack add asm-lsp\rClick here to install it",
+			null,
 			"suprapack add asm-lsp"},
 		{ "blueprint", "blueprint-compiler,lsp", "blp,bp,blueprint",
 			"blueprint-compiler --version",
-			"install it with your package manager or with\r~~\rsuprapack add asm-lsp\rClick here to install it",
+			null,
 			"suprapack add blueprint-compiler"},
 		{ "pylsp", "pyls", "py,python",
 			"pylsp -h",
-			"install it with pip or pipx\r~~\rpip install python-lsp-server[all]\rClick here to install it",
+			null,
 			"pip install python-lsp-server[all]"},
 		{"kotlin-lsp", "kotlin-language-server", "kt,kts,kotlin",
 			null,
-			"install it with your package manager or with\r~~\rsuprapack add kotlin-language-server\rClick here to install it",
+			null,
 			"suprapack add kotlin-language-server"},
 		{ "vls", "vala-language-server", "vala,vapi",
 			"vala-language-server --help",
-			"install it with your package manager or with\r~~\rsuprapack add vala-language-server\rClick here to install it",
+			null,
 			"suprapack add vala-language-server"},
 		{ "bash-lsp", "bash-language-server,start", "sh,bash",
 			"bash-language-server --version",
-			"install it with your package manager or with\r~~\rnpm i -g bash-language-server\rClick on me",
+			null,
 			"xdg-open https://github.com/bash-lsp/bash-language-server"},
 		{ "dart-lsp", "dart,language-server", "dart",
 			"dart --version",
-			"Just install dart !",
+			null,
 		null},
 		{ "meson-lsp", "meson-lsp,--lsp", "meson,build",
 			"meson-lsp --help",
@@ -104,22 +104,46 @@ public class LspServer {
 			"c3lsp --version",
 			null,
 			null},
+		{"vim-lsp", "vim-language-server,--stdio", "vim,vi",
+			null,
+			null,
+			"npm install -g vim-language-server"},
 		{ "rust-analyzer", "rust-analyzer", "rust,rs",
 			"rust-analyzer --version",
 			null,
 			"suprapack add rust-analyzer"},
 		{ "lua-lsp", "lua-language-server", "lua",
 			"lua-language-server --version",
-			"Install it with your package manager or with suprapack",
+			null,
 			"suprapack add lua-language-server"},
-		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,javascript",
+		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,typescript,javascript",
 			"typescript-language-server --version",
-			"npm install -g typescript-language-server typescript",
+			null,
 			"npm install -g typescript-language-server typescript"},
 		{ "vue3", "vue-language-server", "vue,js,ts",
 			"vue-language-server --version",
-			"install it with your package manager or with\r~~\rnpm i -g @volar/vue-language-server\rClick here to install it",
+			null,
 			"npm install -g @vue/language-server"},
+		{"yaml-lsp", "yaml-language-server,--stdio", "yaml,yml",
+			null,
+			null,
+			"npm install -g yaml-language-server"},
+		{ "json-lsp", "vscode-json-languageserver,--stdio", "json",
+			"vscode-json-languageserver --version",
+			null,
+			"npm install -g vscode-json-languageserver"},
+		{ "html-lsp", "html-languageserver,--stdio", "html",
+			null,
+			null,
+			"npm install -g vscode-html-languageserver-bin"},
+		{"css-lsp", "css-languageserver,--stdio", "css",
+			null,
+			null,
+			"npm install -g vscode-css-languageserver-bin"},
+		{ "php-lsp", "intelephense,--stdio", "php",
+			null,
+			null,
+			"suprapack add php-language-server"},// TODO
 	};
 
 	public static HashTable<string, Lsp?> is_loaded {
@@ -143,7 +167,7 @@ public class LspServer {
 }
 
 public void getInputRaw (string message) {
-	uint8 buffer1[1024];
+	uint8 buffer1[128];
 	unowned string str1 = (string)buffer1;
 
 	printerr ("GetFromServer: %s\n", message);
@@ -186,20 +210,14 @@ public void getInputRaw (string message) {
 			}
 		}
 
-		var bs = new StringBuilder ("No LSP found for ");
+		var bs = new StringBuilder ("Help found for ");
 		bs.append (str1);
-		bs.append ("\r");
-		bs.append ("With your package manager, install  :");
+		bs.append (", Click me for add it! ");
 
 		foreach (Lsp lsp in possible_lsp) {
 			var cmd = LspServer.get_command (lsp.command);
-			bs.append ("\r~~\r");
+			bs.append("@#@");
 			bs.append (cmd);
-			bs.append_c (' ');
-			if (lsp.help != null) {
-				bs.append (lsp.help);
-			}
-			bs.append ("\r");
 		}
 
 		print ("LspError: %s\n", bs.str);
@@ -212,6 +230,10 @@ public void getInputRaw (string message) {
 		print ("todo:4\n");
 		print ("> main.c:3\n");
 		print ("> toto.c:1\n");
+	}
+
+	if (message.has_prefix("Install: ")) {
+		print ("OpenNotification: %s\n", "test");
 	}
 }
 
