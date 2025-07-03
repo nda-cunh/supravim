@@ -4,152 +4,221 @@
  * this is the server part of the supravim project
  * it will be used to manage the files and the users
  * refresh the tree view and the file view
+ * 
+ * And return the good Lsp for the language
+ *
  **/
 
-public class MyMonitor {
+public struct Lsp {
+	string name; // the name of the language
+	string command;// command separated by ','
+	string allowed; // filetype like vala, c, cpp, py, js, ts, lua
+	string? test_command; // command to test if the lsp is working 
+	string? help; // help message
+	string? command_help; // help message
+}
 
-	private uint source_id = 0;
+public class LspServer {
 
-	/**
-	 * send a refresh signal to the client
-	 * reset if the signal is already sent after 250ms
-	 */
-	private void send_refresh () {
-		if (source_id != 0)
-			Source.remove (source_id);
-		source_id = Timeout.add (250, () => {
-			print ("refresh\n");
-			source_id = 0;
-			return false;
-		});
+	public static string get_command (string command) {
+		string cmd;
+		int idx = command.index_of_char (',');
+
+		if (idx != -1)
+			cmd = command[0: idx];
+		else
+			cmd = command;
+		return cmd;
 	}
 
-	/**
-	 * add a directory to the monitor list
-	 */
-	public void add_directory (string path) {
-		try {
-			File file = File.new_for_path (path);
-			FileMonitor monitor = file.monitor(FileMonitorFlags.NONE, null);
-			monitors += monitor;
-			monitor.changed.connect (this.onChangeState);
-		}
-		catch (Error e) {
-			printerr ("Error: %s\n", e.message);
-		}
+	public static bool if_command_exists (string command) {
+		var cmd = get_command (command);
+		if (Environment.find_program_in_path (cmd) != null)
+			return true;
+		return false;
 	}
 
-	public void onChangeState(File src, File? dest, FileMonitorEvent event) {
-		if (event == FileMonitorEvent.CREATED || event == FileMonitorEvent.DELETED)
-		{
-			var filename = Path.get_basename (src.get_path());
-			if (src.get_path().has_suffix("~") || src.get_path().has_suffix (".o"))
-				return ;
-			if ("compile_commands.json" in src.get_path ())
-				return ;
-			if (filename.has_prefix ("."))
-				return ;
-			if (regex_nb.match(filename))
-				return ;
-			if (event == FileMonitorEvent.DELETED) {
-				if (FileUtils.test (src.get_path (), FileTest.EXISTS) == false)
-					send_refresh ();
+	public static Lsp[]? get_lsp_possible (string name) {
+		if (name in is_loaded)
+			return null;
+
+		Lsp []servers = {};
+		foreach (Lsp server in all_servers) {
+			if (name in server.allowed.split (",")) {
+				servers += server;
 			}
-			else 
-				send_refresh ();
-			if (FileUtils.test (src.get_path (), FileTest.IS_DIR))
-				add_directory (src.get_path ());
 		}
+		return servers;
 	}
 
-	private void search_directory (string path, int depth = 0) {
-		if (depth > depth_max)
-			return ;
-		string basename = Path.get_basename (path);
-		if (basename[0] == '.')
-			return ;
-		try {
-			var dir = Dir.open (path);
-			unowned string? file_name;
-			while ((file_name = dir.read_name ()) != null) {
-				if (FileUtils.test (Path.build_filename (path, file_name), FileTest.IS_DIR))
-					search_directory (Path.build_filename (path, file_name), depth + 1);
+	public static unowned string get_from_lsp (Lsp server) {
+		bs.len = 0;
+		bs.printf("%s@#@%s@#@%s", server.name, server.command, server.allowed);
+		is_loaded[server.name] = server;
+		return bs.str;
+	}
+
+
+	public const Lsp[] all_servers = {
+		{ "asm", "asm-lsp", "s,asm,nasm",
+			null,
+			"install it with your package manager or with\r~~\rsuprapack add asm-lsp\rClick here to install it",
+			"suprapack add asm-lsp"},
+		{ "blueprint", "blueprint-compiler,lsp", "blp,bp,blueprint",
+			"blueprint-compiler --version",
+			"install it with your package manager or with\r~~\rsuprapack add asm-lsp\rClick here to install it",
+			"suprapack add blueprint-compiler"},
+		{ "pylsp", "pyls", "py,python",
+			"pylsp -h",
+			"install it with pip or pipx\r~~\rpip install python-lsp-server[all]\rClick here to install it",
+			"pip install python-lsp-server[all]"},
+		{"kotlin-lsp", "kotlin-language-server", "kt,kts,kotlin",
+			null,
+			"install it with your package manager or with\r~~\rsuprapack add kotlin-language-server\rClick here to install it",
+			"suprapack add kotlin-language-server"},
+		{ "vls", "vala-language-server", "vala,vapi",
+			"vala-language-server --help",
+			"install it with your package manager or with\r~~\rsuprapack add vala-language-server\rClick here to install it",
+			"suprapack add vala-language-server"},
+		{ "bash-lsp", "bash-language-server,start", "sh,bash",
+			"bash-language-server --version",
+			"install it with your package manager or with\r~~\rnpm i -g bash-language-server\rClick on me",
+			"xdg-open https://github.com/bash-lsp/bash-language-server"},
+		{ "dart-lsp", "dart,language-server", "dart",
+			"dart --version",
+			"Just install dart !",
+		null},
+		{ "meson-lsp", "meson-lsp,--lsp", "meson,build",
+			"meson-lsp --help",
+			null,
+			"suprapack add meson-lsp"},
+		{ "clangd", "clangd", "c,cpp,tpp",
+			"clangd --version",
+			null,
+			"suprapack add clangd16"},
+		{ "ccls", """ccls,--init={"cache": {"directory": "/tmp/ccls-cache_$USER"}}""", "c,cpp,tpp",
+			"ccls --version",
+			null,
+			"suprapack add ccls"},
+			{ "c3lsp", "c3lsp", "c3,c3i",
+			"c3lsp --version",
+			null,
+			null},
+		{ "rust-analyzer", "rust-analyzer", "rust,rs",
+			"rust-analyzer --version",
+			null,
+			"suprapack add rust-analyzer"},
+		{ "lua-lsp", "lua-language-server", "lua",
+			"lua-language-server --version",
+			"Install it with your package manager or with suprapack",
+			"suprapack add lua-language-server"},
+		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,javascript",
+			"typescript-language-server --version",
+			"npm install -g typescript-language-server typescript",
+			"npm install -g typescript-language-server typescript"},
+		{ "vue3", "vue-language-server", "vue,js,ts",
+			"vue-language-server --version",
+			"install it with your package manager or with\r~~\rnpm i -g @volar/vue-language-server\rClick here to install it",
+			"npm install -g @vue/language-server"},
+	};
+
+	public static HashTable<string, Lsp?> is_loaded {
+		get {
+			if (_is_loaded == null) {
+				_is_loaded = new HashTable<string, Lsp?> (str_hash, str_equal);
 			}
-			this.add_directory (path);
+			return _is_loaded;
 		}
-		catch (Error e) {
-			printerr ("Error: %s\n", e.message);
-		}	
+	}
+	private static HashTable<string, Lsp?>? _is_loaded = null;
+	private static StringBuilder _bs;
+	private static StringBuilder bs {
+		get {
+			if (_bs == null) {
+				_bs = new StringBuilder ();
+			}
+			return _bs;
+		}
+	}
+}
+
+public void getInputRaw (string message) {
+	uint8 buffer1[1024];
+	unowned string str1 = (string)buffer1;
+
+	printerr ("GetFromServer: %s\n", message);
+
+	if (message.has_prefix ("OpenFile: ")) {
+		message.scanf ("OpenFile: %s", buffer1);
+		// Check if an Lsp exist for this file
+		var possible_lsp = LspServer.get_lsp_possible (str1);
+		if (possible_lsp == null) {
+			printerr ("LspServer: %s is ever loaded\n", str1);
+			return;
+		}
+
+		if (possible_lsp.length == 0) {
+			printerr ("No Lsp found for %s\n", str1);
+			return;
+		}
+
+		// Iterate all Lsp possible
+		foreach (Lsp lsp in possible_lsp) {
+			// Check if the command exists
+			if (LspServer.if_command_exists (lsp.command)) {
+				if (lsp.test_command != null) {
+					int exit_code = -1;
+					try {
+
+						string devnull;
+						Process.spawn_command_line_sync (lsp.test_command, out devnull, out devnull, out exit_code);
+						if (exit_code != 0)
+							throw new SpawnError.FAILED("");
+					}
+					catch (Error e) {
+						print ("LspServerError:the LSP exist but the command\r~~\r%s\r~~\rfailed and returns error code [%d]\n", lsp.command, exit_code);
+						return ;
+					}
+				}
+				unowned string? lsp_str = LspServer.get_from_lsp (lsp);
+				print ("LspGetServer@#@%s\n", lsp_str);
+				return;
+			}
+		}
+
+		var bs = new StringBuilder ("No LSP found for ");
+		bs.append (str1);
+		bs.append ("\r");
+		bs.append ("With your package manager, install  :");
+
+		foreach (Lsp lsp in possible_lsp) {
+			var cmd = LspServer.get_command (lsp.command);
+			bs.append ("\r~~\r");
+			bs.append (cmd);
+			bs.append_c (' ');
+			if (lsp.help != null) {
+				bs.append (lsp.help);
+			}
+			bs.append ("\r");
+		}
+
+		print ("LspError: %s\n", bs.str);
+
+
 	}
 
-
-	/**
-	 * stdin_pipe
-	 * This function will read the stdin and send the data to the onStdin signal
-	 */
-	public async void stdin_pipe () {
-
-		var stdin_channel = new IOChannel.unix_new(0);
-
-        stdin_channel.add_watch(IOCondition.IN, (channel, condition) => {
-            string data = null;
-			size_t length = 0;
-			size_t terminaison = 0;
-            try {
-                channel.read_line (out data, out length, out terminaison);
-            } catch (Error e) {
-                stderr.printf("Erreur de lecture : %s\n", e.message);
-                return false;
-            }
-			onStdin (data);
-            return true;
-        });
-		yield;
+	if (message == "todo\n")
+	{
+		print ("todo:4\n");
+		print ("> main.c:3\n");
+		print ("> toto.c:1\n");
 	}
-	
-	/**
-	 * onStdin
-	 * This signal is emitted when a new line is read from the stdin
-	 */
-	public signal void onStdin(string line);
-
-
-	/**
-	 * run in async
-	 * This function will start the monitor
-	 */
-	public async void run () {
-		stdin_pipe.begin ();
-		yield;
-	}
-	
-	private Regex regex_nb = /^[0-9]*$/;
-	private FileMonitor []monitors;
-	private int depth_max = 10;
-
-	public MyMonitor (owned string path) {
-		monitors = {};
-		if (path[path.length - 1] == '/')
-			path = path.substring (0, path.length - 1);
-		if (path == Environment.get_home_dir ())
-			depth_max = 4;
-		search_directory (path);
-	}
-
 }
 
 public async int main (string[] args) {
 	var monitor = new MyMonitor (args[1]);
-	monitor.onStdin.connect ((line) => {
-		printerr ("GetFromServer: %s\n", line);
-		if (line == "todo\n")
-		{
-			print ("todo:4\n");
-			print ("> main.c:3\n");
-			print ("> toto.c:1\n");
-		}
-	});
-	yield monitor.run ();
+	monitor.onStdin.connect (getInputRaw);
 	
+	yield monitor.run ();
 	return 0;
 }
