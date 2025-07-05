@@ -3,7 +3,7 @@ vim9script
 set nocompatible
 filetype off
 
-import '.vim/plugin/SupraNotification.vim' as Notify
+import autoload 'SupraNotification.vim' as Notify
 import autoload 'supraload.vim' as SupraLoad 
 
 SupraLoad.Infect()
@@ -414,17 +414,60 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 		for i in items 
 			new_msg = new_msg .. "\n~~\n" .. i
 			endfor
-		call Notify.Notification(['SupraPack', new_msg], {type: 'package', left_click: () => {
+		call Notify.Notification(['SupraPack', new_msg], {type: 'package', left_click: (wid) => {
 			if len(items) == 1
 				call GetChoice(items[0])
 			else
 				call OpenPopupChoice(copy(items))
 			endif
+			Notify.Close(wid)
 		}})
+	elseif (stridx(msg, 'FinishInstall') == 0)
+		call FinishInstall(true)
+	elseif (stridx(msg, 'InstallError') == 0)
+		call FinishInstall(false, msg[14 : ])
 	endif
 enddef
 
+var notification_timer: number
+var notification_id: number
+
+def FinishInstall(success: bool, error_text: string = '')
+	if success
+		Notify.SetText(notification_id, ["Installation finished successfully!"])
+		Notify.ChangeType(notification_id, 'success')
+	else
+		var error_msg = "Installation failed: " .. error_text
+		Notify.SetText(notification_id, [error_msg])
+		Notify.ChangeType(notification_id, 'error')
+	endif
+	timer_stop(notification_timer)
+	timer_start(2000, (_) => {
+		Notify.Close(notification_id)
+		call lsp#activate()
+	}, {'repeat': 1})
+enddef
+
 def GetChoice(choice: string)
+	const loading = "⢿⣻⣽⣾⣷⣯⣟⡿"
+	Notify.Notification([], {
+		icon: '⮋',
+		type: 'package',
+		timeout: -1,
+		left_click: (_) => {
+		},
+		cb_get_id: (wid) => {
+			notification_id = wid
+			var i = 0
+			notification_timer = timer_start(100, (_) => {
+				i = i + 1
+				if i >= 8 
+					i = 0
+				endif
+				Notify.SetText(notification_id, [loading[i] .. " Installing: " .. choice])
+			}, {'repeat': -1})
+		},
+	})
 	ch_sendraw(supravim_server, "Install: " .. choice .. "\n")
 enddef
 
