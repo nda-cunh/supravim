@@ -4,7 +4,7 @@
  * this is the server part of the supravim project
  * it will be used to manage the files and the users
  * refresh the tree view and the file view
- * 
+ *
  * And return the good Lsp for the language
  *
  **/
@@ -13,7 +13,7 @@ public struct Lsp {
 	string name; // the name of the language
 	string command;// command separated by ','
 	string allowed; // filetype like vala, c, cpp, py, js, ts, lua
-	string? test_command; // command to test if the lsp is working 
+	string? test_command; // command to test if the lsp is working
 	string? help; // help message
 	string? command_help; // help message
 }
@@ -38,10 +38,13 @@ public class LspServer {
 		return false;
 	}
 
-	public static Lsp[]? get_lsp_possible (string name) {
-		if (name in is_loaded)
-			return null;
+	public static bool lsp_is_load(string name) {
+		if (is_loaded[name] != null)
+			return true;
+		return false;
+	}
 
+	public static Lsp[] get_lsp_possible (string name) {
 		Lsp []servers = {};
 		foreach (Lsp server in all_servers) {
 			if (name in server.allowed.split (",")) {
@@ -54,7 +57,8 @@ public class LspServer {
 	public static unowned string get_from_lsp (Lsp server) {
 		bs.len = 0;
 		bs.printf("%s@#@%s@#@%s", server.name, server.command, server.allowed);
-		is_loaded[server.name] = server;
+		foreach (var n in server.allowed.split(","))
+			is_loaded[n] = server;
 		return bs.str;
 	}
 
@@ -166,30 +170,104 @@ public class LspServer {
 	}
 }
 
+public struct Support {
+	string allowed;
+	string package_name;
+	string bundle;
+	string filetype;
+}
+
+public class SupportLang {
+	public const Support[] all_packages = {
+		{ "c3,c3i", "plugin-lang-c3", "lang-c3", "c3"},
+		{ "vala,vapi", "plugin-lang-vala", "lang-vala", "vala"},
+	};
+
+	public static Support? get_package_possible (string file) {
+		if (is_loaded[file] != null)
+			return null;
+
+		foreach (Support support in all_packages) {
+			if (file in support.allowed.split (","))
+			{
+				if (support.package_name in suprapack_list_plugin) {
+					foreach (var filetype in support.allowed.split (",")) {
+						is_loaded[filetype] = support;
+					}
+					printerr ("The package is ever installed.. skip\n");
+					return null;
+				}
+				return support;
+			}
+		}
+		return null;
+	}
+
+
+	public static void install_package (string package_name) {
+		foreach (var support in SupportLang.all_packages) {
+			if (support.package_name == package_name) {
+				string dev_null;
+				int wait_status;
+				Process.spawn_command_line_sync ("suprapack install " + support.package_name + " --yes", out dev_null, out dev_null, out wait_status);
+				foreach (var filetype in support.allowed.split (",")) {
+					is_loaded[filetype] = support;
+				}
+				print ("LoadBundle: %s %s\n", support.bundle, support.filetype);
+				break;
+			}
+		}
+	}
+
+
+
+	private static HashTable<string, Support?>? _is_loaded = null;
+	private static HashTable<string, Support?> is_loaded {
+		get {
+			if (_is_loaded == null) {
+				_is_loaded = new HashTable<string, Support?> (str_hash, str_equal);
+			}
+			return _is_loaded;
+		}
+	}
+
+}
 public void getInputRaw (string message) {
 	uint8 buffer1[128];
-	unowned string str1 = (string)buffer1;
 
-	printerr ("GetFromServer: %s\n", message);
-
+	// Send when a file is opened
+	// Format: OpenFile: <filename>
 	if (message.has_prefix ("OpenFile: ")) {
+		unowned string filename = (string)buffer1;
 		message.scanf ("OpenFile: %s", buffer1);
+		if (filename == "")
+			return;
+
 		// Check if an Lsp exist for this file
-		var possible_lsp = LspServer.get_lsp_possible (str1);
-		if (possible_lsp == null) {
-			printerr ("LspServer: %s is ever loaded\n", str1);
+		var possible_lsp = LspServer.get_lsp_possible (filename);
+		var? possible_package = SupportLang.get_package_possible (filename);
+
+		// The Lsp is ever loaded or not exist
+		if (LspServer.lsp_is_load (filename) == true) {
+			if (possible_package != null) {
+				print ("LspInstall: Found a vim-package for color@#@%s\n", possible_package.package_name);
+			}
 			return;
 		}
 
-		if (possible_lsp.length == 0) {
-			printerr ("No Lsp found for %s\n", str1);
-			return;
-		}
 
+		/***************************
+		*        Run The LSP       *
+		****************************/
+
+		var bs_error = new StringBuilder ("");
 		// Iterate all Lsp possible
 		foreach (Lsp lsp in possible_lsp) {
 			// Check if the command exists
+			// If the command exists, we can use it
+			// If the command does not exists, we can not use it and we test another LSP (if exists)
 			if (LspServer.if_command_exists (lsp.command)) {
+				// If the test command exists, we can use it for test if the LSP is working
 				if (lsp.test_command != null) {
 					int exit_code = -1;
 					try {
@@ -200,29 +278,48 @@ public void getInputRaw (string message) {
 							throw new SpawnError.FAILED("");
 					}
 					catch (Error e) {
-						print ("LspServerError:the LSP exist but the command\r~~\r%s\r~~\rfailed and returns error code [%d]\n", lsp.command, exit_code);
-						return ;
+						bs_error.append_printf ("the LSP exist but the command\r~~\r%s\r~~\rfailed and returns error code [%d]", lsp.command, exit_code);
+						continue;
 					}
 				}
+				// If the LSP is working, we can use it
 				unowned string? lsp_str = LspServer.get_from_lsp (lsp);
+				if (bs_error.len != 0)
+					print ("LspServerError:%s\rbut launch %s instead\n", bs_error.str, lsp.name);
+				// Send the LSP to the client
 				print ("LspGetServer@#@%s\n", lsp_str);
+				if (possible_package != null) {
+					print ("LspInstall: Found a vim-package for color@#@%s\n", possible_package.package_name);
+				}
 				return;
 			}
 		}
 
-		var bs = new StringBuilder ("Help found for ");
-		bs.append (str1);
-		bs.append (", Click me for add it! ");
+		// Check if an error need to be displayed
+		if (bs_error.len != 0) {
+			print ("LspServerError:%s\n", bs_error.str);
+			return ;
+		}
+
+
+		/***************************
+		*  Installation of the LSP *
+		****************************/
+		var bs = new StringBuilder ("Support available for ");
+		bs.append (filename);
+		bs.append (" click to add it! ");
 
 		foreach (Lsp lsp in possible_lsp) {
-			var cmd = LspServer.get_command (lsp.command);
 			bs.append("@#@");
 			bs.append (lsp.name);
 		}
+		if (possible_package != null) {
+			bs.append("@#@");
+			bs.append (possible_package.package_name);
+		}
 
-		print ("LspError: %s\n", bs.str);
-
-
+		// format: LspInstall: <message>@#@<lsp1>[@#@<lsp2>...]@#@
+		print ("LspInstall: %s\n", bs.str);
 	}
 
 	if (message == "todo\n")
@@ -232,29 +329,43 @@ public void getInputRaw (string message) {
 		print ("> toto.c:1\n");
 	}
 
+	// Format:  Install: <lsp_name> <package_name>
 	if (message.has_prefix("Install: ")) {
-		message.scanf ("Install: %s", buffer1);
-		foreach (var lsp in LspServer.all_servers) {
-			if (lsp.name == str1) {
-				string dev_null;
-				int wait_status;
-				Process.spawn_command_line_sync (lsp.command_help, out dev_null, out dev_null, out wait_status);
-				if (wait_status != 0) {
-					print ("InstallError: %s\n", lsp.command_help);
-					return;
+		uint8 buffer2[128];
+		uint8 buffer3[128];
+		unowned string lsp_name = (string)buffer1;
+		unowned string package_name = (string)buffer2;
+		message.scanf ("Install: %s %s", buffer1, buffer2);
+		if (lsp_name != "null")
+		{
+			foreach (var lsp in LspServer.all_servers) {
+				if (lsp.name == lsp_name) {
+					string dev_null;
+					int wait_status;
+					Process.spawn_command_line_sync (lsp.command_help, out dev_null, out dev_null, out wait_status);
+					if (wait_status != 0) {
+						print ("InstallError: %s\n", lsp.command_help);
+						return;
+					}
+					unowned string? lsp_str = LspServer.get_from_lsp (lsp);
+					print ("LspGetServer@#@%s\n", lsp_str);
 				}
-				print ("FinishInstall\n");
-				unowned string? lsp_str = LspServer.get_from_lsp (lsp);
-				print ("LspGetServer@#@%s\n", lsp_str);
 			}
 		}
+		if (package_name != "null") {
+			SupportLang.install_package (package_name);
+		}
+		print ("FinishInstall\n");
 	}
 }
 
+public string suprapack_list_plugin;
+
 public async int main (string[] args) {
+	Process.spawn_command_line_sync ("suprapack list plugin-lang-", out suprapack_list_plugin);
 	var monitor = new MyMonitor (args[1]);
 	monitor.onStdin.connect (getInputRaw);
-	
+
 	yield monitor.run ();
 	return 0;
 }
