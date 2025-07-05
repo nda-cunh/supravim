@@ -543,7 +543,15 @@ var supravim_server = job_start(["supravim-server", project_root], {
 	in_io: 'pipe'
 })
 
-au BufEnter * ch_sendraw(supravim_server, "OpenFile: " .. &filetype .. "\n")
+def OpenNewFile()
+	var filetype = &filetype
+	if filetype == ''
+		filetype = expand('%:e')
+	endif
+	ch_sendraw(supravim_server, "OpenFile: " .. filetype .. "\n")
+enddef
+
+au BufEnter * OpenNewFile()
 
 # ----------------- AIR LINE ------------------"
 g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
