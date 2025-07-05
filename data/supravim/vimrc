@@ -157,7 +157,7 @@ enddef
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
 cmap <c-s>	w!<cr>
-cmap <F5>	Make 
+cmap <F5>	Make
 cmap <c-v>	<c-r>0<del>
 
 #---------------      Terminal        ---------------"
@@ -176,7 +176,7 @@ tnoremap <S-Down>		<C-W>N<C-w><Down>
 #--------------- utilitaires basiques ---------------"
 g:lsp_log_verbose = 0
 set mouse=a
-if g:sp_swap == false 
+if g:sp_swap == false
 	set noswapfile
 endif
 if g:sp_wrap == true
@@ -275,7 +275,7 @@ def SimpleSupravimChangeOption()
 			g:sp_nobackground = false
 		else
 			hi Normal guibg=NONE ctermbg=NONE
-			g:sp_nobackground = true 
+			g:sp_nobackground = true
 		endif
 	elseif g:supravim_option_changed == 'wrap'
 		if g:supravim_option_value == 'false'
@@ -344,7 +344,7 @@ enddef
 var is_supramake = false
 def g:Make(rules: string)
 	w!
-	is_supramake = true 
+	is_supramake = true
 	setenv('rulesmake', rules)
 	! supramake --run-clean $rulesmake
 	is_supramake = false
@@ -371,7 +371,7 @@ def Gdbf()
 	endif
 	set splitbelow
 	set splitright
-enddef               
+enddef
 # -------------- Ctags ----------------"
 
 command -nargs=0 -bar Ctags :call Ctags()
@@ -393,6 +393,18 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 		if is_supramake == false
 			NERDTreeTabsRefresh
 		endif
+	elseif (stridx(msg, 'LoadBundle: ') == 0)
+		var end_bundle = stridx(msg, ' ', 12)
+		var bundle = msg[12 : end_bundle]
+		var filetype = msg[end_bundle + 1 : ]
+		echo "Loading bundle: [" .. bundle .. "] and ft: >" .. filetype .. "<"
+		var lst = glob($HOME .. "/.vim/bundle/" .. bundle .. '/**/*.vim', 0, 1)
+		for file in lst
+			if filereadable(file)
+				exec 'source ' .. file
+			endif
+		endfor
+		execute ("set filetype=" .. filetype)
 	elseif (stridx(msg, 'LspGetServer') == 0)
 		var sp = split(msg, '@#@')
 		call lsp#register_server({
@@ -405,20 +417,31 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 		var new_msg = msg[15 : ]
 		new_msg = substitute(new_msg, '\r', '\n', 'g')
 		call Notify.Notification(["Error", new_msg], {type: 'error'})
-	elseif (stridx(msg, 'LspError') == 0)
+	# Used to display the list of LSPs available for installation
+	# format: LspInstall: <message>@#@<lsp1>[@#@<lsp2>...]@#@
+	elseif (stridx(msg, 'LspInstall: ') == 0)
 		var idx = stridx(msg, ': ')
 		var new_msg = msg[idx + 2 : ]
 		var sp = split(new_msg, '@#@')
 		new_msg = substitute(sp[0], '\r', '\n', 'g')
 		const items = sp[1 : ]
-		for i in items 
-			new_msg = new_msg .. "\n~~\n" .. i
-			endfor
-		call Notify.Notification(['SupraPack', new_msg], {type: 'package', left_click: (wid) => {
-			if len(items) == 1
-				call GetChoice(items[0])
+		var package_name = ''
+		var items_copy = []
+		for i in items
+			if stridx(i, 'plugin-lang') != 0
+				new_msg = new_msg .. "\n • " .. i
+				add(items_copy, i)
 			else
-				call OpenPopupChoice(copy(items))
+				package_name = i
+			endif
+		endfor
+		call Notify.Notification(['SupraPack', new_msg], {type: 'package', left_click: (wid) => {
+			if len(items_copy) == 0
+				call GetChoice('', package_name)
+			elseif len(items_copy) == 1
+				call GetChoice(items_copy[0], package_name)
+			else
+				call OpenPopupChoice(items_copy, package_name)
 			endif
 			Notify.Close(wid)
 		}})
@@ -448,7 +471,7 @@ def FinishInstall(success: bool, error_text: string = '')
 	}, {'repeat': 1})
 enddef
 
-def GetChoice(choice: string)
+def GetChoice(choice: string, package_name: string = '')
 	const loading = "⢿⣻⣽⣾⣷⣯⣟⡿"
 	Notify.Notification([], {
 		icon: '⮋',
@@ -461,17 +484,41 @@ def GetChoice(choice: string)
 			var i = 0
 			notification_timer = timer_start(100, (_) => {
 				i = i + 1
-				if i >= 8 
+				if i >= 8
 					i = 0
 				endif
-				Notify.SetText(notification_id, [loading[i] .. " Installing: " .. choice])
+				var text = " Installing: "
+				if choice != ''
+					text ..= choice .. " "
+				endif
+				if package_name != ''
+					text ..= package_name .. " "
+				endif
+				Notify.SetText(notification_id, [loading[i] .. text])
 			}, {'repeat': -1})
 		},
 	})
-	ch_sendraw(supravim_server, "Install: " .. choice .. "\n")
+	var filetype = &filetype
+	if filetype == ''
+		filetype = expand('%:e')
+	endif
+
+	var c1: string
+	var c2: string
+	if package_name == ''
+		c2 = 'null'
+	else
+		c2 = package_name
+	endif
+	if choice == ''
+		c1 = 'null'
+	else
+		c1 = choice
+	endif
+	ch_sendraw(supravim_server, "Install: " .. c1 .. " " .. c2 .. "\n")
 enddef
 
-def OpenPopupChoice(items: list<string>)
+def OpenPopupChoice(items: list<string>, package_name: string = '')
 	var width = 50
 	const title = '─ Which Lsp to choose? '
 	var popup = popup_create([], {
@@ -490,7 +537,7 @@ def OpenPopupChoice(items: list<string>)
 			if data == []
 				return
 			endif
-			call GetChoice(data[0])
+			call GetChoice(data[0], package_name)
 		},
 		filter: (wid: number, key: string) => {
 			var bufnr = winbufnr(wid)
@@ -606,12 +653,12 @@ def MoveLineDown(mode: string)
 		setline(line('.'), tmp)
 		normal j==
 		return
-	elseif line("'<") != begin 
+	elseif line("'<") != begin
 		return
 	endif
 
 	var tmp = getline(begin + len)
-	var i = 0 
+	var i = 0
 	reverse(array)
 
 	for str in array
@@ -628,7 +675,7 @@ def MoveLineUp(mode: string)
 	var array = getline(line("'<"), line("'>"))
 	var len = len(array)
 	var begin = line('.')
-	
+
 	if begin == 1
 		return
 	elseif mode == 'n'
@@ -638,8 +685,8 @@ def MoveLineUp(mode: string)
 		normal k==
 		return
 	endif
-	
-	if line("'<") != begin 
+
+	if line("'<") != begin
 		return
 	endif
 
@@ -647,10 +694,10 @@ def MoveLineUp(mode: string)
 	var i = begin
 	for str in array
 		setline(i - 1, str)
-	 	i = i + 1	
+	 	i = i + 1
 	endfor
 	setline(i - 1, tmp)
-	
+
 	setpos("'<", [0, begin - 1, 0, 0])
 	setpos("'>", [0, begin + len - 2, 0, 0])
 	normal! gv=gv
@@ -691,7 +738,7 @@ set mousemodel=popup
 autocmd BufEnter * call Init_menu()
 def Init_menu()
 	vmenu PopUp.Copy			y
-	vmenu PopUp.Cut				d	
+	vmenu PopUp.Cut				d
 	vmenu PopUp.Past			p
 	vmenu PopUp.Select\ All		<esc>gg<s-v>G
 	if g:sp_fold
@@ -739,7 +786,7 @@ if g:sp_fold == true
 		execute "normal! zM"
 		set foldmethod=manual
 	enddef
-endif 
+endif
 
 
 # SetArgv --------------------------------------
