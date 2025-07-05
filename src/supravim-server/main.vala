@@ -63,11 +63,11 @@ public class LspServer {
 		{ "asm", "asm-lsp", "s,asm,nasm",
 			null,
 			null,
-			"suprapack add asm-lsp"},
+			"suprapack add asm-lsp --yes"},
 		{ "blueprint", "blueprint-compiler,lsp", "blp,bp,blueprint",
 			"blueprint-compiler --version",
 			null,
-			"suprapack add blueprint-compiler"},
+			"suprapack add blueprint-compiler --yes"},
 		{ "pylsp", "pyls", "py,python",
 			"pylsp -h",
 			null,
@@ -75,11 +75,11 @@ public class LspServer {
 		{"kotlin-lsp", "kotlin-language-server", "kt,kts,kotlin",
 			null,
 			null,
-			"suprapack add kotlin-language-server"},
+			"suprapack add kotlin-language-server --yes"},
 		{ "vls", "vala-language-server", "vala,vapi",
 			"vala-language-server --help",
 			null,
-			"suprapack add vala-language-server"},
+			"suprapack add vala-language-server --yes"},
 		{ "bash-lsp", "bash-language-server,start", "sh,bash",
 			"bash-language-server --version",
 			null,
@@ -91,15 +91,15 @@ public class LspServer {
 		{ "meson-lsp", "meson-lsp,--lsp", "meson,build",
 			"meson-lsp --help",
 			null,
-			"suprapack add meson-lsp"},
+			"suprapack add meson-lsp --yes"},
 		{ "clangd", "clangd", "c,cpp,tpp",
 			"clangd --version",
 			null,
-			"suprapack add clangd16"},
+			"suprapack add clangd16 --yes"},
 		{ "ccls", """ccls,--init={"cache": {"directory": "/tmp/ccls-cache_$USER"}}""", "c,cpp,tpp",
 			"ccls --version",
 			null,
-			"suprapack add ccls"},
+			"suprapack add ccls --yes"},
 			{ "c3lsp", "c3lsp", "c3,c3i",
 			"c3lsp --version",
 			null,
@@ -111,25 +111,21 @@ public class LspServer {
 		{ "rust-analyzer", "rust-analyzer", "rust,rs",
 			"rust-analyzer --version",
 			null,
-			"suprapack add rust-analyzer"},
+			"suprapack add rust-analyzer --yes"},
 		{ "lua-lsp", "lua-language-server", "lua",
 			"lua-language-server --version",
 			null,
-			"suprapack add lua-language-server"},
+			"suprapack add lua-language-server --yes"},
 		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,typescript,javascript",
 			"typescript-language-server --version",
 			null,
 			"npm install -g typescript-language-server typescript"},
-		{ "vue3", "vue-language-server", "vue,js,ts",
-			"vue-language-server --version",
-			null,
-			"npm install -g @vue/language-server"},
 		{"yaml-lsp", "yaml-language-server,--stdio", "yaml,yml",
 			null,
 			null,
 			"npm install -g yaml-language-server"},
 		{ "json-lsp", "vscode-json-languageserver,--stdio", "json",
-			"vscode-json-languageserver --version",
+			null,
 			null,
 			"npm install -g vscode-json-languageserver"},
 		{ "html-lsp", "html-languageserver,--stdio", "html",
@@ -143,7 +139,11 @@ public class LspServer {
 		{ "php-lsp", "intelephense,--stdio", "php",
 			null,
 			null,
-			"suprapack add php-language-server"},// TODO
+			"suprapack add php-language-server --yes"},// TODO
+		{ "vue3", "vue-language-server", "vue,js,ts",
+			"vue-language-server --version",
+			null,
+			"npm install -g @vue/language-server"},
 	};
 
 	public static HashTable<string, Lsp?> is_loaded {
@@ -217,7 +217,7 @@ public void getInputRaw (string message) {
 		foreach (Lsp lsp in possible_lsp) {
 			var cmd = LspServer.get_command (lsp.command);
 			bs.append("@#@");
-			bs.append (cmd);
+			bs.append (lsp.name);
 		}
 
 		print ("LspError: %s\n", bs.str);
@@ -233,7 +233,21 @@ public void getInputRaw (string message) {
 	}
 
 	if (message.has_prefix("Install: ")) {
-		print ("OpenNotification: %s\n", "test");
+		message.scanf ("Install: %s", buffer1);
+		foreach (var lsp in LspServer.all_servers) {
+			if (lsp.name == str1) {
+				string dev_null;
+				int wait_status;
+				Process.spawn_command_line_sync (lsp.command_help, out dev_null, out dev_null, out wait_status);
+				if (wait_status != 0) {
+					print ("InstallError: %s\n", lsp.command_help);
+					return;
+				}
+				print ("FinishInstall\n");
+				unowned string? lsp_str = LspServer.get_from_lsp (lsp);
+				print ("LspGetServer@#@%s\n", lsp_str);
+			}
+		}
 	}
 }
 
