@@ -20,6 +20,7 @@ public class Main {
 	private static bool print_opts = false;
 	private static bool print_themes = false;
 	private static string? theme = null;
+	private static string? plugin = null;
 	
 	private static bool save_config = false;
 	private static bool apply_config = false;
@@ -30,6 +31,7 @@ public class Main {
 		{ "update", '\0',		NONE, 		NONE,			ref is_update,		"Update supravim",							null },
 		{ "uninstall", '\0',	NONE, 		NONE,			ref is_uninstall,	"Uninstall supravim",						null },
 		{ "theme", 't',			NONE, 		STRING,			ref theme,			"Set theme.",								null },
+		{ "add-plugin", '\0',	NONE, 		STRING,			ref plugin,			"Add plugin.",								null },
 		{ "disable", 'd',		NONE, 		STRING_ARRAY,	ref disable,		"Disable options.",							"optA[,optB]"},
 		{ "enable", 'e',		NONE, 		STRING_ARRAY,	ref enable,			"Enable options.",							"optA[,optB]"},
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
@@ -87,6 +89,8 @@ public class Main {
 
 		if (theme != null)
 			return Theme.change (theme);
+		if (plugin != null)
+			return Plugin.add (plugin);
 		return true;
 	}
 

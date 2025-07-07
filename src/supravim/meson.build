@@ -4,6 +4,7 @@ config_vala_file = configure_file(input : 'Config.vala.in', output : 'Config.val
 srcs = files (
    'main.vala',
    'Theme.vala',
+   'Plugin.vala',
    'General.vala',
    'Element.vala',
    'Modificator.vala',
