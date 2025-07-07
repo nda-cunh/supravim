@@ -1,0 +1,41 @@
+pkgname=plugin-lsp-client
+pkgver=2.0
+arch=('any')
+depends=('supravim')
+pkgdesc='LSP client for Supravim'
+
+source=(
+	'vim-lsp::git+https://github.com/prabirshrestha/vim-lsp.git'
+	'asyncomplete::git+https://github.com/prabirshrestha/asyncomplete.vim.git'
+	'asyncomplete-file::git+https://github.com/prabirshrestha/asyncomplete-file.vim.git'
+	'asyncomplete-lsp::git+https://github.com/prabirshrestha/asyncomplete-lsp.vim.git'
+	'vim-vsnip::git+https://github.com/hrsh7th/vim-vsnip.git'
+	'vim-vsnip-integ::git+https://github.com/hrsh7th/vim-vsnip-integ.git'
+	'vim-lsp.vim'
+)
+
+prepare() {
+	rm -rf $srcdir/*/.git
+	rm -rf $srcdir/*/.vimrc
+	rm -rf $srcdir/*/.github
+	rm -rf $srcdir/*/.gitignore
+	rm -rf $srcdir/*/README.*
+	rm -rf $srcdir/*/.gitattributes
+	rm -rf $srcdir/vim-lsp/minimal.vimrc
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/supravim/vim/bundle/"
+	mkdir -p "$pkgdir/usr/share/supravim/vim/plugin/"
+
+	# Bundle directory
+	cp -rf "$srcdir/vim-lsp"			"$pkgdir/usr/share/supravim/vim/bundle/"
+	cp -rf "$srcdir/asyncomplete"		"$pkgdir/usr/share/supravim/vim/bundle/"
+	cp -rf "$srcdir/asyncomplete-file"	"$pkgdir/usr/share/supravim/vim/bundle/"
+	cp -rf "$srcdir/asyncomplete-lsp"	"$pkgdir/usr/share/supravim/vim/bundle/"
+	cp -rf "$srcdir/vim-vsnip"			"$pkgdir/usr/share/supravim/vim/bundle/"
+	cp -rf "$srcdir/vim-vsnip-integ"	"$pkgdir/usr/share/supravim/vim/bundle/"
+
+	# Plugin directory
+	cp -rf "$srcdir/vim-lsp.vim"		"$pkgdir/usr/share/supravim/vim/plugin/"
+}

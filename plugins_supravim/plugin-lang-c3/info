@@ -1,0 +1,12 @@
+name: plugin-lang-c3
+version: 1.0.0
+arch: any
+author: PalsFreniers
+description: vim9script plugin to add c3 syntax to Supravim
+dependency: supravim
+optional_dependency: c3lsp c3c
+exclude_package: 
+binary: c3lsp
+size_tar: 
+size_installed: 6698
+wanted: no

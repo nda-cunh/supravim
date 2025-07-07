@@ -1,0 +1,31 @@
+pkgname=plugin-github-copilot
+pkgver=1.50
+pkgdesc='Supravim plugin for GitHub Copilot'
+depends=('supravim')
+arch=('any')
+pkgauthor='https://github.com/github/copilot.vim'
+
+source=(
+	'github-copilot::git+https://github.com/github/copilot.vim'
+	'supravim_copilot.vim'
+)
+
+prepare() {
+	rm -rf */.git
+	rm -rf */.vimrc
+	rm -rf */.github
+	rm -rf */.gitignore
+	rm -rf */README.md
+	rm -rf */.gitattributes
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/supravim/vim/bundle/"
+	mkdir -p "$pkgdir/usr/share/supravim/vim/plugin/"
+
+	# Bundle directory
+	cp -rf "$srcdir/github-copilot"	"$pkgdir/usr/share/supravim/vim/bundle/"
+
+	# Plugin directory
+	cp -rf "$srcdir/supravim_copilot.vim"		"$pkgdir/usr/share/supravim/vim/plugin/"
+}

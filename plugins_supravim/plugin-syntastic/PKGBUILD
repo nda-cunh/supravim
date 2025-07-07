@@ -1,0 +1,32 @@
+pkgname=plugin-syntastic
+pkgver=3.10.1
+pkgdesc='OLD supravim plugin for help (supravim v4)'
+depends=('supravim')
+arch=('any')
+pkgauthor='https://github.com/vim-syntastic/syntastic'
+
+source=(
+	'syntastic::git+https://github.com/vim-syntastic/syntastic.git'
+	'syntastic.vim'
+)
+
+prepare() {
+	rm -rf */.git
+	rm -rf */.vimrc
+	rm -rf */.github
+	rm -rf */.gitignore
+	rm -rf */README.md
+	rm -rf */.gitattributes
+	rm -rf */_assets
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/supravim/vim/bundle/"
+	mkdir -p "$pkgdir/usr/share/supravim/vim/plugin/"
+
+	# Bundle directory
+	cp -rf "$srcdir/syntastic"	"$pkgdir/usr/share/supravim/vim/bundle/"
+
+	# Plugin directory
+	cp -rf "$srcdir/syntastic.vim"		"$pkgdir/usr/share/supravim/vim/plugin/"
+}
