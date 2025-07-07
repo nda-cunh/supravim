@@ -1,0 +1,32 @@
+pkgname=plugin-tagbar
+pkgver=5.5
+pkgdesc='Vim plugin that displays tags in a window, ordered by scope'
+depends=('supravim')
+arch=('any')
+pkgauthor='https://preservim.github.io/tagbar'
+
+source=(
+	'tagbar::git+https://github.com/preservim/tagbar.git'
+	'tagbar.vim'
+)
+
+prepare() {
+	rm -rf */.git
+	rm -rf */.vimrc
+	rm -rf */.github
+	rm -rf */.gitignore
+	rm -rf */README.md
+	rm -rf */.vintrc.yaml
+	rm -rf */.gitattributes
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/supravim/vim/bundle/"
+	mkdir -p "$pkgdir/usr/share/supravim/vim/plugin/"
+
+	# Bundle directory
+	cp -rf "$srcdir/tagbar"	"$pkgdir/usr/share/supravim/vim/bundle/"
+
+	# Plugin directory
+	cp -rf "$srcdir/tagbar.vim"		"$pkgdir/usr/share/supravim/vim/plugin/"
+}
