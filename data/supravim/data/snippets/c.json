@@ -7,7 +7,7 @@
 			"{",
 			"\t$0",
 			"\treturn (0);",
-			"}",
+			"}"
 		]
 	},
 
@@ -19,7 +19,7 @@
 			"{",
 			"\t$0",
 			"\treturn (0);",
-			"}",
+			"}"
 		]
 	},
 	
@@ -36,9 +36,58 @@
 			"{",
 			"\t$0",
 			"\treturn (0);",
-			"}",
+			"}"
 		]
 	},
+
+	"todo": {
+		"prefix": ["todo"],
+		"description": "TODO comment",
+		"body": [
+			"// TODO: $1"
+		]
+	},
+
+	"fixme": {
+		"prefix": ["fix[me]"],
+		"description": "FIXME comment",
+		"body": [
+			"// FIXME: $1"
+		]
+	},
+
+	"perf": {
+		"prefix": ["perf"],
+		"description": "PERF comment",
+		"body": [
+			"// PERF: $1"
+		]
+	},
+
+	"warning": {
+		"prefix": ["warn[ing]"],
+		"description": "WARNING comment",
+		"body": [
+			"// WARNING: $1"
+		]
+	},
+
+	"note": {
+		"prefix": ["note"],
+		"description": "NOTE comment",
+		"body": [
+			"// NOTE: $1"
+		]
+	},
+
+	"hack": {
+		"prefix": ["hack"],
+		"description": "HACK comment",
+		"body": [
+			"// HACK: $1"
+		]
+	},
+
 
 	"while": {
 		"prefix": ["while"],
@@ -46,8 +95,9 @@
 		"body": [
 			"while ($1)",
 			"{",
-			"\t$0",
-			"}",]
+			"\t$2",
+			"}$0"
+		]
 	},
 
 	"if": {
@@ -56,8 +106,43 @@
 		"body": [
 			"if ($1)",
 			"{",
-			"\t$0",
-			"}",]
+			"\t$2",
+			"}$0"
+		]
+	},
+
+	"ife": {
+		"prefix": ["ife"],
+		"description": "if else statement",
+		"body": [
+			"if ($1)",
+			"{",
+			"\t$2",
+			"}",
+			"else",
+			"{",
+			"\t$3",
+			"}$0"
+		]
+	},
+
+	"ifee": {
+		"prefix": ["ifee"],
+		"description": "if else if else statement",
+		"body": [
+			"if ($1)",
+			"{",
+			"\t$2",
+			"}",
+			"else if ($3)",
+			"{",
+			"\t$4",
+			"}",
+			"else",
+			"{",
+			"\t$5",
+			"}$0"
+		]
 	},
 
 	"else if": {
@@ -66,28 +151,20 @@
 		"body": [
 			"else if ($1)",
 			"{",
-			"\t$0",
-			"}",]
+			"\t$2",
+			"}$0"
+		]
 	},
 
 	"loop": {
-		"prefix": ["loop"],
+		"prefix": ["loop", "for"],
 		"description": "loop x times",
 		"body": [
-			"for (int i = 0; i != $1; i++)",
+			"for (int ${1:i} = 0; $1 != $2; ++$1)",
 			"{",
 			"\t$0",
-			"}",]
-	},
-
-	"for": {
-		"prefix": ["for"],
-		"description": "for",
-		"body": [
-			"for (int ${1:index} = $2; $1 != $3; $1++)",
-			"{",
-			"\t$0",
-			"}",]
+			"}"
+		]
 	},
 
 	"ifndef": {
@@ -96,7 +173,7 @@
 			"#ifndef ${1:$TM_FILENAME_BASE}",
 			"# define ${1}",
 			"$0",
-			"#endif",
+			"#endif"
 		]
 	},
 	
@@ -106,7 +183,7 @@
 			"typedef struct s_${1:my_struct}",
 			"{",
 			"\t$0",
-			"}t_${1};",
+			"}t_${1};"
 		]
 	},
 	
@@ -116,7 +193,38 @@
 			"struct s_${1:my_struct}",
 			"{",
 			"\t$0",
-			"};",
+			"};"
 		]
 	},
+
+	"ps": {
+		"prefix": ["ps"],
+		"description": "print string only",
+		"body": [
+			"printf(\"${1:Hello World!}\\n\");$0"
+		]
+	},
+
+	"union": {
+		"prefix": ["union"],
+		"description": "union",
+		"body": [
+			"union ${1:my_union}",
+			"{",
+			"\t$0",
+			"};"
+		]
+	},
+
+	"enum": {
+		"prefix": ["enum"],
+		"description": "enum",
+		"body": [
+			"enum ${1:Name}",
+			"{",
+			"\t${2:Enum1},",
+			"\t${3:Enum2},",
+			"};$0"
+		]
+	}
 }

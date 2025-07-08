@@ -1,0 +1,119 @@
+{
+  "Print to console": {
+    "prefix": "pr",
+    "body": ["println!(\"${1:expression}\");"],
+    "description": "Print to console"
+  },
+  "Main function": {
+    "prefix": "main",
+    "body": [
+      "fn main() {",
+      "    ${0:// code}",
+      "}"
+    ],
+    "description": "Main function"
+  },
+  "New module": {
+    "prefix": "mod",
+    "body": [
+      "mod ${1:module_name} {",
+      "    ${0:// module code}",
+      "}"
+    ],
+    "description": "New module"
+  },
+  "Public function": {
+    "prefix": "pubfn",
+    "body": [
+      "pub fn ${1:function_name}(${2:args}) ${3:-> ReturnType} {",
+      "    ${0:// function code}",
+      "}"
+    ],
+    "description": "Public function"
+  },
+  "Struct definition": {
+    "prefix": "struct",
+    "body": [
+      "struct ${1:StructName} {",
+      "    ${0:// fields}",
+      "}"
+    ],
+    "description": "Struct definition"
+  },
+  "Impl block": {
+    "prefix": "impl",
+    "body": [
+      "impl ${1:StructName} {",
+      "    ${0:// implementation}",
+      "}"
+    ],
+    "description": "Impl block"
+  },
+  "Enum definition": {
+    "prefix": "enum",
+    "body": [
+      "enum ${1:EnumName} {",
+      "    ${0:// variants}",
+      "}"
+    ],
+    "description": "Enum definition"
+  },
+  "Match expression": {
+    "prefix": "match",
+    "body": [
+      "match ${1:expression} {",
+      "    ${0:// patterns}",
+      "}"
+    ],
+    "description": "Match expression"
+  },
+  "Vector initialization": {
+    "prefix": "vec",
+    "body": ["let ${1:name} = vec![${0:// elements}];"],
+    "description": "Vector initialization"
+  },
+  "For loop": {
+    "prefix": "for",
+    "body": [
+      "for ${1:item} in ${2:iterable} {",
+      "    ${0:// loop code}",
+      "}"
+    ],
+    "description": "For loop"
+  },
+  "If expression": {
+    "prefix": "if",
+    "body": [
+      "if ${1:condition} {",
+      "    ${0:// code}",
+      "}"
+    ],
+    "description": "If expression"
+  },
+  "If-else expression": {
+    "prefix": "ifelse",
+    "body": [
+      "if ${1:condition} {",
+      "    ${2:// if code}",
+      "} else {",
+      "    ${0:// else code}",
+      "}"
+    ],
+    "description": "If-else expression"
+  },
+  "Test module": {
+    "prefix": "test",
+    "body": [
+      "[cfg(test)]",
+      "mod tests {",
+      "    use super::*;",
+      "",
+      "    #[test]",
+      "    fn ${1:test_name}() {",
+      "        ${0:// test code}",
+      "    }",
+      "}"
+    ],
+    "description": "Test module"
+  }
+}

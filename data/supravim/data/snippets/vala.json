@@ -44,12 +44,112 @@
 	
 	"if": {
 		"prefix": ["if"],
-		"description": "if ()",
+		"description": "if statement",
 		"body": [
-			"if (${1:1 != 3})",
+			"if (${1:condition}) {",
+			"\t$2",
+			"}$0"
+		]
+	},
+
+	"ife": {
+		"prefix": ["ife"],
+		"description": "if else statement",
+		"body": [
+			"if (${1:condition}) {",
+			"\t$2",
+			"} else {",
+			"\t$3",
+			"}$0"
+		]
+	},
+
+	"ifee": {
+		"prefix": ["ifee"],
+		"description": "if else if else statement",
+		"body": [
+			"if (${1:condition}) {",
+			"\t$2",
+			"} else if (${3:condition}) {",
+			"\t$4",
+			"} else {",
+			"\t$5",
+			"}$0"
+		]
+	},
+	
+	"fix": {
+		"prefix": ["fix"],
+		"description": "fix comment",
+		"body": [
+			"// FIXME: $1"
+		]
+	},
+
+	"todo": {
+		"prefix": ["todo"],
+		"description": "todo comment",
+		"body": [
+			"// TODO: $1"
+		]
+	},
+
+	"try": {
+		"prefix": ["try"],
+		"description": "try catch statement",
+		"body": [
+			"try {",
+			"\t$1",
+			"} catch (${2:Error e}) {",
+			"\t${3:print (\"%s\\n\", e.message);}",
+			"}$0"
+		]
+	},
+	
+	"tryf": {
+		"prefix": ["tryf"],
+		"description": "try catch finally statement",
+		"body": [
+			"try {",
+			"\t$1",
+			"} catch (${2:Error e}) {",
+			"\t${3:print (\"%s\\n\", e.message);}",
+			"}",
+			"finally {",
+			"\t$4",
+			"}$0"
+		]
+	},
+
+	"do": {
+		"prefix": ["do"],
+		"description": "do while statement",
+		"body": [
+			"do {",
+			"\t$1",
+			"} while (${2:true});$0"
+		]
+	},
+
+	"for": {
+		"prefix": ["for"],
+		"description": "for loop",
+		"body": [
+			"for (int i = 0; i < ${1:n}; i++)",
 			"{",
 			"\t$0",
 			"}"
+		]
+	},
+
+	"foreach": {
+		"prefix": ["foreach"],
+		"description": "foreach loop",
+		"body": [
+			"foreach (var ${1:var} in ${2:list})",
+			"{",
+			"\t$3",
+			"}$0"
 		]
 	},
 
@@ -66,5 +166,94 @@
 			"\t}",
 			"}"
 		]
+	},
+
+	"new": {
+		"prefix": ["new"],
+		"description": "new instance",
+		"body": [
+			"${1:var} ${2:instance} = new ${1:MyClass} ();$0"
+		]
+	},
+	"ps": {
+		"prefix": ["ps"],
+		"description": "print statement",
+		"body": [
+			"print (\"$1\\n\");$0"
+		]
+	},
+	"print": {
+		"prefix": ["print"],
+		"description": "print statement with format",
+		"body": [
+			"print (\"${1:%s}\\n\", ${2:expression}});$0"
+		]
+	},
+
+	"fixme": {
+		"prefix": ["fix[me]"],
+		"description": "FIXME comment",
+		"body": [
+			"// FIXME: $1"
+		]
+	},
+
+	"perf": {
+		"prefix": ["perf"],
+		"description": "PERF comment",
+		"body": [
+			"// PERF: $1"
+		]
+	},
+
+	"warning": {
+		"prefix": ["warn[ing]"],
+		"description": "WARNING comment",
+		"body": [
+			"// WARNING: $1"
+		]
+	},
+
+	"note": {
+		"prefix": ["note"],
+		"description": "NOTE comment",
+		"body": [
+			"// NOTE: $1"
+		]
+	},
+
+	"hack": {
+		"prefix": ["hack"],
+		"description": "HACK comment",
+		"body": [
+			"// HACK: $1"
+		]
+	},
+
+	"delegate":
+	{
+		"prefix": ["delegate"],
+		"description": "delegate definition",
+		"body": [
+			"delegate ${1:type} ${2:name} (${3:${4:arg_type} ${5:arg_name}});$0"
+		]
+	},
+
+	"ccode":
+	{
+		"prefix": ["ccode"],
+		"description": "C code block",
+		"body": [
+			"[CCode (${1:array_length = false, array_null_terminated = true})]$0"
+		]
+	},
+
+	"lambda": {
+		"prefix": ["lambda"],
+		"description": "anonymous lambda function",
+		"body": [
+			"(${1:variables}) => {${2:body}}$0"
+		]
 	}
+
 }

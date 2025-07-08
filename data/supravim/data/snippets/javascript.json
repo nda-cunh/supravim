@@ -1,0 +1,223 @@
+{
+  "imports entire module": {
+    "prefix": "imp",
+    "body": ["import ${1:moduleName} from '${2:module}';"],
+    "description": "Imports entire module"
+  },
+  "imports entire module without module name": {
+    "prefix": "imn",
+    "body": ["import '${1:module}';"],
+    "description": "Imports entire module without module name"
+  },
+  "imports only a portion of the module using destructing": {
+    "prefix": "imd",
+    "body": ["import { ${1:member} } from '${2:module}';"],
+    "description": "Imports only a portion of the module using destructing"
+  },
+  "imports everything as alias from the module": {
+    "prefix": "ime",
+    "body": ["import * as ${1:alias} from '${2:module}';"],
+    "description": "Imports everything as alias from the module"
+  },
+  "imports only a portion of the module as alias": {
+    "prefix": "ima",
+    "body": ["import { ${1:member} as ${2:alias} } from '${3:module}';"],
+    "description": "Imports only a portion of the module as alias"
+  },
+  "require package": {
+    "prefix": "rqr",
+    "body": ["require('${1:package}');"],
+    "description": "Require package"
+  },
+  "require package to const": {
+    "prefix": "req",
+    "body": ["const ${1:packageName} = require('${2:packageName}');"],
+    "description": "Require package to const"
+  },
+  "default module.exports": {
+    "prefix": "mde",
+    "body": ["module.exports = ${1:object};"],
+    "description": "Default module.exports"
+  },
+  "exports name variable": {
+    "prefix": "env",
+    "body": ["export const ${1:nameVariable} = ${2:localVariable};"],
+    "description": "Exports name variable"
+  },
+  "exports name function": {
+    "prefix": "enf",
+    "body": ["export const ${1:nameFunction} = (${2:parameter}) => { ${3:// code} };"],
+    "description": "Exports name function"
+  },
+  "exports default function": {
+    "prefix": "edf",
+    "body": ["export default function ${1:functionName}(${2:parameter}) { ${3:// code} }"],
+    "description": "Exports default function"
+  },
+  "exports default class": {
+    "prefix": "ecl",
+    "body": ["export default class ${1:ClassName} {", "\t${2:// class code}", "}"],
+    "description": "Exports default class"
+  },
+  "exports default class by extending a base one": {
+    "prefix": "ece",
+    "body": ["export default class ${1:ClassName} extends ${2:BaseClass} {", "\t${3:// class code}", "}"],
+    "description": "Exports default class by extending a base one"
+  },
+  "adds default constructor in the class": {
+    "prefix": "con",
+    "body": ["constructor() {", "\t${0:// constructor code}", "}"],
+    "description": "Adds default constructor in the class"
+  },
+  "creates a method inside a class": {
+    "prefix": "met",
+    "body": ["${1:methodName}(${2:params}) {", "\t${0:// method code}", "}"],
+    "description": "Creates a method inside a class"
+  },
+  "creates a getter property": {
+    "prefix": "pge",
+    "body": ["get ${1:propertyName}() {", "\treturn this.${2:propertyValue};", "}"],
+    "description": "Creates a getter property"
+  },
+  "creates a setter property": {
+    "prefix": "pse",
+    "body": ["set ${1:propertyName}(${2:value}) {", "\t${0:// setter code}", "}"],
+    "description": "Creates a setter property"
+  },
+  "forEach loop in ES6 syntax": {
+    "prefix": "fre",
+    "body": ["${1:array}.forEach(${2:currentItem} => {", "\t${0:// loop code}", "});"],
+    "description": "ForEach loop in ES6 syntax"
+  },
+  "for ... of loop": {
+    "prefix": "fof",
+    "body": ["for(const ${1:item} of ${2:object}) {", "\t${0:// loop code}", "}"],
+    "description": "For ... of loop"
+  },
+  "for ... in loop": {
+    "prefix": "fin",
+    "body": ["for(const ${1:item} in ${2:object}) {", "\t${0:// loop code}", "}"],
+    "description": "For ... in loop"
+  },
+  "creates an anonymous function": {
+    "prefix": "anfn",
+    "body": ["(${1:params}) => {", "\t${0:// function code}", "}"],
+    "description": "Creates an anonymous function"
+  },
+  "creates a named function": {
+    "prefix": "nfn",
+    "body": ["const ${1:name} = (${2:params}) => {", "\t${0:// function code}", "}"],
+    "description": "Creates a named function"
+  },
+  "destructing object syntax": {
+    "prefix": "dob",
+    "body": ["const { ${1:property} } = ${2:object}"],
+    "description": "Destructing object syntax"
+  },
+  "destructing array syntax": {
+    "prefix": "dar",
+    "body": ["const [ ${1:first}, ${2:second} ] = ${3:array}"],
+    "description": "Destructing array syntax"
+  },
+  "set interval helper method": {
+    "prefix": "sti",
+    "body": ["setInterval(() => {", "\t${0:// interval code}", "}, ${1:delay});"],
+    "description": "Set interval helper method"
+  },
+  "set timeout helper method": {
+    "prefix": "sto",
+    "body": ["setTimeout(() => {", "\t${0:// timeout code}", "}, ${1:delay});"],
+    "description": "Set timeout helper method"
+  },
+  "creates a new Promise": {
+    "prefix": "prom",
+    "body": ["return new Promise((resolve, reject) => {", "\t${0:// promise code}", "});"],
+    "description": "Creates a new Promise"
+  },
+  "adds then and catch declaration to a promise": {
+    "prefix": "thenc",
+    "body": [".then((${1:res}) => {", "\t${0:// then code}", "}).catch((${2:err}) => {", "\t${3:// catch code}", "});"],
+    "description": "Adds then and catch declaration to a promise"
+  },
+  "console assert method": {
+    "prefix": "cas",
+    "body": ["console.assert(${1:expression}, ${2:object});"],
+    "description": "Console assert method"
+  },
+  "console clear": {
+    "prefix": "ccl",
+    "body": ["console.clear();"],
+    "description": "Console clear"
+  },
+  "console count": {
+    "prefix": "cco",
+    "body": ["console.count('${1:label}');"],
+    "description": "Console count"
+  },
+  "console debug": {
+    "prefix": "cdb",
+    "body": ["console.debug(${1:object});"],
+    "description": "Console debug"
+  },
+  "console dir": {
+    "prefix": "cdi",
+    "body": ["console.dir(${1:object});"],
+    "description": "Console dir"
+  },
+  "console error": {
+    "prefix": "cer",
+    "body": ["console.error(${1:object});"],
+    "description": "Console error"
+  },
+  "console group": {
+    "prefix": "cgr",
+    "body": ["console.group('${1:label}');"],
+    "description": "Console group"
+  },
+  "console groupEnd": {
+    "prefix": "cge",
+    "body": ["console.groupEnd();"],
+    "description": "Console groupEnd"
+  },
+  "console log": {
+    "prefix": "clg",
+    "body": ["console.log(${1:object});"],
+    "description": "Console log"
+  },
+  "console log object with name": {
+    "prefix": "clo",
+    "body": ["console.log('${1:object} :>> ', ${2:object});"],
+    "description": "Console log object with name"
+  },
+  "console trace": {
+    "prefix": "ctr",
+    "body": ["console.trace(${1:object});"],
+    "description": "Console trace"
+  },
+  "console warn": {
+    "prefix": "cwa",
+    "body": ["console.warn(${1:object});"],
+    "description": "Console warn"
+  },
+  "console info": {
+    "prefix": "cin",
+    "body": ["console.info(${1:object});"],
+    "description": "Console info"
+  },
+  "console table": {
+    "prefix": "clt",
+    "body": ["console.table(${1:object});"],
+    "description": "Console table"
+  },
+  "console time": {
+    "prefix": "cti",
+    "body": ["console.time('${1:label}');"],
+    "description": "Console time"
+  },
+  "console timeEnd": {
+    "prefix": "cte",
+    "body": ["console.timeEnd('${1:label}');"],
+    "description": "Console timeEnd"
+  }
+}
+
