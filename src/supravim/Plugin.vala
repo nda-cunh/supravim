@@ -61,7 +61,12 @@ namespace Plugin {
 		return true;
 	}
 
-	public bool enable(string url) {
+	public bool enable_disable(string url, bool enable) throws Error {
+		string new_status = "D", old_status = "E";
+		if (enable) {
+			new_status = "E";
+			old_status = "D";
+		}
 		string contents; 
 		string filename = Environment.get_user_config_dir () + "/supravim.cfg";
 		try {
@@ -82,12 +87,12 @@ namespace Plugin {
 			string	tmp = result[i];
 			if (result[i].index_of (url) != -1) {
 				if (regex.match (tmp, 0, out info)) {
-					var status = info.fetch_named ("status");
+					var actual_status = info.fetch_named ("status");
 					var actual_url = info.fetch_named ("url");
 					var name = info.fetch_named ("name");
 					if (url == actual_url) {
-						if (status == "D")
-							new_contents.append ("E " + url + " " + name + "\n");
+						if (actual_status == old_status)
+							new_contents.append (@"$new_status $url $name\n");
 						else
 							new_contents.append (tmp);
 					}
