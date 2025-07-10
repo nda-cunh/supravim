@@ -22,6 +22,7 @@ public class Main {
 	private static string? theme = null;
 	private static string? add_plugin = null;
 	private static string? remove_plugin = null;
+	private static string? enable_plugin = null;
 	
 	private static bool save_config = false;
 	private static bool apply_config = false;
@@ -34,6 +35,7 @@ public class Main {
 		{ "theme", 't',			NONE, 		STRING,			ref theme,			"Set theme.",								null },
 		{ "add-plugin", '\0',	NONE, 		STRING,			ref add_plugin,		"Add plugin.",								null },
 		{ "remove-plugin", '\0',NONE, 		STRING,			ref remove_plugin,	"Remove plugin.",							null },
+		{ "enable-plugin", '\0',NONE, 		STRING,			ref enable_plugin,	"Enable plugin.",							null },
 		{ "disable", 'd',		NONE, 		STRING_ARRAY,	ref disable,		"Disable options.",							"optA[,optB]"},
 		{ "enable", 'e',		NONE, 		STRING_ARRAY,	ref enable,			"Enable options.",							"optA[,optB]"},
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
@@ -95,6 +97,8 @@ public class Main {
 			return Plugin.add (add_plugin);
 		if (remove_plugin != null)
 			return Plugin.remove (remove_plugin);
+		if (enable_plugin != null)
+			return Plugin.enable (enable_plugin);
 		return true;
 	}
 

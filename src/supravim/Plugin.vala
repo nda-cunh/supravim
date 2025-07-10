@@ -51,7 +51,45 @@ namespace Plugin {
 						Process.spawn_command_line_sync (@"rm -rf $HOME/.vim/bundle/$name", null, null, out wait);
 						if (wait != 0)
 							throw new SpawnError.FAILED("git return %d", wait);
-						
+					}
+				}
+			}
+			else
+				new_contents.append (tmp);
+		}
+		FileUtils.set_contents (filename, new_contents.str);
+		return true;
+	}
+
+	public bool enable(string url) {
+		string contents; 
+		string filename = Environment.get_user_config_dir () + "/supravim.cfg";
+		try {
+			FileUtils.get_contents (filename, out contents);
+		}
+		catch (Error e) {
+			contents = "";
+		}
+		MatchInfo	info;
+		var new_contents = new StringBuilder();
+		var regex = new Regex ("""(?<status>(E|D))
+				[ ]
+				(?<url>\S+)
+				[ ]
+				(?<name>\S+)""", RegexCompileFlags.EXTENDED);
+		string	[]result = contents.split ("\n");
+		for (int i = 0; i < result.length; i++) {
+			string	tmp = result[i];
+			if (result[i].index_of (url) != -1) {
+				if (regex.match (tmp, 0, out info)) {
+					var status = info.fetch_named ("status");
+					var actual_url = info.fetch_named ("url");
+					var name = info.fetch_named ("name");
+					if (url == actual_url) {
+						if (status == "D")
+							new_contents.append ("E " + url + " " + name + "\n");
+						else
+							new_contents.append (tmp);
 					}
 				}
 			}
