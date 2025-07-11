@@ -56,7 +56,8 @@ inoremap <C-Right>		<scriptcmd>tabnext<CR>
 inoremap <C-Left>		<scriptcmd>tabprevious<CR>
 
 #--------------- Racourcis --------------"
-nmap	<c-f>		fl
+nnoremap <c-f> 		:vim9cmd call g:SupraSearch(false)<cr>
+vnoremap <c-f> 		:<c-u>vim9cmd call g:SupraSearch(true)<cr>
 nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
