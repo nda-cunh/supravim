@@ -722,7 +722,6 @@ nnoremap <silent> <space>h <scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <space>m <scriptcmd>FuzzyMRUFiles<CR>
 # Search Ctrl + F
 nnoremap <silent> <space><space> <scriptcmd>FuzzyBuffers<CR>
-nnoremap <silent><c-f> <scriptcmd>FuzzyGrep<CR>
 
 g:fuzzyy_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
 g:fuzzyy_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
