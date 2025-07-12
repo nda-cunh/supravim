@@ -6,7 +6,7 @@ description: vala support
 dependency: supravim
 optional_dependency: 
 exclude_package: 
-binary: plugin-vala-lsp
+binary: plugin-lang-vala
 size_tar: 
-size_installed: 10201
+size_installed: 10185
 wanted: no

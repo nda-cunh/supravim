@@ -12,12 +12,12 @@ def Items(): list<string>
 	return lines
 enddef
 
-export def Start()
+def Start()
   selector.Start(Items(), {
     select_cb: Select,
     preview: 0,
-	xoffset: 0.4,
-	width: 0.16,
+	# xoffset: 0.4,
+	width: 0.20,
 	title: '── FuzzyMake ─'
   })
 enddef

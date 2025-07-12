@@ -8,7 +8,6 @@ namespace Theme {
 	 * @throws Error if there was an issue reading or writing the file.
 	 **/
 	public bool change (string new_theme) throws Error {
-		var reg_theme = new Regex("""^g:sp_theme = (?:'.+?'|\"".+?\"")""", RegexCompileFlags.MULTILINE);
 		var reg_theme_bg = new Regex("""^set background=(?:dark|light)""", RegexCompileFlags.MULTILINE);
 
 		var theme_bg = "dark";
@@ -23,11 +22,12 @@ namespace Theme {
 			theme_bg = new_theme[index_of_dash + 1:];
 		}
 
+		Modificator.update_value ("theme", theme, rc_path, OptionType.STRING, "A cute theme color");
+
 		string contents;
 		FileUtils.get_contents (rc_path, out contents);
 		var len = contents.length;
 
-		contents = reg_theme.replace (contents, len, 0, "g:sp_theme = '" + theme + "'");
 		contents = reg_theme_bg.replace (contents, len, 0, "set background=" + theme_bg);
 
 		print ("Setting theme to: \033[96;1m%s %s\033[m\n", theme, theme_bg);

@@ -4,9 +4,9 @@ arch: any
 author: PalsFreniers
 description: vim9script plugin to add c3 syntax to Supravim
 dependency: supravim
-optional_dependency: c3lsp c3c
+optional_dependency: 
 exclude_package: 
-binary: c3lsp
+binary: plugin-lang-c3
 size_tar: 
-size_installed: 6698
+size_installed: 6684
 wanted: no
