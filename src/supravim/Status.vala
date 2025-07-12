@@ -7,10 +7,12 @@ private void print_list (ArrayElements lst) {
 			else
 				stdout.printf ("\033[91;1moff\033[m");
 		}
-		else if (elem.type == STRING)
-			stdout.printf ("\033[96;1m%s\033[m\n", elem.value);
+		else if (elem.type == STRING) 
+			stdout.printf ("\033[96;1m%s\033[m", elem.value);
 		if (elem.comment != null)
 			stdout.printf (" (%s)\n", elem.comment);
+		else 
+			stdout.printf ("\n");
 	}
 }
 
