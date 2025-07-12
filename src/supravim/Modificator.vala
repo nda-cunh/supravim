@@ -118,9 +118,9 @@ namespace Modificator {
 		string replacement;
 		if (type == STRING) {
 			if (comment != null)
-				replacement = @"g:sp_$(name) = '$new_value'\t# $(comment)\n";
+				replacement = @"g:sp_$(name) = \"$new_value\"\t# $(comment)\n";
 			else
-				replacement = @"g:sp_$(name) = '$new_value'\n";
+				replacement = @"g:sp_$(name) = \"$new_value\"\n";
 		}
 		else {
 			if (comment != null)

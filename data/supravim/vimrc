@@ -13,8 +13,9 @@ g:sp_tree = true			# display folder tree at left
 g:sp_fold = false			# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
 g:sp_wrap = true 			# do not wrap the text if the line is too long
-g:sp_symbol_signs = '┃'	# The symbol used for the signs before it is this: ✖
-g:sp_theme = 'onedark'
+g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
+g:sp_mapleader = "\<space>"	# The leader key used in the mappings
+g:sp_theme = "onedark"
 
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"
@@ -23,6 +24,8 @@ syntax on
 if (has("termguicolors"))
 	set termguicolors
 endif
+
+g:mapleader = g:sp_mapleader
 
 set t_Co=256
 exec 'colorscheme ' .. g:sp_theme
@@ -53,12 +56,11 @@ inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
 nnoremap <c-n>			<esc>:tabnew 
 nnoremap <C-Right>		<scriptcmd>tabnext<CR>
 nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
-inoremap <C-Right>		<scriptcmd>tabnext<CR>
-inoremap <C-Left>		<scriptcmd>tabprevious<CR>
 
 #--------------- Racourcis --------------"
-nnoremap <c-f> 		:vim9cmd call g:SupraSearch(false)<cr>
-vnoremap <c-f> 		:<c-u>vim9cmd call g:SupraSearch(true)<cr>
+nnoremap <c-f> 		<scriptcmd>call g:SupraSearch(false)<cr>
+inoremap <c-f> 		<scriptcmd>call g:SupraSearch(false)<cr>
+vnoremap <c-f> 		<esc><scriptcmd>call g:SupraSearch(true)<cr>
 nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
@@ -74,8 +76,8 @@ nnoremap <F6>		<ScriptCmd>call Make("run2")<CR>
 inoremap <F6>		<ScriptCmd>call Make("run2")<CR>
 nnoremap <F7> 		<ScriptCmd>call Make("run3")<CR>
 inoremap <F7>		<ScriptCmd>call Make("run3")<CR>
-nnoremap <C-d>		:vs 
-nnoremap <S-d>		:split 
+nnoremap <leader>v		:vs 
+nnoremap <leader>s		:split 
 nnoremap <S-Right>	<C-w><Right>
 nnoremap <S-Left>	<C-w><Left>
 nnoremap <S-Up>		<C-w><Up>
@@ -88,10 +90,29 @@ nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
-nnoremap <c-@>		<cmd>LspHover<cr>
 inoremap <c-a>		<esc>gg<s-v>G
-nmap <2-LeftMouse>		:LspHover<cr>
+nnoremap <silent><c-@>		<cmd>LspHover<cr>
+silent! unmap <c-t>
+map <c-t>	<scriptcmd>term ++rows=15<CR>
 
+# ---------------      LSP            ---------------"
+set updatetime=500
+def AutoLspHold()
+	var c_pos = getcurpos()
+	var m_pos = getmousepos()
+	var cm = m_pos.column
+	var lm = m_pos.line
+	var cc = c_pos[2]
+	var lc = c_pos[1]
+	if cm == cc && lm == lc
+		var word = expand('<cword>')
+		if word != ''
+			silent! LspHover
+		endif
+	endif
+enddef
+
+autocmd CursorHold * call AutoLspHold()
 #---------------      Copy - Paste      ---------------"
 
 inoremap <c-v>	<scriptcmd>norm p<cr>
@@ -398,17 +419,17 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 			NERDTreeTabsRefresh
 		endif
 	elseif (stridx(msg, 'LoadBundle: ') == 0)
-		var end_bundle = stridx(msg, ' ', 12)
-		var bundle = msg[12 : end_bundle]
-		var filetype = msg[end_bundle + 1 : ]
-		echo "Loading bundle: [" .. bundle .. "] and ft: >" .. filetype .. "<"
+		var sp = split(msg, ' ')
+		var bundle = sp[1] 
+		var ft = sp[2]
+		execute ("set filetype=" .. ft)
 		var lst = glob($HOME .. "/.vim/bundle/" .. bundle .. '/**/*.vim', 0, 1)
 		for file in lst
 			if filereadable(file)
 				exec 'source ' .. file
+				echom 'source ' .. file
 			endif
 		endfor
-		execute ("set filetype=" .. filetype)
 	elseif (stridx(msg, 'LspGetServer') == 0)
 		var sp = split(msg, '@#@')
 		call lsp#register_server({
@@ -713,15 +734,15 @@ nnoremap <silent> <A-Down>	<scriptcmd>MoveLineDown("n")<CR>
 nnoremap <silent> <A-Up>	<scriptcmd>MoveLineUp("n")<CR>
 
 # Fuzzy Finder
-nnoremap <silent> <space>g <scriptcmd>FuzzyGrep<CR>
-nnoremap <silent> <space>f <scriptcmd>FuzzyFiles<CR>
-nnoremap <silent> <space>s <scriptcmd>FuzzyInBuffer<CR>
-nnoremap <silent> <space>c <scriptcmd>FuzzyCommands<CR>
-nnoremap <silent> <space>b <scriptcmd>FuzzyBuffers<CR>
-nnoremap <silent> <space>h <scriptcmd>FuzzyHighlights<CR>
-nnoremap <silent> <space>m <scriptcmd>FuzzyMRUFiles<CR>
+nnoremap <silent> <leader>g <scriptcmd>FuzzyGrep<CR>
+nnoremap <silent> <leader>f <scriptcmd>FuzzyFiles<CR>
+nnoremap <silent> <leader>c <scriptcmd>FuzzyCommands<CR>
+nnoremap <silent> <leader>b <scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent> <leader>h <scriptcmd>FuzzyHighlights<CR>
+nnoremap <silent> <leader>m <scriptcmd>FuzzyMRUFiles<CR>
+g:fuzzyy_enable_mappings = 0
 # Search Ctrl + F
-nnoremap <silent> <space><space> <scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent> <leader><leader> <scriptcmd>FuzzyBuffers<CR>
 
 g:fuzzyy_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
 g:fuzzyy_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
