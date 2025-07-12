@@ -8,7 +8,7 @@ private void print_list (ArrayElements lst) {
 				stdout.printf ("\033[91;1moff\033[m");
 		}
 		else if (elem.type == STRING) 
-			stdout.printf ("\033[96;1m%s\033[m", elem.value);
+			stdout.printf ("\033[96;1m'%s'\033[m", elem.value);
 		if (elem.comment != null)
 			stdout.printf (" (%s)\n", elem.comment);
 		else 
