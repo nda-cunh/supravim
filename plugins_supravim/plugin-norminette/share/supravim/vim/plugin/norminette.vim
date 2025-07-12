@@ -3,7 +3,7 @@ vim9script
 g:sp_norme = true # norminette hint, press F3 to switch
 
 highlight DapBreakpoint ctermfg=135
-sign define NormLinter text=✖ texthl=DapBreakpoint
+execute 'sign define NormLinter text=' .. g:sp_symbol_signs .. ' texthl=DapBreakpoint'
 hi def link NormErrors Underlined
 
 var g_errors: list<list<string>> = []
@@ -111,6 +111,9 @@ def ToggleNorm()
 enddef
 
 def SimpleSupravimChangeOption()
+	if g:supravim_option_changed == 'symbol_signs'
+		execute 'sign define NormLinter text=' .. g:sp_symbol_signs .. ' texthl=DapBreakpoint'
+		return
 	if g:supravim_option_changed == 'norme'
 		if g:supravim_option_value == 'true'
 			EnableNorm()

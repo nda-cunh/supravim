@@ -13,6 +13,7 @@ g:sp_tree = true			# display folder tree at left
 g:sp_fold = false			# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
 g:sp_wrap = true 			# do not wrap the text if the line is too long
+g:sp_symbol_signs = '┃'	# The symbol used for the signs before it is this: ✖
 g:sp_theme = 'onedark'
 
 filetype plugin indent on
@@ -246,6 +247,8 @@ def GotOutput(channel: channel, msg: string)
 	elseif matchstr(msg, '^onChangeOption: ') != ''
 		g:supravim_option_changed = matchstr(msg, '\[\zs.*\ze\]')
 		g:supravim_option_value = matchstr(msg, '<\zs.*\ze>')
+		var text = 'g:sp_' .. g:supravim_option_changed .. ' = ' .. g:supravim_option_value
+		execute text
 		doautocmd User SupravimChangeOption
 	endif
 enddef
