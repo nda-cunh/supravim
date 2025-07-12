@@ -135,12 +135,6 @@ export def Input(options: dict<any> = {}): dict<any>
 
 	AddEventFilterFocus(simple, FilterInput)
 	
-	AddEventFilterNoFocus(simple, (_, wid, key) => {
-		if key ==? "\<esc>" || key == "\<C-c>"
-			popup_close(wid)
-		endif
-		return CONTINUE
-	})
 	SetText(simple, [simple.prompt .. ' '])
 	ActualiseCursor(simple, simple.wid, simple.cur_pos)
 	SetFocus(simple, true)
@@ -374,6 +368,7 @@ export def Simple(options: dict<any>): dict<any>
 		height: 1,
 		wid: 0,
 		type: 'simple',
+		close_key: ["\<Esc>", "\<C-c>"], # List of keys to close the popup
 		cb_fitler_focus: [], # Function (supra: SupraPopup, wid: number, key: string) -> number (NOBLOCK or BLOCK)
 		cb_fitler_nofocus: [], # Function (supra: SupraPopup,wid: number, key: string) -> number (NOBLOCK or BLOCK or CONTINUE)
 		cb_close: [], # Function (SupraPopup) -> void 
@@ -435,6 +430,15 @@ export def Simple(options: dict<any>): dict<any>
 	supradict.wid = wid
 	supradict.focus = false
 	all_popups[wid] = supradict
+
+	AddEventFilterNoFocus(supradict, (popup, _, key) => {
+		for k in popup.close_key
+			if key ==? k
+				popup_close(wid)
+			endif
+		endfor
+		return CONTINUE
+	})
 
 	return supradict
 enddef
