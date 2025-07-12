@@ -2,12 +2,13 @@ vim9script
 
 def HighlightComments()
 
-	syntax match NoteComment "\v(\/*|[*]|\s*)\s*NOTE.*$" contained contained containedin=cComment,cCommentL,cMulti
-	syntax match WarningComment "\v(\/*|[*]|\s*)\s*WARN.*$" contained containedin=cComment,cCommentL,cMulti
-	syntax match FixComment "\v(\/*|[*]|\s*)\s*FIX.*$" contained containedin=cComment,cCommentL,cMulti
-	syntax match TodoComment "\v(\/*|[*]|\s*)\s*TODO.*$" contained containedin=cComment,cCommentL,cMulti
-	syntax match HackComment "\v(\/*|[*]|\s*)\s*HACK.*$" contained containedin=cComment,cCommentL,cMulti
-	syntax match PerfComment "\v(\/*|[*]|\s*)\s*PERF.*$" contained containedin=cComment,cCommentL,cMulti
+	syntax match NoteComment "\v(\/*|[*]|\s*)\s*NOTE.*$" contained contained containedin=cComment,cCommentL,cMulti,valaComment,valaCommentL,valaMulti
+	syntax match WarningComment "\v(\/*|[*]|\s*)\s*WARN.*$" contained containedin=cComment,cCommentL,cMulti,valaComment,valaCommentL,valaMulti
+	syntax match FixComment "\v(\/*|[*]|\s*)\s*FIX.*$" contained containedin=cComment,cCommentL,cMulti,valaComment,valaCommentL,valaMulti
+	syntax match TodoComment "\v(\/*|[*]|\s*)\s*TODO.*$" contained containedin=cComment,cCommentL,cMulti,valaComment,valaCommentL,valaMulti
+	syntax match HackComment "\v(\/*|[*]|\s*)\s*HACK.*$" contained containedin=cComment,cCommentL,cMulti,valaComment,valaCommentL,valaMulti
+	syntax match PerfComment "\v(\/*|[*]|\s*)\s*PERF.*$" contained containedin=cComment,cCommentL,cMulti,valaComment,valaCommentL,valaMulti
+
 
 	highlight QuestionComment guifg=#e06c75
 	highlight WarningSimpleComment guifg=#e5c07b
