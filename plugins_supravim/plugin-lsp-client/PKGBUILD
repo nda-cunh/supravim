@@ -12,9 +12,14 @@ source=(
 	'vim-vsnip::git+https://github.com/hrsh7th/vim-vsnip.git'
 	'vim-vsnip-integ::git+https://github.com/hrsh7th/vim-vsnip-integ.git'
 	'vim-lsp.vim'
+	'0001-Use-echoerr-instead-of-echom.patch'
 )
 
 prepare() {
+	cp "$srcdir/0001-Use-echoerr-instead-of-echom.patch" "$srcdir/vim-lsp/"
+	pushd "$srcdir/vim-lsp"
+		git apply "0001-Use-echoerr-instead-of-echom.patch"
+	popd
 	rm -rf $srcdir/*/.git
 	rm -rf $srcdir/*/.vimrc
 	rm -rf $srcdir/*/.github
