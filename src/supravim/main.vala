@@ -41,21 +41,26 @@ public class Main {
 	};
 
 	
-	public static bool run () throws Error {
+	public static bool? run () throws Error {
 		if (is_version) {
 			print ("Supravim version %s\n", Config.VERSION);
 			return true;
 		}
-		else if (save_config)
+		else if (save_config) {
 			Cfg.save_config ();
-		else if (apply_config)
+			return true;
+		}
+		else if (apply_config) {
 			Cfg.apply_config ();
+			return true;
+		}
 		else if (is_update)
 			return Process.spawn_command_line_sync ("suprapack update");
 		else if (is_uninstall)
 			return Process.spawn_command_line_sync ("suprapack remove supravim");
 		else if (is_status) {
 			print_status ();
+			return true;
 		}
 		
 		foreach (unowned string str in disable) {
@@ -85,9 +90,12 @@ public class Main {
 			}
 		}
 
+		if (variable_set.length > 0 || enable.length > 0 || disable.length > 0) {
+			return true;
+		}
 		if (theme != null)
 			return Theme.change (theme);
-		return true;
+		return null;
 	}
 
 
@@ -111,7 +119,14 @@ public class Main {
 			opt_context.add_main_entries (options, null);
 			opt_context.parse (ref args);
 
-			return (run () == true ? 0 : -1);
+			var? result = run();	
+			if (result == null) {
+				var sb = new StrvBuilder ();
+				sb.add ("vim");
+				sb.addv(args[1:]);
+				Process.spawn_sync (null, sb.end(), Environ.get(), SpawnFlags.SEARCH_PATH + SpawnFlags.CHILD_INHERITS_STDIN, null);
+			}
+			return result != null ? 0 : -1;
 		}
 		catch (Error e) {
 			printerr ("Error parsing option: %s\n", e.message);

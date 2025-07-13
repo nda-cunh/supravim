@@ -4,9 +4,10 @@ public class ArrayElements {
 	}
 
 	private int get_score (Element element) {
-		return element.value == "true"  ? 1 : 
-			   element.value == "false" ? 0 :
-                                         -1 ;
+		if (element.value == "true" || element.value == "false")
+			return 0;
+		else
+			return -1;
 	}
 
 	public ArrayElements sort (Compare cmp_func) {
