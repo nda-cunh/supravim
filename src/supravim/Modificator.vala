@@ -128,7 +128,12 @@ namespace Modificator {
 			else
 				replacement = @"g:sp_$(name) = $new_value\n";
 		}
-		contents = opt_regex.replace(contents, -1, 0, replacement, 0);
+		try {
+			contents = opt_regex.replace(contents, -1, 0, replacement, 0);
+		}
+		catch (RegexError e) {
+			warning("%s\n", e.message);
+		}
 		return contents;
 	}
 }
