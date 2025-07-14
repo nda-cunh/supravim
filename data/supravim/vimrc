@@ -61,6 +61,7 @@ nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
 nnoremap <c-f> 		<scriptcmd>call g:SupraSearch(false)<cr>
 inoremap <c-f> 		<scriptcmd>call g:SupraSearch(false)<cr>
 vnoremap <c-f> 		<esc><scriptcmd>call g:SupraSearch(true)<cr>
+nnoremap <leader>r		<scriptcmd>call g:SupraSearch(false, expand("<cword>"))<cr>
 nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <C-Up>		<scriptcmd>call Ctags()<CR>

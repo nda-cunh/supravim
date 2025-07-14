@@ -224,6 +224,7 @@ def FilterInput(popup: dict<any>, wid: number, key: string): number
     elseif key == "\<Home>"
 			cur_pos = 0	
 	elseif key ==? "\<Del>"
+		is_changed = true
         if cur_pos == max_pos
             return 1
         endif
