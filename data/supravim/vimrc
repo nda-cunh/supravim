@@ -209,6 +209,7 @@ else
 	set nowrap
 endif
 set cursorline
+set shortmess+=I
 set nu
 set incsearch
 set noautochdir
@@ -251,28 +252,39 @@ g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
 
 #--------------- FONCTION ---------------"
-g:supravim_option_changed = 'null'
-g:supravim_option_value = 'null'
+
 def GotOutput(channel: channel, msg: string)
 	# change_theme: [onehalf] <dark>
 	if matchstr(msg, '^change_theme: ') != ''
 		var theme = matchstr(msg, '\[\zs.*\ze\]')
 		var typemode = matchstr(msg, '<\zs.*\ze>')
-
-		exec 'colorscheme ' .. theme
-		exec 'set background=' .. typemode
-		AirlineRefresh
-		if g:sp_nobackground == true
-			hi Normal guibg=NONE ctermbg=NONE
-		endif
+		call g:ChangeSupravimTheme(theme, typemode)
 	# onChangeOption: [tree] <true>
 	elseif matchstr(msg, '^onChangeOption: ') != ''
-		g:supravim_option_changed = matchstr(msg, '\[\zs.*\ze\]')
-		g:supravim_option_value = matchstr(msg, '<\zs.*\ze>')
-		var text = 'g:sp_' .. g:supravim_option_changed .. ' = ' .. g:supravim_option_value
-		execute text
-		doautocmd User SupravimChangeOption
+		var changed = matchstr(msg, '\[\zs.*\ze\]')
+		var value = matchstr(msg, '<\zs.*\ze>')
+		call g:ChangeSupravimOption(changed, value)
 	endif
+enddef
+
+def g:ChangeSupravimTheme(theme: string, typemode: string)
+	exec 'colorscheme ' .. theme
+	exec 'set background=' .. typemode
+	AirlineRefresh
+	if g:sp_nobackground == true
+		hi Normal guibg=NONE ctermbg=NONE
+	endif
+enddef
+
+g:supravim_option_changed = 'null'
+g:supravim_option_value = 'null'
+
+def g:ChangeSupravimOption(changed: string, value: string)
+	g:supravim_option_changed = changed
+	g:supravim_option_value = value
+	var text = 'g:sp_' .. g:supravim_option_changed .. ' = ' .. g:supravim_option_value
+	execute text
+	doautocmd User SupravimChangeOption
 enddef
 
 def SimpleSupravimChangeOption()
