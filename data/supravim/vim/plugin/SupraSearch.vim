@@ -4,10 +4,12 @@ import autoload 'SupraPopup.vim' as Popup
 
 var first_buffer = []
 
-def g:SupraSearch(visualmode: bool = false)
+def g:SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	var mid_cursor: number = 0
 	var mid_occurence: number = 0
 	var mid_search: number = 0
+	var visualmode = _visualmode
+	var pre_text = _pre_text
 
 	var min: number
 	var max: number
@@ -16,18 +18,22 @@ def g:SupraSearch(visualmode: bool = false)
 		var p2 = getpos("'>")
 		min = p1[1]
 		max = p2[1]
-		var list_pos: list<list<number>> = []
-		for i in range(min, max)
-			var pos: list<number> = [i, 0, 0]
-			add(list_pos, pos)
-		endfor
-		mid_cursor = matchaddpos('Visual', list_pos, 1)
+		if min == max
+			visualmode = false
+			var cword = expand('<cword>')
+			pre_text = cword
+		else
+			var list_pos: list<list<number>> = []
+			for i in range(min, max)
+				var pos: list<number> = [i, 0, 0]
+				add(list_pos, pos)
+			endfor
+			mid_cursor = matchaddpos('Visual', list_pos, 1)
+		endif
 	else
-		# mid_cursor = matchadd('Visual', '.*')
 		min = 0
 		max = line('$')
 	endif
-
 
 	var background = Popup.Simple({
 		prompt: 'SupraSearch',
@@ -54,7 +60,7 @@ def g:SupraSearch(visualmode: bool = false)
 	})
 	
 	Popup.SetFocus(pop1)
-
+	
 	var RemoveMidCursor = () => {
 		if mid_cursor > 0
 			call matchdelete(mid_cursor)
@@ -74,6 +80,48 @@ def g:SupraSearch(visualmode: bool = false)
 		endif
 	}
 
+
+	var EventWhenFindInput = (_, line) => {
+		RemoveSupramid()
+		var jump_line: number = 0
+
+		RemoveMidSearch()
+		if line == ''
+			return
+		endif
+
+		var search: string
+		if visualmode == true
+			if min == max
+				search = '\%' .. min .. 'l' .. line
+			else
+				var min_tmp = min - 1
+				var max_tmp = max + 1
+				search = '\%>' .. min_tmp .. 'l\%<' .. max_tmp .. 'l' .. line
+			endif
+			silent! jump_line = search(line, 'c', max)
+		else 
+			silent! jump_line = search(line, 'c')
+			search = line
+		endif
+		if jump_line != 0 
+			const pos = getpos('.')
+			const len = len(line)
+			mid_search = matchaddpos('Search', [[jump_line, pos[2], len]], 42)
+		endif
+
+		silent! mid_occurence = matchadd('Cursor', search, 10)
+		if mid_occurence <= 0
+			mid_occurence = 0
+		endif
+
+	}
+
+	if pre_text != ''
+		Popup.SetInput(pop1, pre_text)
+		EventWhenFindInput('', pre_text)
+	endif
+
 	#### Set Focus
 	Popup.SetEventFocus(pop1, (_) => {
 		return {next: pop2, prev: pop2}
@@ -91,6 +139,9 @@ def g:SupraSearch(visualmode: bool = false)
 		const len = len(input_search)
 		if visualmode == true
 			if key == "\<Up>"
+				if input_search == ''
+					return Popup.BLOCK
+				endif
 				jump_line = search(input_search, 'b', min)
 				if jump_line == 0
 					call cursor(max + 1, 1)
@@ -98,6 +149,9 @@ def g:SupraSearch(visualmode: bool = false)
 				endif
 				event = true
 			elseif key == "\<Down>"
+				if input_search == ''
+					return Popup.BLOCK
+				endif
 				jump_line = search(input_search, '', max)
 				if jump_line == 0
 					call cursor(min - 1, 1)
@@ -107,9 +161,15 @@ def g:SupraSearch(visualmode: bool = false)
 			endif
 		else
 			if key == "\<Up>"
+				if input_search == ''
+					return Popup.BLOCK
+				endif
 				jump_line = search(input_search, 'b')
 				event = true
 			elseif key == "\<Down>"
+				if input_search == ''
+					return Popup.BLOCK
+				endif
 				jump_line = search(input_search)
 				event = true
 			endif
@@ -199,38 +259,5 @@ def g:SupraSearch(visualmode: bool = false)
 	})
 
 	# When typing in the Find Popup (jump to the first match)
-	Popup.AddEventInputChanged(pop1, (key, line) => {
-		RemoveSupramid()
-		var jump_line: number = 0
-
-		if line == ''
-			return
-		endif
-
-		var search: string
-		if visualmode == true
-			if min == max
-				search = '\%' .. min .. 'l' .. line
-			else
-				var min_tmp = min - 1
-				var max_tmp = max + 1
-				search = '\%>' .. min_tmp .. 'l\%<' .. max_tmp .. 'l' .. line
-			endif
-			silent! jump_line = search(line, 'c', max)
-		else 
-			silent! jump_line = search(line, 'c')
-			search = line
-		endif
-		RemoveMidSearch()
-		if jump_line != 0 
-			const pos = getpos('.')
-			const len = len(line)
-			mid_search = matchaddpos('Search', [[jump_line, pos[2], len]], 42)
-		endif
-
-		silent! mid_occurence = matchadd('Cursor', search, 10)
-		if mid_occurence <= 0
-			mid_occurence = 0
-		endif
-	})
+	Popup.AddEventInputChanged(pop1, EventWhenFindInput)
 enddef
