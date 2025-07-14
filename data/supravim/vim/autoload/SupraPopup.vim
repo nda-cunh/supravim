@@ -62,6 +62,57 @@ enddef
 #############################################################################
 # Utility Functions 
 #############################################################################
+export def GetPos(popup: dict<any>): dict<any>
+	var dict = {
+		col: popup.col,
+		line: popup.line,
+		width: popup.width,
+		height: popup.height,
+	}
+	return dict
+enddef
+
+export def SetPos(popup: dict<any>, col: number = 0, line: number = 0)
+	if col != 0
+		popup.col = col
+	endif
+	if line != 0
+		popup.line = line
+	endif
+
+	if has_key(all_popups, popup.wid)
+		popup_move(popup.wid, {
+			col: popup.col,
+			line: popup.line,
+		})
+	endif
+enddef
+
+export def SetSize(popup: dict<any>, width: number = -1, height: number = -1)
+	if width != -1
+		popup.width = width
+	endif
+	if height != -1
+		popup.height = height
+	endif
+
+	popup_move(popup.wid, {
+		minwidth: popup.width,
+		minheight: popup.height,
+		maxwidth: popup.maxwidth,
+		maxheight: popup.maxheight,
+	})
+enddef
+
+export def GetSize(popup: dict<any>): list<number>
+	var res = [0, 0] # width and height
+	if has_key(all_popups, popup.wid)
+		var options = popup_getpos(popup.wid)
+		res[0] = options.width
+		res[1] = options.height
+	endif
+	return res
+enddef
 
 export def Close(popup: dict<any>)
 	if has_key(all_popups, popup.wid)
@@ -353,6 +404,73 @@ export def RemoveEventKeyPressedNoFocus(popup: dict<any>, Func: func): void
 	remove(popup.cb_keypressed_nofocus, Func)
 enddef
 
+#############################################################################
+# Entry Popup 
+#############################################################################
+
+# Add a function to the select event of the selector popup.
+export def AddEventSelectorMove(popup: dict<any>, Func: func): func
+	add(popup.cb_selector_move, Func)
+	return Func
+enddef
+
+export def AddEventSelectorSelect(popup: dict<any>, Func: func): func
+	add(popup.cb_selector_select, Func)
+	return Func
+enddef
+
+export def Selector(options: dict<any>, values: list<string>): dict<any>
+	options.type = 'selector'
+	options.cb_selector_move = []
+	options.cb_selector_select = []
+	options.cursorline = 1
+	var simple = Simple(options)
+	SetSize(simple, simple.width, len(values))
+	SetText(simple, values)
+
+
+	AddEventFilterNoFocus(simple, (popup, wid, key) => {
+		var buf = winbufnr(popup.wid)
+		if key ==? "\<Up>"
+			win_execute(popup.wid, 'norm! k')
+			var cursorlinepos = line('.', wid)
+			var linetext = getbufline(buf, cursorlinepos, cursorlinepos)[0]
+			for Func in popup.cb_selector_move
+				Func(linetext)
+			endfor
+			return BLOCK
+		elseif key ==? "\<Down>"
+			win_execute(popup.wid, 'norm! j')
+			var cursorlinepos = line('.', wid)
+			var linetext = getbufline(buf, cursorlinepos, cursorlinepos)[0]
+			for Func in popup.cb_selector_move
+				Func(linetext)
+			endfor
+			return BLOCK
+		elseif key == "\<Enter>" || key ==? "\<CR>"
+			var cursorlinepos = line('.', wid)
+			var linetext = getbufline(buf, cursorlinepos, cursorlinepos)[0]
+			for Func in popup.cb_selector_select
+				Func(linetext)
+			endfor
+			return BLOCK
+		elseif key ==? "\<LeftMouse>" || key ==? "\<2-LeftMouse>"
+			var mousepos = getmousepos()
+			if mousepos.winid == wid
+				win_execute(wid, 'norm! ' .. mousepos.line .. 'G')
+				var cursorlinepos = line('.', wid)
+				var linetext = getbufline(buf, cursorlinepos, cursorlinepos)[0]
+				for Func in popup.cb_selector_select
+					Func(linetext)
+				endfor
+			endif
+			return BLOCK
+		endif
+		return CONTINUE 
+	})
+
+	return simple
+enddef
 
 #############################################################################
 # Base Popup 
@@ -364,9 +482,11 @@ export def Simple(options: dict<any>): dict<any>
 		col: 0,
 		line: 0,
 		width: 4,
-		maxwidth: 0,
-		maxheight: 0,
 		height: 1,
+		maxwidth: 999,
+		maxheight: 999,
+		cursorline: 0, # The line where the cursor is located
+		scrollbar: 0, # 0: no scrollbar, 1: scrollbar
 		wid: 0,
 		type: 'simple',
 		close_key: ["\<Esc>", "\<C-c>"], # List of keys to close the popup
@@ -403,7 +523,8 @@ export def Simple(options: dict<any>): dict<any>
 		padding: [0, 1, 0, 1],
 		mapping: 0,
 		fixed: 1,
-		scrollbar: 1,
+		cursorline: supradict.cursorline,
+		scrollbar: supradict.scrollbar,
 		hidden: 0,
 		filter: FilterSimple, 
 		callback: (wid, _) => {
@@ -435,6 +556,7 @@ export def Simple(options: dict<any>): dict<any>
 	AddEventFilterNoFocus(supradict, (popup, _, key) => {
 		for k in popup.close_key
 			if key ==? k
+				feedkeys("\<Esc>", 'n')
 				popup_close(wid)
 			endif
 		endfor
