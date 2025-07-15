@@ -60,6 +60,7 @@ namespace Cfg {
 			for (int i = 0; i < 4; ++i) 
 				line.data[index_collon[i]] = '\0';
 			unowned string name = line.offset (0);
+			unowned string type = line.offset (index_collon[0] + 1);
 			unowned string file = line.offset (index_collon[1] + 1);
 			unowned string value = line.offset (index_collon[2] + 1);
 			unowned string? comment;
@@ -67,8 +68,13 @@ namespace Cfg {
 				comment = null;
 			else
 				comment = line.offset (index_collon[3] + 3);
-			// NOTE I dont know why it work but it does
-			var opt_type = OptionType.BOOLEAN;
+
+			var opt_type = OptionType.from_name (type);
+			// Remove quotes
+			if (opt_type == STRING) {
+				value = value.offset(1);
+				value.data[value.length - 1] = '\0';
+			}
 
 			if ((file in table) == false) {
 				string file_contents;
@@ -84,7 +90,7 @@ namespace Cfg {
 			FileUtils.get_contents (rc_path, out file_contents);
 			table[rc_path] = new StringBuilder (file_contents);
 		}
-		add_your_config (contents, table[rc_path].str);
+		add_your_config (contents, table[rc_path]);
 
 		// Write the contents of each file
 		foreach (unowned var file in table.get_keys_as_array ()) {
@@ -92,24 +98,20 @@ namespace Cfg {
 		}
 	}
 
-	private string add_your_config (string contents, string file_contents) {
-		StringBuilder bs = new StringBuilder.sized (2048);
+	private void add_your_config (string contents, StringBuilder sb) {
 		// remove old yourconfig in ~/.vimrc (file_contents)
-		var idx = file_contents.last_index_of ("#====================== YOUR CONFIG =======================");
+		var idx = sb.str.last_index_of ("#====================== YOUR CONFIG =======================");
 		if (idx != -1)
-			bs.append_len (file_contents, idx);
-		else 
-			bs.append (file_contents);
+			sb.len = idx;
 		// get the contents of __YOUR_CONFIG__ in cfg_fpath
 		idx = contents.index_of ("__YOUR_CONFIG__");
 		unowned string ptr = contents.offset (idx + 16);
-		bs.append ("#====================== YOUR CONFIG =======================\n");
+		sb.append ("#====================== YOUR CONFIG =======================\n");
 		if (ptr != "") {
-			bs.append (ptr);
-			bs.append_c ('\n');
+			sb.append (ptr);
+			sb.append_c ('\n');
 		}
-		bs.append ("#==========================================================\n");
-		return (owned)bs.str;
+		sb.append ("#==========================================================\n");
 	}
 
 }

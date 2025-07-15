@@ -5,7 +5,20 @@ public errordomain ErrorQuote {
 public enum OptionType {
 	STRING,
 	NUMBER,
-	BOOLEAN
+	BOOLEAN;
+
+	public static OptionType from_name (string name) {
+		switch (name) {
+			case "string":
+				return STRING;
+			case "number":
+				return NUMBER;
+			case "boolean":
+				return BOOLEAN;
+			default:
+				return BOOLEAN;
+		}
+	}
 }
 
 public class Element {
