@@ -639,6 +639,7 @@ enddef
 au BufEnter * OpenNewFile()
 
 # ----------------- AIR LINE ------------------"
+g:airline#extensions#whitespace#enabled = 0
 g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
 if expand('%:e') == ''
 	g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
