@@ -440,7 +440,6 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 		for file in lst
 			if filereadable(file)
 				exec 'source ' .. file
-				echom 'source ' .. file
 			endif
 		endfor
 	elseif (stridx(msg, 'LspGetServer') == 0)
@@ -494,19 +493,30 @@ var notification_timer: number
 var notification_id: number
 
 def FinishInstall(success: bool, error_text: string = '')
+	# Vala is too speedy, so we need to wait a bit
+	if notification_timer == 0
+		timer_start(100, (_) => {
+			FinishInstall(success, error_text)
+		})
+		return
+	endif
+	timer_stop(notification_timer)
 	if success
 		Notify.SetText(notification_id, ["Installation finished successfully!"])
 		Notify.ChangeType(notification_id, 'success')
+		timer_start(2000, (_) => {
+			Notify.Close(notification_id)
+			call lsp#activate()
+		})
 	else
 		var error_msg = "Installation failed: " .. error_text
+		error_msg = substitute(error_msg, '\r', '\n', 'g')
 		Notify.SetText(notification_id, [error_msg])
 		Notify.ChangeType(notification_id, 'error')
+		timer_start(8000, (_) => {
+			Notify.Close(notification_id)
+		})
 	endif
-	timer_stop(notification_timer)
-	timer_start(2000, (_) => {
-		Notify.Close(notification_id)
-		call lsp#activate()
-	}, {'repeat': 1})
 enddef
 
 def GetChoice(choice: string, package_name: string = '')
@@ -839,9 +849,9 @@ enddef
 # Welcome --------------------------------------
 
 def Welcome()
-	redraw!
-	var timer = timer_start(100, (_) => {
+	var timer = timer_start(50, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
+		redraw!
 	})
 	if g:sp_fold
 		set foldmethod=manual

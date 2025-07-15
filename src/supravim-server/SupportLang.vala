@@ -33,7 +33,7 @@ public class SupportLang {
 	}
 
 
-	public static void install_package (string package_name) {
+	public static bool install_package (string package_name) {
 		foreach (var support in SupportLang.all_packages) {
 			if (support.package_name == package_name) {
 				string dev_null;
@@ -46,6 +46,7 @@ public class SupportLang {
 				break;
 			}
 		}
+		return true;
 	}
 
 
