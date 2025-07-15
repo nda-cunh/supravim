@@ -777,7 +777,7 @@ autocmd BufEnter * call Init_menu()
 def Init_menu()
 	vmenu PopUp.Copy			y
 	vmenu PopUp.Cut				d
-	vmenu PopUp.Past			p
+	vmenu PopUp.Paste			p
 	vmenu PopUp.Select\ All		<esc>gg<s-v>G
 	if g:sp_fold
 		vmenu PopUp.Fold			zf
@@ -792,7 +792,7 @@ def Init_menu()
 	nmenu PopUp.Switch\ Norm		<F3>
 	nmenu PopUp.-sep0- <Nop>
 	nmenu PopUp.Select\ All		<esc>gg<s-v>G
-	nmenu PopUp.Past			p
+	nmenu PopUp.Paste			p
 	nmenu PopUp.Undo			u
 	nmenu PopUp.Redo			<C-r>
 	nmenu PopUp.-sep2- <Nop>
