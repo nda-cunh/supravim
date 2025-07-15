@@ -120,33 +120,20 @@ public void getInputRaw (string message) {
 		message.scanf ("Install: %s %s", buffer1, buffer2);
 		unowned string lsp_name = (string)buffer1;
 		unowned string package_name = (string)buffer2;
-		if (lsp_name != "null")
-		{
-			foreach (var lsp in LspServer.all_servers) {
-				if (lsp.name == lsp_name) {
-					string dev_null;
-					int wait_status;
-					var npm = Environment.find_program_in_path ("npm");
-					if (npm == null && lsp.command_help.has_prefix ("npm "))  {
-						print ("InstallError: npm is not installed, please install it to use this LSP\n");
-					}
-					else {
-						Process.spawn_command_line_sync (lsp.command_help, out dev_null, out dev_null, out wait_status);
-						if (wait_status != 0) {
-							print ("InstallError: %s\n", lsp.command_help);
-						}
-						else {
-							unowned string? lsp_str = LspServer.get_from_lsp (lsp);
-							print ("LspGetServer@#@%s\n", lsp_str);
-						}
-					}
-				}
-			}
+
+		try {
+			// Install the LSP if is not null
+			if (lsp_name != "null")
+				LspServer.install_lsp(lsp_name);
+			// Install the package if is not null
+			if (package_name != "null")
+				SupportLang.install_package (package_name);
+			print ("FinishInstall\n");
 		}
-		if (package_name != "null") {
-			SupportLang.install_package (package_name);
+		catch (Error e) {
+			print ("InstallError: %s\n", e.message);
+			return;
 		}
-		print ("FinishInstall\n");
 	}
 }
 

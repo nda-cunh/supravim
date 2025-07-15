@@ -157,6 +157,13 @@ def OpenNotification(msg: list<string>, opts: dict<any> = {}): number
 			},
 		}
 	)
+	var buf = winbufnr(popup)
+	setbufvar(buf, '&buflisted', 0)
+    setbufvar(buf, '&modeline', 0)
+    setbufvar(buf, '&buftype', 'nofile')
+    setbufvar(buf, '&swapfile', 0)
+    setbufvar(buf, '&undolevels', -1)
+	setbufvar(buf, '&filetype', 'markdown')
 	
 	# Add the Event handler for left click
 	var Leftclick = null_function
@@ -252,13 +259,6 @@ export def SetText(wid: number, text: list<string>)
 		endfor
 	endfor
 
-	const max_width = 50
-	var futur_width = 30
-	for line in text_without_nl
-		if strcharlen(line) > futur_width
-			futur_width = strcharlen(line)
-		endif
-	endfor
 	var pos = popup_getpos(wid)
 	if pos == {}
 		return
@@ -266,8 +266,8 @@ export def SetText(wid: number, text: list<string>)
 	if popup_wins[wid].is_closed == true
 		return
 	endif
-	popup_setoptions(wid, {maxwidth: futur_width, width: futur_width, minwidth: futur_width})
 
+	const max_width = 50
 	var new_msg = []
 	var width = pos.width
 	for line in text_without_nl
@@ -299,6 +299,13 @@ export def SetText(wid: number, text: list<string>)
 			add(new_msg, str)
 		endif
 	endfor
+	var futur_width = 30
+	for line in new_msg 
+		if strcharlen(line) > futur_width
+			futur_width = strcharlen(line)
+		endif
+	endfor
+	popup_setoptions(wid, {maxwidth: futur_width, width: futur_width, minwidth: futur_width})
 	call popup_settext(wid, new_msg)
 enddef
 
