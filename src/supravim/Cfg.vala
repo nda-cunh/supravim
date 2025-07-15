@@ -43,7 +43,7 @@ namespace Cfg {
 		FileUtils.get_contents (cfg_fpath, out contents);
 
 		var lines = contents.split ("\n");
-		var table = new HashTable<string, string> (str_hash, str_equal);
+		var table = new HashTable<string, StringBuilder> (str_hash, str_equal);
 
 		foreach (unowned string line in lines) {
 			if (line == "")
@@ -73,22 +73,22 @@ namespace Cfg {
 			if ((file in table) == false) {
 				string file_contents;
 				FileUtils.get_contents (file, out file_contents);
-				table[file] = file_contents;
+				table[file] = new StringBuilder (file_contents);
 			}
-			table[file] = Modificator.update_value_with_contents (name, value, opt_type, comment, table[file]);
+			Modificator.update_value_with_contents (name, value, opt_type, comment, table[file]);
 		}
 
 		// Open ~/.vimrc if is not already opened
 		if ((rc_path in table) == false) {
 			string file_contents;
 			FileUtils.get_contents (rc_path, out file_contents);
-			table[rc_path] = file_contents;
+			table[rc_path] = new StringBuilder (file_contents);
 		}
-		table[rc_path] = add_your_config (contents, table[rc_path]);
+		add_your_config (contents, table[rc_path].str);
 
 		// Write the contents of each file
 		foreach (unowned var file in table.get_keys_as_array ()) {
-			FileUtils.set_contents (file, table[file]);
+			FileUtils.set_contents (file, table[file].str);
 		}
 	}
 

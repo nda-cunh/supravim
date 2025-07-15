@@ -106,34 +106,41 @@ namespace Modificator {
 	public void update_value (string name, string new_value, string filename, OptionType type, string? comment) throws Error {
 		string contents;
 		FileUtils.get_contents (filename, out contents);
-		contents = update_value_with_contents(name, new_value, type, comment, contents);
-		FileUtils.set_contents(filename, contents);
+		var sb = new StringBuilder(contents);
+		update_value_with_contents(name, new_value, type, comment, sb);
+		FileUtils.set_contents(filename, sb.str);
 	}
 
-	public string update_value_with_contents (string name, string new_value, OptionType type, string? comment, string contents) throws Error {
-		// Regex to match the option line
-		var opt_regex = new Regex(@"^g:sp_$(name).+?\n", RegexCompileFlags.MULTILINE);
+	public void update_value_with_contents (string name, string new_value, OptionType type, string? comment, StringBuilder sb) {
+		// PERF only for optimization use stack instead heap
+		uint8 buffer[128];
+		Utils.sprintf (buffer, "\ng:sp_%s = ", name);
+		unowned string str_find = (string) buffer;
+	
+		// Find the line that starts with "g:sp_name = "
+		var idx = sb.str.index_of (str_find);
 
-		// Construct new line with the value
-		string replacement;
+		if (idx == -1) {
+			warning ("%s: option line not found [%s]", name, str_find);
+			return ;
+		}
+		++idx;
+		// unowned string ptr = contents.offset(idx);
+		var idx_end = sb.str.index_of_char('\n', idx);
+
+		sb.erase (idx, idx_end - idx + 1);
 		if (type == STRING) {
 			if (comment != null)
-				replacement = @"g:sp_$(name) = \"$new_value\"\t# $(comment)\n";
+				Utils.sprintf (buffer, "\ng:sp_%s = \"%s\"\t# %s", name, new_value, comment);
 			else
-				replacement = @"g:sp_$(name) = \"$new_value\"\n";
+				Utils.sprintf (buffer, "\ng:sp_%s = \"%s\"", name, new_value);
 		}
 		else {
 			if (comment != null)
-				replacement = @"g:sp_$(name) = $new_value\t# $(comment)\n";
+				Utils.sprintf (buffer, "\ng:sp_%s = %s\t# %s", name, new_value, comment);
 			else
-				replacement = @"g:sp_$(name) = $new_value\n";
+				Utils.sprintf (buffer, "\ng:sp_%s = %s", name, new_value);
 		}
-		try {
-			contents = opt_regex.replace(contents, -1, 0, replacement, 0);
-		}
-		catch (RegexError e) {
-			warning("%s\n", e.message);
-		}
-		return contents;
+		sb.insert (idx - 1, str_find);
 	}
 }
