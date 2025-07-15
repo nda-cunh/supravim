@@ -39,13 +39,12 @@ namespace Plugin {
 				(?<name>\S+)""", RegexCompileFlags.EXTENDED);
 		string	[]result = contents.split ("\n");
 		for (int i = 0; i < result.length; i++) {
-			string	tmp = result[i];
 			if (result[i].index_of (url) != -1) {
-				if (regex.match (tmp, 0, out info)) {
+				if (regex.match (result[i], 0, out info)) {
 					var actual_url = info.fetch_named("url");
 					var name = info.fetch_named ("name");
 					if (url != actual_url)
-						new_contents.append (tmp);
+						new_contents.append (result[i]);
 					else {
 						int	wait;
 						Process.spawn_command_line_sync (@"rm -rf $HOME/.vim/bundle/$name", null, null, out wait);
@@ -54,8 +53,12 @@ namespace Plugin {
 					}
 				}
 			}
-			else
-				new_contents.append (tmp);
+			else {
+				if (result[i][0] != '\0' && result[i][result[i].length - 1] != '\n')
+					new_contents.append (@"$(result[i])\n");
+				else if (result[i][0] != '\0')
+					new_contents.append (result[i]);			
+			}
 		}
 		FileUtils.set_contents (filename, new_contents.str);
 		return true;
@@ -84,22 +87,27 @@ namespace Plugin {
 				(?<name>\S+)""", RegexCompileFlags.EXTENDED);
 		string	[]result = contents.split ("\n");
 		for (int i = 0; i < result.length; i++) {
-			string	tmp = result[i];
 			if (result[i].index_of (url) != -1) {
-				if (regex.match (tmp, 0, out info)) {
+				if (regex.match (result[i], 0, out info)) {
 					var actual_status = info.fetch_named ("status");
 					var actual_url = info.fetch_named ("url");
 					var name = info.fetch_named ("name");
 					if (url == actual_url) {
 						if (actual_status == old_status)
 							new_contents.append (@"$new_status $url $name\n");
+						else if (result[i][result[i].length - 1] != '\n')
+							new_contents.append (@"$(result[i])\n");
 						else
-							new_contents.append (tmp);
+							new_contents.append (result[i]);
 					}
 				}
 			}
-			else
-				new_contents.append (tmp);
+			else {
+				if (result[i][0] != '\0' && result[i][result[i].length - 1] != '\n')
+						new_contents.append (@"$(result[i])\n");
+				else if (result[i][0] != '\0')
+					new_contents.append (result[i]);
+			}
 		}
 		FileUtils.set_contents (filename, new_contents.str);
 		return true;
