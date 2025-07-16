@@ -19,6 +19,7 @@ public class Main {
 	private static bool is_uninstall = false;
 	private static bool print_opts = false;
 	private static bool print_themes = false;
+	private static bool list_plugin = false;
 	private static string? theme = null;
 	private static string? add_plugin = null;
 	private static string? remove_plugin = null;
@@ -34,6 +35,7 @@ public class Main {
 		{ "version", 'v',		NONE, 		NONE,			ref is_version,		"Give your supravim version",				null },
 		{ "update", '\0',		NONE, 		NONE,			ref is_update,		"Update supravim",							null },
 		{ "uninstall", '\0',	NONE, 		NONE,			ref is_uninstall,	"Uninstall supravim",						null },
+		{ "list-plugin", '\0',	NONE, 		NONE,			ref list_plugin,	"List plugin.",								null },
 		{ "theme", 't',			NONE, 		STRING,			ref theme,			"Set theme.",								null },
 		{ "add-plugin", '\0',	NONE, 		STRING,			ref add_plugin,		"Add plugin.",								null },
 		{ "remove-plugin", '\0',NONE, 		STRING,			ref remove_plugin,	"Remove plugin.",							null },
@@ -107,6 +109,8 @@ public class Main {
 			return Plugin.enable_disable (disable_plugin, false);
 		if (update_plugin != null)
 			return Plugin.update (update_plugin);
+		if (list_plugin)
+			return Plugin.list ();
 		return true;
 	}
 
