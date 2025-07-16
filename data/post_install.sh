@@ -35,6 +35,7 @@ main() {
 	$PKGDIR/bin/supravim --apply-config 2>/dev/null | true
 	print_ascii
 	create_folder_undo
+	git config --global core.editor "vim" | true
 }
 
 main
