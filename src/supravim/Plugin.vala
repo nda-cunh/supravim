@@ -21,7 +21,7 @@ namespace Plugin {
 		return true;
 	}
 
-	public bool remove (string url) throws Error {
+	public bool remove (string name) throws Error {
 		string contents; 
 		string filename = Environment.get_user_config_dir () + "/supravim.cfg";
 		try {
@@ -34,20 +34,23 @@ namespace Plugin {
 		var new_contents = new StringBuilder();
 		var regex = new Regex ("""(E|D)
 				[ ]
-				(?<url>\S+)
+				\S+
 				[ ]
 				(?<name>\S+)""", RegexCompileFlags.EXTENDED);
 		string	[]result = contents.split ("\n");
 		for (int i = 0; i < result.length; i++) {
-			if (result[i].index_of (url) != -1) {
+			if (result[i].index_of (name) != -1) {
 				if (regex.match (result[i], 0, out info)) {
-					var actual_url = info.fetch_named("url");
-					var name = info.fetch_named ("name");
-					if (url != actual_url)
-						new_contents.append (result[i]);
+					var actual_name = info.fetch_named ("name");
+					if (name != actual_name) {
+						if (result[i][0] != '\0' && result[i][result[i].length - 1] != '\n')
+							new_contents.append (@"$(result[i])\n");
+						else if (result[i][0] != '\0')
+							new_contents.append (result[i]);
+					}
 					else {
 						int	wait;
-						Process.spawn_command_line_sync (@"rm -rf $HOME/.vim/bundle/$name", null, null, out wait);
+						Process.spawn_command_line_sync (@"rm -rf $HOME/.vim/bundle/$actual_name", null, null, out wait);
 						if (wait != 0)
 							throw new SpawnError.FAILED("git return %d", wait);
 					}
@@ -57,14 +60,14 @@ namespace Plugin {
 				if (result[i][0] != '\0' && result[i][result[i].length - 1] != '\n')
 					new_contents.append (@"$(result[i])\n");
 				else if (result[i][0] != '\0')
-					new_contents.append (result[i]);			
+					new_contents.append (result[i]);
 			}
 		}
 		FileUtils.set_contents (filename, new_contents.str);
 		return true;
 	}
 
-	public bool enable_disable(string url, bool enable) throws Error {
+	public bool enable_disable(string name, bool enable) throws Error {
 		string new_status = "D", old_status = "E";
 		if (enable) {
 			new_status = "E";
@@ -87,14 +90,14 @@ namespace Plugin {
 				(?<name>\S+)""", RegexCompileFlags.EXTENDED);
 		string	[]result = contents.split ("\n");
 		for (int i = 0; i < result.length; i++) {
-			if (result[i].index_of (url) != -1) {
+			if (result[i].index_of (name) != -1) {
 				if (regex.match (result[i], 0, out info)) {
 					var actual_status = info.fetch_named ("status");
 					var actual_url = info.fetch_named ("url");
-					var name = info.fetch_named ("name");
-					if (url == actual_url) {
+					var actual_name = info.fetch_named ("name");
+					if (name == actual_name) {
 						if (actual_status == old_status)
-							new_contents.append (@"$new_status $url $name\n");
+							new_contents.append (@"$new_status $actual_url $name\n");
 						else if (result[i][result[i].length - 1] != '\n')
 							new_contents.append (@"$(result[i])\n");
 						else
