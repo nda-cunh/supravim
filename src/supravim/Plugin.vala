@@ -115,4 +115,36 @@ namespace Plugin {
 		FileUtils.set_contents (filename, new_contents.str);
 		return true;
 	}
+
+	public bool update(string name) throws Error {
+		string contents;
+		string filename = Environment.get_user_config_dir () + "/supravim.cfg";
+		try {
+			FileUtils.get_contents (filename, out contents);
+		}
+		catch (Error e) {
+			contents = "";
+		}
+		MatchInfo	info;
+		var regex = new Regex ("""(E|D)
+				[ ]
+				\S+
+				[ ]
+				(?<name>\S+)""", RegexCompileFlags.EXTENDED);
+		string	[]result = contents.split ("\n");
+		for (int i = 0; i < result.length; i++) {
+			if (result[i].index_of (name) != -1) {
+				if (regex.match (result[i], 0, out info)) {
+					var actual_name = info.fetch_named ("name");
+					if (actual_name == name) {
+						int	wait;
+						Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$name pull", null, null, out wait);
+						if (wait != 0)
+							throw new SpawnError.FAILED("git return %d", wait);
+					}
+				}
+			}
+		}
+		return true;
+	}
 }
