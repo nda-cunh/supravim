@@ -510,7 +510,6 @@ export def Simple(options: dict<any>): dict<any>
 		minheight: supradict.height,
 		maxwidth: supradict.maxwidth,
 		maxheight: supradict.height,
-		pos: 'topright',
 		time: 90000,
 		tabpage: -1,
 		zindex: 300,
@@ -604,15 +603,3 @@ def FilterSimple(wid: number, key: string): number
 	endfor
 	return 0
 enddef
-
-
-
-
-
-
-
-
-
-
-
-
