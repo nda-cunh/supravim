@@ -77,8 +77,8 @@ nnoremap <F6>		<ScriptCmd>call Make("run2")<CR>
 inoremap <F6>		<ScriptCmd>call Make("run2")<CR>
 nnoremap <F7> 		<ScriptCmd>call Make("run3")<CR>
 inoremap <F7>		<ScriptCmd>call Make("run3")<CR>
-nnoremap <leader>v		:vs 
-nnoremap <leader>s		:split 
+nnoremap <leader>v		:vs<cr>
+nnoremap <leader>s		:split<cr>
 nnoremap <S-Right>	<C-w><Right>
 nnoremap <S-Left>	<C-w><Left>
 nnoremap <S-Up>		<C-w><Up>
@@ -639,6 +639,9 @@ var supravim_server = job_start(["supravim-server", project_root], {
 })
 
 def OpenNewFile()
+	if &buftype == '' 
+		return
+	endif
 	var filetype = &filetype
 	if filetype == ''
 		filetype = expand('%:e')
