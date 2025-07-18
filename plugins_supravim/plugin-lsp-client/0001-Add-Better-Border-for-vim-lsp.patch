@@ -1,0 +1,48 @@
+From 368dde86280f308b5abe469300dd9317ec34e5cb Mon Sep 17 00:00:00 2001
+From: nda-cunh <hydraldev@gmail.com>
+Date: Thu, 17 Jul 2025 00:08:27 +0200
+Subject: [PATCH] Add Better Border for vim-lsp
+
+---
+ autoload/vital/_lsp/VS/Vim/Window/FloatingWindow.vim | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/autoload/vital/_lsp/VS/Vim/Window/FloatingWindow.vim b/autoload/vital/_lsp/VS/Vim/Window/FloatingWindow.vim
+index fa1f888..0400a28 100644
+--- a/autoload/vital/_lsp/VS/Vim/Window/FloatingWindow.vim
++++ b/autoload/vital/_lsp/VS/Vim/Window/FloatingWindow.vim
+@@ -411,6 +411,7 @@ else
+     \   'padding': [0, 0, 0, 0],
+     \   'border': has_key(l:style, 'border') ? [1, 1, 1, 1] : [0, 0, 0, 0],
+     \   'borderchars': get(l:style, 'border', []),
++	\   'highlight': 'Normal',
+     \   'fixed': v:true,
+     \ }
+   endfunction
+@@ -455,9 +456,9 @@ if has('nvim')
+     if !empty(l:border)
+       if type(l:border) != type([])
+         if &ambiwidth ==# 'single'
+-          let a:style.border = ['┌', '─', '┐', '│', '┘', '─', '└', '│']
++          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+         else
+-          let a:style.border = ['+', '-', '+', '|', '+', '-', '+', '|']
++          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+         endif
+       endif
+     elseif has_key(a:style, 'border')
+@@ -471,9 +472,9 @@ else
+     if !empty(get(a:style, 'border', v:null))
+       if type(l:border) != type([])
+         if &ambiwidth ==# 'single'
+-          let a:style.border = ['─', '│', '─', '│', '┌', '┐', '┘', '└']
++          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+         else
+-          let a:style.border = ['-', '|', '-', '|', '+', '+', '+', '+']
++          let a:style.border = ['─', '│', '─', '│', '╭', '╮', '╯', '╰']
+         endif
+       else
+         " Emulate nvim behavior for lists of 1/2/4 elements
+-- 
+2.34.1
+
