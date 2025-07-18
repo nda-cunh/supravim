@@ -13,12 +13,15 @@ source=(
 	'vim-vsnip-integ::git+https://github.com/hrsh7th/vim-vsnip-integ.git'
 	'vim-lsp.vim'
 	'0001-Use-echoerr-instead-of-echom.patch'
+	'0001-Add-Better-Border-for-vim-lsp.patch'
 )
 
 prepare() {
 	cp "$srcdir/0001-Use-echoerr-instead-of-echom.patch" "$srcdir/vim-lsp/"
+	cp "$srcdir/0001-Add-Better-Border-for-vim-lsp.patch" "$srcdir/vim-lsp/"
 	pushd "$srcdir/vim-lsp"
 		git apply "0001-Use-echoerr-instead-of-echom.patch"
+		git apply "0001-Add-Better-Border-for-vim-lsp.patch"
 	popd
 	rm -rf $srcdir/*/.git
 	rm -rf $srcdir/*/.vimrc
