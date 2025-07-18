@@ -1,0 +1,51 @@
+From 31f01977e87649efe6aa8e34a56da6cd7b9ca938 Mon Sep 17 00:00:00 2001
+From: nda-cunh <hydraldev@gmail.com>
+Date: Sat, 19 Jul 2025 01:08:53 +0200
+Subject: [PATCH] add other nerdfont icons
+
+---
+ plugin/webdevicons.vim | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/plugin/webdevicons.vim b/plugin/webdevicons.vim
+index 596ec68..ca3f336 100644
+--- a/plugin/webdevicons.vim
++++ b/plugin/webdevicons.vim
+@@ -217,7 +217,8 @@ function! s:setDictionaries()
+         \ 'cc'       : '',
+         \ 'cp'       : '',
+         \ 'c'        : '',
+-        \ 'cs'       : '',
++        \ 'blp'      : '',
++        \ 'cs'       : '󰌛',
+         \ 'h'        : '',
+         \ 'hh'       : '',
+         \ 'hpp'      : '',
+@@ -227,6 +228,7 @@ function! s:setDictionaries()
+         \ 'nix'      : '',
+         \ 'lua'      : '',
+         \ 'java'     : '',
++        \ 'vala'     : '',
+         \ 'sh'       : '',
+         \ 'fish'     : '',
+         \ 'bash'     : '',
+@@ -292,6 +294,16 @@ function! s:setDictionaries()
+   let s:file_node_exact_matches = {
+         \ 'exact-match-case-sensitive-1.txt' : '1',
+         \ 'exact-match-case-sensitive-2'     : '2',
++        \ 'a'        : '󰬈',
++        \ 'b'        : '󰬉',
++        \ 'c'        : '󰬊',
++        \ 'd'        : '󰬋',
++        \ 'e'        : '󰬌',
++        \ 'f'        : '󰬍',
++        \ 'x'        : '󰬟',
++        \ 'y'        : '󰬠',
++        \ 'z'        : '󰬡',
++        \ 'meson.build': '',
+         \ 'gruntfile.coffee'                 : '',
+         \ 'gruntfile.js'                     : '',
+         \ 'gruntfile.ls'                     : '',
+-- 
+2.34.1
+
