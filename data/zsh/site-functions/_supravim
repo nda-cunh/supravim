@@ -2,7 +2,7 @@
 
 _supravim() {
 	local -a commands
-	_arguments '1:commands:(-s --status --save-config --apply-config --update --uninstall -t --theme -e --enable -d --disable -S --set)'
+	_arguments '1:commands:(--add-plugin --apply-config -config -d --disable --disable-plugin -e --enable --enable-plugin --list-plugin --remove-plugin -S -s --save-config --set --status -t --theme --uninstall --update --update-plugin)'
 
 	case "$words[2]" in
 		-e|--enable)

@@ -49,7 +49,7 @@ def g:Water()
 
 	augroup SupraWater
 		autocmd!
-		execute ("autocmd ModeChanged,CursorMovedI,CursorMoved		<buffer> call Actualize(" .. id .. ")")
+		execute ("autocmd ModeChanged,CursorMovedI,CursorMoved,WinScrolled <buffer> call Actualize(" .. id .. ")")
 		execute ("autocmd BufLeave <buffer> local[" .. id .. "] = {}")
 		# execute ("autocmd CursorHold <buffer> call Preview(" .. id .. ")")
 		autocmd CursorMoved,CursorMovedI <buffer> call CancelMoveOneLine()
@@ -120,12 +120,18 @@ enddef
 
 def Actualize(id: number)
 	const actual_path = local.id.actual_path
-	prop_clear(1, line('$'))
+	prop_clear(line('w0'), line('w$'))
 	prop_add(1, 0, {text: 'Press ("?" or "h") for Help !   ', type: 'suprawatersort', text_align: 'right'})
 	prop_add(1, 0, {text: actual_path, type: 'suprawaterpath', text_align: 'above'})
 	prop_add(1, 0, {text: 'Sort by name ▲   |   Show .hidden', type: 'suprawatersort', text_align: 'above'})
 	var result = getbufline(id, 1, '$')
-	for i in range(1, len(result) - 1)
+	var p_begin = line('w0') - 1
+	var p_end = len(result) - 1
+	if p_end >= line('w$') 
+		p_end = line('w$')
+	endif
+
+	for i in range(p_begin, p_end)
 		if result[i] == ''
 			continue
 		endif
