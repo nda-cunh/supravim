@@ -32,7 +32,7 @@ public void getInputRaw (string message) {
 		// The Lsp is ever loaded or not exist
 		if (LspServer.lsp_is_load (filename) == true) {
 			if (possible_package != null) {
-				print ("LspInstall: Found a vim-package for color@#@%s\n", possible_package.package_name);
+				print ("LspInstall: Suprapack Found a vim-package for color (%s)@#@%s\n", possible_package.package_name, filename);
 			}
 			return;
 		}
