@@ -1,52 +1,6 @@
-" vim:fdm=marker
-" Vim Color File
-" Name:       onedark.vim
-" Maintainer: https://github.com/joshdick/onedark.vim/
-" License:    The MIT License (MIT)
-" Based On:   https://github.com/MaxSt/FlatColor/
+vim9script
 
-" Companion statusline plugin and terminal themes are included with onedark.vim:
-"  * https://github.com/joshdick/onedark.vim#lightlinevim-colorscheme
-"  * https://github.com/joshdick/onedark.vim#vim-airline-theme
-"  * https://github.com/joshdick/onedark.vim/tree/main/term
-
-" Color Reference {{{
-
-" The following colors were measured inside Atom using its built-in inspector.
-
-" +---------------------------------------------+
-" |  Color Name  |         RGB        |   Hex   |
-" |--------------+--------------------+---------|
-" | Black        | rgb(40, 44, 52)    | #282c34 |
-" |--------------+--------------------+---------|
-" | White        | rgb(171, 178, 191) | #abb2bf |
-" |--------------+--------------------+---------|
-" | Light Red    | rgb(224, 108, 117) | #e06c75 |
-" |--------------+--------------------+---------|
-" | Dark Red     | rgb(190, 80, 70)   | #be5046 |
-" |--------------+--------------------+---------|
-" | Green        | rgb(152, 195, 121) | #98c379 |
-" |--------------+--------------------+---------|
-" | Light Yellow | rgb(229, 192, 123) | #e5c07b |
-" |--------------+--------------------+---------|
-" | Dark Yellow  | rgb(209, 154, 102) | #d19a66 |
-" |--------------+--------------------+---------|
-" | Blue         | rgb(97, 175, 239)  | #61afef |
-" |--------------+--------------------+---------|
-" | Magenta      | rgb(198, 120, 221) | #c678dd |
-" |--------------+--------------------+---------|
-" | Cyan         | rgb(86, 182, 194)  | #56b6c2 |
-" |--------------+--------------------+---------|
-" | Gutter Grey  | rgb(76, 82, 99)    | #4b5263 |
-" |--------------+--------------------+---------|
-" | Comment Grey | rgb(92, 99, 112)   | #5c6370 |
-" +---------------------------------------------+
-
-" }}}
-
-" Initialization {{{
-
-highlight clear
+hi clear
 
 if exists("syntax_on")
   syntax reset
@@ -54,596 +8,388 @@ endif
 
 set t_Co=256
 
-let g:colors_name="onedark"
+g:colors_name = "onedark"
 
-" Set to "256" for 256-color terminals, or
-" set to "16" to use your terminal emulator's native colors
-" (a 16-color palette for this color scheme is available; see
-" < https://github.com/joshdick/onedark.vim/blob/main/README.md >
-" for more information.)
 if !exists("g:onedark_termcolors")
-  let g:onedark_termcolors = 256
+	g:onedark_termcolors = 256
 endif
 
-" Not all terminals support italics properly. If yours does, opt-in.
 if !exists("g:onedark_terminal_italics")
-  let g:onedark_terminal_italics = 0
+	g:onedark_terminal_italics = 0
 endif
 
-" This function is based on one from FlatColor: https://github.com/MaxSt/FlatColor/
-" Which in turn was based on one found in hemisu: https://github.com/noahfrederick/vim-hemisu/
-let s:group_colors = {} " Cache of default highlight group settings, for later reference via `onedark#extend_highlight`
-function! s:h(group, style, ...)
-  if (a:0 > 0) " Will be true if we got here from onedark#extend_highlight
-    let s:highlight = s:group_colors[a:group]
-    for style_type in ["fg", "bg", "sp"]
-      if (has_key(a:style, style_type))
-        let l:default_style = (has_key(s:highlight, style_type) ? copy(s:highlight[style_type]) : { "cterm16": "NONE", "cterm": "NONE", "gui": "NONE" })
-        let s:highlight[style_type] = extend(l:default_style, a:style[style_type])
-      endif
-    endfor
-    if (has_key(a:style, "gui"))
-      let s:highlight.gui = a:style.gui
-    endif
-    if (has_key(a:style, "cterm"))
-      let s:highlight.cterm = a:style.cterm
-    endif
-  else
-    let s:highlight = a:style
-    let s:group_colors[a:group] = s:highlight " Cache default highlight group settings
-  endif
+hi Comment guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi Constant guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi String guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi Character guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi Number guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi Boolean guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi Float guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi Identifier guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi Function guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi Statement guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Conditional guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Repeat guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Label guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Operator guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Keyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Exception guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi PreProc guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi Include guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi Define guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi Macro guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi PreCondit guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi Type guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi StorageClass guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi Structure guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi Typedef guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi Special guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi SpecialChar guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi Tag guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Delimiter guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi SpecialComment guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi Debug guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Underlined guifg=NONE guibg=NONE guisp=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline
+hi Ignore guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Error guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi Todo guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi ColorColumn guifg=NONE guibg=#2C323C guisp=NONE gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi Conceal guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Cursor guifg=#282C34 guibg=#61AFEF guisp=NONE gui=NONE ctermfg=235 ctermbg=39 cterm=NONE
+hi CursorIM guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi CursorColumn guifg=NONE guibg=#2C323C guisp=NONE gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi CursorLine guifg=NONE guibg=#2C323C guisp=NONE gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi Directory guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi DiffAdd guifg=#282C34 guibg=#98C379 guisp=NONE gui=NONE ctermfg=235 ctermbg=114 cterm=NONE
+hi DiffChange guifg=#E5C07B guibg=NONE guisp=NONE gui=underline ctermfg=180 ctermbg=NONE cterm=underline
+hi DiffDelete guifg=#282C34 guibg=#E06C75 guisp=NONE gui=NONE ctermfg=235 ctermbg=204 cterm=NONE
+hi DiffText guifg=#282C34 guibg=#E5C07B guisp=NONE gui=NONE ctermfg=235 ctermbg=180 cterm=NONE
+hi ErrorMsg guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi VertSplit guifg=#3E4452 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi Folded guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi FoldColumn guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi SignColumn guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi IncSearch guifg=#E5C07B guibg=#5C6370 guisp=NONE gui=NONE ctermfg=180 ctermbg=59 cterm=NONE
+hi LineNr guifg=#4B5263 guibg=NONE guisp=NONE gui=NONE ctermfg=238 ctermbg=NONE cterm=NONE
+hi CursorLineNr guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi MatchParen guifg=#61AFEF guibg=NONE guisp=NONE gui=underline ctermfg=39 ctermbg=NONE cterm=underline
+hi ModeMsg guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi MoreMsg guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi NonText guifg=#3B4048 guibg=NONE guisp=NONE gui=NONE ctermfg=238 ctermbg=NONE cterm=NONE
+hi Normal guifg=#ABB2BF guibg=#282C34 guisp=NONE gui=NONE ctermfg=145 ctermbg=235 cterm=NONE
+hi Pmenu guifg=#ABB2BF guibg=#3E4452 guisp=NONE gui=NONE ctermfg=145 ctermbg=237 cterm=NONE
+hi PmenuSel guifg=#2C323C guibg=#61AFEF guisp=NONE gui=NONE ctermfg=236 ctermbg=39 cterm=NONE
+hi PmenuSbar guifg=NONE guibg=#2C323C guisp=NONE gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi PmenuThumb guifg=NONE guibg=#ABB2BF guisp=NONE gui=NONE ctermfg=NONE ctermbg=145 cterm=NONE
+hi Question guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi QuickFixLine guifg=#282C34 guibg=#E5C07B guisp=NONE gui=NONE ctermfg=235 ctermbg=180 cterm=NONE
+hi Search guifg=#282C34 guibg=#E5C07B guisp=NONE gui=NONE ctermfg=235 ctermbg=180 cterm=NONE
+hi SpecialKey guifg=#3B4048 guibg=NONE guisp=NONE gui=NONE ctermfg=238 ctermbg=NONE cterm=NONE
+hi SpellBad guifg=#E06C75 guibg=NONE guisp=NONE gui=underline ctermfg=204 ctermbg=NONE cterm=underline
+hi SpellCap guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi SpellLocal guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi SpellRare guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi StatusLine guifg=#ABB2BF guibg=#2C323C guisp=NONE gui=NONE ctermfg=145 ctermbg=236 cterm=NONE
+hi StatusLineNC guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi StatusLineTerm guifg=#ABB2BF guibg=#2C323C guisp=NONE gui=NONE ctermfg=145 ctermbg=236 cterm=NONE
+hi StatusLineTermNC guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi TabLine guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi TabLineFill guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi TabLineSel guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi Terminal guifg=#ABB2BF guibg=#282C34 guisp=NONE gui=NONE ctermfg=145 ctermbg=235 cterm=NONE
+hi Title guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi Visual guifg=NONE guibg=#3E4452 guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 cterm=NONE
+hi VisualNOS guifg=NONE guibg=#3E4452 guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 cterm=NONE
+hi WarningMsg guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi WildMenu guifg=#282C34 guibg=#61AFEF guisp=NONE gui=NONE ctermfg=235 ctermbg=39 cterm=NONE
+hi debugPC guifg=NONE guibg=#3B4048 guisp=NONE gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
+hi debugBreakpoint guifg=#282C34 guibg=#E06C75 guisp=NONE gui=NONE ctermfg=235 ctermbg=204 cterm=NONE
+hi cssAttrComma guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssAttributeSelector guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi cssBraces guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi cssClassName guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi cssClassNameDot guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi cssDefinition guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssFontAttr guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi cssFontDescriptor guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssFunctionName guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi cssIdentifier guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi cssImportant guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssInclude guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi cssIncludeKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssMediaType guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi cssProp guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi cssPseudoClassId guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi cssSelectorOp guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssSelectorOp2 guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi cssTagName guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi fishKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi fishConditional guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi goDeclaration guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi goBuiltins guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi goFunctionCall guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi goVarDefs guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi goVarAssign guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi goVar guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi goConst guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi goType guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi goTypeName guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi goDeclType guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi goTypeDecl guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi htmlArg guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi htmlBold guifg=#D19A66 guibg=NONE guisp=NONE gui=bold ctermfg=173 ctermbg=NONE cterm=bold
+hi htmlBoldItalic guifg=#98C379 guibg=NONE guisp=NONE gui=bold,italic ctermfg=114 ctermbg=NONE cterm=bold,italic
+hi htmlEndTag guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi htmlH1 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlH2 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlH3 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlH4 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlH5 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlH6 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlItalic guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi htmlLink guifg=#56B6C2 guibg=NONE guisp=NONE gui=underline ctermfg=38 ctermbg=NONE cterm=underline
+hi htmlSpecialChar guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi htmlSpecialTagName guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlTag guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi htmlTagN guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlTagName guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi htmlTitle guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi javaScriptBraces guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi javaScriptFunction guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javaScriptIdentifier guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javaScriptNull guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi javaScriptNumber guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi javaScriptRequire guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi javaScriptReserved guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsArrowFunction guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsClassKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsClassMethodType guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsDocParam guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi jsDocTags guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsExport guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsExportDefault guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsExtendsKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsFrom guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsFuncCall guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi jsFunction guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsGenerator guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi jsGlobalObjects guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi jsImport guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsModuleAs guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsModuleWords guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsModules guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsNull guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi jsOperator guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsStorageClass guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsSuper guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsTemplateBraces guifg=#BE5046 guibg=NONE guisp=NONE gui=NONE ctermfg=196 ctermbg=NONE cterm=NONE
+hi jsTemplateVar guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi jsThis guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsUndefined guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi javascriptArrowFunc guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptClassExtends guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptClassKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptDocNotation guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptDocParamName guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi javascriptDocTags guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptEndColons guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi javascriptExport guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptFuncArg guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi javascriptFuncKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptIdentifier guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi javascriptImport guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi javascriptMethodName guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi javascriptObjectLabel guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi javascriptOpSymbol guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi javascriptOpSymbols guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi javascriptPropertyName guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi javascriptTemplateSB guifg=#BE5046 guibg=NONE guisp=NONE gui=NONE ctermfg=196 ctermbg=NONE cterm=NONE
+hi javascriptVariable guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi jsonCommentError guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi jsonKeyword guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsonBoolean guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi jsonNumber guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi jsonQuote guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi jsonMissingCommaError guifg=#E06C75 guibg=NONE guisp=NONE gui=reverse ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsonNoQuotesError guifg=#E06C75 guibg=NONE guisp=NONE gui=reverse ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsonNumError guifg=#E06C75 guibg=NONE guisp=NONE gui=reverse ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsonString guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi jsonStringSQError guifg=#E06C75 guibg=NONE guisp=NONE gui=reverse ctermfg=204 ctermbg=NONE cterm=NONE
+hi jsonSemicolonError guifg=#E06C75 guibg=NONE guisp=NONE gui=reverse ctermfg=204 ctermbg=NONE cterm=NONE
+hi lessVariable guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi lessAmpersandChar guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi lessClass guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi markdownBlockquote guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi markdownBold guifg=#D19A66 guibg=NONE guisp=NONE gui=bold ctermfg=173 ctermbg=NONE cterm=bold
+hi markdownBoldItalic guifg=#98C379 guibg=NONE guisp=NONE gui=bold,italic ctermfg=114 ctermbg=NONE cterm=bold,italic
+hi markdownCode guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi markdownCodeBlock guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi markdownCodeDelimiter guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi markdownH1 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownH2 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownH3 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownH4 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownH5 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownH6 guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownHeadingDelimiter guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownHeadingRule guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi markdownId guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi markdownIdDeclaration guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi markdownIdDelimiter guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi markdownItalic guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi markdownLinkDelimiter guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi markdownLinkText guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi markdownListMarker guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownOrderedListMarker guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi markdownRule guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi markdownUrl guifg=#56B6C2 guibg=NONE guisp=NONE gui=underline ctermfg=38 ctermbg=NONE cterm=underline
+hi perlFiledescRead guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi perlFunction guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi perlMatchStartEnd guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi perlMethod guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi perlPOD guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi perlSharpBang guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi perlSpecialString guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi perlStatementFiledesc guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi perlStatementFlow guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi perlStatementInclude guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi perlStatementScalar guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi perlStatementStorage guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi perlSubName guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi perlVarPlain guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi phpVarSelector guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi phpOperator guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi phpParent guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi phpMemberSelector guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi phpType guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi phpKeyword guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi phpClass guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi phpUseClass guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi phpUseAlias guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi phpInclude guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi phpClassExtends guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi phpDocTags guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi phpFunction guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi phpFunctions guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi phpMethodsVar guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi phpMagicConstants guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi phpSuperglobals guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi phpConstants guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi rubyBlockParameter guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyBlockParameterList guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyClass guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi rubyConstant guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi rubyControl guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi rubyEscape guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyFunction guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi rubyGlobalVariable guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyInclude guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi rubyIncluderubyGlobalVariable guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyInstanceVariable guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyInterpolation guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi rubyInterpolationDelimiter guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyInterpolationDelimiter guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi rubyRegexp guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi rubyRegexpDelimiter guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi rubyStringDelimiter guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi rubySymbol guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi sassAmpersand guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi sassClass guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi sassControl guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi sassExtend guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi sassFor guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi sassFunction guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi sassId guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi sassInclude guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi sassMedia guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi sassMediaOperators guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi sassMixin guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi sassMixinName guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi sassMixing guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi sassVariable guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi scssExtend guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi scssImport guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi scssInclude guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi scssMixin guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi scssSelectorName guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi scssVariable guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi texStatement guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi texSubscripts guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi texSuperscripts guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi texTodo guifg=#BE5046 guibg=NONE guisp=NONE gui=NONE ctermfg=196 ctermbg=NONE cterm=NONE
+hi texBeginEnd guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi texBeginEndName guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi texMathMatcher guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi texMathDelim guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi texDelimiter guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi texSpecialChar guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi texCite guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi texRefZone guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi typescriptReserved guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi typescriptEndColons guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi typescriptBraces guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi xmlAttrib guifg=#D19A66 guibg=NONE guisp=NONE gui=NONE ctermfg=173 ctermbg=NONE cterm=NONE
+hi xmlEndTag guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi xmlTag guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi xmlTagName guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi GitGutterAdd guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi GitGutterChange guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi GitGutterDelete guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi ALEError guifg=#E06C75 guibg=NONE guisp=NONE gui=underline ctermfg=204 ctermbg=NONE cterm=underline
+hi ALEWarning guifg=#E5C07B guibg=NONE guisp=NONE gui=underline ctermfg=180 ctermbg=NONE cterm=underline
+hi ALEInfo guifg=NONE guibg=NONE guisp=NONE gui=underline ctermfg=NONE ctermbg=NONE cterm=underline
+hi ALEErrorSign guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi ALEWarningSign guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi ALEInfoSign guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi EasyMotionTarget guifg=#E06C75 guibg=NONE guisp=NONE gui=bold ctermfg=204 ctermbg=NONE cterm=bold
+hi EasyMotionTarget2First guifg=#E5C07B guibg=NONE guisp=NONE gui=bold ctermfg=180 ctermbg=NONE cterm=bold
+hi EasyMotionTarget2Second guifg=#D19A66 guibg=NONE guisp=NONE gui=bold ctermfg=173 ctermbg=NONE cterm=bold
+hi EasyMotionShade guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi CocErrorSign guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi CocWarningSign guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi CocInfoSign guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi CocHintSign guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi CocFadeOut guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi NeomakeErrorSign guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi NeomakeWarningSign guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi NeomakeInfoSign guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi mkdDelimiter guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi mkdHeading guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi mkdLink guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi mkdURL guifg=#56B6C2 guibg=NONE guisp=NONE gui=underline ctermfg=38 ctermbg=NONE cterm=underline
+hi LspErrorText guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi LspWarningText guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi LspInformationText guifg=#61AFEF guibg=NONE guisp=NONE gui=NONE ctermfg=39 ctermbg=NONE cterm=NONE
+hi LspHintText guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi LspErrorHighlight guifg=#E06C75 guibg=NONE guisp=NONE gui=underline ctermfg=204 ctermbg=NONE cterm=underline
+hi LspWarningHighlight guifg=#E5C07B guibg=NONE guisp=NONE gui=underline ctermfg=180 ctermbg=NONE cterm=underline
+hi LspInformationHighlight guifg=#61AFEF guibg=NONE guisp=NONE gui=underline ctermfg=39 ctermbg=NONE cterm=underline
+hi LspHintHighlight guifg=#56B6C2 guibg=NONE guisp=NONE gui=underline ctermfg=38 ctermbg=NONE cterm=underline
+hi diffAdded guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi diffRemoved guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi gitcommitComment guifg=#5C6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
+hi gitcommitUnmerged guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi gitcommitOnBranch guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi gitcommitBranch guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
+hi gitcommitDiscardedType guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi gitcommitSelectedType guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi gitcommitHeader guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi gitcommitUntrackedFile guifg=#56B6C2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
+hi gitcommitDiscardedFile guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
+hi gitcommitSelectedFile guifg=#98C379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE
+hi gitcommitUnmergedFile guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi gitcommitFile guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi gitcommitSummary guifg=#ABB2BF guibg=NONE guisp=NONE gui=NONE ctermfg=145 ctermbg=NONE cterm=NONE
+hi gitcommitOverflow guifg=#E06C75 guibg=NONE guisp=NONE gui=NONE ctermfg=204 ctermbg=NONE cterm=NONE
 
-  if g:onedark_terminal_italics == 0
-    if has_key(s:highlight, "cterm") && s:highlight["cterm"] == "italic"
-      unlet s:highlight.cterm
-    endif
-    if has_key(s:highlight, "gui") && s:highlight["gui"] == "italic"
-      unlet s:highlight.gui
-    endif
-  endif
-
-  if g:onedark_termcolors == 16
-    let l:ctermfg = (has_key(s:highlight, "fg") ? s:highlight.fg.cterm16 : "NONE")
-    let l:ctermbg = (has_key(s:highlight, "bg") ? s:highlight.bg.cterm16 : "NONE")
-  else
-    let l:ctermfg = (has_key(s:highlight, "fg") ? s:highlight.fg.cterm : "NONE")
-    let l:ctermbg = (has_key(s:highlight, "bg") ? s:highlight.bg.cterm : "NONE")
-  endif
-
-  execute "highlight" a:group
-    \ "guifg="   (has_key(s:highlight, "fg")    ? s:highlight.fg.gui   : "NONE")
-    \ "guibg="   (has_key(s:highlight, "bg")    ? s:highlight.bg.gui   : "NONE")
-    \ "guisp="   (has_key(s:highlight, "sp")    ? s:highlight.sp.gui   : "NONE")
-    \ "gui="     (has_key(s:highlight, "gui")   ? s:highlight.gui      : "NONE")
-    \ "ctermfg=" . l:ctermfg
-    \ "ctermbg=" . l:ctermbg
-    \ "cterm="   (has_key(s:highlight, "cterm") ? s:highlight.cterm    : "NONE")
-endfunction
-
-" public {{{
-
-function! onedark#set_highlight(group, style)
-  call s:h(a:group, a:style)
-endfunction
-
-function! onedark#extend_highlight(group, style)
-  call s:h(a:group, a:style, 1)
-endfunction
-
-" }}}
-
-" }}}
-
-" Color Variables {{{
-
-let s:colors = onedark#GetColors()
-
-let s:red = s:colors.red
-let s:dark_red = s:colors.dark_red
-let s:green = s:colors.green
-let s:yellow = s:colors.yellow
-let s:dark_yellow = s:colors.dark_yellow
-let s:blue = s:colors.blue
-let s:purple = s:colors.purple
-let s:cyan = s:colors.cyan
-let s:white = s:colors.white
-let s:black = s:colors.black
-let s:foreground = s:colors.foreground
-let s:background = s:colors.background
-let s:comment_grey = s:colors.comment_grey
-let s:gutter_fg_grey = s:colors.gutter_fg_grey
-let s:cursor_grey = s:colors.cursor_grey
-let s:visual_grey = s:colors.visual_grey
-let s:menu_grey = s:colors.menu_grey
-let s:special_grey = s:colors.special_grey
-let s:vertsplit = s:colors.vertsplit
-
-" }}}
-
-" Terminal Colors {{{
-
-if has('nvim')
-  let g:terminal_color_0 = s:black.gui
-  let g:terminal_color_1 = s:red.gui
-  let g:terminal_color_2 = s:green.gui
-  let g:terminal_color_3 = s:yellow.gui
-  let g:terminal_color_4 = s:blue.gui
-  let g:terminal_color_5 = s:purple.gui
-  let g:terminal_color_6 = s:cyan.gui
-  let g:terminal_color_7 = s:comment_grey.gui
-  let g:terminal_color_8 = s:visual_grey.gui
-  let g:terminal_color_9 = s:red.gui
-  let g:terminal_color_10 = s:green.gui
-  let g:terminal_color_11 = s:yellow.gui
-  let g:terminal_color_12 = s:blue.gui
-  let g:terminal_color_13 = s:purple.gui
-  let g:terminal_color_14 = s:cyan.gui
-  let g:terminal_color_15 = s:white.gui
-else
-  let g:terminal_ansi_colors = [
-    \ s:black.gui, s:red.gui, s:green.gui, s:yellow.gui,
-    \ s:blue.gui, s:purple.gui, s:cyan.gui, s:comment_grey.gui,
-    \ s:visual_grey.gui, s:red.gui, s:green.gui, s:yellow.gui,
-    \ s:blue.gui, s:purple.gui, s:cyan.gui, s:white.gui
-  \]
-endif
-
-" }}}
-
-" Syntax Groups (descriptions and ordering from `:h w18`) {{{
-
-call s:h("Comment", { "fg": s:comment_grey, "gui": "italic", "cterm": "italic" }) " any comment
-call s:h("Constant", { "fg": s:cyan }) " any constant
-call s:h("String", { "fg": s:green }) " a string constant: "this is a string"
-call s:h("Character", { "fg": s:green }) " a character constant: 'c', '\n'
-call s:h("Number", { "fg": s:dark_yellow }) " a number constant: 234, 0xff
-call s:h("Boolean", { "fg": s:dark_yellow }) " a boolean constant: TRUE, false
-call s:h("Float", { "fg": s:dark_yellow }) " a floating point constant: 2.3e10
-call s:h("Identifier", { "fg": s:red }) " any variable name
-call s:h("Function", { "fg": s:blue }) " function name (also: methods for classes)
-call s:h("Statement", { "fg": s:purple }) " any statement
-call s:h("Conditional", { "fg": s:purple }) " if, then, else, endif, switch, etc.
-call s:h("Repeat", { "fg": s:purple }) " for, do, while, etc.
-call s:h("Label", { "fg": s:purple }) " case, default, etc.
-call s:h("Operator", { "fg": s:purple }) " sizeof", "+", "*", etc.
-call s:h("Keyword", { "fg": s:red }) " any other keyword
-call s:h("Exception", { "fg": s:purple }) " try, catch, throw
-call s:h("PreProc", { "fg": s:yellow }) " generic Preprocessor
-call s:h("Include", { "fg": s:blue }) " preprocessor #include
-call s:h("Define", { "fg": s:purple }) " preprocessor #define
-call s:h("Macro", { "fg": s:purple }) " same as Define
-call s:h("PreCondit", { "fg": s:yellow }) " preprocessor #if, #else, #endif, etc.
-call s:h("Type", { "fg": s:yellow }) " int, long, char, etc.
-call s:h("StorageClass", { "fg": s:yellow }) " static, register, volatile, etc.
-call s:h("Structure", { "fg": s:yellow }) " struct, union, enum, etc.
-call s:h("Typedef", { "fg": s:yellow }) " A typedef
-call s:h("Special", { "fg": s:blue }) " any special symbol
-call s:h("SpecialChar", { "fg": s:dark_yellow }) " special character in a constant
-call s:h("Tag", {}) " you can use CTRL-] on this
-call s:h("Delimiter", {}) " character that needs attention
-call s:h("SpecialComment", { "fg": s:comment_grey }) " special things inside a comment
-call s:h("Debug", {}) " debugging statements
-call s:h("Underlined", { "gui": "underline", "cterm": "underline" }) " text that stands out, HTML links
-call s:h("Ignore", {}) " left blank, hidden
-call s:h("Error", { "fg": s:red }) " any erroneous construct
-call s:h("Todo", { "fg": s:purple }) " anything that needs extra attention; mostly the keywords TODO FIXME and XXX
-
-" }}}
-
-" Highlighting Groups (descriptions and ordering from `:h highlight-groups`) {{{
-call s:h("ColorColumn", { "bg": s:cursor_grey }) " used for the columns set with 'colorcolumn'
-call s:h("Conceal", {}) " placeholder characters substituted for concealed text (see 'conceallevel')
-call s:h("Cursor", { "fg": s:black, "bg": s:blue }) " the character under the cursor
-call s:h("CursorIM", {}) " like Cursor, but used when in IME mode
-call s:h("CursorColumn", { "bg": s:cursor_grey }) " the screen column that the cursor is in when 'cursorcolumn' is set
-if &diff
-  " Don't change the background color in diff mode
-  call s:h("CursorLine", { "gui": "underline" }) " the screen line that the cursor is in when 'cursorline' is set
-else
-  call s:h("CursorLine", { "bg": s:cursor_grey }) " the screen line that the cursor is in when 'cursorline' is set
-endif
-call s:h("Directory", { "fg": s:blue }) " directory names (and other special names in listings)
-call s:h("DiffAdd", { "bg": s:green, "fg": s:black }) " diff mode: Added line
-call s:h("DiffChange", { "fg": s:yellow, "gui": "underline", "cterm": "underline" }) " diff mode: Changed line
-call s:h("DiffDelete", { "bg": s:red, "fg": s:black }) " diff mode: Deleted line
-call s:h("DiffText", { "bg": s:yellow, "fg": s:black }) " diff mode: Changed text within a changed line
-if get(g:, 'onedark_hide_endofbuffer', 0)
-    " If enabled, will style end-of-buffer filler lines (~) to appear to be hidden.
-    call s:h("EndOfBuffer", { "fg": s:black }) " filler lines (~) after the last line in the buffer
-endif
-call s:h("ErrorMsg", { "fg": s:red }) " error messages on the command line
-call s:h("VertSplit", { "fg": s:vertsplit }) " the column separating vertically split windows
-call s:h("Folded", { "fg": s:comment_grey }) " line used for closed folds
-call s:h("FoldColumn", {}) " 'foldcolumn'
-call s:h("SignColumn", {}) " column where signs are displayed
-call s:h("IncSearch", { "fg": s:yellow, "bg": s:comment_grey }) " 'incsearch' highlighting; also used for the text replaced with ":s///c"
-call s:h("LineNr", { "fg": s:gutter_fg_grey }) " Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
-call s:h("CursorLineNr", {}) " Like LineNr when 'cursorline' or 'relativenumber' is set for the cursor line.
-call s:h("MatchParen", { "fg": s:blue, "gui": "underline", "cterm": "underline" }) " The character under the cursor or just before it, if it is a paired bracket, and its match.
-call s:h("ModeMsg", {}) " 'showmode' message (e.g., "-- INSERT --")
-call s:h("MoreMsg", {}) " more-prompt
-call s:h("NonText", { "fg": s:special_grey }) " '~' and '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line).
-call s:h("Normal", { "fg": s:foreground, "bg": s:background }) " normal text
-call s:h("Pmenu", { "fg": s:white, "bg": s:menu_grey }) " Popup menu: normal item.
-call s:h("PmenuSel", { "fg": s:cursor_grey, "bg": s:blue }) " Popup menu: selected item.
-call s:h("PmenuSbar", { "bg": s:cursor_grey }) " Popup menu: scrollbar.
-call s:h("PmenuThumb", { "bg": s:white }) " Popup menu: Thumb of the scrollbar.
-call s:h("Question", { "fg": s:purple }) " hit-enter prompt and yes/no questions
-call s:h("QuickFixLine", { "fg": s:black, "bg": s:yellow }) " Current quickfix item in the quickfix window.
-call s:h("Search", { "fg": s:black, "bg": s:yellow }) " Last search pattern highlighting (see 'hlsearch'). Also used for similar items that need to stand out.
-call s:h("SpecialKey", { "fg": s:special_grey }) " Meta and special keys listed with ":map", also for text used to show unprintable characters in the text, 'listchars'. Generally: text that is displayed differently from what it really is.
-call s:h("SpellBad", { "fg": s:red, "gui": "underline", "cterm": "underline" }) " Word that is not recognized by the spellchecker. This will be combined with the highlighting used otherwise.
-call s:h("SpellCap", { "fg": s:dark_yellow }) " Word that should start with a capital. This will be combined with the highlighting used otherwise.
-call s:h("SpellLocal", { "fg": s:dark_yellow }) " Word that is recognized by the spellchecker as one that is used in another region. This will be combined with the highlighting used otherwise.
-call s:h("SpellRare", { "fg": s:dark_yellow }) " Word that is recognized by the spellchecker as one that is hardly ever used. spell This will be combined with the highlighting used otherwise.
-call s:h("StatusLine", { "fg": s:white, "bg": s:cursor_grey }) " status line of current window
-call s:h("StatusLineNC", { "fg": s:comment_grey }) " status lines of not-current windows Note: if this is equal to "StatusLine" Vim will use "^^^" in the status line of the current window.
-call s:h("StatusLineTerm", { "fg": s:white, "bg": s:cursor_grey }) " status line of current :terminal window
-call s:h("StatusLineTermNC", { "fg": s:comment_grey }) " status line of non-current :terminal window
-call s:h("TabLine", { "fg": s:comment_grey }) " tab pages line, not active tab page label
-call s:h("TabLineFill", {}) " tab pages line, where there are no labels
-call s:h("TabLineSel", { "fg": s:white }) " tab pages line, active tab page label
-call s:h("Terminal", { "fg": s:white, "bg": s:black }) " terminal window (see terminal-size-color)
-call s:h("Title", { "fg": s:green }) " titles for output from ":set all", ":autocmd" etc.
-call s:h("Visual", { "bg": s:visual_grey }) " Visual mode selection
-call s:h("VisualNOS", { "bg": s:visual_grey }) " Visual mode selection when vim is "Not Owning the Selection". Only X11 Gui's gui-x11 and xterm-clipboard supports this.
-call s:h("WarningMsg", { "fg": s:yellow }) " warning messages
-call s:h("WildMenu", { "fg": s:black, "bg": s:blue }) " current match in 'wildmenu' completion
-
-" }}}
-
-" Termdebug highlighting for Vim 8.1+ {{{
-
-" See `:h hl-debugPC` and `:h hl-debugBreakpoint`.
-call s:h("debugPC", { "bg": s:special_grey }) " the current position
-call s:h("debugBreakpoint", { "fg": s:black, "bg": s:red }) " a breakpoint
-
-" }}}
-
-" Language-Specific Highlighting {{{
-
-" CSS
-call s:h("cssAttrComma", { "fg": s:purple })
-call s:h("cssAttributeSelector", { "fg": s:green })
-call s:h("cssBraces", { "fg": s:white })
-call s:h("cssClassName", { "fg": s:dark_yellow })
-call s:h("cssClassNameDot", { "fg": s:dark_yellow })
-call s:h("cssDefinition", { "fg": s:purple })
-call s:h("cssFontAttr", { "fg": s:dark_yellow })
-call s:h("cssFontDescriptor", { "fg": s:purple })
-call s:h("cssFunctionName", { "fg": s:blue })
-call s:h("cssIdentifier", { "fg": s:blue })
-call s:h("cssImportant", { "fg": s:purple })
-call s:h("cssInclude", { "fg": s:white })
-call s:h("cssIncludeKeyword", { "fg": s:purple })
-call s:h("cssMediaType", { "fg": s:dark_yellow })
-call s:h("cssProp", { "fg": s:white })
-call s:h("cssPseudoClassId", { "fg": s:dark_yellow })
-call s:h("cssSelectorOp", { "fg": s:purple })
-call s:h("cssSelectorOp2", { "fg": s:purple })
-call s:h("cssTagName", { "fg": s:red })
-
-" Fish Shell
-call s:h("fishKeyword", { "fg": s:purple })
-call s:h("fishConditional", { "fg": s:purple })
-
-" Go
-call s:h("goDeclaration", { "fg": s:purple })
-call s:h("goBuiltins", { "fg": s:cyan })
-call s:h("goFunctionCall", { "fg": s:blue })
-call s:h("goVarDefs", { "fg": s:red })
-call s:h("goVarAssign", { "fg": s:red })
-call s:h("goVar", { "fg": s:purple })
-call s:h("goConst", { "fg": s:purple })
-call s:h("goType", { "fg": s:yellow })
-call s:h("goTypeName", { "fg": s:yellow })
-call s:h("goDeclType", { "fg": s:cyan })
-call s:h("goTypeDecl", { "fg": s:purple })
-
-" HTML (keep consistent with Markdown, below)
-call s:h("htmlArg", { "fg": s:dark_yellow })
-call s:h("htmlBold", { "fg": s:dark_yellow, "gui": "bold", "cterm": "bold" })
-call s:h("htmlBoldItalic", { "fg": s:green, "gui": "bold,italic", "cterm": "bold,italic" })
-call s:h("htmlEndTag", { "fg": s:white })
-call s:h("htmlH1", { "fg": s:red })
-call s:h("htmlH2", { "fg": s:red })
-call s:h("htmlH3", { "fg": s:red })
-call s:h("htmlH4", { "fg": s:red })
-call s:h("htmlH5", { "fg": s:red })
-call s:h("htmlH6", { "fg": s:red })
-call s:h("htmlItalic", { "fg": s:purple, "gui": "italic", "cterm": "italic" })
-call s:h("htmlLink", { "fg": s:cyan, "gui": "underline", "cterm": "underline" })
-call s:h("htmlSpecialChar", { "fg": s:dark_yellow })
-call s:h("htmlSpecialTagName", { "fg": s:red })
-call s:h("htmlTag", { "fg": s:white })
-call s:h("htmlTagN", { "fg": s:red })
-call s:h("htmlTagName", { "fg": s:red })
-call s:h("htmlTitle", { "fg": s:white })
-
-" JavaScript
-call s:h("javaScriptBraces", { "fg": s:white })
-call s:h("javaScriptFunction", { "fg": s:purple })
-call s:h("javaScriptIdentifier", { "fg": s:purple })
-call s:h("javaScriptNull", { "fg": s:dark_yellow })
-call s:h("javaScriptNumber", { "fg": s:dark_yellow })
-call s:h("javaScriptRequire", { "fg": s:cyan })
-call s:h("javaScriptReserved", { "fg": s:purple })
-" https://github.com/pangloss/vim-javascript
-call s:h("jsArrowFunction", { "fg": s:purple })
-call s:h("jsClassKeyword", { "fg": s:purple })
-call s:h("jsClassMethodType", { "fg": s:purple })
-call s:h("jsDocParam", { "fg": s:blue })
-call s:h("jsDocTags", { "fg": s:purple })
-call s:h("jsExport", { "fg": s:purple })
-call s:h("jsExportDefault", { "fg": s:purple })
-call s:h("jsExtendsKeyword", { "fg": s:purple })
-call s:h("jsFrom", { "fg": s:purple })
-call s:h("jsFuncCall", { "fg": s:blue })
-call s:h("jsFunction", { "fg": s:purple })
-call s:h("jsGenerator", { "fg": s:yellow })
-call s:h("jsGlobalObjects", { "fg": s:yellow })
-call s:h("jsImport", { "fg": s:purple })
-call s:h("jsModuleAs", { "fg": s:purple })
-call s:h("jsModuleWords", { "fg": s:purple })
-call s:h("jsModules", { "fg": s:purple })
-call s:h("jsNull", { "fg": s:dark_yellow })
-call s:h("jsOperator", { "fg": s:purple })
-call s:h("jsStorageClass", { "fg": s:purple })
-call s:h("jsSuper", { "fg": s:red })
-call s:h("jsTemplateBraces", { "fg": s:dark_red })
-call s:h("jsTemplateVar", { "fg": s:green })
-call s:h("jsThis", { "fg": s:red })
-call s:h("jsUndefined", { "fg": s:dark_yellow })
-" https://github.com/othree/yajs.vim
-call s:h("javascriptArrowFunc", { "fg": s:purple })
-call s:h("javascriptClassExtends", { "fg": s:purple })
-call s:h("javascriptClassKeyword", { "fg": s:purple })
-call s:h("javascriptDocNotation", { "fg": s:purple })
-call s:h("javascriptDocParamName", { "fg": s:blue })
-call s:h("javascriptDocTags", { "fg": s:purple })
-call s:h("javascriptEndColons", { "fg": s:white })
-call s:h("javascriptExport", { "fg": s:purple })
-call s:h("javascriptFuncArg", { "fg": s:white })
-call s:h("javascriptFuncKeyword", { "fg": s:purple })
-call s:h("javascriptIdentifier", { "fg": s:red })
-call s:h("javascriptImport", { "fg": s:purple })
-call s:h("javascriptMethodName", { "fg": s:white })
-call s:h("javascriptObjectLabel", { "fg": s:white })
-call s:h("javascriptOpSymbol", { "fg": s:cyan })
-call s:h("javascriptOpSymbols", { "fg": s:cyan })
-call s:h("javascriptPropertyName", { "fg": s:green })
-call s:h("javascriptTemplateSB", { "fg": s:dark_red })
-call s:h("javascriptVariable", { "fg": s:purple })
-
-" JSON
-call s:h("jsonCommentError", { "fg": s:white })
-call s:h("jsonKeyword", { "fg": s:red })
-call s:h("jsonBoolean", { "fg": s:dark_yellow })
-call s:h("jsonNumber", { "fg": s:dark_yellow })
-call s:h("jsonQuote", { "fg": s:white })
-call s:h("jsonMissingCommaError", { "fg": s:red, "gui": "reverse" })
-call s:h("jsonNoQuotesError", { "fg": s:red, "gui": "reverse" })
-call s:h("jsonNumError", { "fg": s:red, "gui": "reverse" })
-call s:h("jsonString", { "fg": s:green })
-call s:h("jsonStringSQError", { "fg": s:red, "gui": "reverse" })
-call s:h("jsonSemicolonError", { "fg": s:red, "gui": "reverse" })
-
-" LESS
-call s:h("lessVariable", { "fg": s:purple })
-call s:h("lessAmpersandChar", { "fg": s:white })
-call s:h("lessClass", { "fg": s:dark_yellow })
-
-" Markdown (keep consistent with HTML, above)
-call s:h("markdownBlockquote", { "fg": s:comment_grey })
-call s:h("markdownBold", { "fg": s:dark_yellow, "gui": "bold", "cterm": "bold" })
-call s:h("markdownBoldItalic", { "fg": s:green, "gui": "bold,italic", "cterm": "bold,italic" })
-call s:h("markdownCode", { "fg": s:green })
-call s:h("markdownCodeBlock", { "fg": s:green })
-call s:h("markdownCodeDelimiter", { "fg": s:green })
-call s:h("markdownH1", { "fg": s:red })
-call s:h("markdownH2", { "fg": s:red })
-call s:h("markdownH3", { "fg": s:red })
-call s:h("markdownH4", { "fg": s:red })
-call s:h("markdownH5", { "fg": s:red })
-call s:h("markdownH6", { "fg": s:red })
-call s:h("markdownHeadingDelimiter", { "fg": s:red })
-call s:h("markdownHeadingRule", { "fg": s:comment_grey })
-call s:h("markdownId", { "fg": s:purple })
-call s:h("markdownIdDeclaration", { "fg": s:blue })
-call s:h("markdownIdDelimiter", { "fg": s:purple })
-call s:h("markdownItalic", { "fg": s:purple, "gui": "italic", "cterm": "italic" })
-call s:h("markdownLinkDelimiter", { "fg": s:purple })
-call s:h("markdownLinkText", { "fg": s:blue })
-call s:h("markdownListMarker", { "fg": s:red })
-call s:h("markdownOrderedListMarker", { "fg": s:red })
-call s:h("markdownRule", { "fg": s:comment_grey })
-call s:h("markdownUrl", { "fg": s:cyan, "gui": "underline", "cterm": "underline" })
-
-" Perl
-call s:h("perlFiledescRead", { "fg": s:green })
-call s:h("perlFunction", { "fg": s:purple })
-call s:h("perlMatchStartEnd",{ "fg": s:blue })
-call s:h("perlMethod", { "fg": s:purple })
-call s:h("perlPOD", { "fg": s:comment_grey })
-call s:h("perlSharpBang", { "fg": s:comment_grey })
-call s:h("perlSpecialString",{ "fg": s:dark_yellow })
-call s:h("perlStatementFiledesc", { "fg": s:red })
-call s:h("perlStatementFlow",{ "fg": s:red })
-call s:h("perlStatementInclude", { "fg": s:purple })
-call s:h("perlStatementScalar",{ "fg": s:purple })
-call s:h("perlStatementStorage", { "fg": s:purple })
-call s:h("perlSubName",{ "fg": s:yellow })
-call s:h("perlVarPlain",{ "fg": s:blue })
-
-" PHP
-call s:h("phpVarSelector", { "fg": s:red })
-call s:h("phpOperator", { "fg": s:white })
-call s:h("phpParent", { "fg": s:white })
-call s:h("phpMemberSelector", { "fg": s:white })
-call s:h("phpType", { "fg": s:purple })
-call s:h("phpKeyword", { "fg": s:purple })
-call s:h("phpClass", { "fg": s:yellow })
-call s:h("phpUseClass", { "fg": s:white })
-call s:h("phpUseAlias", { "fg": s:white })
-call s:h("phpInclude", { "fg": s:purple })
-call s:h("phpClassExtends", { "fg": s:green })
-call s:h("phpDocTags", { "fg": s:white })
-call s:h("phpFunction", { "fg": s:blue })
-call s:h("phpFunctions", { "fg": s:cyan })
-call s:h("phpMethodsVar", { "fg": s:dark_yellow })
-call s:h("phpMagicConstants", { "fg": s:dark_yellow })
-call s:h("phpSuperglobals", { "fg": s:red })
-call s:h("phpConstants", { "fg": s:dark_yellow })
-
-" Ruby
-call s:h("rubyBlockParameter", { "fg": s:red})
-call s:h("rubyBlockParameterList", { "fg": s:red })
-call s:h("rubyClass", { "fg": s:purple})
-call s:h("rubyConstant", { "fg": s:yellow})
-call s:h("rubyControl", { "fg": s:purple })
-call s:h("rubyEscape", { "fg": s:red})
-call s:h("rubyFunction", { "fg": s:blue})
-call s:h("rubyGlobalVariable", { "fg": s:red})
-call s:h("rubyInclude", { "fg": s:blue})
-call s:h("rubyIncluderubyGlobalVariable", { "fg": s:red})
-call s:h("rubyInstanceVariable", { "fg": s:red})
-call s:h("rubyInterpolation", { "fg": s:cyan })
-call s:h("rubyInterpolationDelimiter", { "fg": s:red })
-call s:h("rubyInterpolationDelimiter", { "fg": s:red})
-call s:h("rubyRegexp", { "fg": s:cyan})
-call s:h("rubyRegexpDelimiter", { "fg": s:cyan})
-call s:h("rubyStringDelimiter", { "fg": s:green})
-call s:h("rubySymbol", { "fg": s:cyan})
-
-" Sass
-" https://github.com/tpope/vim-haml
-call s:h("sassAmpersand", { "fg": s:red })
-call s:h("sassClass", { "fg": s:dark_yellow })
-call s:h("sassControl", { "fg": s:purple })
-call s:h("sassExtend", { "fg": s:purple })
-call s:h("sassFor", { "fg": s:white })
-call s:h("sassFunction", { "fg": s:cyan })
-call s:h("sassId", { "fg": s:blue })
-call s:h("sassInclude", { "fg": s:purple })
-call s:h("sassMedia", { "fg": s:purple })
-call s:h("sassMediaOperators", { "fg": s:white })
-call s:h("sassMixin", { "fg": s:purple })
-call s:h("sassMixinName", { "fg": s:blue })
-call s:h("sassMixing", { "fg": s:purple })
-call s:h("sassVariable", { "fg": s:purple })
-" https://github.com/cakebaker/scss-syntax.vim
-call s:h("scssExtend", { "fg": s:purple })
-call s:h("scssImport", { "fg": s:purple })
-call s:h("scssInclude", { "fg": s:purple })
-call s:h("scssMixin", { "fg": s:purple })
-call s:h("scssSelectorName", { "fg": s:dark_yellow })
-call s:h("scssVariable", { "fg": s:purple })
-
-" TeX
-call s:h("texStatement", { "fg": s:purple })
-call s:h("texSubscripts", { "fg": s:dark_yellow })
-call s:h("texSuperscripts", { "fg": s:dark_yellow })
-call s:h("texTodo", { "fg": s:dark_red })
-call s:h("texBeginEnd", { "fg": s:purple })
-call s:h("texBeginEndName", { "fg": s:blue })
-call s:h("texMathMatcher", { "fg": s:blue })
-call s:h("texMathDelim", { "fg": s:blue })
-call s:h("texDelimiter", { "fg": s:dark_yellow })
-call s:h("texSpecialChar", { "fg": s:dark_yellow })
-call s:h("texCite", { "fg": s:blue })
-call s:h("texRefZone", { "fg": s:blue })
-
-" TypeScript
-call s:h("typescriptReserved", { "fg": s:purple })
-call s:h("typescriptEndColons", { "fg": s:white })
-call s:h("typescriptBraces", { "fg": s:white })
-
-" XML
-call s:h("xmlAttrib", { "fg": s:dark_yellow })
-call s:h("xmlEndTag", { "fg": s:red })
-call s:h("xmlTag", { "fg": s:red })
-call s:h("xmlTagName", { "fg": s:red })
-
-" }}}
-
-" Plugin Highlighting {{{
-
-" airblade/vim-gitgutter
-call s:h("GitGutterAdd", { "fg": s:green })
-call s:h("GitGutterChange", { "fg": s:yellow })
-call s:h("GitGutterDelete", { "fg": s:red })
-
-" dense-analysis/ale
-call s:h("ALEError", { "fg": s:red, "gui": "underline", "cterm": "underline" })
-call s:h("ALEWarning", { "fg": s:yellow, "gui": "underline", "cterm": "underline" })
-call s:h("ALEInfo", { "gui": "underline", "cterm": "underline" })
-
-" easymotion/vim-easymotion
-call s:h("EasyMotionTarget", { "fg": s:red, "gui": "bold", "cterm": "bold" })
-call s:h("EasyMotionTarget2First", { "fg": s:yellow, "gui": "bold", "cterm": "bold" })
-call s:h("EasyMotionTarget2Second", { "fg": s:dark_yellow, "gui": "bold", "cterm": "bold" })
-call s:h("EasyMotionShade",  { "fg": s:comment_grey })
-
-" lewis6991/gitsigns.nvim
 hi link GitSignsAdd    GitGutterAdd
 hi link GitSignsChange GitGutterChange
 hi link GitSignsDelete GitGutterDelete
 
-" mhinz/vim-signify
 hi link SignifySignAdd    GitGutterAdd
 hi link SignifySignChange GitGutterChange
 hi link SignifySignDelete GitGutterDelete
-
-" neoclide/coc.nvim
-call s:h("CocErrorSign", { "fg": s:red })
-call s:h("CocWarningSign", { "fg": s:yellow })
-call s:h("CocInfoSign", { "fg": s:blue })
-call s:h("CocHintSign", { "fg": s:cyan })
-call s:h("CocFadeOut", { "fg": s:comment_grey })
-
-" neomake/neomake
-call s:h("NeomakeErrorSign", { "fg": s:red })
-call s:h("NeomakeWarningSign", { "fg": s:yellow })
-call s:h("NeomakeInfoSign", { "fg": s:blue })
-
-" plasticboy/vim-markdown (keep consistent with Markdown, above)
-call s:h("mkdDelimiter", { "fg": s:purple })
-call s:h("mkdHeading", { "fg": s:red })
-call s:h("mkdLink", { "fg": s:blue })
-call s:h("mkdURL", { "fg": s:cyan, "gui": "underline", "cterm": "underline" })
-
-" prabirshrestha/vim-lsp
-call s:h("LspErrorText", { "fg": s:red })
-call s:h("LspWarningText", { "fg": s:yellow })
-call s:h("LspInformationText", { "fg":s:blue })
-call s:h("LspHintText", { "fg":s:cyan })
-call s:h("LspErrorHighlight", { "fg": s:red, "gui": "underline", "cterm": "underline" })
-call s:h("LspWarningHighlight", { "fg": s:yellow, "gui": "underline", "cterm": "underline" })
-call s:h("LspInformationHighlight", { "fg":s:blue, "gui": "underline", "cterm": "underline" })
-call s:h("LspHintHighlight", { "fg":s:cyan, "gui": "underline", "cterm": "underline" })
-
-" tpope/vim-fugitive
-call s:h("diffAdded", { "fg": s:green })
-call s:h("diffRemoved", { "fg": s:red })
-
-" }}}
-
-" Git Highlighting {{{
-
-call s:h("gitcommitComment", { "fg": s:comment_grey })
-call s:h("gitcommitUnmerged", { "fg": s:green })
-call s:h("gitcommitOnBranch", {})
-call s:h("gitcommitBranch", { "fg": s:purple })
-call s:h("gitcommitDiscardedType", { "fg": s:red })
-call s:h("gitcommitSelectedType", { "fg": s:green })
-call s:h("gitcommitHeader", {})
-call s:h("gitcommitUntrackedFile", { "fg": s:cyan })
-call s:h("gitcommitDiscardedFile", { "fg": s:red })
-call s:h("gitcommitSelectedFile", { "fg": s:green })
-call s:h("gitcommitUnmergedFile", { "fg": s:yellow })
-call s:h("gitcommitFile", {})
-call s:h("gitcommitSummary", { "fg": s:white })
-call s:h("gitcommitOverflow", { "fg": s:red })
+	
 hi link gitcommitNoBranch gitcommitBranch
 hi link gitcommitUntracked gitcommitComment
 hi link gitcommitDiscarded gitcommitComment
@@ -651,58 +397,33 @@ hi link gitcommitSelected gitcommitComment
 hi link gitcommitDiscardedArrow gitcommitDiscardedFile
 hi link gitcommitSelectedArrow gitcommitSelectedFile
 hi link gitcommitUnmergedArrow gitcommitUnmergedFile
+import autoload 'onedark.vim' as OneDark
 
-" }}}
+var colors = OneDark.GetColors()
 
-" Neovim-Specific Highlighting {{{
+var red = colors.red
+var dark_red = colors.dark_red
+var green = colors.green
+var yellow = colors.yellow
+var dark_yellow = colors.dark_yellow
+var blue = colors.blue
+var purple = colors.purple
+var cyan = colors.cyan
+var white = colors.white
+var black = colors.black
+var foreground = colors.foreground
+var background = colors.background
+var comment_grey = colors.comment_grey
+var gutter_fg_grey = colors.gutter_fg_grey
+var cursor_grey = colors.cursor_grey
+var visual_grey = colors.visual_grey
+var menu_grey = colors.menu_grey
+var special_grey = colors.special_grey
+var vertsplit = colors.vertsplit
 
-if has("nvim")
-  " Neovim terminal colors {{{
-  let g:terminal_color_0 =  s:black.gui
-  let g:terminal_color_1 =  s:red.gui
-  let g:terminal_color_2 =  s:green.gui
-  let g:terminal_color_3 =  s:yellow.gui
-  let g:terminal_color_4 =  s:blue.gui
-  let g:terminal_color_5 =  s:purple.gui
-  let g:terminal_color_6 =  s:cyan.gui
-  let g:terminal_color_7 =  s:white.gui
-  let g:terminal_color_8 =  s:visual_grey.gui
-  let g:terminal_color_9 =  s:dark_red.gui
-  let g:terminal_color_10 = s:green.gui " No dark version
-  let g:terminal_color_11 = s:dark_yellow.gui
-  let g:terminal_color_12 = s:blue.gui " No dark version
-  let g:terminal_color_13 = s:purple.gui " No dark version
-  let g:terminal_color_14 = s:cyan.gui " No dark version
-  let g:terminal_color_15 = s:comment_grey.gui
-  let g:terminal_color_background = s:background.gui
-  let g:terminal_color_foreground = s:foreground.gui
-  " }}}
-
-  " Neovim Diagnostics {{{
-  call s:h("DiagnosticError", { "fg": s:red })
-  call s:h("DiagnosticWarn", { "fg": s:yellow })
-  call s:h("DiagnosticInfo", { "fg": s:blue })
-  call s:h("DiagnosticHint", { "fg": s:cyan })
-  call s:h("DiagnosticUnderlineError", { "fg": s:red, "gui": "underline", "cterm": "underline" })
-  call s:h("DiagnosticUnderlineWarn", { "fg": s:yellow, "gui": "underline", "cterm": "underline" })
-  call s:h("DiagnosticUnderlineInfo", { "fg": s:blue, "gui": "underline", "cterm": "underline" })
-  call s:h("DiagnosticUnderlineHint", { "fg": s:cyan, "gui": "underline", "cterm": "underline" })
-  " }}}
-
-  " Neovim LSP (for versions < 0.5.1) {{{
-  hi link LspDiagnosticsDefaultError DiagnosticError
-  hi link LspDiagnosticsDefaultWarning DiagnosticWarn
-  hi link LspDiagnosticsDefaultInformation DiagnosticInfo
-  hi link LspDiagnosticsDefaultHint DiagnosticHint
-  hi link LspDiagnosticsUnderlineError DiagnosticUnderlineError
-  hi link LspDiagnosticsUnderlineWarning DiagnosticUnderlineWarn
-  hi link LspDiagnosticsUnderlineInformation DiagnosticUnderlineInfo
-  hi link LspDiagnosticsUnderlineHint DiagnosticUnderlineHint
-  " }}}
-endif
-
-" }}}
-
-" Must appear at the end of the file to work around this oddity:
-" https://groups.google.com/forum/#!msg/vim_dev/afPqwAFNdrU/nqh6tOM87QUJ
-set background=dark
+g:terminal_ansi_colors = [
+    black.gui, red.gui, green.gui, yellow.gui,
+    blue.gui, purple.gui, cyan.gui, comment_grey.gui,
+    visual_grey.gui, red.gui, green.gui, yellow.gui,
+    blue.gui, purple.gui, cyan.gui, white.gui
+]

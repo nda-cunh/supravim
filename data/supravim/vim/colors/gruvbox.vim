@@ -1413,6 +1413,9 @@ function! GruvboxHlsHideCursor()
   call s:HL('Cursor', s:none, s:none, s:inverse)
 endfunction
 
+highlight Search guibg=#fe8019 guifg=#282828
+highlight IncSearch guibg=#fe8019 guifg=#282828
+
 " }}}
 
 " vim: set sw=2 ts=2 sts=2 et tw=80 ft=vim fdm=marker:
