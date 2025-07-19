@@ -639,9 +639,6 @@ var supravim_server = job_start(["supravim-server", project_root], {
 })
 
 def OpenNewFile()
-	if &buftype == '' 
-		return
-	endif
 	var filetype = &filetype
 	if filetype == ''
 		filetype = expand('%:e')

@@ -1,14 +1,14 @@
-From 31f01977e87649efe6aa8e34a56da6cd7b9ca938 Mon Sep 17 00:00:00 2001
+From 30d7edd74b6550ab69c0fbcf9f7a1bdc6170867f Mon Sep 17 00:00:00 2001
 From: nda-cunh <hydraldev@gmail.com>
-Date: Sat, 19 Jul 2025 01:08:53 +0200
+Date: Sat, 19 Jul 2025 02:46:51 +0200
 Subject: [PATCH] add other nerdfont icons
 
 ---
- plugin/webdevicons.vim | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ plugin/webdevicons.vim | 52 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 51 insertions(+), 1 deletion(-)
 
 diff --git a/plugin/webdevicons.vim b/plugin/webdevicons.vim
-index 596ec68..ca3f336 100644
+index 596ec68..0c6d5df 100644
 --- a/plugin/webdevicons.vim
 +++ b/plugin/webdevicons.vim
 @@ -217,7 +217,8 @@ function! s:setDictionaries()
@@ -21,15 +21,53 @@ index 596ec68..ca3f336 100644
          \ 'h'        : '',
          \ 'hh'       : '',
          \ 'hpp'      : '',
-@@ -227,6 +228,7 @@ function! s:setDictionaries()
+@@ -227,6 +228,45 @@ function! s:setDictionaries()
          \ 'nix'      : '',
          \ 'lua'      : '',
          \ 'java'     : '',
 +        \ 'vala'     : '',
++        \ 'vapi'     : '',
++        \ 'kt'       : '',
++        \ 'kts'      : '',
++        \ 'ktm'      : '',
++        \ 'ktsm'     : '',
++        \ 'odt'      : '󰏆',
++        \ 'doc'      : '󰏆',
++        \ 'docx'     : '󰏆',
++        \ 'docm'     : '󰏆',
++        \ 'xls'      : '󰏇',
++        \ 'xlsx'     : '󰏇',
++        \ 'pdf'      : '',
++        \ 'zip'      : '',
++        \ 'tar'      : '',
++        \ 'gz'       : '',
++        \ 'bz2'      : '',
++        \ 'asm'      : '',
++        \ 'cfg'      : '',
++        \ 'deb'      : '',
++        \ 'log'      : '',
++        \ 's'        : '',
++        \ 'bin'      : '',
++        \ 'iso'      : '',
++        \ 'ld'       : '',
++        \ 'mp4'      : '',
++        \ 'mkv'      : '',
++        \ 'avi'      : '',
++        \ 'mov'      : '',
++        \ 'mp3'      : '',
++        \ 'wav'      : '',
++        \ 'flac'     : '',
++        \ 'ogg'      : '',
++        \ 'opus'     : '',
++        \ 'm3u'      : '',
++        \ 'suprapack' : '',
++        \ 'xml'      : '󰗀',
++        \ 'svg'      : '',
++        \ 'o'        : '',
          \ 'sh'       : '',
          \ 'fish'     : '',
          \ 'bash'     : '',
-@@ -292,6 +294,16 @@ function! s:setDictionaries()
+@@ -292,6 +332,16 @@ function! s:setDictionaries()
    let s:file_node_exact_matches = {
          \ 'exact-match-case-sensitive-1.txt' : '1',
          \ 'exact-match-case-sensitive-2'     : '2',
