@@ -15,7 +15,7 @@ g:sp_nobackground = false	# remove background color and use your terminal backgr
 g:sp_wrap = true 			# do not wrap the text if the line is too long
 g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
 g:sp_mapleader = "\<space>"	# The leader key used in the mappings
-g:sp_theme = "onehalf"
+g:sp_theme = "onedark"
 
 filetype plugin indent on
 #--------------- jeu de couleur ---------------"

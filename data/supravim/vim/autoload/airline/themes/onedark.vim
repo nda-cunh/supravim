@@ -1,130 +1,132 @@
-" [onedark.vim](https://github.com/joshdick/onedark.vim/)
+vim9script
 
-" This is a [vim-airline](https://github.com/vim-airline/vim-airline) theme for use with
-" the [onedark.vim](https://github.com/joshdick/onedark.vim) colorscheme.
+import autoload 'onedark.vim' as onedark
 
-" It is based on vim-airline's ["tomorrow" theme](https://github.com/vim-airline/vim-airline-themes/blob/master/autoload/airline/themes/tomorrow.vim).
-function! airline#themes#onedark#refresh()
-  let s:colors = onedark#GetColors()
+def Refresh() 
+	var colors = onedark.GetColors()
+	var term_red: string
+	var term_green: string
+	var term_yellow: string
+	var term_blue: string
+	var term_purple: string
+	var term_white: string
+	var term_cursor_grey: string
+	var term_visual_grey: string
 
-  if get(g:, 'onedark_termcolors', 256) == 16
-    let s:term_red = s:colors.red.cterm16
-    let s:term_green = s:colors.green.cterm16
-    let s:term_yellow = s:colors.yellow.cterm16
-    let s:term_blue = s:colors.blue.cterm16
-    let s:term_purple = s:colors.purple.cterm16
-    let s:term_white = s:colors.white.cterm16
-    let s:term_cursor_grey = s:colors.cursor_grey.cterm16
-    let s:term_visual_grey = s:colors.visual_grey.cterm16
-  else
-    let s:term_red = s:colors.red.cterm
-    let s:term_green = s:colors.green.cterm
-    let s:term_yellow = s:colors.yellow.cterm
-    let s:term_blue = s:colors.blue.cterm
-    let s:term_purple = s:colors.purple.cterm
-    let s:term_white = s:colors.white.cterm
-    let s:term_cursor_grey = s:colors.cursor_grey.cterm
-    let s:term_visual_grey = s:colors.visual_grey.cterm
-  endif
+	if get(g:, 'onedark_termcolors', 256) == 16
+		term_red = colors.red.cterm16
+		term_green = colors.green.cterm16
+		term_yellow = colors.yellow.cterm16
+		term_blue = colors.blue.cterm16
+		term_purple = colors.purple.cterm16
+		term_white = colors.white.cterm16
+		term_cursor_grey = colors.cursor_grey.cterm16
+		term_visual_grey = colors.visual_grey.cterm16
+	else
+		term_red = colors.red.cterm
+		term_green = colors.green.cterm
+		term_yellow = colors.yellow.cterm
+		term_blue = colors.blue.cterm
+		term_purple = colors.purple.cterm
+		term_white = colors.white.cterm
+		term_cursor_grey = colors.cursor_grey.cterm
+		term_visual_grey = colors.visual_grey.cterm
+	endif
 
-  let g:airline#themes#onedark#palette = {}
+	g:airline#themes#onedark#palette = {}
 
-  let g:airline#themes#onedark#palette.accents = {
-        \ 'red': [ s:colors.red.gui, '', s:term_red, 0 ]
-        \ }
+	g:airline#themes#onedark#palette.accents = {
+		red: [ colors.red.gui, '', term_red, 0 ]
+	}
 
-  let s:N1 = [ s:colors.cursor_grey.gui, s:colors.green.gui, s:term_cursor_grey, s:term_green ]
-  let s:N2 = [ s:colors.white.gui, s:colors.visual_grey.gui, s:term_white, s:term_visual_grey ]
-  let s:N3 = [ s:colors.green.gui, s:colors.cursor_grey.gui, s:term_green, s:term_cursor_grey ]
-  let g:airline#themes#onedark#palette.normal = airline#themes#generate_color_map(s:N1, s:N2, s:N3)
+var N1 = [ colors.cursor_grey.gui, colors.green.gui, term_cursor_grey, term_green ]
+var N2 = [ colors.white.gui, colors.visual_grey.gui, term_white, term_visual_grey ]
+var N3 = [ colors.green.gui, colors.cursor_grey.gui, term_green, term_cursor_grey ]
+g:airline#themes#onedark#palette.normal = airline#themes#generate_color_map(N1, N2, N3)
 
-  let group = airline#themes#get_highlight('vimCommand')
-  let g:airline#themes#onedark#palette.normal_modified = {
-        \ 'airline_c': [ group[0], '', group[2], '', '' ]
-        \ }
+var group = airline#themes#get_highlight('vimCommand')
+g:airline#themes#onedark#palette.normal_modified = {
+\ 'airline_c': [ group[0], '', group[2], '', '' ]
+\ }
 
-  let s:I1 = [ s:colors.cursor_grey.gui, s:colors.blue.gui, s:term_cursor_grey, s:term_blue ]
-  let s:I2 = s:N2
-  let s:I3 = [ s:colors.blue.gui, s:colors.cursor_grey.gui, s:term_blue, '' ]
-  let g:airline#themes#onedark#palette.insert = airline#themes#generate_color_map(s:I1, s:I2, s:I3)
-  let g:airline#themes#onedark#palette.insert_modified = g:airline#themes#onedark#palette.normal_modified
+var I1 = [ colors.cursor_grey.gui, colors.blue.gui, term_cursor_grey, term_blue ]
+var I2 = N2
+var I3 = [ colors.blue.gui, colors.cursor_grey.gui, term_blue, '' ]
+g:airline#themes#onedark#palette.insert = airline#themes#generate_color_map(I1, I2, I3)
+g:airline#themes#onedark#palette.insert_modified = g:airline#themes#onedark#palette.normal_modified
 
-  let s:R1 = [ s:colors.cursor_grey.gui, s:colors.red.gui, s:term_cursor_grey, s:term_red ]
-  let s:R2 = s:N2
-  let s:R3 = [ s:colors.red.gui, s:colors.cursor_grey.gui, s:term_red, '' ]
-  let g:airline#themes#onedark#palette.replace = airline#themes#generate_color_map(s:R1, s:R2, s:R3)
-  let g:airline#themes#onedark#palette.replace_modified = g:airline#themes#onedark#palette.normal_modified
+var R1 = [ colors.cursor_grey.gui, colors.red.gui, term_cursor_grey, term_red ]
+var R2 = N2
+var R3 = [ colors.red.gui, colors.cursor_grey.gui, term_red, '' ]
+g:airline#themes#onedark#palette.replace = airline#themes#generate_color_map(R1, R2, R3)
+g:airline#themes#onedark#palette.replace_modified = g:airline#themes#onedark#palette.normal_modified
 
-  let s:V1 = [ s:colors.cursor_grey.gui, s:colors.purple.gui, s:term_cursor_grey, s:term_purple ]
-  let s:V2 = s:N2
-  let s:V3 = [ s:colors.purple.gui, s:colors.cursor_grey.gui, s:term_purple, '' ]
-  let g:airline#themes#onedark#palette.visual = airline#themes#generate_color_map(s:V1, s:V2, s:V3)
-  let g:airline#themes#onedark#palette.visual_modified = g:airline#themes#onedark#palette.normal_modified
+var V1 = [ colors.cursor_grey.gui, colors.purple.gui, term_cursor_grey, term_purple ]
+var V2 = N2
+var V3 = [ colors.purple.gui, colors.cursor_grey.gui, term_purple, '' ]
+g:airline#themes#onedark#palette.visual = airline#themes#generate_color_map(V1, V2, V3)
+g:airline#themes#onedark#palette.visual_modified = g:airline#themes#onedark#palette.normal_modified
 
-  let s:IA1 = [ s:colors.cursor_grey.gui, s:colors.white.gui, s:term_cursor_grey, s:term_white ]
-  let s:IA2 = [ s:colors.white.gui, s:colors.visual_grey.gui, s:term_white, s:term_visual_grey ]
-  let s:IA3 = s:N2
-  let g:airline#themes#onedark#palette.inactive = airline#themes#generate_color_map(s:IA1, s:IA2, s:IA3)
-  let g:airline#themes#onedark#palette.inactive_modified = {
-        \ 'airline_c': [ group[0], '', group[2], '', '' ]
-        \ }
+var IA1 = [ colors.cursor_grey.gui, colors.white.gui, term_cursor_grey, term_white ]
+var IA2 = [ colors.white.gui, colors.visual_grey.gui, term_white, term_visual_grey ]
+var IA3 = N2
+g:airline#themes#onedark#palette.inactive = airline#themes#generate_color_map(IA1, IA2, IA3)
+g:airline#themes#onedark#palette.inactive_modified = {
+'airline_c': [ group[0], '', group[2], '', '' ]
+}
 
-  " Warning/Error styling code from vim-airline's ["base16" theme](https://github.com/vim-airline/vim-airline-themes/blob/master/autoload/airline/themes/base16.vim)
+var WI = [ colors.cursor_grey.gui, colors.yellow.gui, term_cursor_grey, term_yellow ]
+g:airline#themes#onedark#palette.normal.airline_warning = [
+WI[0], WI[1], WI[2], WI[3]
+]
 
-  " Warnings
-  let s:WI = [ s:colors.cursor_grey.gui, s:colors.yellow.gui, s:term_cursor_grey, s:term_yellow ]
-  let g:airline#themes#onedark#palette.normal.airline_warning = [
-       \ s:WI[0], s:WI[1], s:WI[2], s:WI[3]
-       \ ]
+g:airline#themes#onedark#palette.normal_modified.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.normal_modified.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+g:airline#themes#onedark#palette.insert.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.insert.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+g:airline#themes#onedark#palette.insert_modified.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.insert_modified.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+g:airline#themes#onedark#palette.visual.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.visual.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+g:airline#themes#onedark#palette.visual_modified.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.visual_modified.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+g:airline#themes#onedark#palette.replace.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.replace.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+g:airline#themes#onedark#palette.replace_modified.airline_warning =
+g:airline#themes#onedark#palette.normal.airline_warning
 
-  let g:airline#themes#onedark#palette.replace_modified.airline_warning =
-      \ g:airline#themes#onedark#palette.normal.airline_warning
+var ER = [ colors.cursor_grey.gui, colors.red.gui, term_cursor_grey, term_red ]
+g:airline#themes#onedark#palette.normal.airline_error = [
+ER[0], ER[1], ER[2], ER[3]
+]
 
-  " Errors
-  let s:ER = [ s:colors.cursor_grey.gui, s:colors.red.gui, s:term_cursor_grey, s:term_red ]
-  let g:airline#themes#onedark#palette.normal.airline_error = [
-       \ s:ER[0], s:ER[1], s:ER[2], s:ER[3]
-       \ ]
+g:airline#themes#onedark#palette.normal_modified.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.normal_modified.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+g:airline#themes#onedark#palette.insert.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.insert.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+g:airline#themes#onedark#palette.insert_modified.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.insert_modified.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+g:airline#themes#onedark#palette.visual.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.visual.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+g:airline#themes#onedark#palette.visual_modified.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.visual_modified.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+g:airline#themes#onedark#palette.replace.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.replace.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+g:airline#themes#onedark#palette.replace_modified.airline_error =
+g:airline#themes#onedark#palette.normal.airline_error
 
-  let g:airline#themes#onedark#palette.replace_modified.airline_error =
-      \ g:airline#themes#onedark#palette.normal.airline_error
+enddef
 
-endfunction
-
-call airline#themes#onedark#refresh()
+Refresh()
