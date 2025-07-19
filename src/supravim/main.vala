@@ -19,7 +19,13 @@ public class Main {
 	private static bool is_uninstall = false;
 	private static bool print_opts = false;
 	private static bool print_themes = false;
+	private static bool list_plugin = false;
 	private static string? theme = null;
+	private static string? add_plugin = null;
+	private static string? remove_plugin = null;
+	private static string? enable_plugin = null;
+	private static string? disable_plugin = null;
+	private static string? update_plugin = null;
 	
 	private static bool save_config = false;
 	private static bool apply_config = false;
@@ -29,7 +35,13 @@ public class Main {
 		{ "version", 'v',		NONE, 		NONE,			ref is_version,		"Give your supravim version",				null },
 		{ "update", '\0',		NONE, 		NONE,			ref is_update,		"Update supravim",							null },
 		{ "uninstall", '\0',	NONE, 		NONE,			ref is_uninstall,	"Uninstall supravim",						null },
+		{ "list-plugin", '\0',	NONE, 		NONE,			ref list_plugin,	"List plugin.",								null },
 		{ "theme", 't',			NONE, 		STRING,			ref theme,			"Set theme.",								null },
+		{ "add-plugin", '\0',	NONE, 		STRING,			ref add_plugin,		"Add plugin.",								null },
+		{ "remove-plugin", '\0',NONE, 		STRING,			ref remove_plugin,	"Remove plugin.",							null },
+		{ "enable-plugin", '\0',NONE, 		STRING,			ref enable_plugin,	"Enable plugin.",							null },
+		{ "disable-plugin", '\0',NONE, 		STRING,			ref disable_plugin,	"Disable plugin.",							null },
+		{ "update-plugin", '\0',NONE, 		STRING,			ref update_plugin,	"Update plugin.",							null },
 		{ "disable", 'd',		NONE, 		STRING_ARRAY,	ref disable,		"Disable options.",							"optA[,optB]"},
 		{ "enable", 'e',		NONE, 		STRING_ARRAY,	ref enable,			"Enable options.",							"optA[,optB]"},
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
@@ -95,6 +107,18 @@ public class Main {
 		}
 		if (theme != null)
 			return Theme.change (theme);
+		if (add_plugin != null)
+			return Plugin.add (add_plugin);
+		if (remove_plugin != null)
+			return Plugin.remove (remove_plugin);
+		if (enable_plugin != null)
+			return Plugin.enable_disable (enable_plugin, true);
+		if (disable_plugin != null)
+			return Plugin.enable_disable (disable_plugin, false);
+		if (update_plugin != null)
+			return Plugin.update (update_plugin);
+		if (list_plugin)
+			return Plugin.list ();
 		return null;
 	}
 
