@@ -10,6 +10,7 @@ def g:Water()
 	const last_buffer = bufnr()
 	const actual_path = expand('%:p:h')
 
+	w!
 	mkview
 	var file_name = expand("%:t")
 	execute "b! " .. id 
@@ -250,9 +251,12 @@ def EnterWithPath(id: number, path: string, mode: string = '')
 	else
 		if mode == 'horizontal'
 			execute 'split ' .. path
+			wincmd p
 		elseif mode == 'vertical'
 			execute 'vsplit ' .. path
+			wincmd p
 		elseif mode == 'tab'
+			Quit()
 			execute 'tabnew ' .. path
 		else
 			execute 'edit ' .. path
