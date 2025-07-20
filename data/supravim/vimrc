@@ -13,6 +13,10 @@ g:sp_tree = true			# display folder tree at left
 g:sp_fold = false			# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
 g:sp_wrap = true 			# do not wrap the text if the line is too long
+g:sp_autoclose_quotes = true	# Auto Closing for quotes '"' and ''' and '`'
+g:sp_autoclose_brackets = true # Auto Closing for brackets'(' ')' and '[' ']'
+g:sp_autoclose_braces = true # Auto Closing for braces '{' '}'
+g:sp_autoclose_angle = false # Auto Closing for angle brackets '<' '>'
 g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
 g:sp_mapleader = "\<space>"	# The leader key used in the mappings
 g:sp_theme = "onedark"
@@ -780,6 +784,39 @@ nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
 
+# Round It --------------------------------------
+def RoundIt(char: string, charend: string)
+	const p1 = getpos("'<")
+	const p2 = getpos("'>")
+	call cursor(p1[1], p1[2])
+	execute('normal! i' .. char)
+	call cursor(p2[1], p2[2] + 1)
+	execute('normal! a' .. charend)
+enddef
+
+if g:sp_autoclose_quotes
+	vnoremap "		<esc><scriptcmd>RoundIt('"', '"')<CR>
+	snoremap "		""<left>
+	vnoremap '		<esc><scriptcmd>RoundIt("'", "'")<CR>
+	snoremap '		''<left>
+	vnoremap `		<esc><scriptcmd>RoundIt('`', '`')<CR>
+	snoremap `		``<left>
+endif
+if g:sp_autoclose_brackets
+	vnoremap (		<esc><scriptcmd>RoundIt('(', ')')<CR>
+	vnoremap [		<esc><scriptcmd>RoundIt('[', ']')<CR>
+	snoremap (		()<left>
+	snoremap [		[]<left>
+endif
+if g:sp_autoclose_braces
+	vnoremap {		<esc><scriptcmd>RoundIt('{', '}')<CR>
+	snoremap {		{}<left>
+endif
+if g:sp_autoclose_angle
+	vnoremap <		<esc><scriptcmd>RoundIt('<', '>')<CR>
+	snoremap <		<><left>
+endif
+
 # Popup Menu --------------------------------------
 
 set mousemodel=popup
@@ -849,9 +886,9 @@ enddef
 # Welcome --------------------------------------
 
 def Welcome()
+	redraw!
 	var timer = timer_start(50, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
-		redraw!
 	})
 	if g:sp_fold
 		set foldmethod=manual
