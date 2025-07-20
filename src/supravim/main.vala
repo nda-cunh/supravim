@@ -1,3 +1,7 @@
+public const string GREEN = "\033[32m";
+public const string RED = "\033[31m";
+public const string DEFAULT = "\033[;0m";
+public const string BOLD = "\033[;1m";
 public string HOME;
 public string cfg_dir;
 public string cfg_fpath;
@@ -53,6 +57,9 @@ public class Main {
 	};
 
 	
+	/**
+	 * Run arguments based on the options set.
+	 */
 	public static bool? run () throws Error {
 		if (is_version) {
 			print ("Supravim version %s\n", Config.VERSION);
@@ -112,9 +119,9 @@ public class Main {
 		if (remove_plugin != null)
 			return Plugin.remove (remove_plugin);
 		if (enable_plugin != null)
-			return Plugin.enable_disable (enable_plugin, true);
+			return Plugin.enable(enable_plugin);
 		if (disable_plugin != null)
-			return Plugin.enable_disable (disable_plugin, false);
+			return Plugin.disable (disable_plugin);
 		if (update_plugin != null)
 			return Plugin.update (update_plugin);
 		if (list_plugin)

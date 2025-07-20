@@ -11,7 +11,8 @@ srcs = files (
    'Status.vala',
    'Cfg.vala',
    'ArrayElement.vala',
-   'Utils.vala'
+   'Utils.vala',
+   'PluginLst.vala'
 )
 
 executable('supravim',
