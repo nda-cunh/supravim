@@ -29,10 +29,8 @@ export def SupraWelcome()
 	nnoremap <buffer><Up> <scriptcmd>search('•', 'b')<CR>
 	nnoremap <buffer><RightMouse> <Nop> 
 	nnoremap <buffer><2-RightMouse> <Nop> 
-	nnoremap <buffer> V <Nop>
-	nnoremap <buffer> v <Nop>
-	nnoremap <buffer> <C-v> <Nop>	<esc><esc>
 	nnoremap <buffer> <Enter>		<ScriptCmd>ChooseAnOption()<CR>
+	nnoremap <buffer> <2-LeftMouse>		<ScriptCmd>ChooseAnOption()<CR>
 	noremap <buffer> T <ScriptCmd>SelectTheme()<CR>
 	noremap <buffer> t <ScriptCmd>SelectTheme()<CR>
 	map <buffer> G <ScriptCmd>call g:SettingsSupravim()<CR>
@@ -42,12 +40,12 @@ export def SupraWelcome()
 
 	augroup SupravimWelcome
 		autocmd!
-		autocmd ModeChanged [vV\x16] * if &filetype == 'supravim_welcome' | feedkeys("\<esc>")| endif
-		autocmd BufEnter * if &filetype == 'supravim_welcome' | call ActualizeActivity() | endif
-		autocmd BufLeave * if &filetype == 'supravim_welcome' | AirlineToggle | AirlineToggle | endif
-		autocmd BufLeave * if &filetype == 'supravim_welcome' | timer_stop(timer_animation) | endif
-		autocmd CursorMoved */  if &filetype == 'supravim_welcome' | call SupraWelcomeMove() | endif 
-		autocmd VimResized * if &filetype == 'supravim_welcome' | call ActualizeActivity() | endif
+		autocmd ModeChanged <buffer> feedkeys("\<esc>")
+		autocmd BufEnter <buffer> call ActualizeActivity()
+		autocmd BufLeave <buffer> AirlineToggle | AirlineToggle
+		autocmd BufLeave <buffer> timer_stop(timer_animation)
+		autocmd CursorMoved <buffer> call SupraWelcomeMove()
+		autocmd VimResized <buffer> call ActualizeActivity()
 	augroup END
 
 
@@ -68,10 +66,10 @@ export def SupraWelcome()
 	endif
 
 	var offset = 0
-	timer_animation = timer_start(100, (timer) => {
+	timer_animation = timer_start(80, (timer) => {
 		var str_animation = GenerateUTF8Line(&columns, offset)
 		offset += 1
-		setbufvar(buf, '&tabline', str_animation)
+		setbufvar(buf, '&showtabline', 0)
 		setbufvar(buf, '&statusline', str_animation)
 	}, {repeat: -1})
 enddef
@@ -134,7 +132,8 @@ def ChooseAnOption()
 	var idx = stridx(option_name, '•') + 2
 	option_name = option_name[idx : ]
 	var changed = matchstr(option_name, '\S\+')
-	var value = matchstr(option_name, '\S\+\s*\zs.*\ze')
+	const value = matchstr(option_name, '\S\+\s*\zs.*\ze')
+	const val_str = matchstr(option_name, "\\S\\+\\s*'\\zs.*\\ze'")
 	var idx_end = stridx(option_name, ' ') - 1
 	option_name = option_name[0 : idx_end]
 	
@@ -144,7 +143,6 @@ def ChooseAnOption()
 	endif
 
 	if stridx(value, 'on') == 0 || stridx(value, 'off') == 0
-		echo 'Changing ' .. value .. ' to ' .. value
 		if stridx(value, 'on') == 0
 			system('supravim -d ' .. option_name)
 			silent! call g:ChangeSupravimOption(option_name, 'false')
@@ -156,7 +154,21 @@ def ChooseAnOption()
 		endif
 		execute "g:sp_" .. option_name .. " = !g:sp_" .. option_name
 	else 
-		echo 'string not supported: ' .. option_name
+		var w = float2nr(&columns / 3)
+		if w < 20
+			w = 20
+		endif
+		var pop = Popup.Input({
+			close_key: ['q', 'Q', "\<Esc>"],
+			width: w,
+			prompt: changed .. ': '
+		})
+		Popup.SetInput(pop, val_str)
+		Popup.AddEventInputEnter(pop, (line) => {
+			system('supravim -S ' .. option_name .. '=' .. shellescape(line))
+			Popup.Close(pop)
+			call ActualizeWelcome()
+		})
 	endif
 	call ActualizeWelcome()
 enddef
@@ -164,19 +176,20 @@ enddef
 
 var supra_pattern = ['', '', '', '']
 def GenerateUTF8Line(columns: number, offset: number): string
+	const pattern = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '▇', '▆', '▅', '▄', '▃']
+	const len_pattern = len(pattern)
 	if supra_pattern[0] == ''
-		const pattern = ['◸', '◿', '◺', '◹' ]
-		for off in range(0, 4)
+		for off in range(0, len_pattern)
 			var line = ''
 			var i = 0 
 			while i < (columns / 2)
-				line = line .. pattern[(i + off) % 4] .. ' '
+				line = line .. pattern[(i + off) % len_pattern] .. ' '
 				i += 1
 			endwhile
 			supra_pattern[off] = line
 		endfor
 	endif
-    return supra_pattern[(offset % 4)]
+    return supra_pattern[(offset % len_pattern)]
 enddef
 
 def SupraWelcomeMove()
@@ -251,11 +264,10 @@ def SelectTheme()
 	var size_theme = Popup.GetSize(pop)
 
 	var begin_middle = (&columns / 2) - (size_theme[0] / 2) - (size_main[0] / 2) - 1
-	begin_middle += size_theme[0] - 3
 	# echo begin_middle
 	
 	Popup.SetPos(pop, begin_middle, 0)
-	Popup.SetPos(main_c, begin_middle + size_main[0] + 3, 0)
+	Popup.SetPos(main_c, begin_middle + size_theme[0] + 3, 0)
 
 	# echo size_main
 	# echo size_theme
