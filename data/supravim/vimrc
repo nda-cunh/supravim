@@ -693,11 +693,11 @@ enddef
 # -----------------   Alt Up/Down   ------------------ #
 def MoveLineDown(mode: string)
 	var array = getline(line("'<"), line("'>"))
-	var len = len(array)
-	var begin = line('.')
+	const len = len(array)
+	const begin = line('.')
 
 	if mode == 'n'
-		var tmp = getline(line('.') + 1)
+		const tmp = getline(line('.') + 1)
 		setline(line('.') + 1, getline(line('.')))
 		setline(line('.'), tmp)
 		normal j==
@@ -706,7 +706,7 @@ def MoveLineDown(mode: string)
 		return
 	endif
 
-	var tmp = getline(begin + len)
+	const tmp = getline(begin + len)
 	var i = 0
 	reverse(array)
 
@@ -728,7 +728,7 @@ def MoveLineUp(mode: string)
 	if begin == 1
 		return
 	elseif mode == 'n'
-		var tmp = getline(line('.') - 1)
+		const tmp = getline(line('.') - 1)
 		setline(line('.') - 1, getline(line('.')))
 		setline(line('.'), tmp)
 		normal k==
@@ -739,7 +739,7 @@ def MoveLineUp(mode: string)
 		return
 	endif
 
-	var tmp = getline(line('.') - 1)
+	const tmp = getline(line('.') - 1)
 	var i = begin
 	for str in array
 		setline(i - 1, str)
