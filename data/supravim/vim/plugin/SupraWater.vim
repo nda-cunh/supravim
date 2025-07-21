@@ -10,7 +10,6 @@ def g:Water()
 	const last_buffer = bufnr()
 	const actual_path = expand('%:p:h')
 
-	w!
 	mkview
 	var file_name = expand("%:t")
 	execute "b! " .. id 
@@ -46,6 +45,9 @@ def g:Water()
 	execute("nnoremap <buffer><c-p>			<scriptcmd>call Preview(" .. id .. ")<cr>")
 	execute("nnoremap <buffer>~				<scriptcmd>call EnterWithPath(" .. id .. ", $HOME .. '/')<cr>")
 	execute("nnoremap <buffer>_				<scriptcmd>call EnterWithPathAndJump(" .. id .. ")<cr>")
+	execute("nnoremap <buffer>h				<scriptcmd>call HelpPopup()<cr>")
+	execute("nnoremap <buffer>?				<scriptcmd>call HelpPopup()<cr>")
+
 	
 
 	augroup SupraWater
@@ -97,7 +99,7 @@ def Preview(id: number)
 	var buf_to_preview = bufadd(file_path)
 	bufload(buf_to_preview)
 	var popup = Popup.Simple({
-		close_key: ["q", "\<UP>", "\<DOWN>", "\<Left>", "\<Right>", "\<esc>", "\<c-p>"],
+		close_key: ["q", "\<UP>", "\<DOWN>", "\<Left>", "\<Right>", "\<esc>", "\<c-p>", "\<LeftMouse>"],
 		scrollbar: 1,
 	})
 	var lines = getbufline(buf_to_preview, 1, '$')
@@ -117,6 +119,34 @@ def Preview(id: number)
 	setwinvar(popup.wid, '&filetype', '')
     win_execute(popup.wid, 'silent! doautocmd filetypedetect BufNewFile ' .. file_path)
     win_execute(popup.wid, 'silent! setlocal nospell nolist')
+enddef
+
+def HelpPopup()
+	var popup = Popup.Simple({
+		close_key: ["q", "\<UP>", "\<DOWN>", "\<Left>", "\<Right>", "\<esc>", "\<LeftMouse>"],
+		scrollbar: 1,
+	})
+
+	var lines = [
+		' ______________________ Help ______________________',
+		'',
+		'',
+		' • <C-q>              * Quit',
+		' • <BackSpace> / -    * Back',
+		' • <Enter> / <Click>  * Enter the folder',
+		' • <C-h>              * Open the folder horizontally',
+		' • <C-v>              * Open the folder vertically',
+		' • <C-t> / <C-n>      * Open the folder in a new tab',
+	    ' • <C-p>              * Preview',
+        ' • ~                  * Go to the home directory',
+        ' • _                  * Enter the folder and jump'
+	]
+
+	var bufnr = winbufnr(popup.wid)
+	setbufvar(bufnr, '&filetype', 'markdown')
+	Popup.SetText(popup, lines)
+	Popup.SetSize(popup, 52, 12)
+	
 enddef
 
 def Actualize(id: number)
