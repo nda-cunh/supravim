@@ -1,12 +1,14 @@
 vim9script
 
+import autoload 'SupraPopup.vim' as Popup
+
 map - <scriptcmd>:call g:Water()<CR>
 
 var local: dict<any> = {}
 
 def g:Water()
-	var rd = rand() % 1000
-	var id = bufadd('suprawater_vim' .. rd)
+	const rd = rand() % 1000
+	const id = bufadd('suprawater_vim' .. rd)
 	const last_buffer = bufnr()
 	const actual_path = expand('%:p:h')
 
@@ -14,13 +16,15 @@ def g:Water()
 	var file_name = expand("%:t")
 	execute "b! " .. id 
 
-	local.id = {
+	var dict = {
 		first_path: actual_path, 
 		first_filename: file_name,
 		actual_path: actual_path, 
 		cursor_pos: {},
 		last_buffer: last_buffer,
 	}
+
+	local[id] = dict
 
 	set filetype=suprawater
 	setbufvar(id, '&buflisted', 0)
@@ -33,49 +37,50 @@ def g:Water()
 	setbufvar(id, "&updatetime", 2500)
     setbufvar(id, '&signcolumn', 'yes')
 
-	execute("nnoremap <buffer><c-q>			<scriptcmd>Quit()<cr>")
-	execute("nnoremap <buffer>-				<scriptcmd>call Back(" .. id .. ")<cr>")
-	execute("nnoremap <buffer><bs>			<scriptcmd>call Back(" .. id .. ")<cr>")
-	execute("nnoremap <buffer><cr>			<scriptcmd>call EnterFolder(" .. id .. ")<cr>")
-	execute("nnoremap <buffer><c-h>			<scriptcmd>call EnterFolder(" .. id .. ", 'horizontal')<cr>")
-	execute("nnoremap <buffer><c-v>			<scriptcmd>call EnterFolder(" .. id .. ", 'vertical')<cr>")
-	execute("nnoremap <buffer><c-t>			<scriptcmd>call EnterFolder(" .. id .. ", 'tab')<cr>")
-	execute("nnoremap <buffer><c-n>			<scriptcmd>call EnterFolder(" .. id .. ", 'tab')<cr>")
-	execute("nnoremap <buffer><2-LeftMouse>	<LeftMouse><scriptcmd>call EnterFolder(" .. id .. ")<cr>")
-	execute("nnoremap <buffer><c-p>			<scriptcmd>call Preview(" .. id .. ")<cr>")
-	execute("nnoremap <buffer>~				<scriptcmd>call EnterWithPath(" .. id .. ", $HOME .. '/')<cr>")
-	execute("nnoremap <buffer>_				<scriptcmd>call EnterWithPathAndJump(" .. id .. ")<cr>")
-	execute("nnoremap <buffer>h				<scriptcmd>call HelpPopup()<cr>")
-	execute("nnoremap <buffer>?				<scriptcmd>call HelpPopup()<cr>")
+	nnoremap <buffer><c-q>			<scriptcmd>Quit()<cr>
+	nnoremap <buffer>-				<scriptcmd>call Back()<cr>
+	nnoremap <buffer><bs>			<scriptcmd>call Back()<cr>
+	nnoremap <buffer><cr>			<scriptcmd>call EnterFolder()<cr>
+	nnoremap <buffer><c-h>			<scriptcmd>call EnterFolder('horizontal')<cr>
+	nnoremap <buffer><c-v>			<scriptcmd>call EnterFolder('vertical')<cr>
+	nnoremap <buffer><c-t>			<scriptcmd>call EnterFolder('tab')<cr>
+	nnoremap <buffer><c-n>			<scriptcmd>call EnterFolder('tab')<cr>
+	nnoremap <buffer><2-LeftMouse>	<LeftMouse><scriptcmd>call EnterFolder()<cr>
+	nnoremap <buffer><c-p>			<scriptcmd>call Preview()<cr>
+	nnoremap <buffer>~				<scriptcmd>call EnterWithPath($HOME .. '/')<cr>
+	nnoremap <buffer>_				<scriptcmd>call EnterWithPathAndJump()<cr>
+	nnoremap <buffer>h				<scriptcmd>call HelpPopup()<cr>
+	nnoremap <buffer>?				<scriptcmd>call HelpPopup()<cr>
 
 	
 
 	augroup SupraWater
 		autocmd!
-		execute ("autocmd ModeChanged,CursorMovedI,CursorMoved,WinScrolled <buffer> call Actualize(" .. id .. ")")
-		execute ("autocmd BufLeave <buffer> local[" .. id .. "] = {}")
-		# execute ("autocmd CursorHold <buffer> call Preview(" .. id .. ")")
+		autocmd ModeChanged,CursorMovedI,CursorMoved,WinScrolled <buffer> call Actualize()
 		autocmd CursorMoved,CursorMovedI <buffer> call CancelMoveOneLine()
 		autocmd QuitPre <buffer> call Quit()
 	augroup END
 
-	EnterWithPathAndJump(id)
+	EnterWithPathAndJump()
 	
     setbufvar(id, '&undolevels', 100)
 enddef
 
-def EnterWithPathAndJump(id: number)
-	var jump = local.id.first_path 
+def EnterWithPathAndJump()
+	const id = bufnr('%')
+	const dict = local[id]
+
+	var jump: string = dict.first_path 
 	# if the end is not a slash, add it
 	if jump[-1] != '/'
 		jump = jump .. '/'
 	endif
-	call EnterWithPath(id, jump)
+	call EnterWithPath(jump)
 
 	if jump != ''
 		var lines = getbufline(id, 0, '$')
 		for i in range(len(lines))
-			if stridx(lines[i], local.id.first_filename) == 0 
+			if stridx(lines[i], dict.first_filename) == 0 
 				call cursor(i + 1, 0)
 				break
 			endif
@@ -83,14 +88,16 @@ def EnterWithPathAndJump(id: number)
 	endif
 enddef
 
-import autoload 'SupraPopup.vim' as Popup
 
-def Preview(id: number)
+def Preview()
+	const id = bufnr('%')
+	const dict = local[id]
+
 	var line = getline('.')
 	if line =~# '^\s*$'
 		return
 	endif
-	var file_path = local.id.actual_path .. line
+	var file_path = dict.actual_path .. line
 	if isdirectory(file_path)
 		echo 'This is a directory, not a file: ' .. file_path
 		return
@@ -149,8 +156,10 @@ def HelpPopup()
 	
 enddef
 
-def Actualize(id: number)
-	const actual_path = local.id.actual_path
+def Actualize()
+	const id = bufnr('%')
+	const dict = local[id]
+	const actual_path = dict.actual_path
 	prop_clear(line('w0'), line('w$'))
 	prop_add(1, 0, {text: 'Press ("?" or "h") for Help !   ', type: 'suprawatersort', text_align: 'right'})
 	prop_add(1, 0, {text: actual_path, type: 'suprawaterpath', text_align: 'above'})
@@ -191,8 +200,11 @@ enddef
 ####################################
 # Draw the 'ls' command 
 ####################################
-def DrawPath(id: number, path: string)
-	local.id.actual_path = path
+def DrawPath(path: string)
+	const id = bufnr('%')
+	const dict = local[id]
+
+	dict.actual_path = path
 	var lines = system('ls -a ' .. path .. ' 2> /dev/null')
 
 	# clear the buffer
@@ -211,32 +223,35 @@ def DrawPath(id: number, path: string)
 	endfor
 	setbufline(bufnr(), 1, result)
 	normal j
-	Actualize(id)
+	Actualize()
 enddef
 
 ###################
 #  Back function
 ###################
-def Back(id: number)
-	if local.id.actual_path == '/'
+def Back()
+	const id = bufnr('%')
+	const dict = local[id]
+
+	if dict.actual_path == '/'
 		return
 	endif
-	var actual_path = local.id.actual_path
-	var jump = actual_path
+	var actual_path = dict.actual_path
+	var jump: string = actual_path
 	# echom 'Saving cursor position of: ' .. actual_path
-	local.id.cursor_pos[actual_path] = getcurpos()
-	local.id.actual_path = LeftPath(actual_path)
-	actual_path = local.id.actual_path
+	dict.cursor_pos[actual_path] = getcurpos()
+	dict.actual_path = LeftPath(actual_path)
+	actual_path = dict.actual_path
 
 	# echom 'Back to: ' .. actual_path
 	if actual_path == '/'
-		call DrawPath(id, actual_path)
+		call DrawPath(actual_path)
 	else
-		call DrawPath(id, actual_path .. '/')
+		call DrawPath(actual_path .. '/')
 	endif
-	actual_path = local.id.actual_path
+	actual_path = dict.actual_path
 	if jump != ''
-		var folder_name = jump[len(actual_path) : ] 
+		var folder_name: string = jump[len(actual_path) : ] 
 		var lines = getbufline(id, 0, '$')
 		for i in range(len(lines))
 			if stridx(lines[i], folder_name) == 0 
@@ -256,28 +271,32 @@ def LeftPath(str: string): string
 	return path
 enddef
 
-
 ###################
 #  Enter function
 ###################
-def EnterFolder(id: number, mode: string = '')
+def EnterFolder(mode: string = '')
+	const id = bufnr('%')
+	var dict = local[id]
+
 	var line = getline('.')
 	# check if line is only space
 	if line =~# '^\s*$'
 		return
 	endif
 
-	const path = local.id.actual_path .. line
-	EnterWithPath(id, path, mode)
-	if has_key(local.id.cursor_pos, path)
-		call setpos('.', local.id.cursor_pos[path])
+	const path: string = dict.actual_path .. line
+	EnterWithPath(path, mode)
+	if has_key(dict.cursor_pos, path)
+		call setpos('.', dict.cursor_pos[path])
 		normal! zz
 	endif
 enddef
 
-def EnterWithPath(id: number, path: string, mode: string = '')
+def EnterWithPath(path: string, mode: string = '')
+	const id = bufnr('%')
+
 	if isdirectory(path)
-		DrawPath(id, path)
+		DrawPath(path)
 	else
 		if mode == 'horizontal'
 			execute 'split ' .. path
