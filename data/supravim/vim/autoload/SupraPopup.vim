@@ -160,6 +160,24 @@ export def SetFocus(popup: dict<any>, focus: bool = true)
 		endif
 	endif
 enddef
+
+
+export def Hide(popup: dict<any>)
+	popup_hide(popup.wid)
+	popup.hidden = 1
+enddef
+
+export def Show(popup: dict<any>)
+	popup_show(popup.wid)
+	popup.hidden = 0
+enddef
+
+export def IsHidden(popup: dict<any>): bool
+	return popup.hidden == 1
+enddef
+
+
+
 #############################################################################
 # Input Popup
 #############################################################################
@@ -483,8 +501,10 @@ export def Simple(options: dict<any>): dict<any>
 		line: 0,
 		width: 4,
 		height: 1,
+		mapping: 0, # 0: no mapping, 1: mapping
 		maxwidth: 999,
 		maxheight: 999,
+		pos: 'topleft',
 		cursorline: 0, # The line where the cursor is located
 		scrollbar: 0, # 0: no scrollbar, 1: scrollbar
 		wid: 0,
@@ -497,6 +517,7 @@ export def Simple(options: dict<any>): dict<any>
 		cb_gainfocus: [], # Function (SupraPopup) -> void
 		cb_keypressed_focus: [], # Function (SupraPopup: popup, key: string) -> void 
 		cb_keypressed_nofocus: [], # Function (SupraPopup: popup, key: string) -> void
+		hidden: 0, # 0: not hidden, 1: hidden
 	}
 
 	for key in keys(options)
@@ -513,6 +534,8 @@ export def Simple(options: dict<any>): dict<any>
 		time: 90000,
 		tabpage: -1,
 		zindex: 300,
+		hidden: supradict.hidden,
+		pos: supradict.pos,
 		drag: 0,
 		wrap: 0,
 		border: [1],
@@ -520,11 +543,10 @@ export def Simple(options: dict<any>): dict<any>
 		borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
 		highlight: 'Normal',
 		padding: [0, 1, 0, 1],
-		mapping: 0,
+		mapping: supradict.mapping, # 0: no mapping, 1: mapping
 		fixed: 1,
 		cursorline: supradict.cursorline,
 		scrollbar: supradict.scrollbar,
-		hidden: 0,
 		filter: FilterSimple, 
 		callback: (wid, _) => {
 			var popup = all_popups[wid]

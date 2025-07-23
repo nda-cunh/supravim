@@ -38,14 +38,14 @@ def g:SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	var background = Popup.Simple({
 		prompt: 'SupraSearch',
 		line: 2,
-		col: &columns,
+		col: &columns - 34,
 		width: 31,
 		height: 6,
 	})
 
 	var pop1 = Popup.Input({
 		prompt: 'Find │ ',
-		col: &columns - 2,
+		col: &columns - 32,
 		line: 3,
 		width: 27,
 		maxwidth: 27,
@@ -53,7 +53,7 @@ def g:SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 
 	var pop2 = Popup.Input({
 		prompt: 'Replace │ ',
-		col: &columns - 2,
+		col: &columns - 32,
 		line: 6,
 		maxwidth: 27,
 		width: 27,
