@@ -23,6 +23,8 @@ public class Main {
 	private static bool is_uninstall = false;
 	private static bool print_opts = false;
 	private static bool print_themes = false;
+	private static bool print_plugins = false;
+	private static bool print_supramenu_plugin = false;
 	private static bool list_plugin = false;
 	private static string? theme = null;
 	private static string? add_plugin = null;
@@ -51,11 +53,68 @@ public class Main {
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
 		{ "print-options", 0,	HIDDEN, 	NONE,			ref print_opts,		"Print available options.",					null },
 		{ "print-themes", 0,	HIDDEN, 	NONE,			ref print_themes,	"Print available themes.",					null },
-		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"Just save the config actual",				null },
-		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"Just apply the config actual",				null },
+		{ "print-plugins", 0,	HIDDEN, 	NONE,			ref print_plugins,	"",				null },
+		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"",				null },
+		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"",				null },
+		{ "supramenu_pl", 0,	HIDDEN, 	NONE,			ref print_supramenu_plugin,	"",		null },
 		{ null }
 	};
 
+	struct SupraVimPlugin {
+		public SupraVimPlugin (string name, string version, string comment, bool installed) {
+			this.name = name;
+			this.version = version;
+			this.comment = comment;
+			this.installed = installed;
+		}
+		string name;
+		string version;
+		string comment;
+		bool installed;
+	}
+
+	// [installed] plugin-autobear 1.3 [auto generate a compile_commands.json for your project]
+	public static void ft_print_supramenu_plugin () {
+		var regex = new Regex (""" (?<name>\S+) \s+ (?<version>\S+) \s+ \[(?<Comment>[^\]]+)   """, RegexCompileFlags.EXTENDED);
+		print ("-- Supramenu Plugins --\n\n");
+		string stdout;
+		Process.spawn_command_line_sync ("suprapack search_supravim_plugin", out stdout);
+		MatchInfo info;
+		var sp = stdout.split ("\n");
+		SupraVimPlugin[] plugins = {};
+		foreach (unowned string line in sp) {
+			bool installed = false;
+			if (line.has_prefix ("[installed] ")) {
+				line = line.offset (12);
+				installed = true;
+			}
+			if (regex.match(line, 0, out info)) {
+				var name = info.fetch_named("name");
+				var version = info.fetch_named("version");
+				var comment = info.fetch_named("Comment");
+				plugins += new SupraVimPlugin (name, version, comment, installed);
+			}
+		}
+		int max_name_len = 0;
+		int max_version_len = 0;
+		foreach (unowned var plugin in plugins) {
+			if (plugin.name.length > max_name_len)
+				max_name_len = plugin.name.length;
+			if (plugin.version.length > max_version_len)
+				max_version_len = plugin.version.length;
+		}
+		max_name_len += 2; // for padding
+		max_version_len += 2; // for padding
+		// print all plugins
+
+		foreach (unowned var plugin in plugins) {
+				print ("• %-*s %*s   %s %s \n", 
+				max_name_len, plugin.name, 
+				max_version_len, plugin.version, 
+				plugin.installed ? "➕": "❌",
+				plugin.comment);
+		}
+	}
 	
 	/**
 	 * Run arguments based on the options set.
@@ -63,6 +122,21 @@ public class Main {
 	public static bool? run () throws Error {
 		if (is_version) {
 			print ("Supravim version %s\n", Config.VERSION);
+			return true;
+		}
+		if (print_plugins)
+			return Plugin.print_all_installed_plugins ();
+		if (print_opts) {
+			var opts = General.get ();
+			foreach (var i in opts) {
+				print ("%s ", i.name);
+			}
+			return true;
+		}
+		if (print_themes)
+			return Theme.print_all_themes ();
+		if (print_supramenu_plugin) {
+			ft_print_supramenu_plugin ();
 			return true;
 		}
 		else if (save_config) {
@@ -160,7 +234,7 @@ public class Main {
 			return result != null ? 0 : -1;
 		}
 		catch (Error e) {
-			printerr ("Error parsing option: %s\n", e.message);
+			printerr ("%s\n", e.message);
 			return -1;
 		}
 	}

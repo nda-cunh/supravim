@@ -3,7 +3,7 @@ namespace Plugin {
 	internal class PluginsLst {
 
 		private string filename = Environment.get_user_config_dir () + "/supravim.cfg";
-		private Array<string> array = new Array<string> ();
+		private GenericArray<string> array = new GenericArray<string> ();
 
 		/***
 		 * Constructor for PluginsLst.
@@ -14,8 +14,7 @@ namespace Plugin {
 			string contents;
 			FileUtils.get_contents (filename, out contents);
 			var data = contents.split ("\n");
-			var len = data.length;
-			array.append_vals ((owned)data, len);
+			array.data = (owned)data;
 		}
 
 		/**
@@ -46,14 +45,14 @@ namespace Plugin {
 		 * @param index Output parameter to store the index of the found plugin.
 		 * @return The plugin string if found, null otherwise.
 		 */
-		public unowned string? get_from_name (string name, out int index) {
+		public unowned string? get_from_name (string name, out uint index) {
 			index = 0;
 			foreach (unowned string item in array) {
 				var idx = item.last_index_of_char (' ') + 1;
 				if (name == item.offset (idx)) {
 					return item;
 				}
-				index++;
+				index += 1;
 			}
 			return null;
 		}
@@ -65,11 +64,11 @@ namespace Plugin {
 		 * @return true if the plugin was added successfully, false if it already exists.
 		 */
 		public bool add_from_url (string url, string name) {
-			int index;
+			uint index;
 			unowned string? str = get_from_name (name, out index);
 			if (str != null)
 				return false;
-			array.append_val (@"E $url $name");
+			array.add(@"E $url $name");
 			return true;
 		}
 
@@ -79,8 +78,8 @@ namespace Plugin {
 		 * @return true if the plugin was added successfully, false if it already exists.
 		 */
 		public bool remove_from_name (string name) {
-			int index;
-			var item = get_from_name (name, out index);
+			uint index;
+			unowned string? item = get_from_name (name, out index);
 			if (item != null) {
 				array.remove_index(index);
 				return true;
@@ -93,7 +92,7 @@ namespace Plugin {
 		 * @param index The index of the plugin to retrieve.
 		 * @return The plugin string at the specified index.
 		 */
-		public bool is_enable (int index) {
+		public bool is_enable (uint index) {
 			unowned string item = array.data[index];
 			return item[0] == 'E';
 		}
@@ -102,7 +101,7 @@ namespace Plugin {
 		 * Enable a plugin at a specific index.
 		 * @param index The index of the plugin to enable.
 		 */
-		public void enable (int index) {
+		public void enable (uint index) {
 			unowned string item = array.data[index];
 			item.data[0] = 'E';
 		}
@@ -111,7 +110,7 @@ namespace Plugin {
 		 * Disable a plugin at a specific index.
 		 * @param index The index of the plugin to disable.
 		 */
-		public void disable (int index) {
+		public void disable (uint index) {
 			unowned string item = array.data[index];
 			item.data[0] = 'D';
 		}
