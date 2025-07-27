@@ -1,5 +1,5 @@
 pkgname=plugin-github-copilot
-pkgver=1.50
+pkgver=1.51
 pkgdesc='Supravim plugin for GitHub Copilot'
 depends=('supravim')
 arch=('any')
