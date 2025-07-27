@@ -35,4 +35,17 @@ namespace Theme {
 		FileUtils.set_contents (rc_path, contents);
 		return true;
 	}
+
+
+	public bool print_all_themes() throws Error {
+		var dir = Dir.open (@"$(HOME)/.vim/colors/");
+		unowned string? name;
+
+		while ((name = dir.read_name ()) != null) {
+			if (name.has_suffix (".vim")) {
+				print ("%s ", name[:-4]);
+			}
+		}
+		return true;
+	}
 }

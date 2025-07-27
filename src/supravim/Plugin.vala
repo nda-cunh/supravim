@@ -18,6 +18,7 @@ namespace Plugin {
 		Process.spawn_command_line_sync(@"git clone --depth=1 $url $HOME/.vim/bundle/$name", null, null, out wait);
 		if (wait != 0) {
 			plugins.remove_from_name (name);
+			printerr (BOLD + RED + "Failed to clone plugin %s\n" + DEFAULT, name);
 			throw new SpawnError.FAILED("git return %d", wait);
 		}
 		return true;
@@ -47,7 +48,7 @@ namespace Plugin {
 	 */
 	public bool disable(string name) throws Error {
 		var plugins = new PluginsLst ();
-		int index;
+		uint index;
 		unowned string? item = plugins.get_from_name (name, out index);
 
 		if (item == null) {
@@ -71,7 +72,7 @@ namespace Plugin {
 	 */
 	public bool enable(string name) throws Error {
 		var plugins = new PluginsLst ();
-		int index;
+		uint index;
 		unowned string? item = plugins.get_from_name (name, out index);
 
 		if (item == null) {
@@ -95,7 +96,6 @@ namespace Plugin {
 	public bool update_all () throws Error {
 		var plugins = new PluginsLst ();
 		foreach (unowned string item in plugins) {
-			int index;
 			unowned string name = item.offset (item.last_index_of_char (' ') + 1);
 			Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$name pull");
 		}
@@ -109,7 +109,7 @@ namespace Plugin {
 	 */
 	public bool update (string name) throws Error {
 		var plugins = new PluginsLst ();
-		int index;
+		uint index;
 		unowned string? item = plugins.get_from_name (name, out index);
 		if (item == null) {
 			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
@@ -138,6 +138,17 @@ namespace Plugin {
 				print (BOLD + "%-15s " + GREEN + "%s" + DEFAULT + "\n", name, "Enable");
 			else
 				print (BOLD + "%-15s " + RED + "%s" + DEFAULT + "\n", name, "Disable");
+		}
+		return true;
+	}
+
+	public bool print_all_installed_plugins () throws Error {
+		var plugins = new PluginsLst ();
+		unowned string name;
+
+		foreach (unowned var item in plugins) {
+			name = item.offset (item.last_index_of_char (' ') + 1);
+			print ("%s ", name);
 		}
 		return true;
 	}
