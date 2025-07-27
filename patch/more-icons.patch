@@ -1,14 +1,14 @@
-From 30d7edd74b6550ab69c0fbcf9f7a1bdc6170867f Mon Sep 17 00:00:00 2001
+From c6db626749c056f64d1e3bc9cebdf4db0a6e6a01 Mon Sep 17 00:00:00 2001
 From: nda-cunh <hydraldev@gmail.com>
-Date: Sat, 19 Jul 2025 02:46:51 +0200
+Date: Wed, 23 Jul 2025 23:59:57 +0200
 Subject: [PATCH] add other nerdfont icons
 
 ---
- plugin/webdevicons.vim | 52 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 51 insertions(+), 1 deletion(-)
+ plugin/webdevicons.vim | 53 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
 diff --git a/plugin/webdevicons.vim b/plugin/webdevicons.vim
-index 596ec68..0c6d5df 100644
+index 596ec68..24d8f9c 100644
 --- a/plugin/webdevicons.vim
 +++ b/plugin/webdevicons.vim
 @@ -217,7 +217,8 @@ function! s:setDictionaries()
@@ -21,11 +21,12 @@ index 596ec68..0c6d5df 100644
          \ 'h'        : '',
          \ 'hh'       : '',
          \ 'hpp'      : '',
-@@ -227,6 +228,45 @@ function! s:setDictionaries()
+@@ -227,6 +228,46 @@ function! s:setDictionaries()
          \ 'nix'      : '',
          \ 'lua'      : '',
          \ 'java'     : '',
 +        \ 'vala'     : '',
++        \ 'water'    : '󰥨',
 +        \ 'vapi'     : '',
 +        \ 'kt'       : '',
 +        \ 'kts'      : '',
@@ -67,7 +68,7 @@ index 596ec68..0c6d5df 100644
          \ 'sh'       : '',
          \ 'fish'     : '',
          \ 'bash'     : '',
-@@ -292,6 +332,16 @@ function! s:setDictionaries()
+@@ -292,6 +333,16 @@ function! s:setDictionaries()
    let s:file_node_exact_matches = {
          \ 'exact-match-case-sensitive-1.txt' : '1',
          \ 'exact-match-case-sensitive-2'     : '2',
