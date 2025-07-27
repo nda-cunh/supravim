@@ -7,20 +7,18 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def Items(): list<string>
-	var content = system("supramake --print-rules")
-	var lines = split(content, '\n')
+	const content = system("supramake --print-rules")
+	const lines = split(content, '\n')
 	return lines
 enddef
 
 def Start()
   selector.Start(Items(), {
     select_cb: Select,
-    preview: 0,
-	# xoffset: 0.4,
+    preview: false,
 	width: 0.20,
 	title: '── FuzzyMake ─'
   })
 enddef
 
-noremap <space><f5> <scriptcmd>Start()<cr>
-
+noremap <leader><f5> <scriptcmd>Start()<cr>
