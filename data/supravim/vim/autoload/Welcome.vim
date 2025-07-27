@@ -2,11 +2,15 @@ vim9script
 
 import autoload 'SupraPopup.vim' as Popup
 
-var timer_animation: number = 0
+const help_str = "By: nda-cunh       (Q) quit     (T) theme   (N) Page-Normal   (P) Page-Plugins   (G) GUI-mode"
 
+var timer_animation: number = 0
 var activity = 0
 
 def ActualizeActivity()
+	setbufvar(winbufnr(0), '&modifiable', 1)
+	execute ':%d'
+	setbufvar(winbufnr(0), '&modifiable', 0)
 	if activity == 0
 		call ActualizeWelcome()
 	elseif activity == 1
@@ -14,14 +18,75 @@ def ActualizeActivity()
 	endif
 enddef
 
+def NextPage()
+	if activity == 1
+		return
+	endif
+	activity += 1
+	call ActualizeActivity()
+enddef
+
+def BackPage()
+	if activity == 0
+		return
+	endif
+	activity -= 1
+	call ActualizeActivity()
+enddef
+
+def NormalPage()
+	activity = 0
+	call ActualizeActivity()
+enddef
+
+def PluginPage()
+	activity = 1
+	call ActualizeActivity()
+enddef
+
 def ActualizePlugin()
+	set filetype=supravim_plugins
+	job_start(['supravim', '--supramenu_pl'], {
+		out_io: 'buffer',
+		out_mode: 'raw',
+		close_cb: (ch) => {
+			var bufnr = ch_getbufnr(ch, "out")
+			var lines = getbufline(bufnr, 0, '$')
+			lines[1] = substitute(lines[1], "\033\[[0-9;]*m", '', 'g')
+			var sp = split(lines[1], '\n')
+
+			var text = []
+			var len_max = 0
+			for i in sp
+				if len(i) > len_max
+					len_max = len(i)
+				endif
+				add(text, i)
+			endfor
+			var ascii_middle = [help_str, '']
+			var text_middle = []
+			for i in text
+				if i == ''
+					add(text_middle, '')
+				else
+					add(text_middle, repeat(' ', (&columns / 2) - (len_max / 2)) .. i)
+				endif
+			endfor
+
+			text = ascii_middle + text_middle
+			var buf = winbufnr(0)
+
+			setbufvar(buf, '&modifiable', 1)
+			setbufline(buf, 1, text)
+			setbufvar(buf, '&modifiable', 0)
+			search('•', 'cW')
+		},
+	})
 enddef
 
 set shortmess+=I
 
 export def SupraWelcome()
-	set filetype=supravim_welcome
-
 	noremap <buffer><c-@>	<Nop>
 	noremap <buffer>q	<cmd>q!<CR>
 	noremap <buffer>Q	<cmd>q!<CR>
@@ -37,6 +102,10 @@ export def SupraWelcome()
 	map <buffer> g <ScriptCmd>call g:SettingsSupravim()<CR>
 	map <buffer> p <ScriptCmd>call PluginPage()<CR>
 	map <buffer> P <ScriptCmd>call PluginPage()<CR>
+	map <buffer> n <ScriptCmd>call NormalPage()<CR>
+	map <buffer> N <ScriptCmd>call NormalPage()<CR>
+	map <buffer> <right> <ScriptCmd>call NextPage()<CR>
+	map <buffer> <left> <ScriptCmd>call BackPage()<CR>
 
 	augroup SupravimWelcome
 		autocmd!
@@ -46,6 +115,7 @@ export def SupraWelcome()
 		autocmd BufLeave <buffer> timer_stop(timer_animation)
 		autocmd CursorMoved <buffer> call SupraWelcomeMove()
 		autocmd VimResized <buffer> call ActualizeActivity()
+		autocmd VimResized <buffer> supra_pattern = ['', '', '', '']
 	augroup END
 
 
@@ -76,6 +146,7 @@ enddef
 
 
 def ActualizeWelcome()
+	set filetype=supravim_welcome
 	const ascii = [
 	 " ____                      __     ___",
 	 "/ ___| _   _ _ __  _ __ __ \\ \\   / (_)_ __ ___",
@@ -101,7 +172,7 @@ def ActualizeWelcome()
 				endif
 				add(text, i)
 			endfor
-			var ascii_middle = ["By: nda-cunh       (Q) quit     (T) theme   (P) Plugins   (G) GUI-mode"]
+			var ascii_middle = [help_str]
 			for i in ascii
 				add(ascii_middle, repeat(' ', (&columns / 2) - (52 / 2)) .. i)
 			endfor
@@ -128,6 +199,17 @@ def ActualizeWelcome()
 enddef
 
 def ChooseAnOption()
+	if activity == 0
+		call ChooseAnOptionGeneral()
+	elseif activity == 1
+		call ChooseAnOptionPlugin()
+	endif
+enddef
+
+def ChooseAnOptionPlugin()
+enddef
+
+def ChooseAnOptionGeneral()
 	var option_name = getline('.')
 	var idx = stridx(option_name, '•') + 2
 	option_name = option_name[idx : ]
