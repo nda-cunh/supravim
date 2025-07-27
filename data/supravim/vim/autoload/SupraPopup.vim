@@ -260,6 +260,24 @@ def FilterInput(popup: dict<any>, wid: number, key: string): number
 			Func(copy_line)
 		endfor
 		return 1
+	elseif key == "\<C-v>"
+		echo "Paste from clipboard"
+		var content = getreg('"')
+		content = substitute(content, '\n', '', 'g') # Remove newlines
+		if len(content) == 0
+			return NOBLOCK
+		endif
+		is_changed = true
+		const len_content = len(content)
+		if cur_pos == len(line)
+			for i in content
+				add(line, i)
+			endfor
+		else
+            var pre = cur_pos - 1 >= 0 ? line[: cur_pos - 1] : []
+            line = pre + [content] + line[cur_pos :]
+		endif
+		cur_pos += len_content
 	elseif key == "\<Tab>"
 		if popup.focus == false
 			return NOBLOCK
@@ -509,7 +527,7 @@ export def Simple(options: dict<any>): dict<any>
 		scrollbar: 0, # 0: no scrollbar, 1: scrollbar
 		wid: 0,
 		type: 'simple',
-		close_key: ["\<Esc>", "\<C-c>"], # List of keys to close the popup
+		close_key: ["\<Esc>", "\<C-c>", "\<C-q>"], # List of keys to close the popup
 		cb_fitler_focus: [], # Function (supra: SupraPopup, wid: number, key: string) -> number (NOBLOCK or BLOCK)
 		cb_fitler_nofocus: [], # Function (supra: SupraPopup,wid: number, key: string) -> number (NOBLOCK or BLOCK or CONTINUE)
 		cb_close: [], # Function (SupraPopup) -> void 

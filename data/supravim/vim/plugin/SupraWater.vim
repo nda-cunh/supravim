@@ -6,9 +6,13 @@ map - <scriptcmd>:call g:Water()<CR>
 
 var local: dict<any> = {}
 
+autocmd VimEnter * if isdirectory(@%) | execute 'g:Water()' | endif
+autocmd VimEnter * if &filetype == 'nerdtree' | execute 'g:Water()' | endif
+autocmd BufEnter * if isdirectory(@%) | execute 'g:Water()' | endif
+
 def g:Water()
 	const rd = rand() % 1000
-	const id = bufadd('suprawater_vim' .. rd)
+	const id = bufadd('suprawater' .. rd .. '.water')
 	const last_buffer = bufnr()
 	const actual_path = expand('%:p:h')
 
@@ -315,7 +319,18 @@ def EnterWithPath(path: string, mode: string = '')
 enddef
 
 def Quit()
-	:b!#
+	const id = bufnr('%')
+	const last_id = local[id].last_buffer
+	const name = bufname(last_id)
+	var last_filetype = getbufvar(last_id, '&filetype', '')
+
+	if isdirectory(name)
+		quit
+	elseif last_filetype == 'nerdtree' || last_filetype == 'netrw'
+		quit
+	else
+		:b!#
+	endif
 enddef
 
 def CancelMoveOneLine()
