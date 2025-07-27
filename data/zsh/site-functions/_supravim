@@ -11,6 +11,9 @@ _supravim() {
 		-d|--disable)
 			_arguments "*:commands:($(supravim --print-options))"
 			;;
+		--remove-plugin|--enable-plugin|--disable-plugin)
+			_arguments "*:commands:($(supravim --print-plugins))"
+			;;
 		-e|--theme)
 			_arguments "*:commands:($(supravim --print-themes))"
 			;;
