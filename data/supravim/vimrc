@@ -4,6 +4,7 @@ set nocompatible
 filetype off
 
 import autoload 'SupraNotification.vim' as Notify
+import autoload 'SupraPopup.vim' as Popup 
 import autoload 'supraload.vim' as SupraLoad 
 
 SupraLoad.Infect()
@@ -88,6 +89,8 @@ noremap <c-q>		<cmd>q!<CR>
 inoremap <c-s>		<cmd>w!<CR><esc>
 noremap <c-s>		<cmd>w!<CR><esc>
 nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
+nnoremap <F2> 		<ScriptCmd>call RenameSymbol()<CR>
+inoremap <F2> 		<ScriptCmd>call RenameSymbol()<CR>
 nnoremap <F5> 		<ScriptCmd>call Make("run")<CR>
 inoremap <F5>		<ScriptCmd>call Make("run")<CR>
 nnoremap <F6>		<ScriptCmd>call Make("run2")<CR>
@@ -127,6 +130,25 @@ def AutoLspHold()
 			silent! LspHover
 		endif
 	endif
+enddef
+
+def RenameSymbol()
+	const line_pt = line('.')
+	const col_pt = col('.')
+	var popup = Popup.Input({prompt: 'Rename: ', line: "cursor-1", col: "cursor+5", moved: 'WORD'})
+	popup->Popup.SetInput(expand('<cword>'))
+	popup->Popup.AddEventInputEnter((line: string) => {
+		echo 'Renaming symbol to: ' .. line
+		Popup.Close(popup)
+		call cursor(line_pt, col_pt)
+		feedkeys(":LspRename\<cr>", "n")
+		var i = strcharlen(expand('<cword>'))
+		for j in range(0, i - 1)
+			feedkeys("\<bs>", "n")
+		endfor
+		feedkeys(line .. "\<cr>", "n")
+		wall!
+	})
 enddef
 
 autocmd CursorHold * call AutoLspHold()
@@ -671,19 +693,19 @@ if expand('%:e') == ''
 	g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
 endif
 g:airline_section_b = airline#section#create(['SupraVim'])
-g:airline_left_sep = ''
-g:airline_left_alt_sep = ''
-g:airline_right_sep = ''
-g:airline_right_alt_sep = ''
+g:airline_left_sep = '◤'
+g:airline_left_alt_sep = '╲'
+g:airline_right_sep = '◥'
+g:airline_right_alt_sep = '╲'
 g:airline#extensions#tabline#enabled = 1
 g:airline#extensions#tabline#show_buffers = 0
 g:airline#extensions#tabline#tabs_label = 'Tabs'
 g:airline#extensions#tabline#buffer_nr_show = 0
 g:airline#extensions#tabline#tab_nr_type = 1
-g:airline#extensions#tabline#left_sep = ''
-g:airline#extensions#tabline#left_alt_sep = ''
-g:airline#extensions#tabline#right_sep = ''
-g:airline#extensions#tabline#right_alt_sep = ''
+g:airline#extensions#tabline#left_sep = '◤'
+g:airline#extensions#tabline#left_alt_sep = '╱'
+g:airline#extensions#tabline#right_sep = '◥'
+g:airline#extensions#tabline#right_alt_sep = '╱'
 
 # ----------------- POPUP ------------------ #
 autocmd VimEnter * CreatePopit()
@@ -847,7 +869,7 @@ def Init_menu()
 	nmenu PopUp.Show\ References	<esc>:LspReferences<cr>
 	nmenu PopUp.-sep5- <Nop>
 	nmenu PopUp.Save\ All		:wall<CR>
-	nmenu PopUp.Auto\ Norm		<F2>
+	nmenu PopUp.Auto\ Norm		<leader><F2>
 	nmenu PopUp.Switch\ Norm		<F3>
 	nmenu PopUp.-sep0- <Nop>
 	nmenu PopUp.Select\ All		<esc>gg<s-v>G
@@ -856,7 +878,7 @@ def Init_menu()
 	nmenu PopUp.Redo			<C-r>
 	nmenu PopUp.-sep2- <Nop>
 	nmenu PopUp.Debug			:call Gdbf()<cr>
-	nmenu PopUp.Rename\ Symbol	:LspRename<cr>
+	nmenu PopUp.Rename\ Symbol <F2>	
 
 	if g:sp_fold
 		nmenu PopUp.-sep3- <Nop>
