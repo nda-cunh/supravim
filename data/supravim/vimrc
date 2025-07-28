@@ -718,7 +718,7 @@ def CreatePopit()
 	})
 enddef
 
-def ClickMeUpdate()
+def ClickMeUpdate(wid: number)
 	!suprapack update
 enddef
 

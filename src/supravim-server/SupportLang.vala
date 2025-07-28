@@ -10,7 +10,7 @@ public class SupportLang {
 	public const Support[] all_packages = {
 		{ "c3,c3i", "plugin-lang-c3", "lang-c3", "c3"},
 		{ "vala,vapi", "plugin-lang-vala", "lang-vala", "vala"},
-		{ "blp", "plugin-lang-blueprint", "lang-blueprint", "blp"},
+		{ "blp,blueprint", "plugin-lang-blueprint", "lang-blueprint", "blp"},
 
 	};
 
