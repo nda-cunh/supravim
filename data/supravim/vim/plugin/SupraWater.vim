@@ -55,6 +55,7 @@ def g:Water()
 	nnoremap <buffer>_				<scriptcmd>call EnterWithPathAndJump()<cr>
 	nnoremap <buffer>h				<scriptcmd>call HelpPopup()<cr>
 	nnoremap <buffer>?				<scriptcmd>call HelpPopup()<cr>
+	nnoremap <buffer><c-n>			<esc>:tabnew 
 	nnoremap <buffer><tab>			<Nop>
 
 	
