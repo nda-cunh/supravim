@@ -536,7 +536,7 @@ export def Simple(options: dict<any>): dict<any>
 		cb_keypressed_focus: [], # Function (SupraPopup: popup, key: string) -> void 
 		cb_keypressed_nofocus: [], # Function (SupraPopup: popup, key: string) -> void
 		hidden: 0, # 0: not hidden, 1: hidden
-		moved: 'any'
+		moved: [0, 0, 0]
 	}
 
 	for key in keys(options)

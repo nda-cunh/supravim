@@ -67,8 +67,11 @@ def NerdTreeRefreshColor()
 
 	var id = win_getid()
 	if g:sp_tree == true
-		silent! NERDTreeClose
-		silent! NERDTree
+		echom 'NERDTreeTabs: Refreshing NERDTree...' .. expand('%:p')
+		if expand('%:p') != ''
+			silent! NERDTreeClose
+			silent! NERDTree
+		endif
 	endif
 	silent! call win_gotoid(id)
 enddef
@@ -95,7 +98,4 @@ augroup SupraNERDTreeTabs
 	autocmd!
 	autocmd VimEnter * call NerdTreeRefreshColor()
 	autocmd TabEnter * call OnTabEnter()
-	if g:sp_tree == true
-		autocmd VimEnter * call OpenTreeTabs()
-	endif
 augroup END
