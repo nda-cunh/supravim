@@ -536,6 +536,7 @@ export def Simple(options: dict<any>): dict<any>
 		cb_keypressed_focus: [], # Function (SupraPopup: popup, key: string) -> void 
 		cb_keypressed_nofocus: [], # Function (SupraPopup: popup, key: string) -> void
 		hidden: 0, # 0: not hidden, 1: hidden
+		moved: 'any'
 	}
 
 	for key in keys(options)
@@ -563,6 +564,7 @@ export def Simple(options: dict<any>): dict<any>
 		padding: [0, 1, 0, 1],
 		mapping: supradict.mapping, # 0: no mapping, 1: mapping
 		fixed: 1,
+		moved: supradict.moved, # 'any' or 'cursorline'
 		cursorline: supradict.cursorline,
 		scrollbar: supradict.scrollbar,
 		filter: FilterSimple, 

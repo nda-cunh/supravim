@@ -141,7 +141,7 @@ def RenameSymbol()
 		echo 'Renaming symbol to: ' .. line
 		Popup.Close(popup)
 		call cursor(line_pt, col_pt)
-		feedkeys(":LspRename\<cr>", "n")
+		feedkeys("\<esc>:LspRename\<cr>", "n")
 		var i = strcharlen(expand('<cword>'))
 		for j in range(0, i - 1)
 			feedkeys("\<bs>", "n")
