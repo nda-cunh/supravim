@@ -8,6 +8,8 @@ public class MyMonitor {
 	 * reset if the signal is already sent after 250ms
 	 */
 	private void send_refresh () {
+		if (ready == false)
+			return ;
 		if (source_id != 0)
 			Source.remove (source_id);
 		source_id = Timeout.add (250, () => {
@@ -119,9 +121,15 @@ public class MyMonitor {
 	private Regex regex_nb = /^[0-9]*$/;
 	private FileMonitor []monitors;
 	private int depth_max = 10;
+	private bool ready = false;
 
 	public MyMonitor (owned string path) {
+		Timeout.add (1000, () => {
+			ready = true;
+			return false;
+		});
 		monitors = {};
+
 		if (path[path.length - 1] == '/')
 			path = path.substring (0, path.length - 1);
 		if (path == Environment.get_home_dir ())
