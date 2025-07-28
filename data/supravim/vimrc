@@ -29,6 +29,19 @@ if (has("termguicolors"))
 	set termguicolors
 endif
 
+# Protect against invalid symbols
+if true
+	g:sp_symbol_signs = substitute(g:sp_symbol_signs, '\s+', '', 'g')
+	const len = strcharlen(g:sp_symbol_signs)
+	if len > 2
+		call Notify.Notification(["Invalid symbol", "The symbol used for the signs must be a single character"], {type: 'error'})
+		g:sp_symbol_signs = '✖'
+	elseif len == 0
+		call Notify.Notification(["Invalid symbol", "The symbol used for the signs must not be empty"], {type: 'error'})
+		g:sp_symbol_signs = '✖'
+	endif
+endif
+
 g:mapleader = g:sp_mapleader
 
 set t_Co=256
@@ -90,7 +103,6 @@ nnoremap <S-Down>	<C-w><Down>
 inoremap <TAB>		<TAB>
 inoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
 nnoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
-nnoremap <S-t>		<scriptcmd>term ++rows=15<CR>
 nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
@@ -98,7 +110,7 @@ vnoremap <Tab>		>><esc>gv
 inoremap <c-a>		<esc>gg<s-v>G
 nnoremap <silent><c-@>		<cmd>LspHover<cr>
 silent! unmap <c-t>
-map <c-t>	<scriptcmd>term ++rows=15<CR>
+nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
 
 # ---------------      LSP            ---------------"
 set updatetime=500
