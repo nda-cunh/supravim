@@ -8,5 +8,5 @@ optional_dependency:
 exclude_package: 
 binary: plugin-blueprint
 size_tar: 
-size_installed: 2615
+size_installed: 2507
 wanted: no
