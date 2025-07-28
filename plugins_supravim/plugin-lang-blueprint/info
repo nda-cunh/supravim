@@ -1,4 +1,4 @@
-name: plugin-blueprint
+name: plugin-lang-blueprint
 version: 1.1
 arch: any
 author: nda-cunh
@@ -8,4 +8,5 @@ optional_dependency:
 exclude_package: 
 binary: plugin-blueprint
 size_tar: 
-size_installed: 3930
+size_installed: 2615
+wanted: no
