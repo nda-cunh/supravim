@@ -694,7 +694,7 @@ if expand('%:e') == ''
 endif
 g:airline_section_b = airline#section#create(['SupraVim'])
 g:airline_left_sep = '◤'
-g:airline_left_alt_sep = '╲'
+g:airline_left_alt_sep = '╱'
 g:airline_right_sep = '◥'
 g:airline_right_alt_sep = '╲'
 g:airline#extensions#tabline#enabled = 1
@@ -921,11 +921,11 @@ enddef
 
 g:loaded_netrw = 1
 g:loaded_netrwPlugin = 1
+g:NERDTreeHijackNetrw = 0
 
 def Welcome()
 	# Used for SupraWater with folder
 	silent! autocmd! FileExplorer
-	silent! autocmd! NERDTreeHijackNetrw
 	# Remove strange bug with vim
 	const curpos = getpos('.')
 	call cursor(line('w$'), 0)
