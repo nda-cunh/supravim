@@ -1,4 +1,4 @@
-# SupraVim 5.89
+# SupraVim 6.00
 
 a simple vim distribution, easy to use and packed with features. It is coded in vim9 and vala.
 It is highly customizable with pre-designed modules and options.
