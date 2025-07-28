@@ -16,7 +16,7 @@ def g:Water()
 	const last_buffer = bufnr()
 	const actual_path = expand('%:p:h')
 
-	mkview
+	silent! mkview
 	var file_name = expand("%:t")
 	execute "b! " .. id 
 
@@ -55,6 +55,7 @@ def g:Water()
 	nnoremap <buffer>_				<scriptcmd>call EnterWithPathAndJump()<cr>
 	nnoremap <buffer>h				<scriptcmd>call HelpPopup()<cr>
 	nnoremap <buffer>?				<scriptcmd>call HelpPopup()<cr>
+	nnoremap <buffer><tab>			<Nop>
 
 	
 
