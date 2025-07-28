@@ -82,7 +82,6 @@ if g:sp_norme == true
 	call EnableAugroup()
 endif
 
-inoremap <leader><F3>	<scriptcmd>ToggleNorm()<CR>
 noremap <leader><F3>		<scriptcmd>ToggleNorm()<CR>
 
 def DisableNorm()
