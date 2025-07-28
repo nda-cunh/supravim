@@ -13,4 +13,3 @@ def g:C42Formatter()
 enddef
 
 autocmd FileType c,cpp nnoremap <leader><F2>		<esc>:call C42Formatter()<cr>
-autocmd FileType c,cpp inoremap <leader><F2>		<esc>:call C42Formatter()<cr>

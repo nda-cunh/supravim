@@ -1,5 +1,5 @@
 name: plugin-42formatter
-version: 1.1
+version: 1.2
 arch: any
 author: nda-cunh
 description: press <leader><f2> in vim to norm your code
@@ -8,5 +8,5 @@ optional_dependency:
 exclude_package: 
 binary: plugin-42formatter
 size_tar: 
-size_installed: 692
+size_installed: 625
 wanted: no
