@@ -1,6 +1,6 @@
 vim9script
 
-g:sp_norme = true # norminette hint, press F3 to switch
+g:sp_norme = true # norminette hint, press <leader>F3 to switch
 
 highlight DapBreakpoint ctermfg=135
 execute 'sign define NormLinter text=' .. g:sp_symbol_signs .. ' texthl=DapBreakpoint'
@@ -82,8 +82,8 @@ if g:sp_norme == true
 	call EnableAugroup()
 endif
 
-inoremap <F3>		<scriptcmd>ToggleNorm()<CR>
-noremap <F3>		<scriptcmd>ToggleNorm()<CR>
+inoremap <leader><F3>	<scriptcmd>ToggleNorm()<CR>
+noremap <leader><F3>		<scriptcmd>ToggleNorm()<CR>
 
 def DisableNorm()
 	sign unplace *
