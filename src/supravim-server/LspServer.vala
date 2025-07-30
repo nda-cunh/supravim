@@ -123,6 +123,7 @@ namespace LspServer {
 		bs.printf("%s@#@%s@#@%s", server.name, server.command, server.allowed);
 		foreach (var n in server.allowed.split(","))
 			get_is_loaded()[n] = server;
+		bs.replace ("$USER", Environment.get_user_name ());
 		return bs.str;
 	}
 
