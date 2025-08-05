@@ -16,26 +16,33 @@ namespace General {
 	 * Load ~/.vimrc
 	 */
 	private static void init_options () throws Error {
-		unowned string? name;
-		var bs = new StringBuilder.sized (64);
-		var plugin_dir = @"$(HOME)/.vim/plugin/";
-
-		var dir = Dir.open (plugin_dir);
-
+		load_from_directory (@"$(HOME)/.vim/plugin/");
+		load_from_directory (@"$(HOME)/.vim/bundle/supravim/plugin/");
 		load_options_from_file (rc_path);
+	}
 
-		while ((name = dir.read_name ()) != null) {
-			if (name.has_suffix (".vim")) {
-				try {
-					bs.len = 0;
-					bs.append (plugin_dir);
-					bs.append (name);
-					load_options_from_file (bs.str);
-				}
-				catch (Error e) {
-					warning ("Error loading options from file %s: %s", name, e.message);
+	private static void load_from_directory (string plugin_dir) {
+		var bs = new StringBuilder.sized (64);
+		unowned string? name;
+		try {
+			var dir = Dir.open (plugin_dir);
+			while ((name = dir.read_name ()) != null) {
+				if (name.has_suffix (".vim")) {
+					try {
+						bs.len = 0;
+						bs.append (plugin_dir);
+						bs.append (name);
+						load_options_from_file (bs.str);
+					}
+					catch (Error e) {
+						warning ("Error loading options from file %s: %s", name, e.message);
+					}
 				}
 			}
+		}
+		catch (Error e) {
+			warning ("Error opening plugin directory %s: %s", plugin_dir, e.message);
+			return;
 		}
 	}
 
