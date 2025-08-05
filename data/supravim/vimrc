@@ -137,14 +137,15 @@ def RenameSymbol()
 	popup->Popup.AddEventInputEnter((line: string) => {
 		echo 'Renaming symbol to: ' .. line
 		Popup.Close(popup)
-		call cursor(line_pt, col_pt)
-		feedkeys("\<esc>:LspRename\<cr>", "n")
-		var i = strcharlen(expand('<cword>'))
-		for j in range(0, i - 1)
-			feedkeys("\<bs>", "n")
-		endfor
-		feedkeys(line .. "\<cr>", "n")
 		wall!
+		feedkeys("\<esc>:LspRename\<cr>", "n")
+		timer_start(100, (_) => {
+			var i = strcharlen(expand('<cword>'))
+			for j in range(0, i - 1)
+				feedkeys("\<bs>", "n")
+			endfor
+			feedkeys(line .. "\<cr>", "n")
+		})
 	})
 enddef
 
@@ -215,13 +216,9 @@ auto BufEnter,VimEnter *.tpp set filetype=cpp
 set noinfercase
 set completeopt-=preview
 set completeopt+=menuone,noselect
-g:mucomplete#enable_auto_at_startup = 1
-
 #--------------- PL NERDTREE ---------------"
-g:rainbow_active = 1
 g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
 g:NERDTreeWinSize = 27
-
 #--------------- FONCTION ---------------"
 
 def GotOutput(channel: channel, msg: string)
