@@ -1,7 +1,4 @@
 vim9script
-noremap <c-_>	<scriptcmd>call Commentary(false)<CR>
-vnoremap <c-_>	<esc><scriptcmd>call Commentary(true)<CR>
-command -nargs=0 Commentary call Commentary(false)
 
 def Comment(regex: string, line: string, nb: number)
 	var new_content = substitute(line, '\(\s*\)\(.*\)$', regex, '')
@@ -28,7 +25,7 @@ def CommentLine(regex: string, char: string, nb_line: number, nb_max: number)
 	endfor
 enddef
 
-def Commentary(visual: bool)
+export def Commentary(visual: bool)
 	const line = getline('.')
 	const e = &filetype
 	var min: number

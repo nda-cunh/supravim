@@ -1,8 +1,6 @@
 vim9script
 
-import autoload 'SupraPopup.vim' as Popup
-
-def Yank()
+export def Yank()
 	const l0 = line("'[")
 	const c0 = col("'[")
 	const l1 = line("']")
@@ -23,8 +21,3 @@ def Yank()
 		endif
 	})
 enddef
-
-augroup HighlightYanked
-    autocmd!
-    autocmd TextYankPost * if !v:event.visual && v:event.operator == 'y' && !empty(v:event.regtype) | Yank() | endif
-augroup END
