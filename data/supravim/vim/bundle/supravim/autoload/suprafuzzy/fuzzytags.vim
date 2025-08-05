@@ -110,9 +110,8 @@ def JumpToSymbol(excmd: string)
 	endif
 enddef
 
-def CloseTab(wid: number, opts: dict<any>)
-    if !empty(get(opts, 'cursor_item', ''))
-    var result = opts.cursor_item
+def CloseTab()
+	var result = selector.GetCursorItem()
 	var lst = ParseResult(result)
 	if empty(lst)
 		return
@@ -121,12 +120,10 @@ def CloseTab(wid: number, opts: dict<any>)
 
 	exe 'tabnew ' .. lst[1]
 	JumpToSymbol(lst[2])
-	endif
 enddef
 
-def CloseSplit(wid: number, opts: dict<any>)
-    if !empty(get(opts, 'cursor_item', ''))
-    var result = opts.cursor_item
+def CloseSplit()
+	var result = selector.GetCursorItem()
 	var lst = ParseResult(result)
 	if empty(lst)
 		return
@@ -135,12 +132,10 @@ def CloseSplit(wid: number, opts: dict<any>)
 
 	exe 'split ' .. lst[1]
 	JumpToSymbol(lst[2])
-	endif
 enddef
 
-def CloseVSplit(wid: number, opts: dict<any>)
-    if !empty(get(opts, 'cursor_item', ''))
-    var result = opts.cursor_item
+def CloseVSplit()
+	var result = selector.GetCursorItem()
 	var lst = ParseResult(result)
 	if empty(lst)
 		return
@@ -149,22 +144,6 @@ def CloseVSplit(wid: number, opts: dict<any>)
 
 	exe 'vsplit ' .. lst[1]
 	JumpToSymbol(lst[2])
-	endif
-enddef
-
-def SetVSplitClose()
-    selector.ReplaceCloseCb(function('CloseVSplit'))
-    selector.Close()
-enddef
-
-def SetSplitClose()
-    selector.ReplaceCloseCb(function('CloseSplit'))
-    selector.Close()
-enddef
-
-def SetTabClose()
-    selector.ReplaceCloseCb(function('CloseTab'))
-    selector.Close()
 enddef
 
 def GotExit(channel: any, code: number)
@@ -173,16 +152,17 @@ def GotExit(channel: any, code: number)
 		preview_cb: Preview,
 		xoffset: 0.1,
 		width: 0.80,
-		title: '────── FuzzyTags ───',
-		# key_callbacks: {
-			# "\<c-v>": function('SetVSplitClose'),
-			# "\<c-s>": function('SetSplitClose'),
-			# "\<c-t>": function('SetTabClose'),
-		# },
+		prompt_title: 'FuzzyTags',
+		# TODO Fuzzy Issues #104
+		key_callbacks: {
+			"\<c-v>": function('CloseVSplit'),
+			"\<c-s>": function('CloseSplit'),
+			"\<c-t>": function('CloseTab'),
+		},
 	})
 enddef
 
-def Start()
+export def Start()
 	lst_items = []
 	job_start(["supratags", "--print-tags", "--output=" .. expand("$HOME") .. "/.cache/tags"], {
 		out_cb: GotOutput,
@@ -190,5 +170,3 @@ def Start()
 		timeout: 10000,
 	})
 enddef
-
-noremap <space>t <scriptcmd>Start()<cr>

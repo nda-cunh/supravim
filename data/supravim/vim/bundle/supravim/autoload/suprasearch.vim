@@ -4,7 +4,7 @@ import autoload 'SupraPopup.vim' as Popup
 
 var first_buffer = []
 
-def g:SupraSearch(_visualmode: bool = false, _pre_text: string = '')
+export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	var mid_cursor: number = 0
 	var mid_occurence: number = 0
 	var mid_search: number = 0

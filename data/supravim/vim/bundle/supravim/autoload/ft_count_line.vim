@@ -1,15 +1,10 @@
 vim9script
 
-g:sp_count_line = false # shows how many lines have functions
-
-highlight Ft_count_line cterm=bold
-call prop_type_add("ft_count_line", {highlight: "Ft_count_line"})
-
 def SkipQuotesAndComments(): string
 	return "synIDattr(synID(line('.'), col('.'), 1), 'name') =~? 'string\\|comment'"
 enddef
 
-def Ft_count_line()
+export def Ft_count_line()
 	const position = getpos('.')
 	if g:sp_count_line == false
 		return
@@ -38,19 +33,14 @@ def Ft_count_line()
 	call setpos('.', position)
 enddef
 
-def EnableAugroup()
+export def EnableAugroup()
 	augroup Ft_count_line
 		autocmd!
 		autocmd CursorMovedI,CursorMoved,WinScrolled,VimResized *.vala,*.c,*.h call Ft_count_line()
 	augroup END
 enddef
 
-if g:sp_count_line == true
-	autocmd BufEnter *.c,*.h call Ft_count_line()
-	call EnableAugroup()
-endif
-
-def SimpleSupravimChangeOption()
+export def SimpleSupravimChangeOption()
 	if g:supravim_option_changed == 'count_line'
 		if g:supravim_option_value == 'true'
 			g:sp_count_line = true
@@ -63,6 +53,3 @@ def SimpleSupravimChangeOption()
 		endif
 	endif
 enddef
-
-autocmd User SupravimChangeOption call SimpleSupravimChangeOption()
-

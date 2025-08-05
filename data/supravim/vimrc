@@ -1,13 +1,14 @@
 vim9script
+
 #**** SUPRAVIM ****"
 set nocompatible
 filetype off
 
+import autoload 'supraload.vim' as SupraLoad 
+SupraLoad.Infect()
+
 import autoload 'SupraNotification.vim' as Notify
 import autoload 'SupraPopup.vim' as Popup 
-import autoload 'supraload.vim' as SupraLoad 
-
-SupraLoad.Infect()
 
 g:sp_swap = false			# create swapfile (.swp)
 g:sp_tree = true			# display folder tree at left
@@ -76,10 +77,6 @@ nnoremap <C-Right>		<scriptcmd>tabnext<CR>
 nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
 
 #--------------- Racourcis --------------"
-nnoremap <c-f> 		<scriptcmd>call g:SupraSearch(false)<cr>
-inoremap <c-f> 		<scriptcmd>call g:SupraSearch(false)<cr>
-vnoremap <c-f> 		<esc><scriptcmd>call g:SupraSearch(true)<cr>
-nnoremap <leader>r		<scriptcmd>call g:SupraSearch(false, expand("<cword>"))<cr>
 nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
@@ -152,70 +149,6 @@ def RenameSymbol()
 enddef
 
 autocmd CursorHold * call AutoLspHold()
-#---------------      Copy - Paste      ---------------"
-
-inoremap <c-v>	<scriptcmd>norm p<cr>
-vnoremap <c-c>	y
-if has('macunix')
-    autocmd TextYankPost * call SupraCopy(['pbcopy'])
-    autocmd FocusGained * call SupraPaste(['pbpaste'])
-elseif expand("$XDG_SESSION_TYPE") == "wayland"
-	# if executable('wl-copy') == 0
-		# call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
-	# else
-		# autocmd TextYankPost * call SupraCopy(['wl-copy'])
-		# autocmd FocusGained * call SupraPaste(['wl-paste'])
-	# endif
-elseif expand("$XDG_SESSION_TYPE") == "x11"
-	if executable('xclip') == 0
-		call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
-	else
-		autocmd TextYankPost * call SupraCopy(['xclip', '-i', '-selection', 'clipboard'])
-		autocmd FocusGained * call SupraPaste(['xclip', '-o', '-selection', 'clipboard'])
-	endif
-endif
-
-def SupraPaste(copy_os: list<string>)
-	var tmpbufname = bufadd(tempname())
-	var job: job
-	job = job_start(copy_os, {
-		out_io: 'buffer',
-		out_buf: tmpbufname,
-		out_mode: 'raw',
-		close_cb: (ch: channel) => {
-			var info = job_info(job)
-			# echoerr info
-			if info.exitval != 0 && info.exitval != 1
-				call Notify.Notification(["Synchronization failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
-			endif
-			var all = getbufline(tmpbufname, 0, '$')
-			setreg('@', join(all, "\n"))
-			execute('bwipeout! ' .. tmpbufname)
-		},
-	})
-enddef
-
-nnoremap <del> i<del><right><esc>
-def SupraCopy(copy_os: list<string>)
-	if v:event.operator == 'c'
-		setreg('@', getreg('0'))
-		return
-	endif
-	var job: job
-	job = job_start(copy_os, {
-		in_mode: 'raw',
-		close_cb: (ch: channel) => {
-			var info = job_info(job)
-			# echoerr info
-			if info.exitval != 0
-				call Notify.Notification(["Copy failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
-			endif
-		},
-	})
-	vim9cmd call ch_sendraw(job, getreg('@'))
-	vim9cmd call ch_close_in(job)
-enddef
-
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
 cmap <c-s>	w!<cr>
@@ -798,7 +731,6 @@ nnoremap <silent> <A-Up>	<scriptcmd>MoveLineUp("n")<CR>
 # Fuzzy Finder
 nnoremap <silent> <leader>g <scriptcmd>FuzzyGrep<CR>
 nnoremap <silent> <leader>f <scriptcmd>FuzzyFiles<CR>
-nnoremap <silent> <leader>c <scriptcmd>FuzzyCommands<CR>
 nnoremap <silent> <leader>b <scriptcmd>FuzzyBuffers<CR>
 nnoremap <silent> <leader>h <scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <leader>m <scriptcmd>FuzzyMRUFiles<CR>
@@ -918,6 +850,14 @@ def SetArgv(...args: list<string>)
 enddef
 
 # Welcome --------------------------------------
+
+autocmd BufEnter * {
+	if expand('%:e') == 'water'
+		&titlestring = '[Supravim] Editing on SupraWater'
+	else
+		&titlestring = '[Supravim]  ' .. expand('%:t')
+	endif
+}
 
 g:loaded_netrw = 1
 g:loaded_netrwPlugin = 1

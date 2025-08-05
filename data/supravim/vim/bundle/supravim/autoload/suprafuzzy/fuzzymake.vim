@@ -12,7 +12,7 @@ def Items(): list<string>
 	return lines
 enddef
 
-def Start()
+export def Start()
   selector.Start(Items(), {
     select_cb: Select,
     preview: false,
@@ -20,5 +20,3 @@ def Start()
 	title: '── FuzzyMake ─'
   })
 enddef
-
-noremap <leader><f5> <scriptcmd>Start()<cr>

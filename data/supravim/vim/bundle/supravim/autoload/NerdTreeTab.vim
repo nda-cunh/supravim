@@ -6,7 +6,7 @@ autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTa
 
 var is_open = false
 
-def OpenTreeTabs()
+export def OpenTreeTabs()
 	var id = win_getid()
 	is_open = true
 	if g:NERDTree.IsOpen() == 0
@@ -17,12 +17,12 @@ def OpenTreeTabs()
 	call win_gotoid(id)
 enddef
 
-def CloseTreeTabs()
+export def CloseTreeTabs()
 	is_open = false 
 	NERDTreeClose
 enddef
 
-def ToggleTreeTabs()
+export def ToggleTreeTabs()
 	if is_open == true
 		call CloseTreeTabs()
 	else
@@ -51,7 +51,7 @@ def NERDTreeHighlightFile(extension: string, fg: string)
 	exec 'autocmd filetype nerdtree syn match ' .. extension .. ' #^\s\+.*' .. extension .. '$#'
 enddef
 
-def NerdTreeRefreshColor()
+export def NerdTreeRefreshColor()
 	NERDTreeHighlightFile('.c', 'blue')
 	NERDTreeHighlightFile('h', 'green')
 	NERDTreeHighlightFile('.cpp', 'blue')
@@ -76,26 +76,9 @@ def NerdTreeRefreshColor()
 	silent! call win_gotoid(id)
 enddef
 
-def NerdTreeRefreshRoot()
+export def NerdTreeRefreshRoot()
 	if (is_open == true)
 		silent! NERDTreeRefreshRoot
 		silent! NERDTreeRefreshRoot
 	endif
 enddef
-
-command NERDTreeTabsOpen call OpenTreeTabs()
-command NERDTreeTabsToggle call ToggleTreeTabs()
-command NERDTreeTabsClose call CloseTreeTabs()
-command NERDTreeTabsRefresh call NerdTreeRefreshRoot()
-
-augroup nerdtreeconcealbrackets
-	autocmd!
-	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
-	autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\[" contained conceal containedin=ALL
-augroup END
-
-augroup SupraNERDTreeTabs
-	autocmd!
-	autocmd VimEnter * call NerdTreeRefreshColor()
-	autocmd TabEnter * call OnTabEnter()
-augroup END
