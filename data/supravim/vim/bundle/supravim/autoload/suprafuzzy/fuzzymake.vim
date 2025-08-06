@@ -17,6 +17,6 @@ export def Start()
     select_cb: Select,
     preview: false,
 	width: 0.20,
-	title: '── FuzzyMake ─'
+	menu_title: 'FuzzyMake'
   })
 enddef
