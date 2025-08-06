@@ -30,7 +30,7 @@ export def ToggleTreeTabs()
 	endif
 enddef
 
-def OnTabEnter()
+export def OnTabEnter()
 	if &filetype == 'nerdtree'
 		wincmd p
 	endif
