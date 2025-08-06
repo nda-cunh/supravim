@@ -62,6 +62,32 @@ enddef
 #############################################################################
 # Utility Functions 
 #############################################################################
+
+# Set a Centered Title for the popup.
+export def SetTitle(popup: dict<any>, title: string)
+	popup.title = title
+	if title == ''
+		popup_setoptions(popup.wid, {
+			title: title,
+		})
+		return 
+	endif
+	const title_len = strcharlen(title)
+	const width = (popup.width - 2) / 2 - title_len / 2
+	var new_title: string
+	if popup.title_pos == 'right'
+		new_title = repeat('─', width) .. ' ' .. title .. ' '
+	elseif popup.title_pos == 'left'
+		new_title = ' ' .. title .. ' '
+	else
+		new_title = repeat('─', popup.width - title_len - 2) .. ' ' .. title .. ' '
+	endif
+	popup_setoptions(popup.wid, {
+		title: new_title,
+	})
+enddef
+
+
 export def GetPos(popup: dict<any>): dict<any>
 	var dict = {
 		col: popup.col,
@@ -89,19 +115,16 @@ export def SetPos(popup: dict<any>, col: number = 0, line: number = 0)
 enddef
 
 export def SetSize(popup: dict<any>, width: number = -1, height: number = -1)
-	if width != -1
-		popup.width = width
-	endif
-	if height != -1
-		popup.height = height
-	endif
-
 	popup_move(popup.wid, {
-		minwidth: popup.width,
-		minheight: popup.height,
-		maxwidth: popup.maxwidth,
-		maxheight: popup.maxheight,
+		minwidth: width,
+		maxwidth: width,
+		minheight: height,
+		maxheight: height,
 	})
+	var pos = GetSize(popup) # Update the position of the popup
+	popup.width = pos[2]
+	popup.height = pos[3]
+	SetTitle(popup, popup.title)
 enddef
 
 export def GetSize(popup: dict<any>): list<number>
@@ -110,6 +133,8 @@ export def GetSize(popup: dict<any>): list<number>
 		var options = popup_getpos(popup.wid)
 		res[0] = options.width
 		res[1] = options.height
+		res[2] = options.core_width
+		res[3] = options.core_height
 	endif
 	return res
 enddef
@@ -120,8 +145,16 @@ export def Close(popup: dict<any>)
 	endif
 enddef
 
+def ActualizeSize(popup: dict<any>)
+	var [w, h, wc, hc] = GetSize(popup)
+	popup.width = wc
+	popup.height = hc
+enddef
+
 export def SetText(popup: dict<any>, text: list<string>)
 	popup_settext(popup.wid, text)
+	ActualizeSize(popup)
+	SetTitle(popup, popup.title)
 enddef
 
 export def GetText(popup: dict<any>, begin: number = 1, end: number = -1): list<string>
@@ -523,6 +556,8 @@ export def Simple(options: dict<any>): dict<any>
 		maxwidth: 999,
 		maxheight: 999,
 		pos: 'topleft',
+		title: '', # Title of the popup
+		title_pos: 'center', # Position of the title, can be 'left', 'center' or 'right'
 		cursorline: 0, # The line where the cursor is located
 		scrollbar: 0, # 0: no scrollbar, 1: scrollbar
 		wid: 0,
@@ -604,6 +639,7 @@ export def Simple(options: dict<any>): dict<any>
 		return CONTINUE
 	})
 
+	SetTitle(supradict, supradict.title)
 	return supradict
 enddef
 
