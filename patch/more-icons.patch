@@ -1,90 +1,582 @@
-From c6db626749c056f64d1e3bc9cebdf4db0a6e6a01 Mon Sep 17 00:00:00 2001
+From a469d8f908469cd31bc5c4578057608b85d6ecc9 Mon Sep 17 00:00:00 2001
 From: nda-cunh <hydraldev@gmail.com>
-Date: Wed, 23 Jul 2025 23:59:57 +0200
+Date: Wed, 6 Aug 2025 02:36:40 +0200
 Subject: [PATCH] add other nerdfont icons
 
 ---
- plugin/webdevicons.vim | 53 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 52 insertions(+), 1 deletion(-)
+ plugin/webdevicons.vim | 460 +++++++++++++++++++++++++----------------
+ 1 file changed, 279 insertions(+), 181 deletions(-)
 
 diff --git a/plugin/webdevicons.vim b/plugin/webdevicons.vim
-index 596ec68..24d8f9c 100644
+index 596ec68..4d8d899 100644
 --- a/plugin/webdevicons.vim
 +++ b/plugin/webdevicons.vim
-@@ -217,7 +217,8 @@ function! s:setDictionaries()
-         \ 'cc'       : '',
-         \ 'cp'       : '',
-         \ 'c'        : '',
+@@ -9,12 +9,12 @@ let s:plugin_home = expand('<sfile>:p:h:h')
+ " set scriptencoding after 'encoding' and when using multibyte chars
+ scriptencoding utf-8
+ 
+-" standard fix/safety: line continuation (avoiding side effects) {{{1
++" standard fix/safety: line continuation (avoiding side effects) 
+ "========================================================================
+ let s:save_cpo = &cpo
+ set cpo&vim
+ 
+-" standard loading / not loading {{{1
++" standard loading / not loading 
+ "========================================================================
+ 
+ if exists('g:loaded_webdevicons')
+@@ -23,7 +23,7 @@ endif
+ 
+ let g:loaded_webdevicons = 1
+ 
+-" config enable / disable settings {{{1
++" config enable / disable settings 
+ "========================================================================
+ 
+ ""
+@@ -58,7 +58,7 @@ call s:set('g:webdevicons_conceal_nerdtree_brackets', 1)
+ call s:set('g:DevIconsAppendArtifactFix', has('gui_running') ? 1 : 0)
+ call s:set('g:DevIconsArtifactFixChar', ' ')
+ 
+-" config options {{{1
++" config options 
+ "========================================================================
+ 
+ call s:set('g:WebDevIconsUnicodeDecorateFileNodes', 1)
+@@ -77,7 +77,7 @@ call s:set('g:NERDTreeGitStatusUpdateOnCursorHold', 1)
+ call s:set('g:WebDevIconsTabAirLineBeforeGlyphPadding', ' ')
+ call s:set('g:WebDevIconsTabAirLineAfterGlyphPadding', '')
+ 
+-" config defaults {{{1
++" config defaults 
+ "========================================================================
+ 
+ call s:set('g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol', '')
+@@ -86,10 +86,10 @@ call s:set('g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol', g:DevIconsEna
+ call s:set('g:WebDevIconsUnicodeDecorateFolderNodesSymlinkSymbol',  '')
+ call s:set('g:DevIconsDefaultFolderOpenSymbol', '')
+ 
+-" functions {{{1
++" functions 
+ "========================================================================
+ 
+-" local functions {{{2
++" local functions 
+ "========================================================================
+ 
+ " scope: local
+@@ -110,13 +110,35 @@ function s:getDistro()
+     elseif s:lsb =~# 'Gentoo'
+       let s:distro = ''
+     elseif s:lsb =~# 'Ubuntu'
+-      let s:distro = ''
++      let s:distro = ''
+     elseif s:lsb =~# 'Cent'
+       let s:distro = ''
+     elseif s:lsb =~# 'Debian'
+       let s:distro = ''
+     elseif s:lsb =~# 'Dock'
+       let s:distro = ''
++    elseif s:lsb =~# 'Nix'
++      let s:distro = ''
++    elseif s:lsb =~# 'Fedora'
++      let s:distro = ''
++    elseif s:lsb =~# 'Red Hat'
++      let s:distro = ''
++    elseif s:lsb =~# 'Mint'
++      let s:distro = ''
++    elseif s:lsb =~# 'Mageia'
++      let s:distro = ''
++    elseif s:lsb =~# 'Elementary'
++      let s:distro = ''
++    elseif s:lsb =~# 'Manjaro'
++      let s:distro = ''
++    elseif s:lsb =~# 'SuSE'
++      let s:distro = ''
++    elseif s:lsb =~# 'Slackware'
++      let s:distro = ''
++    elseif s:lsb =~# 'Endeavour'
++      let s:distro = ''
++    elseif s:lsb =~# 'Pop'
++      let s:distro = ''
+     else
+       let s:distro = ''
+     endif
+@@ -166,179 +188,255 @@ endfunction
+ function! s:setDictionaries()
+ 
+   let s:file_node_extensions = {
+-        \ 'styl'     : '',
+-        \ 'sass'     : '',
+-        \ 'scss'     : '',
+-        \ 'htm'      : '',
+-        \ 'html'     : '',
+-        \ 'slim'     : '',
+-        \ 'haml'     : '',
+-        \ 'ejs'      : '',
+-        \ 'css'      : '',
+-        \ 'less'     : '',
+-        \ 'md'       : '',
+-        \ 'mdx'      : '',
+-        \ 'markdown' : '',
+-        \ 'rmd'      : '',
+-        \ 'json'     : '',
+-        \ 'webmanifest' : '',
+-        \ 'js'       : '',
+-        \ 'mjs'      : '',
+-        \ 'jsx'      : '',
+-        \ 'rb'       : '',
+-        \ 'gemspec'  : '',
+-        \ 'rake'     : '',
+-        \ 'php'      : '',
+-        \ 'py'       : '',
+-        \ 'pyc'      : '',
+-        \ 'pyo'      : '',
+-        \ 'pyd'      : '',
+-        \ 'coffee'   : '',
+-        \ 'mustache' : '',
+-        \ 'hbs'      : '',
+-        \ 'conf'     : '',
+-        \ 'ini'      : '',
+-        \ 'yml'      : '',
+-        \ 'yaml'     : '',
+-        \ 'toml'     : '',
+-        \ 'bat'      : '',
+-        \ 'mk'       : '',
+-        \ 'jpg'      : '',
+-        \ 'jpeg'     : '',
+-        \ 'bmp'      : '',
+-        \ 'png'      : '',
+-        \ 'webp'     : '',
+-        \ 'gif'      : '',
+-        \ 'ico'      : '',
+-        \ 'twig'     : '',
+-        \ 'cpp'      : '',
+-        \ 'c++'      : '',
+-        \ 'cxx'      : '',
+-        \ 'cc'       : '',
+-        \ 'cp'       : '',
+-        \ 'c'        : '',
 -        \ 'cs'       : '',
-+        \ 'blp'      : '',
-+        \ 'cs'       : '󰌛',
-         \ 'h'        : '',
-         \ 'hh'       : '',
-         \ 'hpp'      : '',
-@@ -227,6 +228,46 @@ function! s:setDictionaries()
-         \ 'nix'      : '',
-         \ 'lua'      : '',
-         \ 'java'     : '',
-+        \ 'vala'     : '',
-+        \ 'water'    : '󰥨',
-+        \ 'vapi'     : '',
-+        \ 'kt'       : '',
-+        \ 'kts'      : '',
-+        \ 'ktm'      : '',
-+        \ 'ktsm'     : '',
-+        \ 'odt'      : '󰏆',
-+        \ 'doc'      : '󰏆',
-+        \ 'docx'     : '󰏆',
-+        \ 'docm'     : '󰏆',
-+        \ 'xls'      : '󰏇',
-+        \ 'xlsx'     : '󰏇',
-+        \ 'pdf'      : '',
-+        \ 'zip'      : '',
-+        \ 'tar'      : '',
-+        \ 'gz'       : '',
-+        \ 'bz2'      : '',
-+        \ 'asm'      : '',
-+        \ 'cfg'      : '',
-+        \ 'deb'      : '',
-+        \ 'log'      : '',
-+        \ 's'        : '',
-+        \ 'bin'      : '',
-+        \ 'iso'      : '',
-+        \ 'ld'       : '',
-+        \ 'mp4'      : '',
-+        \ 'mkv'      : '',
-+        \ 'avi'      : '',
-+        \ 'mov'      : '',
-+        \ 'mp3'      : '',
-+        \ 'wav'      : '',
-+        \ 'flac'     : '',
-+        \ 'ogg'      : '',
-+        \ 'opus'     : '',
-+        \ 'm3u'      : '',
-+        \ 'suprapack' : '',
-+        \ 'xml'      : '󰗀',
-+        \ 'svg'      : '',
-+        \ 'o'        : '',
-         \ 'sh'       : '',
-         \ 'fish'     : '',
-         \ 'bash'     : '',
-@@ -292,6 +333,16 @@ function! s:setDictionaries()
+-        \ 'h'        : '',
+-        \ 'hh'       : '',
+-        \ 'hpp'      : '',
+-        \ 'hxx'      : '',
+-        \ 'hs'       : '',
+-        \ 'lhs'      : '',
+-        \ 'nix'      : '',
+-        \ 'lua'      : '',
+-        \ 'java'     : '',
+-        \ 'sh'       : '',
+-        \ 'fish'     : '',
+-        \ 'bash'     : '',
+-        \ 'zsh'      : '',
+-        \ 'ksh'      : '',
+-        \ 'csh'      : '',
+-        \ 'awk'      : '',
+-        \ 'ps1'      : '',
+-        \ 'ml'       : 'λ',
+-        \ 'mli'      : 'λ',
+-        \ 'diff'     : '',
+-        \ 'db'       : '',
+-        \ 'sql'      : '',
+-        \ 'dump'     : '',
+-        \ 'clj'      : '',
+-        \ 'cljc'     : '',
+-        \ 'cljs'     : '',
+-        \ 'edn'      : '',
+-        \ 'scala'    : '',
+-        \ 'go'       : '',
+-        \ 'dart'     : '',
+-        \ 'xul'      : '',
+-        \ 'sln'      : '',
+-        \ 'suo'      : '',
+-        \ 'pl'       : '',
+-        \ 'pm'       : '',
+-        \ 't'        : '',
+-        \ 'rss'      : '',
+-        \ 'f#'       : '',
+-        \ 'fsscript' : '',
+-        \ 'fsx'      : '',
+-        \ 'fs'       : '',
+-        \ 'fsi'      : '',
+-        \ 'rs'       : '',
+-        \ 'rlib'     : '',
+-        \ 'd'        : '',
+-        \ 'erl'      : '',
+-        \ 'hrl'      : '',
+-        \ 'ex'       : '',
+-        \ 'exs'      : '',
+-        \ 'eex'      : '',
+-        \ 'leex'     : '',
+-        \ 'heex'     : '',
+-        \ 'vim'      : '',
+-        \ 'ai'       : '',
+-        \ 'psd'      : '',
+-        \ 'psb'      : '',
+-        \ 'ts'       : '',
+-        \ 'tsx'      : '',
+-        \ 'jl'       : '',
+-        \ 'pp'       : '',
+-        \ 'vue'      : '﵂',
+-        \ 'elm'      : '',
+-        \ 'swift'    : '',
+-        \ 'xcplayground' : '',
+-        \ 'tex'      : 'ﭨ',
+-        \ 'r'        : 'ﳒ',
+-        \ 'rproj'    : '鉶',
+-        \ 'sol'      : 'ﲹ',
+-        \ 'pem'      : ''
++        \ 'styl': '',
++        \ 'htm': '',
++        \ 'html': '',
++        \ 'slim': '',
++        \ 'ttf': '',
++        \ 'otf': '',
++        \ 'woff': '',
++        \ 'woff2': '',
++        \ 'eot': '',
++        \ 'haml': '',
++        \ 'js': '',
++        \ 'mjs': '',
++        \ 'ejs': '',
++        \ 'cjs': '',
++        \ 'css': '',
++        \ 'less': '',
++        \ 'md': '',
++        \ 'mdx': '',
++        \ 'markdown': '',
++        \ 'rmd': '',
++        \ 'json': '',
++        \ 'webmanifest': '',
++        \ 'zig': '',
++        \ 'nim': '',
++        \ 'scss': '',
++        \ 'sass': '',
++        \ 'jsx': '',
++        \ 'rb': '',
++        \ 'gemspec': '',
++        \ 'rake': '',
++        \ 'php': '',
++        \ 'py': '',
++        \ 'pyc': '',
++        \ 'pyo': '',
++        \ 'pyd': '',
++        \ 'coffee': '',
++        \ 'mustache': '',
++        \ 'hbs': '',
++        \ 'conf': '',
++        \ 'ini': '',
++        \ 'yml': '',
++        \ 'yaml': '',
++        \ 'toml': '',
++        \ 'bat': '',
++        \ 'mk': '',
++        \ 'svg': '󰜡',
++        \ 'svgz': '󰜡',
++        \ 'jpg': '',
++        \ 'tex': '',
++        \ 'latex': '',
++        \ 'jpeg': '',
++        \ 'bmp': '',
++        \ 'png': '',
++        \ 'webp': '',
++        \ 'gif': '',
++        \ 'ico': '',
++        \ 'twig': '',
++        \ 'svelte': '',
++        \ 'cpp': '',
++        \ 'c++': '',
++        \ 'cxx': '',
++        \ 'cc': '',
++        \ 'cp': '',
++        \ 'c': '',
++        \ 'blp': '',
++        \ 'cs': '󰌛',
++        \ 'h': '',
++        \ 'hh': '',
++        \ 'hpp': '',
++        \ 'hxx': '',
++        \ 'hs': '',
++        \ 'lhs': '',
++        \ 'nix': '',
++        \ 'lua': '',
++        \ 'java': '',
++        \ 'water': '󰥨',
++        \ 'vala': '',
++        \ 'vapi': '',
++        \ 'kt': '',
++        \ 'kts': '',
++        \ 'ktm': '',
++        \ 'ktsm': '',
++        \ 'odt': '',
++        \ 'ods': '',
++        \ 'odp': '',
++        \ 'odg': '',
++        \ 'odb': '',
++        \ 'odf': '',
++        \ 'docx': '󱎒',
++        \ 'doc': '󱎒',
++        \ 'xlsx': '󱎏',
++        \ 'xls': '󱎏',
++        \ 'pptx': '󱎐',
++        \ 'ppt': '󱎐',
++        \ 'accdb': '󱎎',
++        \ 'mdb': '󱎎',
++        \ 'one': '󰝇',
++        \ 'pdf': '',
++        \ 'zip': '',
++        \ 'tar': '',
++        \ 'gz': '',
++        \ '7z': '',
++        \ 'xz': '',
++        \ 'bz2': '',
++        \ 'asm': '',
++        \ 'cfg': '',
++        \ 'deb': '',
++        \ 'log': '',
++        \ 's': '',
++        \ 'bin': '',
++        \ 'iso': '',
++        \ 'ld': '',
++        \ 'mp4': '',
++        \ 'mkv': '',
++        \ 'avi': '',
++        \ 'mov': '',
++        \ 'mp3': '',
++        \ 'wav': '',
++        \ 'flac': '',
++        \ 'ogg': '',
++        \ 'opus': '',
++        \ 'm3u': '',
++        \ 'suprapack': '',
++        \ 'xml': '󰗀',
++        \ 'o': '',
++        \ 'sh': '',
++        \ 'fish': '',
++        \ 'bash': '',
++        \ 'zsh': '',
++        \ 'ksh': '',
++        \ 'csh': '',
++        \ 'awk': '',
++        \ 'ps1': '',
++        \ 'ml': 'λ',
++        \ 'mli': 'λ',
++        \ 'diff': '',
++        \ 'pg': '',
++        \ 'db': '',
++        \ 'sql': '',
++        \ 'dump': '',
++        \ 'clj': '',
++        \ 'cljc': '',
++        \ 'cljs': '',
++        \ 'edn': '',
++        \ 'scala': '',
++        \ 'go': '',
++        \ 'dart': '',
++        \ 'xul': '',
++        \ 'sln': '',
++        \ 'suo': '',
++        \ 'pl': '',
++        \ 'pm': '',
++        \ 't': '',
++        \ 'rss': '',
++        \ 'f#': '',
++        \ 'fsscript': '',
++        \ 'fsx': '',
++        \ 'fs': '',
++        \ 'fsi': '',
++        \ 'rs': '',
++        \ 'rlib': '',
++        \ 'd': '',
++        \ 'erl': '',
++        \ 'hrl': '',
++        \ 'ex': '',
++        \ 'exs': '',
++        \ 'eex': '',
++        \ 'leex': '',
++        \ 'heex': '',
++        \ 'vim': '',
++        \ 'ai': '',
++        \ 'psd': '',
++        \ 'psb': '',
++        \ 'ts': '',
++        \ 'tsx': '',
++        \ 'jl': '',
++        \ 'pp': '',
++        \ 'vue': '﵂',
++        \ 'elm': '',
++        \ 'swift': '',
++        \ 'xcplayground': '',
++        \ 'r': '',
++        \ 'rproj': '',
++        \ 'sol': '',
++        \ 'hx': '',
++        \ 'pem': '',
++        \ 'gradle': ''
+         \}
+ 
    let s:file_node_exact_matches = {
-         \ 'exact-match-case-sensitive-1.txt' : '1',
-         \ 'exact-match-case-sensitive-2'     : '2',
-+        \ 'a'        : '󰬈',
-+        \ 'b'        : '󰬉',
-+        \ 'c'        : '󰬊',
-+        \ 'd'        : '󰬋',
-+        \ 'e'        : '󰬌',
-+        \ 'f'        : '󰬍',
-+        \ 'x'        : '󰬟',
-+        \ 'y'        : '󰬠',
-+        \ 'z'        : '󰬡',
-+        \ 'meson.build': '',
-         \ 'gruntfile.coffee'                 : '',
-         \ 'gruntfile.js'                     : '',
-         \ 'gruntfile.ls'                     : '',
+-        \ 'exact-match-case-sensitive-1.txt' : '1',
+-        \ 'exact-match-case-sensitive-2'     : '2',
+-        \ 'gruntfile.coffee'                 : '',
+-        \ 'gruntfile.js'                     : '',
+-        \ 'gruntfile.ls'                     : '',
+-        \ 'gulpfile.coffee'                  : '',
+-        \ 'gulpfile.js'                      : '',
+-        \ 'gulpfile.ls'                      : '',
+-        \ 'mix.lock'                         : '',
+-        \ 'dropbox'                          : '',
+-        \ '.ds_store'                        : '',
+-        \ '.gitconfig'                       : '',
+-        \ '.gitignore'                       : '',
+-        \ '.gitattributes'                   : '',
+-        \ '.gitlab-ci.yml'                   : '',
+-        \ '.bashrc'                          : '',
+-        \ '.zshrc'                           : '',
+-        \ '.zshenv'                          : '',
+-        \ '.zprofile'                        : '',
+-        \ '.vimrc'                           : '',
+-        \ '.gvimrc'                          : '',
+-        \ '_vimrc'                           : '',
+-        \ '_gvimrc'                          : '',
+-        \ '.bashprofile'                     : '',
+-        \ 'favicon.ico'                      : '',
+-        \ 'license'                          : '',
+-        \ 'node_modules'                     : '',
+-        \ 'react.jsx'                        : '',
+-        \ 'procfile'                         : '',
+-        \ 'dockerfile'                       : '',
+-        \ 'docker-compose.yml'               : '',
+-        \ 'rakefile'                         : '',
+-        \ 'config.ru'                        : '',
+-        \ 'gemfile'                          : '',
+-        \ 'makefile'                         : '',
+-        \ 'cmakelists.txt'                   : '',
+-        \ 'robots.txt'                       : 'ﮧ'
++        \ 'a': '󰬈',
++        \ 'b': '󰬉',
++        \ 'c': '󰬊',
++        \ 'd': '󰬋',
++        \ 'e': '󰬌',
++        \ 'f': '󰬍',
++        \ 'x': '󰬟',
++        \ 'y': '󰬠',
++        \ 'z': '󰬡',
++        \ 'info': '',
++        \ 'pom.xml': '',
++        \ 'meson.build': '',
++        \ 'gruntfile.coffee': '',
++        \ 'gruntfile.js': '',
++        \ 'gruntfile.ls': '',
++        \ 'gulpfile.coffee': '',
++        \ 'gulpfile.js': '',
++        \ 'gulpfile.ls': '',
++        \ 'mix.lock': '',
++        \ 'dropbox': '',
++        \ '.ds_store': '',
++        \ '.gitconfig': '',
++        \ '.gitignore': '',
++        \ '.gitattributes': '',
++        \ '.gitlab-ci.yml': '',
++        \ '.bashrc': '',
++        \ '.zshrc': '',
++        \ '.zshenv': '',
++        \ '.zprofile': '',
++        \ '.vimrc': '',
++        \ '.gvimrc': '',
++        \ '_vimrc': '',
++        \ '_gvimrc': '',
++        \ '.bashprofile': '',
++        \ 'favicon.ico': '',
++        \ 'license': '',
++        \ 'node_modules': '',
++        \ 'react.jsx': '',
++        \ 'procfile': '',
++        \ 'dockerfile': '',
++        \ 'docker-compose.yml': '',
++        \ 'rakefile': '',
++        \ 'config.ru': '',
++        \ 'gemfile': '',
++        \ 'makefile': '',
++        \ 'cmakelists.txt': '',
++        \ 'robots.txt': '󰚩'
+         \}
+ 
+   let s:file_node_pattern_matches = {
+-        \ '.*jquery.*\.js$'       : '',
+-        \ '.*angular.*\.js$'      : '',
+-        \ '.*backbone.*\.js$'     : '',
+-        \ '.*require.*\.js$'      : '',
+-        \ '.*materialize.*\.js$'  : '',
+-        \ '.*materialize.*\.css$' : '',
+-        \ '.*mootools.*\.js$'     : '',
+-        \ '.*vimrc.*'             : '',
+-        \ 'Vagrantfile$'          : ''
++        \ '.*jquery.*\.js$': '',
++        \ '.*angular.*\.js$': '',
++        \ '.*backbone.*\.js$': '',
++        \ '.*require.*\.js$': '',
++        \ '.*materialize.*\.js$': '',
++        \ '.*materialize.*\.css$': '',
++        \ '.*mootools.*\.js$': '',
++        \ '.*vimrc.*': '',
++        \ 'Vagrantfile$': ''
+         \}
+ 
+   if !exists('g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols')
+@@ -449,7 +547,7 @@ function! s:softRefreshNerdTree()
+   endif
+ endfunction
+ 
+-" local initialization {{{2
++" local initialization 
+ "========================================================================
+ 
+ " scope: local
+@@ -467,7 +565,7 @@ function! s:initialize()
+ endfunction
+ 
+ 
+-" public functions {{{2
++" public functions 
+ "========================================================================
+ 
+ " scope: public
+@@ -583,7 +681,7 @@ function! WebDevIconsGetFileFormatSymbol(...)
+   return bomb . fileformat . artifactFix
+ endfunction
+ 
+-" for airline plugin {{{3
++" for airline plugin 
+ "========================================================================
+ 
+ " scope: public
+@@ -607,7 +705,7 @@ if g:webdevicons_enable == 1 && g:webdevicons_enable_airline_tabline
+   let g:airline#extensions#tabline#formatter = 'webdevicons'
+ endif
+ 
+-" for nerdtree plugin {{{3
++" for nerdtree plugin 
+ "========================================================================
+ 
+ " scope: public
+@@ -689,12 +787,12 @@ function! NERDTreeWebDevIconsRefreshListener(event)
+ 
+ endfunction
+ 
+-" call setup after processing all the functions (to avoid errors) {{{1
++" call setup after processing all the functions (to avoid errors) 
+ "========================================================================
+ " had some issues with VimEnter, for now using:
+ call s:initialize()
+ 
+-" standard fix/safety: line continuation (avoiding side effects) {{{1
++" standard fix/safety: line continuation (avoiding side effects) 
+ "========================================================================
+ let &cpo = s:save_cpo
+ unlet s:save_cpo
 -- 
 2.34.1
 
