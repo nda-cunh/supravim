@@ -146,8 +146,11 @@ def CloseVSplit()
 	JumpToSymbol(lst[2])
 enddef
 
-def GotExit(channel: any, code: number)
-	selector.Start(lst_items, {
+def GotExit(ch: channel)
+	const buffer = ch->ch_getbufnr('out')
+	const content = getbufline(buffer, 0, '$')
+
+	selector.Start(content[0]->split('\n'), {
 		select_cb: Select,
 		preview_cb: Preview,
 		xoffset: 0.1,
@@ -165,8 +168,10 @@ enddef
 export def Start()
 	lst_items = []
 	job_start(["supratags", "--print-tags", "--output=" .. expand("$HOME") .. "/.cache/tags"], {
-		out_cb: GotOutput,
-		exit_cb: GotExit,
+		out_io: 'buffer',
+		out_msg: 0,
+		out_mode: 'raw',
+		close_cb: GotExit,
 		timeout: 10000,
 	})
 enddef
