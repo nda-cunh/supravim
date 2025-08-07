@@ -7,8 +7,10 @@ filetype off
 import autoload 'supraload.vim' as SupraLoad 
 SupraLoad.Infect()
 
+import autoload 'SupraMake.vim' as Make
 import autoload 'SupraNotification.vim' as Notify
 import autoload 'SupraPopup.vim' as Popup 
+import autoload 'SupraUtils.vim' as Utils
 
 g:sp_swap = false			# create swapfile (.swp)
 g:sp_tree = true			# display folder tree at left
@@ -86,14 +88,8 @@ noremap <c-q>		<cmd>q!<CR>
 inoremap <c-s>		<cmd>w!<CR><esc>
 noremap <c-s>		<cmd>w!<CR><esc>
 nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
-nnoremap <F2> 		<ScriptCmd>call RenameSymbol()<CR>
-inoremap <F2> 		<ScriptCmd>call RenameSymbol()<CR>
-nnoremap <F5> 		<ScriptCmd>call Make("run")<CR>
-inoremap <F5>		<ScriptCmd>call Make("run")<CR>
-nnoremap <F6>		<ScriptCmd>call Make("run2")<CR>
-inoremap <F6>		<ScriptCmd>call Make("run2")<CR>
-nnoremap <F7> 		<ScriptCmd>call Make("run3")<CR>
-inoremap <F7>		<ScriptCmd>call Make("run3")<CR>
+nnoremap <F2> 		<ScriptCmd>call Utils.RenameSymbol()<CR>
+inoremap <F2> 		<ScriptCmd>call Utils.RenameSymbol()<CR>
 nnoremap <leader>v		:vs<cr>
 nnoremap <leader>s		:split<cr>
 nnoremap <S-Right>	<C-w><Right>
@@ -114,46 +110,10 @@ nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
 
 # ---------------      LSP            ---------------"
 set updatetime=500
-def AutoLspHold()
-	var c_pos = getcurpos()
-	var m_pos = getmousepos()
-	var cm = m_pos.column
-	var lm = m_pos.line
-	var cc = c_pos[2]
-	var lc = c_pos[1]
-	if cm == cc && lm == lc
-		var word = expand('<cword>')
-		if word != ''
-			silent! LspHover
-		endif
-	endif
-enddef
-
-def RenameSymbol()
-	const line_pt = line('.')
-	const col_pt = col('.')
-	var popup = Popup.Input({prompt: 'Rename: ', line: "cursor-1", col: "cursor+5", moved: 'WORD'})
-	popup->Popup.SetInput(expand('<cword>'))
-	popup->Popup.AddEventInputEnter((line: string) => {
-		echo 'Renaming symbol to: ' .. line
-		Popup.Close(popup)
-		wall!
-		feedkeys("\<esc>:LspRename\<cr>", "n")
-		timer_start(100, (_) => {
-			var i = strcharlen(expand('<cword>'))
-			for j in range(0, i - 1)
-				feedkeys("\<bs>", "n")
-			endfor
-			feedkeys(line .. "\<cr>", "n")
-		})
-	})
-enddef
-
-autocmd CursorHold * call AutoLspHold()
+autocmd CursorHold * call Utils.AutoLspHold()
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
 cmap <c-s>	w!<cr>
-cmap <F5>	Make
 cmap <c-v>	<c-r>0<del>
 
 #---------------      Terminal        ---------------"
@@ -314,49 +274,6 @@ def Save_post()
 	mkview
 enddef
 
-
-# Compilation and SupraMake
-
-command -nargs=* -complete=customlist,AutoComplete_gMake Make :call MakeSpecial(<f-args>)
-def AutoComplete_gMake(lead: string, cmdline: string, cursorpos: number): list<string>
-	var content = system("supramake --print-rules")
-	var index = match(cmdline, '\s')
-	index = match(cmdline, '\s', index + 1)
-	if index == -1
-		var res2 = split(content, '\n')
-		return res2
-    else
-        return glob(lead .. '*', 0, 1)
-    endif
-enddef
-
-
-def MakeSpecial(...args: list<string>)
-	var length = len(args)
-	if length == 0
-		call g:Make('all')
-	elseif length == 1
-		call g:Make(args[0])
-	else
-		var rule = args[0]
-		var last_args = $ARGS
-		var str = join(args[1 : ], ' ')
-		$ARGS = str
-		call g:Make(rule)
-		$ARGS = last_args
-	endif
-enddef
-
-var is_supramake = false
-def g:Make(rules: string)
-	w!
-	is_supramake = true
-	setenv('rulesmake', rules)
-	! supramake --run-clean $rulesmake
-	is_supramake = false
-	redraw!
-enddef
-
 imap <C-F5>		<ScriptCmd>Gdbs<CR>
 map <C-F5>		<ScriptCmd>Gdbs<CR>
 
@@ -396,7 +313,7 @@ enddef
 # ------ Running Supravim-Server ------"
 def GotOutputSupravimServer(channel: channel, msg: string)
 	if (stridx(msg, 'refresh') == 0)
-		if is_supramake == false
+		if Make.is_supramake == false
 			NERDTreeTabsRefresh
 		endif
 	elseif (stridx(msg, 'LoadBundle: ') == 0)
