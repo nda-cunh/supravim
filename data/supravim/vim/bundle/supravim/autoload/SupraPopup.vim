@@ -75,12 +75,12 @@ export def SetTitle(popup: dict<any>, title: string)
 	const title_len = strcharlen(title)
 	const width = (popup.width - 2) / 2 - title_len / 2
 	var new_title: string
-	if popup.title_pos == 'right'
+	if popup.title_pos ==? 'center'
 		new_title = repeat('─', width) .. ' ' .. title .. ' '
-	elseif popup.title_pos == 'left'
+	elseif popup.title_pos ==? 'left'
 		new_title = ' ' .. title .. ' '
 	else
-		new_title = repeat('─', popup.width - title_len - 2) .. ' ' .. title .. ' '
+		new_title = repeat('─', width) .. ' ' .. title .. ' '
 	endif
 	popup_setoptions(popup.wid, {
 		title: new_title,
@@ -117,9 +117,9 @@ enddef
 export def SetSize(popup: dict<any>, width: number = -1, height: number = -1)
 	popup_move(popup.wid, {
 		minwidth: width,
-		maxwidth: width,
+		maxwidth: 999999,
 		minheight: height,
-		maxheight: height,
+		maxheight: 999999,
 	})
 	var pos = GetSize(popup) # Update the position of the popup
 	popup.width = pos[2]
@@ -228,6 +228,7 @@ export def Input(options: dict<any> = {}): dict<any>
 	simple.height = 1
 	simple.cb_enter = []
 	simple.cb_changed = []
+	simple.cursor_light = true
 
 	for key in keys(options)
 		simple[key] = options[key]
@@ -236,6 +237,24 @@ export def Input(options: dict<any> = {}): dict<any>
 	simple.prompt_charlen = len(simple.prompt)
 
 	AddEventFilterFocus(simple, FilterInput)
+	var timer = timer_start(500, (wid) => {
+		if simple.focus == false
+			return
+		endif
+		if simple.cursor_light
+			if simple.mid != 0
+				matchdelete(simple.mid, simple.wid)
+				simple.mid = 0
+			endif
+		else
+			ActualiseCursor(simple, simple.wid, simple.cur_pos)
+		endif
+		simple.cursor_light = !simple.cursor_light
+	}, {repeat: -1})
+
+	AddEventClose(simple, (popup) => {
+		timer_stop(timer)
+	})
 	
 	SetText(simple, [simple.prompt .. ' '])
 	ActualiseCursor(simple, simple.wid, simple.cur_pos)
@@ -581,10 +600,6 @@ export def Simple(options: dict<any>): dict<any>
 	var wid = popup_create([], {
 		col: supradict.col,
 		line: supradict.line,
-		minwidth: supradict.width,
-		minheight: supradict.height,
-		maxwidth: supradict.maxwidth,
-		maxheight: supradict.height,
 		time: 90000,
 		tabpage: -1,
 		zindex: 300,
@@ -639,7 +654,8 @@ export def Simple(options: dict<any>): dict<any>
 		return CONTINUE
 	})
 
-	SetTitle(supradict, supradict.title)
+	SetSize(supradict, supradict.width, supradict.height)
+	# SetTitle(supradict, supradict.title)
 	return supradict
 enddef
 

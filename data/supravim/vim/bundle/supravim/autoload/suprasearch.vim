@@ -36,15 +36,18 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	endif
 
 	var background = Popup.Simple({
-		prompt: 'SupraSearch',
+		# prompt: 'SupraSearch',
 		line: 2,
 		col: &columns - 34,
 		width: 31,
 		height: 6,
 	})
 
+	const c = '➜ '
 	var pop1 = Popup.Input({
-		prompt: 'Find │ ',
+		prompt: c,
+		title: ' Find',
+		title_pos: 'left',
 		col: &columns - 32,
 		line: 3,
 		width: 27,
@@ -52,7 +55,9 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	})
 
 	var pop2 = Popup.Input({
-		prompt: 'Replace │ ',
+		prompt: c,
+		title: ' Replace',
+		title_pos: 'left',
 		col: &columns - 32,
 		line: 6,
 		maxwidth: 27,
@@ -107,7 +112,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		if jump_line != 0 
 			const pos = getpos('.')
 			const len = len(line)
-			mid_search = matchaddpos('Search', [[jump_line, pos[2], len]], 42)
+			mid_search = matchadd('Search', '\%#' .. line, 42)
 		endif
 
 		silent! mid_occurence = matchadd('Cursor', search, 10)
@@ -177,7 +182,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		if jump_line != 0 
 			RemoveMidSearch()
 			const pos = getpos('.')
-			mid_search = matchaddpos('Search', [[jump_line, pos[2], len]], 42)
+			mid_search = matchadd('Search', '\%#' .. input_search, 42)
 		endif
 		if event == true
 			return Popup.BLOCK
