@@ -600,7 +600,7 @@ export def Simple(options: dict<any>): dict<any>
 	var wid = popup_create([], {
 		col: supradict.col,
 		line: supradict.line,
-		time: 90000,
+		time: -1,
 		tabpage: -1,
 		zindex: 300,
 		hidden: supradict.hidden,
