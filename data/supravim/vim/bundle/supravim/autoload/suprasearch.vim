@@ -10,6 +10,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	var mid_search: number = 0
 	var visualmode = _visualmode
 	var pre_text = _pre_text
+	var history_search_idx = 0
 
 	var min: number
 	var max: number
@@ -138,6 +139,33 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 
 	#### Move the Find Cursor with Up and Down
 	Popup.AddEventKeyPressedFocus(pop1, (_, key) => {
+		if key == "\<C-Up>"
+			if history_search_idx <= 0
+				history_search_idx -= 1
+				var history = histget('search', history_search_idx)
+				echo history .. ' ' .. history_search_idx
+				if history != ''
+					Popup.SetInput(pop1, history)
+				else
+					history_search_idx += 1
+				endif
+			endif
+			return Popup.BLOCK
+		elseif key == "\<C-Down>"
+			if history_search_idx != 0 
+				history_search_idx += 1
+				var history = histget('search', history_search_idx)
+				echo history .. ' ' .. history_search_idx
+				if history_search_idx == 0
+					Popup.SetInput(pop1, '')
+				elseif history != ''
+					Popup.SetInput(pop1, history)
+				else
+					history_search_idx -= 1
+				endif
+			endif
+			return Popup.BLOCK
+		endif
 		var jump_line: number = 0
 		var event = false
 		const input_search = Popup.GetInput(pop1)
@@ -205,6 +233,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	#### When Find Popup is Entered, Go to the first match
 	Popup.AddEventInputEnter(pop1, (line) => {
 		setreg('/', line)
+		histadd('search', line)
 		silent! Popup.Close(pop1)
 		silent! Popup.Close(pop2)
 		silent! Popup.Close(background)
