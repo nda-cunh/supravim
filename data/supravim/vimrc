@@ -799,4 +799,11 @@ if argc() == 0
 	Wel.SupraWelcome()
 endif
 
+# Force directory creation on save
+autocmd BufWritePre * {
+if filereadable(expand('%')) == 0
+	mkdir(expand('%:p:h'), 'p')
+endif
+}
+
 autocmd VimEnter * call Welcome()

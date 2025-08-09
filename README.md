@@ -1,4 +1,4 @@
-# SupraVim 6.00
+# SupraVim 6.1
 
 a simple vim distribution, easy to use and packed with features. It is coded in vim9 and vala.
 It is highly customizable with pre-designed modules and options.
@@ -17,8 +17,9 @@ And more... with suprapack module !
 # How Install 
 ### Dependencies
 
-Supravim: (vim9, zsh)
+Supravim: (vim 9.0+)
 Suprapack (glib-networking) 
+for a better experience install a Nerd Font (https://www.nerdfonts.com/) (or by the suprapack) `suprapack search -ttf`
 
 ## with curl
 ```bash
