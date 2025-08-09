@@ -239,7 +239,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		silent! Popup.Close(background)
 		RemoveMidCursor()
 		RemoveMidSearch()
-			RemoveMidSearch()
+		RemoveMidSearch()
 	})
 
 	#### When Replace Popup is Entered, replace the with the substitution
