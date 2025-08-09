@@ -1,0 +1,978 @@
+vim9script
+
+import autoload 'SupraPopup.vim' as Popup
+import autoload './Utils.vim' as Utils
+import autoload './Preview.vim' as Preview
+import autoload './Colors.vim' as Colors
+
+export var local: dict<any> = {}
+
+# Function to create a new SupraWater buffer
+export def Water()
+	const rd = rand() % 1000
+	const id = bufadd('/tmp/suprawater' .. rd .. '.water')
+	const last_buffer = bufnr()
+	const actual_path = expand('%:p:h')
+
+	silent! mkview
+	var file_name = expand("%:t")
+	noautocmd execute "b! " .. id
+
+	var dict = {
+		first_path: actual_path,
+		first_filename: file_name,
+		actual_path: actual_path,
+		cursor_pos: {},
+		last_buffer: last_buffer,
+		edit: {},
+		deleted: [],
+		clipboard: [],
+		popup_clipboard: {}
+	}
+
+	var winid: number = winnr()
+	var win_width = winwidth(winid)
+	var win_height = winheight(winid)
+	var [row, col_start] = win_screenpos(winid)
+
+	var popup_width = 20
+	var popup_height = 5
+
+	dict.popup_clipboard = Popup.Simple({
+		close_key: [],
+		col: col_start + win_width - 2,
+		line: row + 3,
+		pos: 'topright',
+		width: popup_width,
+		height: popup_height,
+		scrollbar: 1,
+		title: '📋 Clipboard',
+		hidden: 1,
+		mapping: true,
+	})
+	local[id] = dict
+
+	set filetype=suprawater
+	setbufvar(id, '&buflisted', 0)
+    setbufvar(id, '&modeline', 0)
+    setbufvar(id, '&swapfile', 0)
+    setbufvar(id, '&undolevels', -1)
+    setbufvar(id, '&modifiable', 1)
+    setbufvar(id, '&nu', 0)
+	setbufvar(id, "&updatetime", 2500)
+    setbufvar(id, '&signcolumn', 'yes')
+
+	nnoremap <buffer><c-q>			<esc><scriptcmd>ForceQuit()<cr>
+	inoremap <buffer><c-q>			<esc><scriptcmd>ForceQuit()<cr>
+	nnoremap <buffer><c-s>			<esc><scriptcmd>WaterSaveBuffer()<cr>
+	inoremap <buffer><c-s>			<esc><scriptcmd>WaterSaveBuffer()<cr>
+	nnoremap <buffer>-				<scriptcmd>call Back()<cr>
+	nnoremap <buffer><bs>			<scriptcmd>call Back()<cr>
+	nnoremap <buffer><cr>			<scriptcmd>call EnterFolder()<cr>
+	nnoremap <buffer><leader><s>	<scriptcmd>call EnterFolder('horizontal')<cr>
+	nnoremap <buffer><leader><v>	<scriptcmd>call EnterFolder('vertical')<cr>
+	nnoremap <buffer><c-t>			<scriptcmd>call EnterFolder('tab')<cr>
+	nnoremap <buffer><c-n>			<scriptcmd>call EnterFolder('tab')<cr>
+	nnoremap <buffer><2-LeftMouse>	<LeftMouse><scriptcmd>call EnterFolder()<cr>
+	nnoremap <buffer><c-p>			<scriptcmd>call Preview.Preview()<cr>
+	nnoremap <buffer>~				<scriptcmd>call EnterWithPath($HOME .. '/')<cr>
+	nnoremap <buffer>_				<scriptcmd>call EnterWithPathAndJump()<cr>
+	nnoremap <buffer>h				<scriptcmd>call Preview.HelpPreview()<cr>
+	nnoremap <buffer>?				<scriptcmd>call Preview.HelpPreview()<cr>
+	nnoremap <buffer><c-n>			<esc>:tabnew<space>
+	nnoremap <buffer><tab>			<Nop>
+	nnoremap <buffer><leader><d>	<Nop>
+	nnoremap <buffer><leader><f>	<Nop>
+	nnoremap <buffer><leader><g>	<Nop>
+	nnoremap <buffer><leader><h>	<Nop>
+	nnoremap <buffer><tab>			<Nop>
+	nnoremap <buffer><a-up>			<Nop>
+	nnoremap <buffer><a-down>		<Nop>
+	inoremap <buffer><Cr>			<scriptcmd>call g:SupraOverLoadCr()<cr>
+	nnoremap <buffer><c-_>			<Nop>
+	nnoremap <buffer>dw				<scriptcmd>noautocmd normal! dw<cr>
+	nnoremap <buffer>db				<scriptcmd>noautocmd normal! db<cr>
+	nnoremap <buffer>yw				<scriptcmd>noautocmd normal! yw<cr>
+	nnoremap <buffer>yb				<scriptcmd>noautocmd normal! yb<cr>
+	nnoremap <buffer>p				<scriptcmd>call Paste()<cr>
+	command! -buffer Q call ForceQuit()
+	cnoreabbrev <buffer> q Q
+
+	augroup SupraWater
+		autocmd!
+		autocmd ModeChanged,CursorMovedI,CursorMoved,WinScrolled <buffer> call Actualize()
+		autocmd CursorMoved,CursorMovedI <buffer> call Utils.CancelMoveOneLine()
+		autocmd BufWritePost <buffer> call WaterSaveBuffer()
+		autocmd TextChangedI,TextChanged <buffer> call Changed()
+		autocmd TextYankPost <buffer> if v:event.operator ==# 'd' && v:event.regname ==# '' | call Cut() | endif
+		autocmd TextYankPost <buffer> if v:event.operator ==# 'y' && v:event.regname ==# '' | call Yank() | endif
+	augroup END
+
+	EnterWithPathAndJump()
+enddef
+
+
+####################################
+# Draw the 'ls' command and load it in local.edit
+####################################
+def DrawPath(path: string)
+	const id = bufnr('%')
+	var dict = local[id]
+	var r1 = getreg('1')
+	var r2 = getreg('2')
+	var r3 = getreg('3')
+	var r4 = getreg('4')
+	var r5 = getreg('5')
+	var r6 = getreg('6')
+	var r7 = getreg('7')
+	var r8 = getreg('8')
+	var r9 = getreg('9')
+	dict.edit = {}
+	dict.actual_path = path
+
+	# clear the buffer
+	noautocmd execute ':%d'
+	var sp = readdir(path)  # ensure the path exists
+	sp = sort(sp)
+
+	# Set to 2 because the first line is the path and the second line is just empty
+	var nb = 2
+	var result = [' ']
+	for i in sp
+		if (i == '.' || i == '..' || i == '')
+			continue
+		endif
+		var name: string
+		if isdirectory(path .. '/' .. i) == 0
+			name = i
+		else
+			name = i .. '/'
+		endif
+		add(result, name)
+		var tmp = {
+			name: name, # the name of the file or folder
+			is_deleted: false, # if the file is deleted
+			new_file: false, # if the file is a new file
+			copy_of: '', # link to the original file if it is a copy
+		}
+		dict.edit[nb] = tmp
+		nb = nb + 1
+	endfor
+	noautocmd setbufline(bufnr(), 1, result)
+	normal j
+	Actualize()
+	if len(dict.edit) == 0
+		feedkeys("o\<esc>", 'n')
+	endif
+	# Restore the registers
+	setreg('1', r1)
+	setreg('2', r2)
+	setreg('3', r3)
+	setreg('4', r4)
+	setreg('5', r5)
+	setreg('6', r6)
+	setreg('7', r7)
+	setreg('8', r8)
+	setreg('9', r9)
+enddef
+
+
+###############################################
+#  Back function (When you press <bs> or -)
+###############################################
+def Back()
+	const id = bufnr('%')
+	var dict = local[id]
+
+	# Do not quit if the buffer is modified
+	const modified_files = GetModifiedFile(id)
+	if len(modified_files.rename) > 0 || len(modified_files.new_file) > 0
+		OpenPopupCancelFile(modified_files)
+		return
+	endif
+
+	if dict.actual_path == '/'
+		return
+	endif
+
+	var actual_path: string = dict.actual_path
+	var jump: string = actual_path
+
+	# echom 'Saving cursor position of: ' .. actual_path
+	dict.cursor_pos[actual_path] = getcurpos()
+	dict.actual_path = Utils.LeftPath(actual_path)
+	actual_path = dict.actual_path
+
+	# If the path is root (/), we don't need to add a slash
+	if actual_path == '/'
+		call DrawPath(actual_path)
+	else
+		call DrawPath(actual_path .. '/')
+	endif
+
+	actual_path = dict.actual_path
+	if jump != ''
+		const folder_name: string = jump[len(actual_path) : ]
+		const lines = getbufline(id, 0, '$')
+		for i in range(len(lines))
+			if stridx(lines[i], folder_name) == 0
+				call cursor(i + 1, 0)
+				normal! zz
+				break
+			endif
+		endfor
+	endif
+enddef
+
+
+#######################################################
+#  Enter function (When you press <cr> or <LeftMouse>)
+#######################################################
+def EnterFolder(mode: string = '')
+	const id = bufnr('%')
+	var dict = local[id]
+
+	var line = getline('.')
+	# check if line is only space
+	if line =~# '^\s*$'
+		return
+	endif
+
+	const path: string = dict.actual_path .. line
+	EnterWithPath(path, mode)
+	if has_key(dict.cursor_pos, path)
+		call setpos('.', dict.cursor_pos[path])
+		normal! zz
+	endif
+enddef
+
+#################################################
+# Open a file or folder with the given path
+# By default use :edit to open a file
+# If the path is a directory, Move to it
+#################################################
+def EnterWithPath(path: string, mode: string = '')
+	const id = bufnr('%')
+
+	var modified_files = GetModifiedFile(id)
+	if len(modified_files.rename) > 0 || len(modified_files.new_file) > 0
+		OpenPopupCancelFile(modified_files)
+		return
+	endif
+
+	if isdirectory(path)
+		DrawPath(path)
+	elseif Utils.IsBinary(path)
+		system('xdg-open ' .. shellescape(path))
+		if v:shell_error != 0
+			# echomsg 'run: [' .. path .. '] with ' $ARGS .. ' to open it in your default application.'
+			var last_chdir = $PWD
+			chdir(fnamemodify(path, ':h'))
+			$EXECPATH = path
+			feedkeys("\<esc>:!" .. path .. ' ' ..  $ARGS .. "\<cr>", 'n')
+			chdir(last_chdir)
+			redraw!
+		endif
+	else
+		if mode == 'horizontal'
+			execute 'split! ' .. path
+			wincmd p
+		elseif mode == 'vertical'
+			execute 'vsplit! ' .. path
+			wincmd p
+		elseif mode == 'tab'
+			if Quit() == true
+				execute 'tabnew! ' .. path
+			endif
+		else
+			if Quit() == true
+				execute 'edit! ' .. path
+			endif
+		endif
+		silent! loadview
+	endif
+enddef
+
+#################################################
+# call EnterWithPath and jump to the firstpath `_`
+#################################################
+def EnterWithPathAndJump()
+	const id = bufnr('%')
+	const dict = local[id]
+
+	var jump: string = dict.first_path
+	# if the end is not a slash, add it
+	if jump[-1] != '/'
+		jump = jump .. '/'
+	endif
+	call EnterWithPath(jump)
+
+	if jump != ''
+		var lines = getbufline(id, 0, '$')
+		for i in range(len(lines))
+			if stridx(lines[i], dict.first_filename) == 0
+				call cursor(i + 1, 0)
+				break
+			endif
+		endfor
+	endif
+enddef
+
+
+#################################################
+# When the buffer is save
+#################################################
+def WaterSaveBuffer()
+	const id = bufnr('%')
+	if CheckAndAddSigns() == true
+		return
+	endif
+
+	const modified_files = GetModifiedFile(id)
+	# If is empty we don't need to open the popup
+	if len(modified_files.rename) == 0 &&
+			len(modified_files.new_file) == 0 &&
+			len(modified_files.deleted) == 0 &&
+			len(modified_files.all_copy) == 0
+		echom 'No modified files.'
+		return
+	endif
+	OpenPopupModifiedfile(modified_files)
+enddef
+
+##################################################
+# Quit the buffer (used by <c-q> or :q)
+# If the buffer is modified
+# it will open a popup to confirm
+##################################################
+def Quit(): bool
+	const id = bufnr('%')
+	const last_id = local[id].last_buffer
+	const name = bufname(last_id)
+
+	# Do not quit if the buffer is modified
+	const modified_files = GetModifiedFile(id)
+	if len(modified_files.rename) > 0 || len(modified_files.new_file) > 0
+		OpenPopupCancelFile(modified_files)
+		return false
+	endif
+
+	Popup.Close(local[id].popup_clipboard)
+	if !isdirectory(name)
+		:b!#
+	endif
+	if bufexists(last_id) == 0
+		echom 'Buffer ' .. last_id .. ' does not exist anymore.'
+		return false
+	endif
+	Utils.DestroyBuffer(id)
+	return true
+enddef
+
+def ForceQuit()
+	const id = bufnr('%')
+	var dict = local[id]
+	if Quit() == false
+		return
+	endif
+	if isdirectory(bufname(dict.last_buffer)) == 1
+		quit!
+	endif
+enddef
+
+
+
+
+# Check if il y a un doublon dans les noms de fichiers il peut pas y avoir 2
+# fois main.c et main.c parreil si il y a le fichier toto et toto/
+def CheckAndAddSigns(): bool
+	const id = bufnr('%')
+	var dict = local[id]
+
+	var lines = getbufline(id, 2, '$')
+	var all_lines: list<string> = []
+
+
+	Actualize()
+	var error = false
+	var i = 2
+	exe "sign unplace 2 buffer=" .. id
+	for _line in lines
+		var line = substitute(_line, '/\+$', '', 'g')
+		# echom line .. ']'
+		if index(all_lines, line) != -1
+			# echom 'Doublon: ' .. line
+			exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
+			var txt = '   Duplicate'
+			prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+			error = true
+		endif
+
+		if dict.edit[i].new_file == true
+			if !(dict.edit[i].name =~? '^\s*$')
+				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
+				var txt = '   New file with only spaces.'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				error = true
+			endif
+		elseif dict.edit[i].copy_of == ''
+			if dict.edit[i].name[-1] == '/' && _line[-1] != '/'
+				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
+				var txt = '   You cannot rename a folder to a file.'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				error = true
+			endif
+
+			if dict.edit[i].name[-1] != '/' && _line[-1] == '/'
+				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
+				var txt = '   You cannot rename a file to a folder'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				error = true
+			endif
+		else
+			if dict.edit[i].copy_of[-1] == '/' && _line[-1] != '/'
+				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
+				var txt = '   You cannot copy a folder to a file'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				error = true
+			endif
+
+			if dict.edit[i].copy_of[-1] != '/' && _line[-1] == '/'
+				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
+				var txt = '   You cannot copy a file to a folder.'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				error = true
+			endif
+		endif
+
+
+
+		i = i + 1
+		if dict.edit[i - 1].is_deleted == false
+			add(all_lines, line)
+		endif
+	endfor
+	return error
+enddef
+
+
+def PopupYes(modified_file: dict<any>)
+	const id = bufnr('%')
+	var dict = local[id]
+	const actual_path = dict.actual_path
+
+	var commands = []
+	var copy_history = []
+	var delete_history = []
+
+	for i in modified_file.all_copy
+		var copy_of = i
+		if copy_of[-1] == '/'
+			var sp = split(copy_of, ' -> ')
+			var full_path = substitute(sp[0], '/\+$', '', 'g')
+			sp[1] = substitute(sp[1], '/\+$', '', 'g')
+			var tmp_copy_file = g:SupraMakeTempDir()
+			add(commands, 'g:SupraCopyDir(' .. shellescape(full_path) .. ', "' .. tmp_copy_file .. '")')
+			var cmd = '"mv ' .. shellescape(tmp_copy_file) .. ' ' .. shellescape(actual_path .. sp[1]) .. '"'
+			add(copy_history, "system(" .. cmd .. ")")
+			if fnamemodify(sp[0], ':h') .. '/' != actual_path
+				add(delete_history, "delete(" .. shellescape(sp[0]) .. ", 'rf')")
+			endif
+		else
+			var sp = split(copy_of, ' -> ')
+			var tmp_copy_file = tempname()
+			add(commands, 'g:SupraCopyFile(' .. shellescape(sp[0]) .. ', "' .. tmp_copy_file .. '")')
+			add(copy_history, 'rename("' .. tmp_copy_file .. '", ' .. shellescape(actual_path .. fnamemodify(sp[1], ':t')) .. ')')
+			if fnamemodify(sp[0], ':h') .. '/' != actual_path
+				add(delete_history, "delete(" .. shellescape(sp[0]) .. ")")
+			endif
+		endif
+	endfor
+
+	for i in modified_file.deleted
+		var new_name = i
+		if new_name[-1] == '/'
+			new_name = fnamemodify(new_name, ':h:t')
+			add(commands, 'delete(' .. shellescape(actual_path .. new_name) .. ', "rf")')
+		else
+			add(commands, 'delete(' .. shellescape(actual_path .. new_name) .. ')')
+		endif
+	endfor
+
+	for i in modified_file.new_file
+		var new_name = i
+		if new_name[-1] == '/'
+			add(commands, 'mkdir(' .. shellescape(actual_path .. new_name) .. ')')
+		else
+			add(commands, 'writefile([], ' .. shellescape(actual_path .. new_name) .. ')')
+		endif
+	endfor
+
+	for i in modified_file.rename
+		var [old_name, new_name] = split(i, ' -> ')
+		if old_name[-1] == '/'
+			old_name = fnamemodify(old_name, ':h:t')
+			new_name = fnamemodify(new_name, ':h:t')
+			add(commands, 'rename(' .. shellescape(actual_path .. old_name) .. ', ' .. shellescape(actual_path .. new_name) .. ')')
+		else
+			add(commands, 'rename(' .. shellescape(actual_path .. old_name) .. ', ' .. shellescape(actual_path .. new_name) .. ')')
+		endif
+	endfor
+
+	extend(commands, copy_history)
+	extend(commands, delete_history)
+
+	for c in commands
+		echom 'Executing command: ' .. c
+		execute(c)
+	endfor
+
+	dict.clipboard = []
+	Popup.Hide(dict.popup_clipboard)
+	Actualize()
+enddef
+
+def OpenPopupCancelFile(modified_file: dict<any>)
+	const id = bufnr('%')
+	var dict = local[id]
+	const width = float2nr(&columns * 0.4)
+
+	var popup = Popup.Simple({
+		close_key: ["\<esc>", "\<cr>", "\<c-q>"],
+		scrollbar: 1,
+		minwidth: width,
+		width: width,
+	})
+	Popup.AddEventFilterNoFocus(popup, (_, _, key) => {
+		var ascii_val = char2nr(key)
+		if key ==? 'y' || key ==? 'c' || key ==? "\<c-q>"
+			var pos = getpos('.')
+			dict.clipboard = []
+			DrawPath(dict.actual_path)
+			Actualize()
+			Popup.Close(popup)
+			setpos('.', pos)
+		elseif len(key) == 1 && ascii_val >= 32 && ascii_val <= 126
+			Popup.Close(popup)
+		endif
+		return Popup.BLOCK
+	})
+	const nb_minus: number = (width / 2)
+	const nb_space = repeat(' ', (nb_minus))
+	var lines: list<string> = [nb_space .. 'do you really want to Cancel ?' .. nb_space]
+	extend(lines, Utils.GetStrPopup(modified_file))
+	add(lines, nb_space .. ' [(Y)es] [Any key for continue] ' .. nb_space)
+	Popup.SetText(popup, lines)
+	Popup.SetSize(popup, width, len(lines))
+	var bufnr = winbufnr(popup.wid)
+	setbufvar(bufnr, '&filetype', 'suprawater_popup')
+enddef
+
+def OpenPopupModifiedfile(modified_file: dict<any>)
+	const width = float2nr(&columns * 0.6)
+	const id = bufnr('%')
+	var dict = local[id]
+	var popup = Popup.Simple({
+		close_key: ["q", "n", "\<esc>"],
+		scrollbar: 1,
+		minwidth: width,
+		width: width,
+		title: 'Modified Files',
+	})
+	Popup.AddEventFilterNoFocus(popup, (_, _, keys) => {
+		if keys ==? 'y'
+			Popup.Close(popup)
+			var current = getline('.')
+			call PopupYes(modified_file)
+			DrawPath(dict.actual_path)
+			Actualize()
+			search(current, 'c')
+		endif
+		if keys ==? 'c'
+			dict.clipboard = []
+			var pos = getpos('.')
+			DrawPath(dict.actual_path)
+			Actualize()
+			setpos('.', pos)
+			Popup.Close(popup)
+		endif
+		return Popup.BLOCK
+	})
+	const nb_minus: number = (width / 2)
+	const nb_space = repeat(' ', (nb_minus))
+	# var lines = [nb_space .. '     Modified Files     ' .. nb_space]
+	var lines = []
+	extend(lines, Utils.GetStrPopup(modified_file))
+	add(lines, nb_space .. ' [(Y)es] [(N)o] [(C)ancel] ' .. nb_space)
+	Popup.SetText(popup, lines)
+	Popup.SetSize(popup, width, len(lines))
+	var bufnr = winbufnr(popup.wid)
+	setbufvar(bufnr, '&filetype', 'suprawater_popup')
+enddef
+
+def GetModifiedFile(id: number): dict<any>
+	var dict = local[id]
+
+	var all_deleted: list<string> = []
+	var all_new_file: list<string> = []
+	var all_rename: list<string> = []
+	var all_copy: list<string> = []
+	var bufs = getbufline(id, 1, '$')
+
+	for i in keys(dict.edit)
+		if dict.edit[i].is_deleted == true
+			add(all_deleted, dict.edit[i].name)
+		elseif dict.edit[i].copy_of != ''
+			const nb = str2nr(i)
+			const nm = getline(nb)
+			const copy_of = dict.edit[i].copy_of
+			add(all_copy, copy_of .. ' -> ' .. nm)
+		elseif dict.edit[i].new_file == false
+			const nb = str2nr(i)
+			const nm = getline(nb)
+			if nm != dict.edit[i].name
+				add(all_rename, dict.edit[i].name .. " -> " .. nm)
+			endif
+		elseif dict.edit[i].new_file == true
+			const nb = str2nr(i)
+			const nm = getline(nb)
+			if nm =~# '^\s*$'
+				continue
+			endif
+			add(all_new_file, nm)
+		endif
+	endfor
+
+	var result: dict<any> = {
+		rename: all_rename,
+		deleted: all_deleted,
+		new_file: all_new_file,
+		all_copy: all_copy
+	}
+
+	return result
+enddef
+
+
+##################################################
+# Overload the <cr> key to fix bug when pressing <cr> at the begin of the line
+##################################################
+def g:SupraOverLoadCr()
+	const col = col('.')
+	const end = strlen(getline('.'))
+	if col == 1
+		silent! normal O
+	elseif col == end + 1
+		silent! normal o
+	endif
+enddef
+
+def GetBeginEndYank(): list<number>
+	var ln = line('.')
+	var count: number
+	if v:count > 0
+		count = v:count1
+	else
+		count = 1
+	endif
+	if (count + ln) > line('$')
+		count = line('$') - ln + 1
+	endif
+
+	var begin = getpos("'<")
+	var end = getpos("'>")
+	setpos("'<", [0, 0, 0, 0])
+	setpos("'>", [0, 0, 0, 0])
+	if begin[1] != 0 && end[1] != 0
+		ln = begin[1]
+		count = end[1] - begin[1] + 1
+	endif
+
+	if visualmode() == "\<c-v>" && (begin[2] != 1 || end[2] != 2147483647)
+		return [-1, -1]
+	endif
+	return [ln, count]
+enddef
+
+
+def Paste()
+	const id = bufnr('%')
+	var dict = local[id]
+
+	var pos = getpos('.')
+	if len(dict.clipboard) == 0
+		return
+	endif
+	var nb_len = len(dict.clipboard)
+	# echom 'Pasting ' .. len(dict.clipboard) .. ' files...' .. pos[1]
+
+	for i in range(len(dict.edit) + 1, pos[1] + 1, -1)
+		# echom i .. ' to ' .. (i + nb_len)
+		dict.edit[i + nb_len] = dict.edit[i]
+	endfor
+
+	# Add Edit[New_id] with the clipboard content
+	for i in range(0, nb_len - 1)
+		var new_id = pos[1] + i
+		var name = dict.clipboard[i]
+
+		dict.edit[new_id + 1] = {
+			name: fnamemodify(name, ':t'),
+			new_name: '',
+			is_deleted: false,
+			new_file: true,
+			copy_of: name
+		}
+	endfor
+
+	noautocmd var lines = getbufline(id, 1, '$')
+	var new_lines: list<string> = []
+	var i: number = 1
+	var len_lines = len(lines)
+	while i <= len_lines
+		add(new_lines, lines[i - 1])
+		if i == pos[1]
+			var lst = copy(dict.clipboard)
+			for y in range(0, len(lst) - 1)
+				if lst[y][-1] == '/'
+					lst[y] = fnamemodify(lst[y], ':h:t') .. '/'
+				else
+					lst[y] = fnamemodify(lst[y], ':t')
+				endif
+			endfor
+			extend(new_lines, lst)
+		endif
+		i = i + 1
+	endwhile
+	noautocmd setbufline(id, 1, new_lines)
+
+enddef
+
+def Yank()
+	const id = bufnr('%')
+	var dict = local[id]
+	const pos = getpos('.')
+
+	var [ln, count] = GetBeginEndYank()
+	if ln == -1 || count == -1
+		return
+	endif
+	dict.clipboard = []
+	for i in range(ln, ln + count - 1)
+		var complete_path = dict.actual_path .. dict.edit[i].name
+		if complete_path == dict.actual_path
+			continue
+		endif
+		add(dict.clipboard, complete_path)
+	endfor
+	Actualize_popupclipboard(dict)
+enddef
+
+def Cut()
+	const id = bufnr('%')
+	var dict = local[id]
+	const pos = getpos('.')
+
+	var [ln, count] = GetBeginEndYank()
+	if ln == -1 || count == -1
+		return
+	endif
+
+	dict.clipboard = []
+	var remove_line: list<number> = []
+	for i in range(ln, ln + count - 1)
+		var complete_path = dict.actual_path .. dict.edit[i].name
+		if dict.edit[i].is_deleted == false
+			if dict.edit[i].copy_of != '' || dict.edit[i].name == ''
+				remove_line = add(remove_line, i)
+				continue
+			endif
+			dict.edit[i].is_deleted = true
+			if complete_path == dict.actual_path
+				continue
+			endif
+			add(dict.clipboard, complete_path)
+		else
+			dict.edit[i].is_deleted = false
+			var index = index(dict.clipboard, complete_path)
+		endif
+	endfor
+
+	remove_line = reverse(remove_line)
+	#delete the lines and move all lines after it
+	var old_buffer = getbufline(id, 1, '$')
+	var new_buffer: list<string> = []
+
+	for i in range(len(old_buffer))
+		if index(remove_line, i + 1) != -1
+			add(new_buffer, '')
+			continue
+		endif
+		var line_content = old_buffer[i]
+		add(new_buffer, line_content)
+	endfor
+
+	Actualize_popupclipboard(dict)
+
+	timer_start(10, (_) => {
+		set eventignore=
+		noautocmd setbufline(id, 1, new_buffer)
+		setpos('.', pos)
+		Changed()
+	})
+enddef
+
+##########################################################
+# Actualize the popup clipboard
+# This function is called when the user copy or cut files
+##########################################################
+def Actualize_popupclipboard(dict: dict<any>)
+	# Close the popup if the clipboard is empty
+	if len(dict.clipboard) == 0
+		Popup.Hide(dict.popup_clipboard)
+		return
+	endif
+	# Print all clipboard content in the popup
+	var new_text = []
+	# change the home path to ~
+	for i in dict.clipboard
+		var text = substitute(i, '^' .. $HOME .. '/', '~/', 'g')
+		text = Utils.GetIcon(text) .. '  ' .. text
+		add(new_text, text)
+	endfor
+	Popup.SetText(dict.popup_clipboard, new_text)
+	Popup.SetSize(dict.popup_clipboard, -1, len(dict.clipboard))
+	Popup.Show(dict.popup_clipboard)
+enddef
+
+
+#######################################################################
+# When the buffer is changed by the user
+# This function is called by the autocmd TextChangedI and TextChanged
+#######################################################################
+def Changed()
+	const id = bufnr('%')
+	var dict = local[id]
+	const nb_lines = line('$') - 1
+
+	if nb_lines == 0
+		noautocmd setline(1, '   ')
+		noautocmd setline(2, ' ')
+		dict.edit[2] = {
+			name: '',
+			is_deleted: false,
+			new_file: true,
+			copy_of: '',
+		}
+		timer_start(10, (_) => {
+			normal k
+		})
+	endif
+
+
+	# NEW FILE (When a new line is added)
+	if len(dict.edit) < nb_lines
+		var current = line('.')
+		var new_file = {
+			name: '',
+			is_deleted: false,
+			new_file: true,
+			copy_of: '',
+		}
+		for i in range(nb_lines, current, -1)
+			dict.edit[i + 1] = dict.edit[i]
+		endfor
+		dict.edit[current] = new_file
+		return
+	endif
+
+	const cursor = getpos('.')
+
+	var p_begin = line('w0') - 1
+	var p_end = len(dict.edit) - 1
+	if p_end >= line('w$')
+		p_end = line('w$')
+	endif
+
+	# If the line is deleted, force the firstname of the file
+	for i in range(p_begin, p_end + 1)
+		if i == 0
+			continue
+		endif
+		if dict.edit[i + 1].is_deleted == true
+			if getline(i + 1) != dict.edit[i + 1].name
+				noautocmd setline(i + 1, dict.edit[i + 1].name)
+			endif
+		endif
+	endfor
+
+	for i in range(line('$'), 1, -1)
+		if getline(i) == ''
+			noautocmd execute ':' .. i .. 'd'
+			for j in range(i, len(dict.edit))
+				if has_key(dict.edit, j)
+					dict.edit[j] = dict.edit[j + 1]
+				endif
+			endfor
+			unlet dict.edit[len(dict.edit) + 1]
+			continue
+		endif
+	endfor
+
+	setpos('.', cursor)
+	if line('.') == 1
+		normal! j
+	endif
+	Actualize()
+enddef
+
+###############################################
+# Draw the icon and the path in the buffer
+###############################################
+def Actualize()
+	const id = bufnr('%')
+	var dict = local[id]
+	const actual_path = dict.actual_path
+
+	var sort_text = 'Sort by name ▲  | hidden files: 🗸 ' # or 🗶 ✕
+	const help_text = 'Press ("?" or "h") for Help !'
+	sort_text ..= repeat(' ', (winwidth(0) - len(sort_text) - len(help_text))) ..  help_text
+	prop_clear(line('w0'), line('w$'))
+	prop_add(1, 0, {text: actual_path, type: 'suprawaterpath', text_align: 'above'})
+	prop_add(1, 0, {text: sort_text, type: 'suprawatersort', text_align: 'above'})
+	const result = getbufline(id, 1, '$')
+	const p_begin = line('w0') - 1
+	var p_end = len(result) - 1
+	if p_end >= line('w$')
+		p_end = line('w$')
+	endif
+
+	for i in range(p_begin, p_end)
+		if result[i] == '' || i == 0
+			continue
+		endif
+		var sym: string
+		var ext: string
+		var complete_path = actual_path .. result[i]
+
+		if has_key(dict.edit, i + 1) != 0 && dict.edit[i + 1].is_deleted == true
+			ext = 'DELETED'
+			sym = ''
+		elseif complete_path[-1] == '/'
+			sym = ''
+			ext = 'FOLDER'
+		else
+			sym = Utils.GetIcon(complete_path)
+			ext = fnamemodify(result[i], ':e')
+			if ext == ''
+				ext = result[i]
+			endif
+		endif
+		if has_key(Colors.colors, ext)
+			const color = Colors.colors[ext]
+			silent! call prop_add(i + 1, 1, {text: sym .. '  ', type: color})
+		else
+			silent! call prop_add(i + 1, 1, {text: sym .. '  ', type: 'suprawater'})
+		endif
+	endfor
+enddef
