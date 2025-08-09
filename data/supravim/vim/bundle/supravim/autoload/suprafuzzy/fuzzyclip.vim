@@ -8,7 +8,9 @@ def Select(wid: number, result: list<any>)
 	if empty(res)
 		return
 	endif
-	setreg('0', getreg(res[0]))
+	var txt = getreg(res[0])
+	setreg('@', txt)
+	setreg('0', txt)
 	UpdateClipboard
 enddef
 
@@ -114,14 +116,18 @@ def GetList(): list<string>
 		var first_line: string 
 		var sp = res->split('\n')
 		var j = 0
-		while j < len(sp) && empty(first_line)
-			if !empty(sp[j])
+		while j < len(sp)
+			if !(sp[j] =~? '^\s\+$')
 				first_line = sp[j]
 				break
 			endif
 			j += 1
 		endwhile
 		first_line = first_line->substitute('^\s\+', '', 'g')
+		if first_line == ''
+			i += 1
+			continue
+		endif
 		add(result, i .. '   ' .. first_line)
 		i += 1
 	endwhile
@@ -175,9 +181,9 @@ export def LoadRegisterFromExtern(copy_os: list<string>)
 			if result == last
 				return
 			endif
+			UpdateYankRegisters()
 			setreg('@', result)
 			setreg('0', result)
-			UpdateYankRegisters()
 		},
 	})
 enddef
