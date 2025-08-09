@@ -409,7 +409,7 @@ def CheckAndAddSigns(): bool
 		endif
 
 		if dict.edit[i].new_file == true
-			if !(dict.edit[i].name =~? '^\s*$')
+			if (dict.edit[i].name =~? '^\s*$')
 				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
 				var txt = '   New file with only spaces.'
 				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
