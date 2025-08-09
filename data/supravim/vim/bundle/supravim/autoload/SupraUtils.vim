@@ -1,6 +1,6 @@
 vim9script
 
-import './SupraPopup.vim' as Popup
+import autoload './SupraPopup.vim' as Popup
 
 export def MoveLineDown(mode: string)
 	var array = getline(line("'<"), line("'>"))
