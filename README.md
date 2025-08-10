@@ -1,85 +1,116 @@
 # SupraVim 6.1
 
-a simple vim distribution, easy to use and packed with features. It is coded in vim9 and vala.
-It is highly customizable with pre-designed modules and options.
-Supravim supports many languages and tools.
-- C
-- C++
-- vala
-- Asm (nasm)
-- python
-- rust
-And more... with suprapack module !
+**A simple yet powerful Vim distribution** — easy to use, packed with features, and built with **Vim9** and **Vala**.
 
-# [The SupraWiki (help and documentation) Click here](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home)
+SupraVim is **highly customizable**, offering pre-designed modules and configuration options. It supports many programming languages and tools out of the box, with even more available through the **Suprapack** module system.
 
+---
 
-# How Install 
+## ✨ Features
+
+- **Modern Vim9 experience** with clean, modular scripting
+- **Highly customizable** — easily tweak settings to match your workflow
+- **Integrated file browser** for quick project navigation
+- **Easy LSP detection & installation** for maximum language support
+- **Built-in compilation interface** supporting:
+  - `make`
+  - `cmake`
+  - `ninja`
+  - `meson.build`
+- **VSCode-like shortcuts** for a smoother transition for new users
+- **Mouse support** for easier navigation (ideal for beginners)
+- **Multi-language support**:
+  - C
+  - C++
+  - Vala
+  - Assembly (NASM)
+  - Python
+  - Rust
+  - …and more via **Suprapack**
+
+📚 **Documentation & Help**: [Visit the SupraWiki](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home)
+
+---
+
+## 📦 Installation
+
 ### Dependencies
+- **Vim** 9.0+
+- **Suprapack**
+- **glib-networking**
+- (Optional but recommended) [Nerd Font](https://www.nerdfonts.com/) — install manually or via Suprapack:
+  ```bash
+  suprapack search -ttf
+  ```
 
-Supravim: (vim 9.0+)
-Suprapack (glib-networking) 
-for a better experience install a Nerd Font (https://www.nerdfonts.com/) (or by the suprapack) `suprapack search -ttf`
+---
 
-## with curl
+### Install with `curl`
 ```bash
 curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | bash
 ```
 
-## with suprapack
+### Install with `suprapack`
 
-### 🐧 Linux:
+🐧 **Linux**:
 ```bash
 suprapack install supravim
 ```
-### 🍎 MacOs
-For MacOs support please read this: https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os
 
-just run for compiling all the modules and install supravim:
-
+🍎 **macOS**:
+Read the macOS instructions here: [MacOS Support Guide](https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os)  
+Then compile and install:
 ```bash
 curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/create_package.sh | bash
 ```
 
-# Update & Uninstall
+---
 
-#### Update:
+## 🔄 Update & Uninstall
+
+**Update SupraVim**:
 ```bash
 supravim --update
 ```
 
-#### Uninstall
-
+**Uninstall SupraVim**:
 ```bash
 supravim --uninstall
 ```
 
-<img src="readme_img/readme.png"/>
+---
 
-<img src="readme_img/gui.png"/>
+## 📷 Screenshots
+![SupraVim in terminal](readme_img/readme.png)  
+![SupraVim GUI](readme_img/gui.png)
 
-# Autre chose ? une idée ?
-ouvrez un ticket ! ou mp moi sur discord (nda-cunh) ou demandez le moi directement
-je suis à l'écoute d'un peu tout :)
+---
 
-MP moi sur le discord/slack de 42 si besoin (nda-cunh)
+## 💬 Feedback & Ideas
+Got suggestions or ideas?
+- Open an issue on GitLab
+- Message me on Discord: **nda-cunh**
+- Reach out on 42’s Discord/Slack
 
-# Developper
+I’m open to all kinds of feedback!
 
-## How build ?
+---
 
-you need suprapack to build it
+## 🛠 Development
+
+To build SupraVim yourself, you’ll need **Suprapack**:
+
 ```bash
 git clone https://gitlab.com/nda-cunh/SupraVim
 cd SupraVim
-# Modifiy
+# Make changes
 meson build --prefix=$PWD/usr
 ninja install -C build
-# Install the new version with it
+# Install the new build
 suprapack add supravim-*.suprapack
 ```
 
-for build all the supravim and modules
+To build SupraVim and all modules:
 ```bash
 curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/create_package.sh | bash
 ```
