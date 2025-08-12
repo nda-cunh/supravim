@@ -2,7 +2,8 @@ vim9script
 
 import autoload 'suprafuzzy/fuzzyclip.vim' as FuzzyClip
 
-noremap <space>c <scriptcmd>FuzzyClip.Start()<cr>
+command FuzzyClip call FuzzyClip.Start()
+
 inoremap <c-v>	<scriptcmd>norm p<cr>
 nnoremap <del> i<del><right><esc>
 vnoremap <c-c>	y
