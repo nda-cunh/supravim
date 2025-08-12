@@ -802,3 +802,13 @@ g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
 g:SupraTreeWinSize = 27
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
 autocmd VimEnter * call Welcome()
+g:SupraTreeOpenByDefault = g:sp_tree
+set autochdir
+def SupraBearInit()
+	silent! $PWD = system('suprabear -p')
+	cd $PWD 
+enddef
+
+autocmd DirChanged * {
+	call SupraBearInit()
+}
