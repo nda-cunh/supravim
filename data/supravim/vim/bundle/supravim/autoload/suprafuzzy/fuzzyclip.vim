@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'fuzzyy/utils/selector.vim'
+import autoload 'fuzzbox/utils/selector.vim'
 import autoload 'SupraNotification.vim' as Notify
 
 def Select(wid: number, result: list<any>)

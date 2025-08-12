@@ -85,6 +85,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	setlocal fillchars+=eob:\ 
 	if dict.tree_mode == true
 		setbufvar(id, '&ea', 0)
+		setbufvar(id, '&winfixwidth', 1)
 		setbufvar(id, '&cursorline', 0)
 	endif
 
@@ -95,6 +96,8 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	nnoremap <buffer><cr>			<scriptcmd>call EnterFolder()<cr>
 	nnoremap <buffer><leader><s>	<scriptcmd>call EnterFolder('horizontal')<cr>
 	nnoremap <buffer><leader><v>	<scriptcmd>call EnterFolder('vertical')<cr>
+	nnoremap <buffer><c-h>			<scriptcmd>call EnterFolder('horizontal')<cr>
+	nnoremap <buffer><c-v>			<scriptcmd>call EnterFolder('vertical')<cr>
 	nnoremap <buffer><c-t>			<scriptcmd>call EnterFolder('tab')<cr>
 	nnoremap <buffer><c-n>			<scriptcmd>call EnterFolder('tab')<cr>
 	noremap <buffer><RightMouse>	<Nop>
@@ -134,32 +137,26 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	endif
 	cnoreabbrev <buffer> q Q
 
-		autocmd ModeChanged,CursorMovedI,CursorMoved,WinScrolled <buffer> call Actualize()
-		autocmd CursorMoved,CursorMovedI <buffer> call Utils.CancelMoveOneLine()
-		autocmd BufWritePost <buffer> call WaterSaveBuffer()
-		autocmd TextChangedI,TextChanged <buffer> call Changed()
-		autocmd TextYankPost <buffer> if v:event.operator ==# 'd' && v:event.regname ==# '' | call Cut() | endif
-		autocmd TextYankPost <buffer> if v:event.operator ==# 'y' && v:event.regname ==# '' | call Yank() | endif
-	augroup SupraWater
-		autocmd!
-		autocmd User RefreshTree call Refresh()
-	augroup END
-
+	autocmd ModeChanged,CursorMovedI,CursorMoved <buffer> call Actualize()
+	autocmd CursorMoved,CursorMovedI <buffer> call Utils.CancelMoveOneLine()
+	autocmd BufWritePost <buffer> call WaterSaveBuffer()
+	autocmd TextChangedI,TextChanged <buffer> call Changed()
+	autocmd TextYankPost <buffer> if v:event.operator ==# 'd' && v:event.regname ==# '' | call Cut() | endif
+	autocmd TextYankPost <buffer> if v:event.operator ==# 'y' && v:event.regname ==# '' | call Yank() | endif
 	EnterWithPathAndJump()
 	return id
 enddef
 
-export def Refresh()
-	var id: number = -1
-	var lst_buf = tabpagebuflist()
-	for i in lst_buf
-		if getbufvar(i, '&filetype') == 'suprawater' 
-			id = i
-			break
-		endif
-	endfor
-	if has_key(local, id) == 0
+export def ClosePopup(id: number)
+	var dict = local[id]
+	if has_key(dict, 'popup_clipboard') == 0
+		return
+	endif
+	Popup.Close(dict.popup_clipboard)
+enddef
 
+def RefreshTree(id: number)
+	if has_key(local, id) == 0
 		return
 	endif
 	var dict = local[id]
@@ -180,6 +177,15 @@ export def Refresh()
 	else
 		DrawPath($PWD .. '/', id)
 	endif
+enddef
+
+export def Refresh()
+	var lst_buf = tabpagebuflist()
+	for i in lst_buf
+		if getbufvar(i, '&filetype') == 'suprawater' 
+			RefreshTree(i)
+		endif
+	endfor
 enddef
 
 ####################################
@@ -375,7 +381,6 @@ def EnterWithPath(path: string, mode: string = '')
 	elseif Utils.IsBinary(path)
 		system('xdg-open ' .. shellescape(path))
 		if v:shell_error != 0
-			# echomsg 'run: [' .. path .. '] with ' $ARGS .. ' to open it in your default application.'
 			var last_chdir = $PWD
 			chdir(fnamemodify(path, ':h'))
 			$EXECPATH = path
@@ -385,11 +390,13 @@ def EnterWithPath(path: string, mode: string = '')
 		endif
 	else
 		if mode == 'horizontal'
+			wincmd p
 			execute 'split! ' .. path
-			wincmd p
+			set wincolor=Normal
 		elseif mode == 'vertical'
-			execute 'vsplit! ' .. path
 			wincmd p
+			execute 'vsplit! ' .. path
+			set wincolor=Normal
 		elseif mode == 'tab'
 			if Quit() == true
 				execute 'tabnew! ' .. path

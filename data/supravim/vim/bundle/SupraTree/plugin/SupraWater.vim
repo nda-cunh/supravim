@@ -9,23 +9,41 @@ var local: dict<any> = {}
 
 autocmd VimEnter,BufEnter * if isdirectory(@%) | execute 'SupraWater.Water()' | endif
 
-def DarkenColor(_color: string, percent: number): string
-	var color = _color
-	if color[0] == '#'
-		color = color[1 : ]
-	endif
-    # Convert hex color to RGB
-    var r: float = str2nr(color[0 : 1], 16) / 255.0
-    var g: float = str2nr(color[2 : 3], 16) / 255.0
-    var b: float = str2nr(color[4 : 5], 16) / 255.0
+augroup SupraWater
+	autocmd!
+	autocmd User RefreshTree call SupraWater.Refresh()
+augroup END
 
-    # Darken the color
-	var factor = (100.0 - percent) / 100.0
-    r *= factor
-    g *= factor
-    b *= factor
+highlight link SupraWaterSign Error
+autocmd ColorScheme * call Create_HiColor()
+highlight link SupraWaterErrorSign Error
+if exists('g:sp_symbol_signs')
+	execute 'sign define SupraWaterSign text=' .. g:sp_symbol_signs .. ' texthl=SupraWaterErrorSign'
+else
+	execute 'sign define SupraWaterSign text=✖ texthl=SupraWaterErrorSign'
+endif
 
-	return printf('#%02X%02X%02X', float2nr(r * 255), float2nr(g * 255), float2nr(b * 255))
+ 
+def g:SupraCopyFile(src: string, dest: string)
+	var stat = getfperm(src)
+	call mkdir(fnamemodify(dest, ':h'), 'p')
+
+	var content = readfile(src, 'b')
+	writefile(content, dest, 'b')
+	call setfperm(dest, stat)
+enddef
+
+def g:SupraMakeTempDir(): string
+	var tmpdir = tempname()
+	call mkdir(tmpdir, 'p')
+	return tmpdir
+enddef
+
+def g:SupraCopyDir(src: string, dest: string)
+	mkdir(dest, 'p')
+	delete(dest, 'rf')
+	echom 'cp -r ' .. shellescape(src) .. ' ' .. shellescape(dest)
+	system('cp -r ' .. shellescape(src) .. ' ' .. shellescape(dest))
 enddef
 
 def Create_HiColor()
@@ -56,38 +74,22 @@ def Create_HiColor()
 	SupraWater.Refresh()
 enddef
 
-highlight link SupraWaterSign Error
-autocmd ColorScheme * call Create_HiColor()
+def DarkenColor(_color: string, percent: number): string
+	var color = _color
+	if color[0] == '#'
+		color = color[1 : ]
+	endif
+
+    var r: float = str2nr(color[0 : 1], 16) / 255.0
+    var g: float = str2nr(color[2 : 3], 16) / 255.0
+    var b: float = str2nr(color[4 : 5], 16) / 255.0
+
+	var factor = (100.0 - percent) / 100.0
+    r *= factor
+    g *= factor
+    b *= factor
+
+	return printf('#%02X%02X%02X', float2nr(r * 255), float2nr(g * 255), float2nr(b * 255))
+enddef
+
 Create_HiColor()
-
-# Virtual Text for icons
- 
-def g:SupraCopyFile(src: string, dest: string)
-	# keep chmod
-	var stat = getfperm(src)
-	call mkdir(fnamemodify(dest, ':h'), 'p')
-
-	var content = readfile(src, 'b')
-	writefile(content, dest, 'b')
-	call setfperm(dest, stat)
-enddef
-
-def g:SupraMakeTempDir(): string
-	var tmpdir = tempname()
-	call mkdir(tmpdir, 'p')
-	return tmpdir
-enddef
-
-def g:SupraCopyDir(src: string, dest: string)
-	mkdir(dest, 'p')
-	delete(dest, 'rf')
-	echom 'cp -r ' .. shellescape(src) .. ' ' .. shellescape(dest)
-	system('cp -r ' .. shellescape(src) .. ' ' .. shellescape(dest))
-enddef
-
-highlight link SupraWaterErrorSign Error
-if exists('g:sp_symbol_signs')
-	execute 'sign define SupraWaterSign text=' .. g:sp_symbol_signs .. ' texthl=SupraWaterErrorSign'
-else
-	execute 'sign define SupraWaterSign text=✖ texthl=SupraWaterErrorSign'
-endif

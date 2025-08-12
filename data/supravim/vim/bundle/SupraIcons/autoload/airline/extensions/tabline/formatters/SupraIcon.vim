@@ -3,7 +3,7 @@
 " Maintainer: Ryan McIntyre <ryanoasis@gmail.com>
 " License: see LICENSE
 
-function! airline#extensions#tabline#formatters#webdevicons#format(bufnr, buffers) abort
+function! airline#extensions#tabline#formatters#SupraIcon#format(bufnr, buffers) abort
   let bufname = bufname(a:bufnr)
   let name = fnamemodify(bufname, ':t')
   if stridx(name, 'suprawater') == 0 && strridx(name, '.water') > 0

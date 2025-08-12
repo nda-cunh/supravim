@@ -11,9 +11,14 @@ export def OpenTree()
 		return
 	endif
 	var last_winid = win_getid()
-	execute 'topleft vertical :26split supra_water'
+	var nb_size: number = 30
+	if exists('g:SupraTreeWinSize')
+		nb_size = g:SupraTreeWinSize
+	endif
+	execute 'topleft vertical :' .. nb_size .. 'split supra_water'
 	var wid = win_getid()
 	t:SupraTree = SupraWater.Water(true)
+	normal gg
 	win_gotoid(last_winid)
 enddef
 
@@ -31,7 +36,8 @@ export def CloseTree()
 	if !exists('t:SupraTree')
 		return
 	endif
-	execute 'bdelete! ' .. t:SupraTree
+	SupraWater.ClosePopup(t:SupraTree)
+	noautocmd execute 'bdelete! ' .. t:SupraTree
 	unlet t:SupraTree
 enddef
 
