@@ -17,6 +17,12 @@ export def Start()
     select_cb: Select,
     preview: false,
 	width: 0.20,
-	menu_title: 'FuzzyMake'
+	menu_title: 'FuzzyMake',
+	actions: {
+		"\<c-t>": null_function,
+		"\<c-v>": null_function,
+		"\<c-s>": null_function,
+		"\<c-q>": null_function,
+	}
   })
 enddef

@@ -103,7 +103,7 @@ def JumpToSymbol(excmd: string)
 	endif
 enddef
 
-def CloseTab()
+def CloseTab(wid: number)
 	var result = selector.GetCursorItem()
 	var lst = ParseResult(result)
 	if empty(lst)
@@ -111,11 +111,12 @@ def CloseTab()
 	endif
 	var path = lst[1]
 
+	popup_close(wid)
 	exe 'tabnew ' .. lst[1]
 	JumpToSymbol(lst[2])
 enddef
 
-def CloseSplit()
+def CloseSplit(wid: number)
 	var result = selector.GetCursorItem()
 	var lst = ParseResult(result)
 	if empty(lst)
@@ -123,11 +124,12 @@ def CloseSplit()
 	endif
 	var path = lst[1]
 
+	popup_close(wid)
 	exe 'split ' .. lst[1]
 	JumpToSymbol(lst[2])
 enddef
 
-def CloseVSplit()
+def CloseVSplit(wid: number)
 	var result = selector.GetCursorItem()
 	var lst = ParseResult(result)
 	if empty(lst)
@@ -135,6 +137,7 @@ def CloseVSplit()
 	endif
 	var path = lst[1]
 
+	popup_close(wid)
 	exe 'vsplit ' .. lst[1]
 	JumpToSymbol(lst[2])
 enddef
@@ -149,12 +152,12 @@ def GotExit(ch: channel)
 		xoffset: 0.1,
 		width: 0.80,
 		prompt_title: 'FuzzyTags',
-		# TODO Fuzzy Issues #104
-		key_callbacks: {
+		actions: {
+			"\<c-t>": function('CloseTab'), 
 			"\<c-v>": function('CloseVSplit'),
 			"\<c-s>": function('CloseSplit'),
-			"\<c-t>": function('CloseTab'),
-		},
+			"\<c-q>": null_function,
+		}
 	})
 enddef
 
