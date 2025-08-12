@@ -796,19 +796,28 @@ if filereadable(expand('%')) == 0
 	mkdir(expand('%:p:h'), 'p')
 endif
 }
+autocmd VimEnter * call Welcome()
 
 #--------------- SupraTree ---------------"
 g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
 g:SupraTreeWinSize = 27
-nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
-autocmd VimEnter * call Welcome()
 g:SupraTreeOpenByDefault = g:sp_tree
-set autochdir
-def SupraBearInit()
-	silent! $PWD = system('suprabear -p')
-	cd $PWD 
+nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
+
+
+def Voyage() 
+	var exp = expand('%:p:h')
+	if exp == '/tmp'
+		return
+	endif
+	execute 'cd ' .. exp 
+	var new_dir = system('suprabear -p')
+	if !empty(new_dir)
+		var trimmed_dir = trim(new_dir)
+		execute 'cd ' .. trimmed_dir
+	endif
 enddef
 
-autocmd DirChanged * {
-	call SupraBearInit()
+autocmd WinEnter,BufEnter * {
+	call Voyage()
 }
