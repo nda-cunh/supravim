@@ -26,7 +26,7 @@ namespace LspServer {
 			"pip install python-lsp-server[all]"},
 		{"kotlin-lsp", "kotlin-language-server", "kt,kts,kotlin",
 			null,
-			"suprapack add kotlin-language-server --yes"},
+			null},
 		{ "vls", "vala-language-server", "vala,vapi",
 			"vala-language-server --help",
 			"suprapack add vala-language-server --yes"},
