@@ -643,12 +643,12 @@ nnoremap <silent> <leader>f <scriptcmd>FuzzyFiles<CR>
 nnoremap <silent> <leader>b <scriptcmd>FuzzyBuffers<CR>
 nnoremap <silent> <leader>h <scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <leader>m <scriptcmd>FuzzyMRUFiles<CR>
-g:fuzzyy_enable_mappings = 0
+g:fuzzbox_enable_mappings = 0
 # Search Ctrl + F
 nnoremap <silent> <leader><leader> <scriptcmd>FuzzyBuffers<CR>
 
-g:fuzzyy_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
-g:fuzzyy_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
+g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
+g:fuzzbox_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
 
 
 # SupraVim Settings Sync

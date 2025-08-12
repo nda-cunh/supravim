@@ -377,20 +377,21 @@ g:webdevicons_enable = 1
 
 var fileformat: string = ''
 def g:WebDevIconsGetFileFormatSymbol(): string
-	if fileformat != ''
-		return fileformat
-	endif
-	if &fileformat ==? 'dos'
-		fileformat = ''
-	elseif &fileformat ==? 'unix'
-		fileformat = isDarwin() ? '' : getDistro()
-	elseif &fileformat ==? 'mac'
-		fileformat = ''
-	endif
-	return fileformat
+	# if fileformat != ''
+	# 	return fileformat
+	# endif
+	# if &fileformat ==? 'dos'
+	# 	fileformat = ''
+	# elseif &fileformat ==? 'unix'
+	# 	fileformat = isDarwin() ? '' : getDistro()
+	# elseif &fileformat ==? 'mac'
+	# 	fileformat = ''
+	# endif
+	# return fileformat
+	return 'X'
 enddef
 
-def isDarwin(): bool
+def IsDarwin(): bool
 	if has('macunix')
 		return true 
 	endif

@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'fuzzyy/utils/selector.vim'
+import autoload 'fuzzbox/utils/selector.vim'
 
 def Select(wid: number, result: list<any>)
 	var res = result[0]
@@ -43,13 +43,6 @@ def Preview(wid: number, result: string)
     setwinvar(wid, '&filetype', '')
     win_execute(wid, 'silent! doautocmd filetypedetect BufNewFile ' .. path)
     win_execute(wid, 'silent! setlocal nospell nolist')
-
-    if empty(getwinvar(wid, '&filetype')) || getwinvar(wid, '&filetype') == 'conf'
-        var modelineft = selector.FTDetectModelines(content)
-        if !empty(modelineft)
-            win_execute(wid, 'set filetype=' .. modelineft)
-        endif
-    endif
 
 	if trim(excmd) =~ '^\d\+$'
 		win_execute(wid, "silent! cursor(" .. excmd .. ", 1)")

@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'fuzzyy/utils/selector.vim'
+import autoload 'fuzzbox/utils/selector.vim'
 
 def Select(wid: number, result: list<any>)
 	call g:Make(result[0])
