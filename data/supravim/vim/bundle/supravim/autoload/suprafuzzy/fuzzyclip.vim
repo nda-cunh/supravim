@@ -20,89 +20,6 @@ def Preview(wid: number, result: string)
     popup_settext(wid, sp)
 enddef
 
-var lst_items: list<string>
-
-def GotOutput(channel: channel, msg: string)
-	add(lst_items, msg)
-enddef
-
-def ParseResult(result: string): list<any>
-	var sp = result->split(' ')
-	if empty(sp)
-		return [] 
-	endif
-	var name = sp[0]
-	var id = str2nr(sp[1])
-	var lst = taglist(name)
-	var tagname: string
-	var path: string
-	var excmd: string
-
-	if empty(name) || empty(lst)
-		return []
-	endif
-	var _id = 0
-	for i in lst
-		if i.name == name 
-			if _id == id
-				tagname = i.name
-				path = i.filename
-				excmd = i.cmd
-				break
-			else
-				_id += 1
-				continue
-			endif
-		endif
-	endfor
-	return [tagname, path, excmd]
-enddef
-
-def JumpToSymbol(excmd: string)
-	if trim(excmd) =~ '^\d\+$'
-		silent! cursor(" .. excmd .. ", 1)
-	else
-		var pattern = excmd->substitute('^\/', '', '')->substitute('\M\/;\?"\?$', '', '')
-		exec "silent! search('\\M" .. EscQuotes(pattern) .. "', 'cw')"
-	endif
-enddef
-
-def CloseTab()
-	var result = selector.GetCursorItem()
-	var lst = ParseResult(result)
-	if empty(lst)
-		return
-	endif
-	var path = lst[1]
-
-	exe 'tabnew ' .. lst[1]
-	JumpToSymbol(lst[2])
-enddef
-
-def CloseSplit()
-	var result = selector.GetCursorItem()
-	var lst = ParseResult(result)
-	if empty(lst)
-		return
-	endif
-	var path = lst[1]
-
-	exe 'split ' .. lst[1]
-	JumpToSymbol(lst[2])
-enddef
-
-def CloseVSplit()
-	var result = selector.GetCursorItem()
-	var lst = ParseResult(result)
-	if empty(lst)
-		return
-	endif
-	var path = lst[1]
-
-	exe 'vsplit ' .. lst[1]
-	JumpToSymbol(lst[2])
-enddef
-
 def GetList(): list<string>
 	var result: list<string> = []
 	var i: number = 1
@@ -142,6 +59,12 @@ export def Start()
 		preview_cb: Preview,
 		height: 0.5,
 		width: 0.7,
+		actions: {
+			"\<c-t>": null_function,
+			"\<c-v>": null_function,
+			"\<c-s>": null_function,
+			"\<c-q>": null_function,
+		},
 		prompt_title: 'FuzzyClip',
 	})
 enddef
