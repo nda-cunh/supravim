@@ -1,20 +1,10 @@
 vim9script
 
-export def GetIcon(name: string): string
+export def GetIcon(name: string, type: number = -1): string
 	if name[-1] == '/'
-		return ''  # folder icon
+		return g:WebDevIconsGetFileTypeSymbol(name, 1)
 	endif
-	var value = g:WebDevIconsGetFileTypeSymbol(name, 0)
-	if value == ''
-		try
-			if IsBinary(name)
-				return ''  # binary file icon
-			endif
-		catch
-			return value
-		endtry
-	endif
-	return value
+	return g:WebDevIconsGetFileTypeSymbol(name, type)
 enddef
 
 export def GetStrPopup(modified_file: dict<any>): list<string>
@@ -23,12 +13,12 @@ export def GetStrPopup(modified_file: dict<any>): list<string>
 		var sp = split(i, ' -> ')
 		var str1 = sp[0]
 		var str2 = sp[1]
-			add(lines, '[Rename]       ' .. GetIcon(str1) .. ' ' .. str1 .. '  →  ' .. GetIcon(str2) .. ' ' .. str2)
+		add(lines, '[Rename]       ' .. GetIcon(str1) .. ' ' .. str1 .. '  →  ' .. GetIcon(str2) .. ' ' .. str2)
 	endfor
 	for i in modified_file.deleted
 		var str = i
 		if str[-1] == '/'
-			add(lines, '[Deleted Dir]  ' .. GetIcon(str) .. ' ' .. str)
+			add(lines, '[Deleted Dir]  ' .. GetIcon(str, 1) .. ' ' .. str)
 		else
 			add(lines, '[Deleted File] ' .. GetIcon(str) .. ' ' .. str)
 		endif
@@ -36,7 +26,7 @@ export def GetStrPopup(modified_file: dict<any>): list<string>
 	for i in modified_file.new_file
 		var str = i
 		if str[-1] == '/'
-			add(lines, '[New Dir]      ' .. GetIcon(str) .. ' ' .. str)
+			add(lines, '[New Dir]      ' .. GetIcon(str, 1) .. ' ' .. str)
 		else
 			add(lines, '[New File]     ' .. GetIcon(str) .. ' ' .. str)
 		endif
@@ -46,7 +36,7 @@ export def GetStrPopup(modified_file: dict<any>): list<string>
 		var str1 = sp[0]
 		var str2 = sp[1]
 		if str1[-1] == '/'
-			add(lines, '[Copy Dir]     ' .. GetIcon(str1) .. ' ' .. str1 .. '  →  ' .. GetIcon(str2) .. ' ' .. str2)
+			add(lines, '[Copy Dir]     ' .. GetIcon(str1, 1) .. ' ' .. str1 .. '  →  ' .. GetIcon(str2, 1) .. ' ' .. str2)
 		else
 			add(lines, '[Copy File]    ' .. GetIcon(str1) .. ' ' .. str1 .. '  →  ' .. GetIcon(str2) .. ' ' .. str2)
 		endif
@@ -65,6 +55,7 @@ export def DestroyBuffer(id: number)
 	var file_name = bufname(id)
 	delete(file_name)
 	silent! execute 'bdelete! ' .. id
+	set wincolor=''
 enddef
 
 

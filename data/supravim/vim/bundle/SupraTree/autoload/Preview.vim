@@ -8,18 +8,17 @@ export def HelpPreview()
 	var popup = Popup.Simple({
 		close_key: ["q", "\<UP>", "\<DOWN>", "\<Left>", "\<Right>", "\<esc>", "\<LeftMouse>"],
 		scrollbar: 1,
+		title: 'Help'
 	})
 
 	const lines = [
-		' ──────────────────── Help ────────────────────',
-		'',
 		'',
 		' • <C-q>              * Quit',
 		' • <BackSpace> / -    * Back',
 		' • <Enter> / <Click>  * Enter the folder',
 		' • <C-h>              * Open the folder horizontally',
 		' • <C-v>              * Open the folder vertically',
-		' • <C-t> / <C-n>      * Open the folder in a new tab',
+		' • <C-t>              * Open the folder in a new tab',
 	    ' • <C-p>              * Preview',
         ' • ~                  * Go to the home directory',
         ' • _                  * Enter the folder and jump'
@@ -28,7 +27,7 @@ export def HelpPreview()
 	var bufnr = winbufnr(popup.wid)
 	setbufvar(bufnr, '&filetype', 'markdown')
 	Popup.SetText(popup, lines)
-	Popup.SetSize(popup, 52, 12)
+	Popup.SetSize(popup, 52, -1)
 enddef
 
 # Simple popup to preview a file.

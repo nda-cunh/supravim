@@ -1,6 +1,5 @@
 vim9script
 
-
 highlight supratitle ctermfg=blue ctermbg=NONE
 highlight delete ctermfg=red ctermbg=NONE
 highlight rename ctermfg=yellow ctermbg=NONE

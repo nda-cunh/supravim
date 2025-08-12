@@ -97,8 +97,6 @@ nnoremap <S-Left>	<C-w><Left>
 nnoremap <S-Up>		<C-w><Up>
 nnoremap <S-Down>	<C-w><Down>
 inoremap <TAB>		<TAB>
-inoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
-nnoremap <C-g>		<cmd>NERDTreeTabsToggle<CR>
 nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
@@ -173,12 +171,9 @@ set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
 
 #--------------- CLANG COMPLETER ---------------"
-set noinfercase
-set completeopt-=preview
-set completeopt+=menuone,noselect
-#--------------- PL NERDTREE ---------------"
-g:NERDTreeIgnore = ['\.png$\', '\.jpg$', '\.o$']
-g:NERDTreeWinSize = 27
+# set noinfercase
+# set completeopt-=preview
+# set completeopt+=menuone,noselect
 #--------------- FONCTION ---------------"
 
 def GotOutput(channel: channel, msg: string)
@@ -218,9 +213,9 @@ enddef
 def SimpleSupravimChangeOption()
 	if g:supravim_option_changed == 'tree'
 		if g:supravim_option_value == 'false'
-			NERDTreeTabsClose
+			SupraTreeClose
 		else
-			NERDTreeTabsOpen
+			SupraTreeOpen
 		endif
 	elseif g:supravim_option_changed == 'swap'
 		if g:supravim_option_value == 'false'
@@ -285,7 +280,7 @@ def Gdbf()
 	else
 		set splitbelow nosplitbelow
 		set splitright nosplitright
-		NERDTreeTabsClose
+		SupraTreeClose
 		if !filereadable("Makefile")
 			exec ":Termdebug -n ./a.out"
 		else
@@ -314,7 +309,7 @@ enddef
 def GotOutputSupravimServer(channel: channel, msg: string)
 	if (stridx(msg, 'refresh') == 0)
 		if Make.is_supramake == false
-			NERDTreeTabsRefresh
+			doautocmd User RefreshTree
 		endif
 	elseif (stridx(msg, 'LoadBundle: ') == 0)
 		var sp = split(msg, ' ')
@@ -775,16 +770,10 @@ autocmd BufEnter * {
 
 g:loaded_netrw = 1
 g:loaded_netrwPlugin = 1
-g:NERDTreeHijackNetrw = 0
 
 def Welcome()
 	# Used for SupraWater with folder
 	silent! autocmd! FileExplorer
-	# Remove strange bug with vim
-	const curpos = getpos('.')
-	call cursor(line('w$'), 0)
-	redraw!
-	call cursor(curpos[1], curpos[2])
 	var timer = timer_start(50, (_) => {
 		echo 'Welcome to SupraVim ! Press <F12> for help'
 	})
@@ -806,4 +795,8 @@ if filereadable(expand('%')) == 0
 endif
 }
 
+#--------------- SupraTree ---------------"
+g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
+g:SupraTreeWinSize = 27
+nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
 autocmd VimEnter * call Welcome()
