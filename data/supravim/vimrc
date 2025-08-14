@@ -803,21 +803,3 @@ g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
 g:SupraTreeWinSize = 27
 g:SupraTreeOpenByDefault = g:sp_tree
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
-
-
-def Voyage() 
-	var exp = expand('%:p:h')
-	if exp == '/tmp'
-		return
-	endif
-	execute 'cd ' .. exp 
-	var new_dir = system('suprabear -p')
-	if !empty(new_dir)
-		var trimmed_dir = trim(new_dir)
-		execute 'cd ' .. trimmed_dir
-	endif
-enddef
-
-autocmd WinEnter,BufEnter * {
-	call Voyage()
-}
