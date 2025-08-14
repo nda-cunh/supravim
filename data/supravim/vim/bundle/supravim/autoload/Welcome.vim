@@ -9,7 +9,7 @@ var activity = 0
 
 def ActualizeActivity()
 	setbufvar(winbufnr(0), '&modifiable', 1)
-	execute ':%d'
+	noautocmd execute ':%d'
 	setbufvar(winbufnr(0), '&modifiable', 0)
 	if activity == 0
 		call ActualizeWelcome()
@@ -107,26 +107,27 @@ export def SupraWelcome()
 	map <buffer> <right> <ScriptCmd>call NextPage()<CR>
 	map <buffer> <left> <ScriptCmd>call BackPage()<CR>
 
-	augroup SupravimWelcome
-		autocmd!
-		autocmd ModeChanged <buffer> feedkeys("\<esc>")
-		autocmd BufEnter <buffer> call ActualizeActivity()
-		autocmd BufLeave <buffer> AirlineToggle | AirlineToggle
-		autocmd BufLeave <buffer> timer_stop(timer_animation)
-		autocmd CursorMoved <buffer> call SupraWelcomeMove()
-		autocmd VimResized <buffer> call ActualizeActivity()
-		autocmd VimResized <buffer> supra_pattern = ['', '', '', '']
-	augroup END
-
-
 	var buf = winbufnr(0)
-	setbufvar(buf, '&buflisted', 0)
-	setbufvar(buf, '&modeline', 0)
-	setbufvar(buf, '&buftype', 'nofile')
-	setbufvar(buf, '&swapfile', 0)
-	setbufvar(buf, '&undolevels', -1)
-	setbufvar(buf, '&cursorline', 1)
-	setbufvar(buf, '&nu', 0)
+	t:buf_id = buf
+	autocmd BufEnter <buffer> call ActualizeActivity()
+	autocmd BufLeave <buffer> AirlineToggle | AirlineToggle
+	autocmd BufLeave <buffer> timer_stop(timer_animation)
+	autocmd BufLeave <buffer> {
+		execute 'bdelete ' .. t:buf_id
+	}
+	autocmd CursorMoved <buffer> call SupraWelcomeMove()
+	autocmd VimResized <buffer> call ActualizeActivity()
+	autocmd VimResized <buffer> supra_pattern = ['', '', '', '']
+
+
+	setwinvar(buf, '&buflisted', 0)
+	setwinvar(buf, '&modeline', 0)
+	setwinvar(buf, '&buftype', 'nofile')
+	setwinvar(buf, '&swapfile', 0)
+	setwinvar(buf, '&undolevels', -1)
+	setwinvar(buf, '&cursorline', 1)
+	setwinvar(buf, '&nu', 0)
+	setwinvar(buf, '&rnu', 0)
 
 	ActualizeActivity()
 
@@ -140,6 +141,7 @@ export def SupraWelcome()
 		var str_animation = GenerateUTF8Line(&columns, offset)
 		offset += 1
 		setbufvar(buf, '&showtabline', 0)
+		setbufvar(buf, '&relativenumber', 0)
 		setbufvar(buf, '&statusline', str_animation)
 	}, {repeat: -1})
 enddef
