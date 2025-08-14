@@ -142,11 +142,12 @@ set cursorline
 set shortmess+=I
 set nu
 set incsearch
-set noautochdir
 if executable('suprapack') == 0
 	autocmd VimEnter * call Notify.Notification(["Suprapack is not found", "Please source the $HOME/.suprapack_profile", "Or add ~/.local/bin to your path"], {type: 'warning'})
 	$PATH = $PATH .. ':' .. expand('$HOME') .. '/.local/bin:'
 endif
+set noautochdir
+silent! exec 'cd ' .. expand('%:p:h')
 silent! var project_root = system('suprabear -p')
 var suprabear_return = v:shell_error
 silent! exec 'chdir ' .. project_root
