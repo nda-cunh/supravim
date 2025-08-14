@@ -49,11 +49,14 @@ enddef
 def Create_HiColor()
 	var bgcolor = synIDattr(synIDtrans(hlID('Normal')), 'bg')
 	var fgcolor = synIDattr(synIDtrans(hlID('Normal')), 'fg')
+	var darkened_bg: string
 	if bgcolor == '' || fgcolor == ''
-		bgcolor = '#24272e'
+		bgcolor = 'NONE'
 		fgcolor = '#ABB2BF'
+		darkened_bg = bgcolor 
+	else
+		darkened_bg = DarkenColor(bgcolor, 15)
 	endif
-	var darkened_bg = DarkenColor(bgcolor, 15)
 	hi! link SignColumn Normal
 	hi! link EndOfBuffer Normal
 	execute 'hi clear NormalDark'

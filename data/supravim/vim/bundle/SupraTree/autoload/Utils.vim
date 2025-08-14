@@ -53,8 +53,8 @@ enddef
 
 export def DestroyBuffer(id: number)
 	var file_name = bufname(id)
-	delete(file_name)
 	silent! execute 'bdelete! ' .. id
+	delete(file_name)
 	silent! set wincolor=Normal
 enddef
 
