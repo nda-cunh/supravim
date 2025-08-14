@@ -17,14 +17,17 @@ export def OpenTree()
 	if exists('t:SupraTree')
 		return
 	endif
+
 	var last_winid = win_getid()
 	var nb_size: number = 30
 	if exists('g:SupraTreeWinSize')
 		nb_size = g:SupraTreeWinSize
 	endif
-	execute 'topleft vertical :' .. nb_size .. 'split .'
+	execute 'topleft vertical :' .. nb_size .. 'split _supra_water_magik_'
+	var buf = bufnr('%')
 	var wid = win_getid()
 	t:SupraTree = SupraWater.Water(true)
+	silent! noautocmd execute 'bdelete! ' .. buf
 	normal gg
 	win_gotoid(last_winid)
 enddef

@@ -15,11 +15,11 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	const last_buffer = bufnr()
 	var actual_path: string
 
-	if tree_mode == true
-		actual_path = getcwd()
-	else
+	# if tree_mode == true
+		# actual_path = getcwd()
+	# else
 		actual_path = expand('%:p:h')
-	endif
+	# endif
 
 	silent! mkview
 	var file_name = expand("%:t")
@@ -79,18 +79,22 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	local[id] = dict
 
 	set filetype=suprawater
+	setlocal fillchars+=eob:\ 
 	setbufvar(id, '&buflisted', 0)
     setbufvar(id, '&modeline', 0)
     setbufvar(id, '&swapfile', 0)
     setbufvar(id, '&undolevels', -1)
     setbufvar(id, '&modifiable', 1)
     setbufvar(id, '&nu', 0)
+    setbufvar(id, '&relativenumber', 0)
 	setbufvar(id, "&updatetime", 2500)
     setbufvar(id, '&signcolumn', 'yes')
     setbufvar(id, '&wrap', 0)
-	setlocal fillchars+=eob:\ 
+
+
 	if dict.tree_mode == true
 		setbufvar(id, '&ea', 0)
+		setbufvar(id, '&relativenumber', 0)
 		setbufvar(id, '&winfixwidth', 1)
 		setbufvar(id, '&cursorline', 0)
 	endif
@@ -151,11 +155,14 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	autocmd TextYankPost <buffer> if v:event.operator ==# 'y' && v:event.regname ==# '' | call Yank() | endif
 	# I Don't know why but IMAP BS dont work if is not in an autocmd
 	autocmd BufEnter <buffer> {
-		inoremap <buffer><Cr>			<scriptcmd>call SupraOverLoadCr()<cr>
-		inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
-		nnoremap <buffer><del>			<esc>i<del>
-		inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+		if &filetype == 'suprawater'
+			inoremap <buffer><Cr>			<scriptcmd>call SupraOverLoadCr()<cr>
+			inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
+			nnoremap <buffer><del>			<esc>i<del>
+			inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+		endif
 	}
+
 	EnterWithPathAndJump()
 	return id
 enddef
@@ -221,15 +228,15 @@ def DrawPath(path: string, force_id: number = -1)
 		id = force_id
 	endif
 	var dict = local[id]
-	var r1 = getreg('1')
-	var r2 = getreg('2')
-	var r3 = getreg('3')
-	var r4 = getreg('4')
-	var r5 = getreg('5')
-	var r6 = getreg('6')
-	var r7 = getreg('7')
-	var r8 = getreg('8')
-	var r9 = getreg('9')
+	const r1 = getreg('1')
+	const r2 = getreg('2')
+	const r3 = getreg('3')
+	const r4 = getreg('4')
+	const r5 = getreg('5')
+	const r6 = getreg('6')
+	const r7 = getreg('7')
+	const r8 = getreg('8')
+	const r9 = getreg('9')
 
 	dict.edit = {}
 	var sp: list<string> = []
@@ -332,7 +339,6 @@ def Back()
 	var actual_path: string = dict.actual_path
 	var jump: string = actual_path
 
-	# echom 'Saving cursor position of: ' .. actual_path
 	dict.cursor_pos[actual_path] = getcurpos()
 	dict.actual_path = Utils.LeftPath(actual_path)
 	actual_path = dict.actual_path
@@ -401,7 +407,11 @@ def EnterWithPath(path: string, mode: string = '')
 	endif
 
 	if isdirectory(path)
-		DrawPath(path)
+		if mode == 'tab'
+			execute 'tabnew! ' .. path
+		else
+			DrawPath(path)
+		endif
 	elseif Utils.IsBinary(path)
 		system('xdg-open ' .. shellescape(path))
 		if v:shell_error != 0
@@ -477,7 +487,6 @@ def WaterSaveBuffer()
 			len(modified_files.new_file) == 0 &&
 			len(modified_files.deleted) == 0 &&
 			len(modified_files.all_copy) == 0
-		# echom 'No modified files.'
 		return
 	endif
 	OpenPopupModifiedfile(modified_files)
@@ -528,15 +537,7 @@ def ForceQuit()
 	endif
 	Utils.DestroyBuffer(id)
 	if isdirectory(bufname(dict.last_buffer)) == 1
-		if dict.tree_mode == true
-			silent! SupraTree.Close()
-		else
-			silent! quit!
-		endif
-	endif
-	const l = bufnr('%')
-	if bufname(l) =~# '/tmp/suprawater\d\+\.water'
-		ForceQuit()
+		silent! quit!
 	endif
 enddef
 
@@ -554,9 +555,7 @@ def CheckAndAddSigns(): bool
 	exe "sign unplace 2 buffer=" .. id
 	for _line in lines
 		var line = substitute(_line, '/\+$', '', 'g')
-		# echom line .. ']'
 		if index(all_lines, line) != -1
-			# echom 'Doublon: ' .. line
 			exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
 			var txt = '   Duplicate'
 			prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
@@ -682,7 +681,6 @@ def PopupYes(modified_file: dict<any>)
 	extend(commands, delete_history)
 
 	for c in commands
-		# echom 'Executing command: ' .. c
 		execute(c)
 	endfor
 
@@ -838,7 +836,6 @@ def SupraOverLoadDel()
 	const col = col('.')
 	const line = line('.')
 	const end = strlen(getline('.'))
-	echom 'col: ' .. col .. ' line: ' .. line .. ' end: ' .. end
 	var dict = local[bufnr('%')]
 	if col == 1 && end == 1
 		setline(line, dict.edit[line].name)
@@ -858,7 +855,6 @@ def SupraOverLoadBs()
 	const col = col('.')
 	const line = line('.')
 	const end = strlen(getline('.'))
-	echom 'col: ' .. col .. ' line: ' .. line .. ' end: ' .. end
 	var dict = local[bufnr('%')]
 	if end == 1
 		setline(line, dict.edit[line].name)
@@ -907,10 +903,8 @@ def Paste()
 		return
 	endif
 	var nb_len = len(dict.clipboard)
-	# echom 'Pasting ' .. len(dict.clipboard) .. ' files...' .. pos[1]
 
 	for i in range(len(dict.edit) + 1, pos[1] + 1, -1)
-		# echom i .. ' to ' .. (i + nb_len)
 		dict.edit[i + nb_len] = dict.edit[i]
 	endfor
 
