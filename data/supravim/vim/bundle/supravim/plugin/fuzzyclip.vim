@@ -1,7 +1,6 @@
 vim9script
 
 import autoload 'suprafuzzy/fuzzyclip.vim' as FuzzyClip
-import autoload 'SupraNotification.vim' as Notify 
 
 command FuzzyClip call FuzzyClip.Start()
 
