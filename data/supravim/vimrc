@@ -797,6 +797,7 @@ if filereadable(expand('%')) == 0
 	mkdir(expand('%:p:h'), 'p')
 endif
 }
+
 autocmd VimEnter * call Welcome()
 
 #--------------- SupraTree ---------------"
@@ -804,6 +805,12 @@ g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
 g:SupraTreeWinSize = 27
 g:SupraTreeOpenByDefault = g:sp_tree
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
-hi! link SignColumn Normal
-hi! link EndOfBuffer Normal
+
+#--------------- SupraVim Color ----------"
+def FixSupraVimColor()
+	hi! link SignColumn Normal
+	hi! link EndOfBuffer Normal
+enddef
+autocmd Colorscheme * call FixSupraVimColor()
+FixSupraVimColor()
 
