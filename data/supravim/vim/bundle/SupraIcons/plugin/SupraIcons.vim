@@ -1,6 +1,8 @@
 vim9script
 
-g:loaded_webdevicons = 1
+##################################
+#  All Icons for SupraIcons
+##################################
 
 const file_node_extensions = {
 	'styl': '',
@@ -244,7 +246,6 @@ const file_node_exact_matches = {
 	'robots.txt': '󰚩',
 }
 
-
 const folder_node_exact_matches = {
 	'.git': '',
 	'.github': '',
@@ -259,10 +260,23 @@ const folder_node_exact_matches = {
 	'documents': '󰉓',
 	'lib': '',
 	'desktop': '',
-
 }
 
 const folder_open = ''
+
+g:loaded_webdevicons = 1
+g:webdevicons_enable = 1
+
+#####################################
+#  Utility Functions
+#####################################
+
+def IsDarwin(): bool
+	if has('macunix')
+		return true 
+	endif
+	return false 
+enddef
 
 def IsBinary(path: string): bool
 	return match(readfile(path, '', 10), '\%x00', 0, 1) != -1
@@ -304,7 +318,35 @@ def GetFileSymbol(path: string): string
 	return '󰈙' # Default file icon
 enddef
 
-def g:WebDevIconsGetFileTypeSymbol(value: string, type_id: number = -1): string
+
+
+#######################################
+# Public Functions (WebDevIcons)
+#######################################
+
+var fileformat: string = ''
+
+def g:WebDevIconsGetFileFormatSymbol(): string
+	if fileformat != ''
+		return fileformat
+	endif
+	if &fileformat ==? 'dos'
+		fileformat = ''
+	elseif &fileformat ==? 'unix'
+		fileformat = IsDarwin() ? '' : GetDistro()
+	elseif &fileformat ==? 'mac'
+		fileformat = ''
+	endif
+	return fileformat
+enddef
+
+def g:WebDevIconsGetFileTypeSymbol(_value: string = '', type_id: number = -1): string
+	var value: string
+	if _value == ''
+		value = expand('%:p')
+	else
+		value = _value
+	endif
 	# if number == 0 it's a file 
 	if type_id == 0
 		return GetFileSymbol(value)
@@ -339,93 +381,80 @@ def g:WebDevIconsGetFileTypeSymbol(value: string, type_id: number = -1): string
 	return GetFileSymbol(value)
 enddef
 
-# autocmd TextChanged * if &filetype == 'nerdtree' | call UpdateNerdTreeIcons() | endif
-
-def UpdateNerdTreeIcons(): void
-	if !exists('g:loaded_webdevicons')
-		return
+def GetDistro(): string
+	if has('bsd')
+		return ''
+	elseif has('unix')
+		try
+			const content = readfile('/etc/lsb-release')
+			var idx = 0
+			for i in range(len(content))
+				if stridx('^DISTRIB_ID=', content[i]) == 0
+					idx = i
+					break
+				endif
+			endfor
+			if idx == -1
+				throw 'Distro not found'
+			endif
+			const distro = content[idx][11 : -1]
+			if distro ==# 'Ubuntu'
+				return ''
+			elseif distro =~# 'Arch'
+				return ''
+			elseif distro =~# 'Fedora'
+				return ''
+			elseif distro =~# 'Gentoo'
+				return ''
+			elseif distro =~# 'Cent'
+				return ''
+			elseif distro =~# 'Debian'
+				return ''
+			elseif distro =~# 'Red Hat'
+				return ''
+			elseif distro =~# 'SUSE'
+				return ''
+			elseif distro =~# 'Manjaro'
+				return ''
+			elseif distro =~# 'Linux Mint'
+				return ''
+			elseif distro =~# 'Pop'
+				return ''
+			elseif distro =~# 'Zorin'
+				return ''
+			elseif distro =~# 'Elementary'
+				return ''
+			elseif distro =~# 'Dock'
+				return ''
+			endif
+		catch
+		endtry
 	endif
-	var lst = getbufline(bufnr('%'), 1, '$')
-	var idx = index(lst, '.. (')
-	for i in range(len(lst))
-		if idx != -1 && i == idx
-			lst[i] = '󰉋' # Directory icon for parent directory
-		else
-			const path = substitute(lst[i], '^\s\+', '', '')
-			const icon = g:WebDevIconsGetFileTypeSymbol(path)
-			lst[i] = icon .. ' ' .. path
-		endif
-	endfor
-	# remove modifiable option
-	setbufvar(bufnr('%'), '&modifiable', 1)
-	setbufline(bufnr('%'), 1, lst)
-	# set modifiable option
-	setbufvar(bufnr('%'), '&modifiable', 0)
-	echom lst 
+	return '' # Default to generic Linux icon
 enddef
+
+########################################
+# Airline Integration
+########################################
 
 g:webdevicons_enable_airline_tabline = 1
 g:webdevicons_enable_airline_statusline = 1
 g:webdevicons_enable_airline_statusline_fileformat_symbols = 1
-
 g:WebDevIconsTabAirLineBeforeGlyphPadding = ' '
 g:WebDevIconsTabAirLineAfterGlyphPadding = ''
 g:_webdevicons_airline_orig_formatter = get(g:, 'airline#extensions#tabline#formatter', 'default')
 g:airline#extensions#tabline#formatter = 'SupraIcon'
 
-g:webdevicons_enable = 1
-
-var fileformat: string = ''
-def g:WebDevIconsGetFileFormatSymbol(): string
-	# if fileformat != ''
-	# 	return fileformat
-	# endif
-	# if &fileformat ==? 'dos'
-	# 	fileformat = ''
-	# elseif &fileformat ==? 'unix'
-	# 	fileformat = isDarwin() ? '' : getDistro()
-	# elseif &fileformat ==? 'mac'
-	# 	fileformat = ''
-	# endif
-	# return fileformat
-	return 'X'
-enddef
-
-def IsDarwin(): bool
-	if has('macunix')
-		return true 
-	endif
-
-	if ! has('unix')
-		return false 
-	endif
-
-	# TODO REMOVE IT
-	if system('uname -s') ==# "Darwin\n"
-		return true
-	else
-		return false 
-	endif
-	return false 
-enddef
-
-
-def AirlineWebDevIcons(...name: list<string>)
-	echom 'AirlineWebDevIcons called'
-	# echom 'AirlineWebDevIcons called'
-	# w:airline_section_x = get(w:, 'airline_section_x', get(g:, 'airline_section_x', ''))
-	# w:airline_section_x ..= ' %{WebDevIconsGetFileTypeSymbol()}%{WebDevIconsGetFileTypeSymbol()} '
+def g:AirlineWebDevIcons(...name: list<any>): any
+	w:airline_section_x = get(w:, 'airline_section_x', get(g:, 'airline_section_x', ''))
+	w:airline_section_x ..= ' %{WebDevIconsGetFileTypeSymbol()} '
 	var hasFileFormatEncodingPart = airline#parts#ffenc() !=? ''
-	# if g:webdevicons_enable_airline_statusline_fileformat_symbols && hasFileFormatEncodingPart
-		# w:airline_section_y = ' %{&fenc . " " . WebDevIconsGetFileFormatSymbol()} '
-		# w:airline_section_z = ' %{&ff . " " . &fileformat} '
-	# endif
+	if g:webdevicons_enable_airline_statusline_fileformat_symbols && hasFileFormatEncodingPart
+		w:airline_section_y = ' %{&fenc . " " . WebDevIconsGetFileFormatSymbol()} '
+	endif
+	return 0
 enddef
 
-if g:webdevicons_enable == 1 && exists('g:loaded_airline') && g:loaded_airline == 1 && g:webdevicons_enable_airline_statusline
-	call airline#add_statusline_func('AirlineWebDevIcons')
-endif
-
-if g:webdevicons_enable == 1 && g:webdevicons_enable_airline_tabline
-	# g:airline#extensions#tabline#formatter = 'webdevicons'
+if g:webdevicons_enable == 1 && g:webdevicons_enable_airline_statusline == 1
+	airline#add_statusline_func(function('g:AirlineWebDevIcons'))
 endif
