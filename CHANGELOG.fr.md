@@ -9,7 +9,7 @@
   - Java  
   … et bien d'autres.
 
-<img src="readme_img/vala-support.git">
+<img src="readme_img/vala-support.gif">
 
 
 - **SupraWater — Gestionnaire de fichiers intégré**  
@@ -55,6 +55,8 @@
 
   Fonctionne également en **sélection visuelle** :  
   Exemple : sélectionner un texte puis taper `(` => le texte est automatiquement entouré par `(...)`.
+
+<img src="readme_img/autoclose.gif">
 
 - **symbol_signs** : Personnalisation des symboles d'erreurs dans la `signcolumn`.
 
