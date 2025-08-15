@@ -8,20 +8,21 @@ export def HelpPreview()
 	var popup = Popup.Simple({
 		close_key: ["q", "\<UP>", "\<DOWN>", "\<Left>", "\<Right>", "\<esc>", "\<LeftMouse>"],
 		scrollbar: 1,
-		title: 'Help'
+		title: 'Help  '
 	})
 
 	const lines = [
 		'',
-		' • <C-q>              * Quit',
-		' • <BackSpace> / -    * Back',
-		' • <Enter> / <Click>  * Enter the folder',
-		' • <C-h>              * Open the folder horizontally',
-		' • <C-v>              * Open the folder vertically',
-		' • <C-t>              * Open the folder in a new tab',
-	    ' • <C-p>              * Preview',
-        ' • ~                  * Go to the home directory',
-        ' • _                  * Enter the folder and jump'
+		' • <C-q>                   * Quit',
+		' • <C-s>                   * Save',
+		' • <BackSpace> / -         * Back',
+		' • <Enter> / <Click>       * Enter the folder',
+		' • <leader-s>              * Open with Split',
+		' • <leader-v>              * Open with Vsplit',
+		' • <C-t>                   * Open with a new Tab',
+	    ' • <C-p>                   * Preview of the file',
+        ' • ~                       * Go to the home directory',
+        ' • _                       * Enter the folder and jump'
 	]
 
 	var bufnr = winbufnr(popup.wid)

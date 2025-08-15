@@ -99,10 +99,6 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	nnoremap <buffer>-				<scriptcmd>call Back()<cr>
 	nnoremap <buffer><bs>			<scriptcmd>call Back()<cr>
 	nnoremap <buffer><cr>			<scriptcmd>call EnterFolder()<cr>
-	nnoremap <buffer><leader><s>	<scriptcmd>call EnterFolder('horizontal')<cr>
-	nnoremap <buffer><leader><v>	<scriptcmd>call EnterFolder('vertical')<cr>
-	nnoremap <buffer><c-h>			<scriptcmd>call EnterFolder('horizontal')<cr>
-	nnoremap <buffer><c-v>			<scriptcmd>call EnterFolder('vertical')<cr>
 	nnoremap <buffer><c-t>			<scriptcmd>call EnterFolder('tab')<cr>
 	nnoremap <buffer><c-n>			<scriptcmd>call EnterFolder('tab')<cr>
 	noremap <buffer><RightMouse>	<Nop>
@@ -117,10 +113,12 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	nnoremap <buffer>?				<scriptcmd>call Preview.HelpPreview()<cr>
 	nnoremap <buffer><c-n>			<esc>:tabnew<space>
 	nnoremap <buffer><tab>			<Nop>
-	nnoremap <buffer><leader><d>	<Nop>
-	nnoremap <buffer><leader><f>	<Nop>
-	nnoremap <buffer><leader><g>	<Nop>
-	nnoremap <buffer><leader><h>	<Nop>
+	nnoremap <buffer><leader>s		<scriptcmd>call EnterFolder('horizontal')<cr>
+	nnoremap <buffer><leader>v		<scriptcmd>call EnterFolder('vertical')<cr>
+	nnoremap <buffer><leader>d		<Nop>
+	nnoremap <buffer><leader>f		<Nop>
+	nnoremap <buffer><leader>g		<Nop>
+	nnoremap <buffer><leader>h		<Nop>
 	nnoremap <buffer><tab>			<Nop>
 	nnoremap <buffer><a-up>			<Nop>
 	nnoremap <buffer><a-down>		<Nop>
