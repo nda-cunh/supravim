@@ -1,10 +1,16 @@
 vim9script
 
-import autoload 'SupraTree.vim' as SupraTree
+import autoload 'SupraTree/SupraTree.vim' as SupraTree
+import autoload 'SupraTree/SupraWater.vim' as SupraWater
 
 command! SupraTreeToggle call SupraTree.Toggle()
 command! SupraTreeOpen call SupraTree.OpenTree()
 command! SupraTreeClose call SupraTree.Close()
+
+augroup SupraWater
+	autocmd!
+	autocmd User RefreshTree call SupraWater.Refresh()
+augroup END
 
 augroup SupraNERDTreeTabs
 	autocmd!
