@@ -804,3 +804,6 @@ g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
 g:SupraTreeWinSize = 27
 g:SupraTreeOpenByDefault = g:sp_tree
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
+hi! link SignColumn Normal
+hi! link EndOfBuffer Normal
+

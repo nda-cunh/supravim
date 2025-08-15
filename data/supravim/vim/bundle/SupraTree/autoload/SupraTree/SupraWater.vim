@@ -13,13 +13,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	const rd = rand() % 1000
 	const id = bufadd('/tmp/suprawater' .. rd .. '.water')
 	const last_buffer = bufnr()
-	var actual_path: string
-
-	# if tree_mode == true
-		# actual_path = getcwd()
-	# else
-		actual_path = expand('%:p:h')
-	# endif
+	var actual_path = expand('%:p:h')
 
 	silent! mkview
 	var file_name = expand("%:t")
@@ -97,6 +91,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 		setbufvar(id, '&relativenumber', 0)
 		setbufvar(id, '&winfixwidth', 1)
 		setbufvar(id, '&cursorline', 0)
+		setbufvar(id, '&winminwidth', 10)
 	endif
 
 	nnoremap <buffer><c-s>			<esc><scriptcmd>WaterSaveBuffer()<cr>
@@ -147,7 +142,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	endif
 	cnoreabbrev <buffer> q Q
 
-	autocmd ModeChanged,CursorMovedI,CursorMoved <buffer> call Actualize()
+	autocmd ModeChanged,CursorMovedI,CursorMoved,WinScrolled <buffer> call Actualize()
 	autocmd CursorMoved,CursorMovedI <buffer> call Utils.CancelMoveOneLine()
 	autocmd BufWritePost <buffer> call WaterSaveBuffer()
 	autocmd TextChangedI,TextChanged <buffer> call Changed()
@@ -161,6 +156,8 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 			nnoremap <buffer><del>			<esc>i<del>
 			inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
 		endif
+		# When we need to go to Normal mode
+		feedkeys("\<esc>", 'n')
 	}
 
 	EnterWithPathAndJump()
@@ -300,7 +297,6 @@ def DrawPath(path: string, force_id: number = -1)
 	setbufvar(id, '&modifiable', 1)  # set the buffer as not modified
 	noautocmd setbufline(id, 1, result)
 	noautocmd call deletebufline(id, nb, '$')  # delete all lines in the buffer
-	normal j
 	Actualize(id)
 	if len(dict.edit) == 0
 		feedkeys("o\<esc>", 'n')
@@ -557,44 +553,44 @@ def CheckAndAddSigns(): bool
 		var line = substitute(_line, '/\+$', '', 'g')
 		if index(all_lines, line) != -1
 			exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
-			var txt = '   Duplicate'
-			prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+			var txt = 'Duplicate'
+			prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after', text_padding_left: 3})
 			error = true
 		endif
 
 		if dict.edit[i].new_file == true
 			if (_line =~? '^\s*$')
 				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
-				var txt = '   New file with only spaces.'
-				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				var txt = 'New file with only spaces.'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after', text_padding_left: 3})
 				error = true
 			endif
 		elseif dict.edit[i].copy_of == ''
 			if dict.edit[i].name[-1] == '/' && _line[-1] != '/'
 				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
-				var txt = '   You cannot rename a folder to a file.'
-				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				var txt = 'You cannot rename a folder to a file.'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after', text_padding_left: 3})
 				error = true
 			endif
 
 			if dict.edit[i].name[-1] != '/' && _line[-1] == '/'
 				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
-				var txt = '   You cannot rename a file to a folder'
-				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				var txt = 'You cannot rename a file to a folder'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after', text_padding_left: 3})
 				error = true
 			endif
 		else
 			if dict.edit[i].copy_of[-1] == '/' && _line[-1] != '/'
 				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
-				var txt = '   You cannot copy a folder to a file'
-				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				var txt = 'You cannot copy a folder to a file'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after', text_padding_left: 3})
 				error = true
 			endif
 
 			if dict.edit[i].copy_of[-1] != '/' && _line[-1] == '/'
 				exe "sign place 2 line=" .. i .. " name=SupraWaterSign"
-				var txt = '   You cannot copy a file to a folder.'
-				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after'})
+				var txt = 'You cannot copy a file to a folder.'
+				prop_add(i, 0, {text: txt, type: 'suprawatersigns', text_align: 'after', text_padding_left: 3})
 				error = true
 			endif
 		endif
@@ -1164,12 +1160,26 @@ def Actualize(force_id: number = -1)
 	if dict.tree_mode == true 
 		var get_width_window = winwidth(winid)
 		const txt_title = '󰥨 SupraTree'
-		# center it
-		var text = repeat(' ', (get_width_window - len(txt_title)) / 2) .. txt_title
-		prop_add(1, 0, {bufnr: id, text: text, type: 'suprawaterpath', text_align: 'above'})
+		const center_len = (get_width_window - len(txt_title)) / 2
+		prop_add(1, 0, {bufnr: id, text: txt_title, type: 'suprawaterpath', text_align: 'above', text_padding_left: center_len})
 	endif
 	var draw_path = substitute(actual_path, '^' .. $HOME, '~', 'g')
-	prop_add(1, 0, {bufnr: id, text: draw_path, type: 'suprawaterpath', text_align: 'above'})
+	var lines = []
+	var width_line = winwidth(winid) - 2
+	{
+		var i = 0
+		while true
+			if draw_path == ''
+				break
+			endif
+			lines[i] = draw_path[0 : width_line]
+			draw_path = draw_path[width_line : ]
+			i = i + 1
+		endwhile
+	}
+	for line in lines
+		prop_add(1, 0, {bufnr: id, text: line, type: 'suprawaterpath', text_align: 'above'})
+	endfor
 	if dict.tree_mode == false 
 		prop_add(1, 0, {bufnr: id, text: sort_text, type: 'suprawatersort', text_align: 'above'})
 	endif

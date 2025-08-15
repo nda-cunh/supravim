@@ -1,18 +1,13 @@
 vim9script
 
-import autoload 'SupraWater.vim' as SupraWater
-import autoload 'Colors.vim' as Colors
+import autoload 'SupraTree/SupraWater.vim' as SupraWater
+import autoload 'SupraTree/Colors.vim' as Colors
 
 nnoremap - <scriptcmd>call SupraWater.Water()<CR>
 
 var local: dict<any> = {}
 
 autocmd VimEnter,BufEnter * if isdirectory(@%) | execute 'SupraWater.Water()' | endif
-
-augroup SupraWater
-	autocmd!
-	autocmd User RefreshTree call SupraWater.Refresh()
-augroup END
 
 highlight link SupraWaterSign Error
 autocmd ColorScheme * call Create_HiColor()
@@ -57,8 +52,6 @@ def Create_HiColor()
 	else
 		darkened_bg = DarkenColor(bgcolor, 15)
 	endif
-	hi! link SignColumn Normal
-	hi! link EndOfBuffer Normal
 	execute 'hi clear NormalDark'
 	execute 'hi clear SupraWaterPath'
 	execute 'hi clear SupraWaterSort'

@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'SupraWater.vim' as SupraWater
+import autoload './SupraWater.vim' as SupraWater
 var is_open = false
 
 def SupraTreeExists(): bool
