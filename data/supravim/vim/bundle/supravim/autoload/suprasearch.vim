@@ -5,6 +5,15 @@ import autoload 'SupraPopup.vim' as Popup
 var first_buffer = []
 
 export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
+	const r1 = getreg('1')
+	const r2 = getreg('2')
+	const r3 = getreg('3')
+	const r4 = getreg('4')
+	const r5 = getreg('5')
+	const r6 = getreg('6')
+	const r7 = getreg('7')
+	const r8 = getreg('8')
+	const r9 = getreg('9')
 	var mid_cursor: number = 0
 	var mid_occurence: number = 0
 	var mid_search: number = 0
@@ -88,6 +97,12 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 
 
 	var EventWhenFindInput = (_, line) => {
+		const count = CountOccurences(line)
+		if count == 0 
+			Popup.SetTitle(pop1, ' Find')
+		else
+			Popup.SetTitle(pop1, ' Find ' .. CountOccurences(line))
+		endif
 		RemoveSupramid()
 		var jump_line: number = 0
 
@@ -222,9 +237,19 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	#### Remove the Find Cursor if the find is terminated
 	Popup.AddEventClose(pop1, (pop) => {
 		if first_buffer != []
-			call setline(1, first_buffer)
+			noautocmd call setline(1, first_buffer)
 			first_buffer = []
 		endif
+		# Restore the registers
+		setreg('1', r1)
+		setreg('2', r2)
+		setreg('3', r3)
+		setreg('4', r4)
+		setreg('5', r5)
+		setreg('6', r6)
+		setreg('7', r7)
+		setreg('8', r8)
+		setreg('9', r9)
 		RemoveMidCursor()
 		RemoveSupramid()
 		RemoveMidSearch()
@@ -261,9 +286,9 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		var line = Popup.GetInput(pop2)
 		var save_pos = getpos('.')
 		call cursor(1, 1)
-		normal! "0dG"
-		call setline(1, first_buffer)
-		silent! execute ':' .. min .. ',' .. max .. 's/' .. Popup.GetInput(pop1) .. '/' .. line .. '/g'
+		noautocmd normal! "0dG"
+		noautocmd call setline(1, first_buffer)
+		noautocmd silent! execute ':' .. min .. ',' .. max .. 's/' .. Popup.GetInput(pop1) .. '/' .. line .. '/g'
 		call setpos('.', save_pos)
 	})
 
@@ -271,8 +296,8 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		echo 'popup1 focused'
 		var save_pos = getpos('.')
 		call cursor(1, 1)
-		normal! "0dG"
-		call setline(1, first_buffer)
+		noautocmd normal! "0dG"
+		noautocmd setline(1, first_buffer)
 		call setpos('.', save_pos)
 	})
 
@@ -286,12 +311,33 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		endif
 		var save_pos = getpos('.')
 		call cursor(1, 1)
-		normal! "0dG"
-		call setline(1, first_buffer)
-		silent! execute ':' .. min .. ',' .. max .. 's/' .. input_pop1 .. '/' .. line .. '/g'
+		noautocmd normal! "0dG"
+		noautocmd call setline(1, first_buffer)
+		noautocmd silent! execute ':' .. min .. ',' .. max .. 's/' .. input_pop1 .. '/' .. line .. '/g'
 		call setpos('.', save_pos)
 	})
 
 	# When typing in the Find Popup (jump to the first match)
 	Popup.AddEventInputChanged(pop1, EventWhenFindInput)
 enddef
+
+def CountOccurences(search_term: string): number
+	# if len(search_term) <= 1
+		# return 0
+	# endif
+    var count: number = 0
+    const cursor_pos = getpos(".")
+    call cursor(1, 1)
+
+    while true
+        var pos = searchpos(search_term, 'W')
+        if pos[0] == 0
+            break
+        endif
+        count += 1
+    endwhile
+
+    call setpos('.', cursor_pos)
+    return count
+enddef
+
