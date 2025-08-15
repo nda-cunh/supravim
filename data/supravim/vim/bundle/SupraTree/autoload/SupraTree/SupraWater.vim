@@ -17,7 +17,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 
 	silent! mkview
 	var file_name = expand("%:t")
-	noautocmd execute "b! " .. id
+	execute "b! " .. id
 	set wincolor=NormalDark
 
 	if has_key(local, id) == 1
