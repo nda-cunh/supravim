@@ -9,7 +9,7 @@
   - Java  
   … et bien d'autres.
 
-<img src="readme_img/vala-support.git"
+<img src="readme_img/vala-support.git">
 
 
 - **SupraWater — Gestionnaire de fichiers intégré**  
@@ -65,8 +65,8 @@
   supravim -d   # Désactiver
 ```
 
-🎨 Améliorations
+## 🎨 Améliorations
 
-Optimisation et intégration des thèmes pour un démarrage plus rapide et un rendu plus homogène.
+- Optimisation et intégration des thèmes pour un démarrage plus rapide et un rendu plus homogène.
 
 <img src="readme_img/fuzzyclip.png">
