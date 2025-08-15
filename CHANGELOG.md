@@ -9,7 +9,7 @@
   - Java  
   … and many more.
 
-<img src="readme_img/vala-support.git">
+<img src="readme_img/vala-support.gif">
 
 - **SupraWater — Integrated File Manager**  
   A new graphical file manager that allows you to:
@@ -53,6 +53,8 @@
 
   Also works in **visual selection**:  
   Example: select some text, then type @(@ → the selection will be automatically surrounded with @(...)@.
+
+<img src="readme_img/autoclose.gif">
 
 - **symbol_signs**: Customize error symbols in the @signcolumn@.
 
