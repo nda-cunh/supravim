@@ -171,10 +171,16 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
 
-#--------------- CLANG COMPLETER ---------------"
-# set noinfercase
-# set completeopt-=preview
-# set completeopt+=menuone,noselect
+#--------------- Lsp Interface ---------------"
+def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
+	call lsp#register_server({
+		\ name: name,
+		\ cmd: (_) => cmd,
+		\ allowlist: filetypes,
+	\ })
+	call lsp#activate()
+enddef
+
 #--------------- FONCTION ---------------"
 
 def GotOutput(channel: channel, msg: string)
@@ -325,12 +331,9 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 		endfor
 	elseif (stridx(msg, 'LspGetServer') == 0)
 		var sp = split(msg, '@#@')
-		call lsp#register_server({
-			\ name: sp[1],
-			\ cmd: (server_info) => split(sp[2], ','),
-			\ allowlist: split(sp[3], ','),
-		\ })
-		call lsp#activate()
+		const cmds = split(sp[2], ',')
+		const filetypes = split(sp[3], ',')
+		g:AddLspServer(sp[1], cmds, filetypes)
 	elseif (stridx(msg, 'LspServerError:') == 0)
 		var new_msg = msg[15 : ]
 		new_msg = substitute(new_msg, '\r', '\n', 'g')
@@ -531,10 +534,7 @@ au BufEnter * OpenNewFile()
 
 # ----------------- AIR LINE ------------------"
 g:airline#extensions#whitespace#enabled = 0
-g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
-if expand('%:e') == ''
-	g:airline_section_z = airline#section#create(['Line: %l', 'hunks', ' Col:%c'])
-endif
+g:airline_section_z = airline#section#create(['Line:%l', 'hunks', ' Col:%c'])
 g:airline_section_b = airline#section#create(['SupraVim'])
 g:airline_left_sep = '◤'
 g:airline_left_alt_sep = '╱'
@@ -553,90 +553,26 @@ g:airline#extensions#tabline#right_alt_sep = '╱'
 # ----------------- POPUP ------------------ #
 autocmd VimEnter * CreatePopit()
 
+def PopUpUpdate(channel: channel, msg: string)
+	Notify.Notification(["Update", msg, "run: `suprapack update`", "Click here to update"], {
+		left_click: (_) => {
+			!suprapack update
+		},
+		icon: '󰚰'
+	})
+enddef
+
 def CreatePopit()
 	job_start(["suprapack", "have_update", "supravim"], {
-		out_cb: (ch: channel, msg: string) => {
-			call CreatePop(msg)
-		}
+		out_cb: PopUpUpdate,
 	})
 enddef
 
-def ClickMeUpdate(wid: number)
-	!suprapack update
-enddef
-
-def CreatePop(s: string)
-	call Notify.Notification(["Update", s, "run: `suprapack update`", "Click here to update"], {
-		left_click: ClickMeUpdate,
-		icon: '󰚰',
-	})
-enddef
 # -----------------   Alt Up/Down   ------------------ #
-def MoveLineDown(mode: string)
-	var array = getline(line("'<"), line("'>"))
-	const len = len(array)
-	const begin = line('.')
-
-	if mode == 'n'
-		const tmp = getline(line('.') + 1)
-		setline(line('.') + 1, getline(line('.')))
-		setline(line('.'), tmp)
-		normal j==
-		return
-	elseif line("'<") != begin
-		return
-	endif
-
-	const tmp = getline(begin + len)
-	var i = 0
-	reverse(array)
-
-	for str in array
-		setline(begin + len - i, str)
-		i = i + 1
-	endfor
-	setline(begin, tmp)
-	setpos("'<", [0, begin + 1, 0, 0])
-	setpos("'>", [0, begin + len, 0, 0])
-	normal! gv=gv
-enddef
-
-def MoveLineUp(mode: string)
-	var array = getline(line("'<"), line("'>"))
-	var len = len(array)
-	var begin = line('.')
-
-	if begin == 1
-		return
-	elseif mode == 'n'
-		const tmp = getline(line('.') - 1)
-		setline(line('.') - 1, getline(line('.')))
-		setline(line('.'), tmp)
-		normal k==
-		return
-	endif
-
-	if line("'<") != begin
-		return
-	endif
-
-	const tmp = getline(line('.') - 1)
-	var i = begin
-	for str in array
-		setline(i - 1, str)
-	 	i = i + 1
-	endfor
-	setline(i - 1, tmp)
-
-	setpos("'<", [0, begin - 1, 0, 0])
-	setpos("'>", [0, begin + len - 2, 0, 0])
-	normal! gv=gv
-enddef
-
-vnoremap <silent> <A-Down>	:<scriptcmd>MoveLineDown("v")<CR><cr>
-vnoremap <silent> <A-Up>	:<scriptcmd>MoveLineUp("v")<CR><cr>
-nnoremap <silent> <A-Down>	<scriptcmd>MoveLineDown("n")<CR>
-nnoremap <silent> <A-Up>	<scriptcmd>MoveLineUp("n")<CR>
+vnoremap <silent> <A-Down>	:<scriptcmd>Utils.MoveLineDown("v")<CR><cr>
+vnoremap <silent> <A-Up>	:<scriptcmd>Utils.MoveLineUp("v")<CR><cr>
+nnoremap <silent> <A-Down>	<scriptcmd>Utils.MoveLineDown("n")<CR>
+nnoremap <silent> <A-Up>	<scriptcmd>Utils.MoveLineUp("n")<CR>
 
 # Fuzzy Finder
 nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>
@@ -813,4 +749,3 @@ def FixSupraVimColor()
 enddef
 autocmd Colorscheme * call FixSupraVimColor()
 FixSupraVimColor()
-
