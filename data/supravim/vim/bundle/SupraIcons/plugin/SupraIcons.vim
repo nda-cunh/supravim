@@ -102,7 +102,8 @@ const file_node_extensions = {
 	'accdb': '󱎎',
 	'mdb': '󱎎',
 	'one': '󰝇',
-	'pdf': '',
+	'pdf': '',
+	'csv': '',
 	'zip': '',
 	'tar': '',
 	'gz': '',
@@ -128,6 +129,8 @@ const file_node_extensions = {
 	'opus': '',
 	'm3u': '',
 	'suprapack': '',
+	'hsc': '',
+	'hs-boot': '',
 	'xml': '󰗀',
 	'o': '',
 	'sh': '',
@@ -192,7 +195,7 @@ const file_node_extensions = {
 	'hx': '',
 	'pem': '',
 	'gradle': '',
-	'so': ''
+	'so': '',
 }
 
 const file_node_exact_matches = {
@@ -261,7 +264,6 @@ const folder_node_exact_matches = {
 	'lib': '',
 	'desktop': '',
 }
-
 const folder_open = ''
 
 g:loaded_webdevicons = 1
@@ -315,7 +317,19 @@ def GetFileSymbol(path: string): string
 	if has_key(file_node_extensions, ext)
 		return file_node_extensions[ext]
 	endif
-	return '󰈙' # Default file icon
+	if !isdirectory(path)
+		# check if we have permission to read the file 
+		try 
+		if readfile(path, '', 1) == []
+			return '󰈔' # Default file icon
+		else
+			return '󰈙'
+		endif
+		catch
+			return '󱪡'
+		endtry
+	endif
+	return '󰈔' # Default file icon
 enddef
 
 
@@ -372,7 +386,7 @@ def g:WebDevIconsGetFileTypeSymbol(_value: string = '', type_id: number = -1): s
 		endif
 		if is_file
 			var sym = GetFileSymbol(value)
-			if sym == '󰈙' && IsBinary(value)
+			if sym == '󰈔' && IsBinary(value)
 				return ''
 			endif
 			return GetFileSymbol(value)
@@ -445,7 +459,23 @@ g:WebDevIconsTabAirLineAfterGlyphPadding = ''
 g:_webdevicons_airline_orig_formatter = get(g:, 'airline#extensions#tabline#formatter', 'default')
 g:airline#extensions#tabline#formatter = 'SupraIcon'
 
-def g:AirlineWebDevIcons(...name: list<any>): any
+def AirlineActiveFunc(...name: list<any>): any
+	var ctx = name[0]._context
+	var buf = ctx.bufnr
+	# Support for SupraWater filetype
+	if getbufvar(buf, '&filetype') == 'suprawater'
+		if exists('b:is_supra_tree')
+			w:airline_section_a = 'SupraWater 󰥨 '
+		else
+			w:airline_section_b = 'SupraWater 󰥨 '
+		endif
+		w:airline_section_c = ''
+		w:airline_section_x = ''
+		w:airline_section_y = ''
+		w:airline_section_z = ''
+		return 0
+	endif
+
 	w:airline_section_x = get(w:, 'airline_section_x', get(g:, 'airline_section_x', ''))
 	w:airline_section_x ..= ' %{WebDevIconsGetFileTypeSymbol()} '
 	var hasFileFormatEncodingPart = airline#parts#ffenc() !=? ''
@@ -455,6 +485,17 @@ def g:AirlineWebDevIcons(...name: list<any>): any
 	return 0
 enddef
 
+def AirlineInactiveFunc(...name: list<any>): any 
+	var ctx = name[0]._context
+	var wid = win_getid(ctx.winnr)
+	if getwinvar(wid, '&filetype') == 'suprawater'
+		setwinvar(wid, 'airline_section_c', 'SupraWater 󰥨 ')
+		return 0
+	endif
+	return 0 
+enddef
+
 if g:webdevicons_enable == 1 && g:webdevicons_enable_airline_statusline == 1
-	airline#add_statusline_func(function('g:AirlineWebDevIcons'))
+	airline#add_statusline_func(function('AirlineActiveFunc'))
+	airline#add_inactive_statusline_func(function('AirlineInactiveFunc'))
 endif

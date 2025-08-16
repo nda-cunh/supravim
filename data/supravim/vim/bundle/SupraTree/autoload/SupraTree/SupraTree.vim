@@ -19,7 +19,7 @@ export def OpenTree()
 	endif
 
 	var last_winid = win_getid()
-	var nb_size: number = 30
+	var nb_size: number = 26
 	if exists('g:SupraTreeWinSize')
 		nb_size = g:SupraTreeWinSize
 	endif
