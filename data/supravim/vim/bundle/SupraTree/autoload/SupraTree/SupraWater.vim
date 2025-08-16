@@ -87,6 +87,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 
 
 	if dict.tree_mode == true
+		b:is_supra_tree = true
 		setbufvar(id, '&ea', 0)
 		setbufvar(id, '&relativenumber', 0)
 		setbufvar(id, '&winfixwidth', 1)
