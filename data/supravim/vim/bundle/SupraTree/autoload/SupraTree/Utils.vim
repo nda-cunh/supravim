@@ -1,5 +1,7 @@
 vim9script
 
+import autoload './SupraWater.vim' as SupraWater
+
 export def GetIcon(name: string, type: number = -1): string
 	if name[-1] == '/'
 		return g:WebDevIconsGetFileTypeSymbol(name, 1)
@@ -88,3 +90,54 @@ function IsBinaryBlob(path)
     endfor
     return v:false
 endfunction
+
+
+export def ToggleHidden()
+	if !exists('b:supra_dict')
+		echom 'No supradict found in buffer'
+		return
+	endif
+	var dict = b:supra_dict 
+	dict.show_hidden = !dict.show_hidden
+	SupraWater.DrawPath(dict.actual_path)
+enddef
+
+export def ToggleSort()
+	if !exists('b:supra_dict')
+		echom 'No supradict found in buffer'
+		return
+	endif
+	var dict = b:supra_dict 
+	dict.sort_ascending = !dict.sort_ascending
+	SupraWater.DrawPath(dict.actual_path)
+enddef
+
+def Ft_strcmp(str1: string, str2: string): number
+	var diff = 0
+	for i in range(0, min([len(str1), len(str2)]) - 1)
+		var char1 = char2nr(str1[i])
+		var char2 = char2nr(str2[i])
+		if char1 != char2
+			diff = char1 - char2
+			break
+		endif
+	endfor
+	return diff
+enddef
+
+
+export def SimpleSortAscending(a: string, b: string): number
+	if stridx(a, '.') == 0 && stridx(b, '.') != 0
+		return 1
+	else
+		return Ft_strcmp(a, b)
+	endif
+enddef
+
+export def SimpleSortDescending(a: string, b: string): number
+	if stridx(a, '.') == 0 && stridx(b, '.') != 0
+		return 1 
+	else
+		return Ft_strcmp(b, a)
+	endif
+enddef

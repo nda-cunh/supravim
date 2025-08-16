@@ -12,13 +12,12 @@ autocmd VimEnter,BufEnter * if isdirectory(@%) | execute 'SupraWater.Water()' | 
 highlight link SupraWaterSign Error
 autocmd ColorScheme * call Create_HiColor()
 highlight link SupraWaterErrorSign Error
-if exists('g:sp_symbol_signs')
-	execute 'sign define SupraWaterSign text=' .. g:sp_symbol_signs .. ' texthl=SupraWaterErrorSign'
+if exists('g:SupraTreeSymbolSigns')
+	execute 'sign define SupraWaterSign text=' .. g:SupraTreeSymbolSigns .. ' texthl=SupraWaterErrorSign'
 else
 	execute 'sign define SupraWaterSign text=✖ texthl=SupraWaterErrorSign'
 endif
 
- 
 def g:SupraCopyFile(src: string, dest: string)
 	var stat = getfperm(src)
 	call mkdir(fnamemodify(dest, ':h'), 'p')
@@ -45,12 +44,21 @@ def Create_HiColor()
 	var bgcolor = synIDattr(synIDtrans(hlID('Normal')), 'bg')
 	var fgcolor = synIDattr(synIDtrans(hlID('Normal')), 'fg')
 	var darkened_bg: string
-	if bgcolor == '' || fgcolor == ''
-		bgcolor = 'NONE'
-		fgcolor = '#ABB2BF'
-		darkened_bg = bgcolor 
+
+	if exists('g:SupraTreeForceColor')
+		darkened_bg = g:SupraTreeForceColor
 	else
-		darkened_bg = DarkenColor(bgcolor, 15)
+		if bgcolor == '' || fgcolor == ''
+			bgcolor = 'NONE'
+			fgcolor = '#ABB2BF'
+			darkened_bg = bgcolor 
+		else
+			if exists('g:SupraTreeDarkenAmount')
+				darkened_bg = DarkenColor(bgcolor, g:SupraTreeDarkenAmount)
+			else
+				darkened_bg = DarkenColor(bgcolor, 15)
+			endif
+		endif
 	endif
 	execute 'hi clear NormalDark'
 	execute 'hi clear SupraWaterPath'

@@ -24,12 +24,24 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 		return id
 	endif
 
+	var sort_ascending = true
+	var show_hidden = false
+
+	if exists('g:SupraTreeSortAscending')
+		sort_ascending = g:SupraTreeSortAscending
+	endif
+	if exists('g:SupraTreeShowHidden')
+		show_hidden = g:SupraTreeShowHidden
+	endif
+
 	var dict = {
 		first_path: actual_path,
 		first_filename: file_name,
 		actual_path: actual_path,
 		cursor_pos: {},
 		last_buffer: last_buffer,
+		show_hidden: show_hidden,
+		sort_ascending: sort_ascending,
 		edit: {},
 		clipboard: [],
 		clipboard_mode: 'yank',
@@ -71,6 +83,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 		mapping: true,
 	})
 	local[id] = dict
+	b:supra_dict = dict
 
 	set filetype=suprawater
 	setlocal fillchars+=eob:\ 
@@ -87,6 +100,7 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 
 
 	if dict.tree_mode == true
+		b:is_supra_tree = true
 		setbufvar(id, '&ea', 0)
 		setbufvar(id, '&relativenumber', 0)
 		setbufvar(id, '&winfixwidth', 1)
@@ -122,6 +136,10 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	nnoremap <buffer><tab>			<Nop>
 	nnoremap <buffer><a-up>			<Nop>
 	nnoremap <buffer><a-down>		<Nop>
+	nnoremap <buffer><Esc>O3~		<scriptcmd>Utils.ToggleHidden()<cr>
+	inoremap <buffer><Esc>O3~		<scriptcmd>Utils.ToggleHidden()<cr>
+	nnoremap <buffer>=				<scriptcmd>Utils.ToggleSort()<cr>
+	inoremap <buffer>=				<scriptcmd>Utils.ToggleSort()<cr>
 	nnoremap <buffer><c-_>			<Nop>
 	nnoremap <buffer>dw				<scriptcmd>noautocmd normal! dw<cr>
 	nnoremap <buffer>db				<scriptcmd>noautocmd normal! db<cr>
@@ -146,16 +164,28 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	autocmd TextChangedI,TextChanged <buffer> call Changed()
 	autocmd TextYankPost <buffer> if v:event.operator ==# 'd' && v:event.regname ==# '' | call Cut() | endif
 	autocmd TextYankPost <buffer> if v:event.operator ==# 'y' && v:event.regname ==# '' | call Yank() | endif
+	if &filetype == 'suprawater'
+		inoremap <buffer><Cr>			<scriptcmd>call SupraOverLoadCr()<cr>
+		inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
+		nnoremap <buffer><del>			<esc>i<del>
+		inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+	endif
 	# I Don't know why but IMAP BS dont work if is not in an autocmd
+	if &filetype == 'suprawater'
+		inoremap <buffer><Cr>			<scriptcmd>call SupraOverLoadCr()<cr>
+		inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
+		nnoremap <buffer><del>			<esc>i<del>
+		inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+	endif
 	autocmd BufEnter <buffer> {
 		if &filetype == 'suprawater'
 			inoremap <buffer><Cr>			<scriptcmd>call SupraOverLoadCr()<cr>
 			inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
 			nnoremap <buffer><del>			<esc>i<del>
 			inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+			# When we need to go to Normal mode
+			feedkeys("\<esc>", 'n')
 		endif
-		# When we need to go to Normal mode
-		feedkeys("\<esc>", 'n')
 	}
 
 	EnterWithPathAndJump()
@@ -217,7 +247,7 @@ enddef
 ####################################
 # Draw the 'ls' command and load it in local.edit
 ####################################
-def DrawPath(path: string, force_id: number = -1)
+export def DrawPath(path: string, force_id: number = -1)
 	var id = bufnr('%')
 	if force_id != -1
 		id = force_id
@@ -237,7 +267,17 @@ def DrawPath(path: string, force_id: number = -1)
 	var sp: list<string> = []
 	try
 		sp = readdir(path)  # ensure the path exists
-		sp = sort(sp)
+		# remove hidden files
+		if dict.show_hidden == false
+			sp = filter(sp, (idx, val) => {
+				return (stridx(val, '.') != 0)
+			})
+		endif
+		if dict.sort_ascending == true
+			sp = sort(sp, (Utils.SimpleSortAscending))
+		else
+			sp = sort(sp, (Utils.SimpleSortDescending))
+		endif
 	catch
 		const cur_pos = getcurpos()
 		DrawPath(dict.actual_path)
@@ -262,6 +302,7 @@ def DrawPath(path: string, force_id: number = -1)
 		copy_of: '', # link to the original file if it is a copy
 	}
 	for i in sp
+		# echom i
 		if (i == '')
 			continue
 		endif
@@ -680,7 +721,7 @@ def PopupYes(modified_file: dict<any>)
 
 	dict.clipboard = []
 	Popup.Hide(dict.popup_clipboard)
-	Actualize()
+	Actualize(id)
 enddef
 
 def OpenPopupCancelFile(modified_file: dict<any>)
@@ -1151,7 +1192,18 @@ def Actualize(force_id: number = -1)
 	const actual_path = dict.actual_path
 	var winid = win_findbuf(id)[0]
 
-	var sort_text = 'Sort by name ▲  | hidden files: 🗸 ' # or 🗶 ✕
+	var sort_text: string
+	if dict.sort_ascending == true
+		sort_text = 'Sort by name ▲ '
+	else
+		sort_text = 'Sort by name ▼ '
+	endif
+	if dict.show_hidden == true
+		sort_text ..= '  | hidden files: 🗸 '
+	else
+		sort_text ..= '  | hidden files: ✕'
+	endif
+
 	const help_text = 'Press ("?" or "h") for Help !'
 	sort_text ..= repeat(' ', (winwidth(winid) - len(sort_text) - len(help_text))) ..  help_text
 	prop_clear(1, line('$', winid))

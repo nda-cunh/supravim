@@ -21,6 +21,8 @@ export def HelpPreview()
 		' • <leader-v>              * Open with Vsplit',
 		' • <C-t>                   * Open with a new Tab',
 	    ' • <C-p>                   * Preview of the file',
+	    ' • <C-.>                   * Toggle hidden files',
+	    ' • <C-=>                   * Toggle the Sort mode',
         ' • ~                       * Go to the home directory',
         ' • _                       * Enter the folder and jump'
 	]
