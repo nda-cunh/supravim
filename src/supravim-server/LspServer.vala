@@ -21,7 +21,7 @@ namespace LspServer {
 		{ "blueprint", "blueprint-compiler,lsp", "blp,bp,blueprint",
 			"blueprint-compiler --version",
 			"suprapack add blueprint-compiler --yes"},
-		{ "pylsp", "pyls", "py,python",
+		{ "pylsp", "pylsp", "py,python",
 			"pylsp -h",
 			"pip install python-lsp-server[all]"},
 		{"kotlin-lsp", "kotlin-language-server", "kt,kts,kotlin",
@@ -170,6 +170,17 @@ namespace LspServer {
 		}
 	}
 
+	public void other_install (Lsp lsp) throws Error {
+		int wait_status = run_command(lsp.command_help);
+		if (wait_status != 0) {
+			throw new ErrorLsp.INSTALL_ERROR ("Error running install command\r(%s)", lsp.command_help);
+		}
+		else {
+			unowned string? lsp_str = LspServer.get_from_lsp (lsp);
+			print ("LspGetServer@#@%s\n", lsp_str);
+		}
+	}
+
 	public void install_lsp (string name) throws Error {
 		foreach (unowned var lsp in LspServer.all_servers) {
 			if (lsp.name == name) {
@@ -180,7 +191,7 @@ namespace LspServer {
 					suprapack_install (lsp);
 				}
 				else {
-					throw new ErrorLsp.INVALID_LSP("(supravim-server) Invalid LSP configuration for '%s'", name);
+					other_install(lsp);
 				}
 				return;
 			}
