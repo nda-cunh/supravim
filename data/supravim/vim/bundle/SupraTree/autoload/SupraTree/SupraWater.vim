@@ -147,6 +147,12 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 	autocmd TextChangedI,TextChanged <buffer> call Changed()
 	autocmd TextYankPost <buffer> if v:event.operator ==# 'd' && v:event.regname ==# '' | call Cut() | endif
 	autocmd TextYankPost <buffer> if v:event.operator ==# 'y' && v:event.regname ==# '' | call Yank() | endif
+	if &filetype == 'suprawater'
+		inoremap <buffer><Cr>			<scriptcmd>call SupraOverLoadCr()<cr>
+		inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
+		nnoremap <buffer><del>			<esc>i<del>
+		inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+	endif
 	# I Don't know why but IMAP BS dont work if is not in an autocmd
 	autocmd BufEnter <buffer> {
 		if &filetype == 'suprawater'
@@ -154,9 +160,9 @@ export def Water(tree_mode: bool = false, force_id: number = -1): number
 			inoremap <buffer><del>			<scriptcmd>call SupraOverLoadDel()<cr>
 			nnoremap <buffer><del>			<esc>i<del>
 			inoremap <buffer><bs>			<scriptcmd>call SupraOverLoadBs()<cr>
+			# When we need to go to Normal mode
+			feedkeys("\<esc>", 'n')
 		endif
-		# When we need to go to Normal mode
-		feedkeys("\<esc>", 'n')
 	}
 
 	EnterWithPathAndJump()
