@@ -173,12 +173,12 @@ auto BufEnter,VimEnter *.tpp set filetype=cpp
 
 #--------------- Lsp Interface ---------------"
 def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
-	call lsp#register_server({
+	silent! lsp#register_server({
 		\ name: name,
 		\ cmd: (_) => cmd,
 		\ allowlist: filetypes,
 	\ })
-	call lsp#activate()
+	silent! lsp#activate()
 enddef
 
 #--------------- FONCTION ---------------"
@@ -581,7 +581,6 @@ nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
 nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
 nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
-nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyHarpoon<cr>
 nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
 nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
 
