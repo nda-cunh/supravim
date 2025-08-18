@@ -739,6 +739,7 @@ autocmd VimEnter * call Welcome()
 g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
 g:SupraTreeWinSize = 27
 g:SupraTreeOpenByDefault = g:sp_tree
+g:SupraTreeSymbolSigns = g:sp_symbol_signs
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
 
 #--------------- SupraVim Color ----------"
