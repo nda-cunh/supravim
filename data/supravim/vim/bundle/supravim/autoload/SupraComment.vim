@@ -10,22 +10,30 @@ def UnComment(regex: string, line: string, nb: number)
 	setline(nb, new_content)
 enddef
 
-def CommentLine(regex: string, char: string, nb_line: number, nb_max: number)
+def CommentLine(regex: string, char: string, nb_line: number, nb_max: number, force: number)
 	const line = getline(nb_line, nb_max)
 	const regex_uncomment = char .. '\s*'
 	const regex_comment = '\1' .. char .. ' \2'
 	var i = 0
 	for nb in range(nb_line, nb_max)
 		if line[i] =~ regex
-			UnComment(regex_uncomment, line[i], nb)
+			if force == FORCE_UNCOMMENT || force == NORMAL
+				UnComment(regex_uncomment, line[i], nb)
+			endif
 		else
-			Comment(regex_comment, line[i], nb)
+			if force == FORCE_COMMENT || force == NORMAL
+				Comment(regex_comment, line[i], nb)
+			endif
 		endif
 		i += 1
 	endfor
 enddef
 
-export def Commentary(visual: bool)
+export const NORMAL = 0
+export const FORCE_COMMENT = 1
+export const FORCE_UNCOMMENT = 2
+
+export def Commentary(visual: bool, force: number = NORMAL)
 	const line = getline('.')
 	const e = &filetype
 	var min: number
@@ -48,12 +56,23 @@ export def Commentary(visual: bool)
 
 	const s = ['c', 'cpp', 'cs', 'c3', 'java', 'javascript', 'php', 'swift', 'kotlin', 'go', 'rust', 'typescript', 'scala', 'vala']
 	if index(s, e) >= 0
-		CommentLine('^\s*[/][/].*$', '//', min, max)
+		CommentLine('^\s*[/][/].*$', '//', min, max, force)
 	elseif e == 'lua' || e == 'sql'
-		CommentLine('^\s*--.*$', '--', min, max)
+		CommentLine('^\s*--.*$', '--', min, max, force)
 	elseif e == 'asm'
-		CommentLine('^\s*[;].*$', ';', min, max)
+		CommentLine('^\s*[;].*$', ';', min, max, force)
 	else
-		CommentLine('^\s*[#].*$', '#', min, max)
+		if e == 'vim'
+			# if first line is not vim9script use '#'
+			try
+			var content = readfile(expand('%:p'), '', 10)
+			if index(content, 'vim9script') < 0
+				CommentLine('^\s*".*$', '"', min, max, force)
+				return
+			endif
+			catch
+			endtry
+		endif
+		CommentLine('^\s*[#].*$', '#', min, max, force)
 	endif
 enddef

@@ -4,4 +4,13 @@ import autoload 'SupraComment.vim' as Comment
 
 noremap <c-_>	<scriptcmd>call Comment.Commentary(false)<CR>
 vnoremap <c-_>	<esc><scriptcmd>call Comment.Commentary(true)<CR>
-command -nargs=0 Commentary call Comment.Commentary(false)
+
+noremap <c-\>	<scriptcmd>call Comment.Commentary(false, Comment.FORCE_COMMENT)<CR>
+vnoremap <c-\>	<esc><scriptcmd>call Comment.Commentary(true, Comment.FORCE_COMMENT)<CR>
+
+noremap <esc>/			<scriptcmd>call Comment.Commentary(false, Comment.FORCE_UNCOMMENT)<CR>
+vnoremap <esc>/			<esc><scriptcmd>call Comment.Commentary(true, Comment.FORCE_UNCOMMENT)<CR>
+
+command -nargs=0 Commentary call Comment.Commentary(false, Comment.NORMAL)
+command -nargs=0 Comment call Comment.Commentary(false, Comment.FORCE_COMMENT)
+command -nargs=0 UnComment call Comment.Commentary(false, Comment.FORCE_UNCOMMENT)
