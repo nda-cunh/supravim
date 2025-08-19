@@ -1,37 +1,42 @@
 vim9script
 
-def Comment(regex: string, line: string, nb: number)
-	var new_content = substitute(line, '\(\s*\)\(.*\)$', regex, '')
-	setline(nb, new_content)
-enddef
-
-def UnComment(regex: string, line: string, nb: number)
-	var new_content = substitute(line, regex, '', '')
-	setline(nb, new_content)
-enddef
-
-def CommentLine(regex: string, char: string, nb_line: number, nb_max: number, force: number)
-	const line = getline(nb_line, nb_max)
-	const regex_uncomment = char .. '\s*'
-	const regex_comment = '\1' .. char .. ' \2'
-	var i = 0
-	for nb in range(nb_line, nb_max)
-		if line[i] =~ regex
-			if force == FORCE_UNCOMMENT || force == NORMAL
-				UnComment(regex_uncomment, line[i], nb)
-			endif
-		else
-			if force == FORCE_COMMENT || force == NORMAL
-				Comment(regex_comment, line[i], nb)
-			endif
-		endif
-		i += 1
-	endfor
-enddef
-
 export const NORMAL = 0
 export const FORCE_COMMENT = 1
 export const FORCE_UNCOMMENT = 2
+
+def CommentLine(begin: string, end: string, nb_line: number, nb_max: number, force: number)
+	const line = getline(nb_line, nb_max)
+	const regex = '^\s*' .. begin
+	const regex_uncomment = '^\s*\zs' .. begin .. ' \?\ze'
+	const regex_comment = '&' .. begin .. ' '
+
+	var is_only_comment = true 
+
+	if force == NORMAL 
+		for nb in range(nb_line, nb_max)
+			if !(line[nb - nb_line] =~ regex)
+				is_only_comment = false 
+				break
+			endif
+		endfor
+	endif
+
+	if (is_only_comment && force == NORMAL) || force == FORCE_UNCOMMENT
+		# Uncomment lines
+		for nb in range(nb_line, nb_max)
+			const l = line[nb - nb_line]
+			const content = substitute(l, regex_uncomment, '', '')
+			setline(nb, content)
+		endfor
+	elseif (is_only_comment == false && force == NORMAL) || force == FORCE_COMMENT
+		# Comment lines
+		for nb in range(nb_line, nb_max)
+			const l = line[nb - nb_line]
+			const content = substitute(l, '^\s*', regex_comment, '')
+			setline(nb, content)
+		endfor
+	endif
+enddef
 
 export def Commentary(visual: bool, force: number = NORMAL)
 	const line = getline('.')
@@ -56,23 +61,22 @@ export def Commentary(visual: bool, force: number = NORMAL)
 
 	const s = ['c', 'cpp', 'cs', 'c3', 'java', 'javascript', 'php', 'swift', 'kotlin', 'go', 'rust', 'typescript', 'scala', 'vala']
 	if index(s, e) >= 0
-		CommentLine('^\s*[/][/].*$', '//', min, max, force)
+		CommentLine('//', '', min, max, force)
 	elseif e == 'lua' || e == 'sql'
-		CommentLine('^\s*--.*$', '--', min, max, force)
+		CommentLine('--', '', min, max, force)
 	elseif e == 'asm'
-		CommentLine('^\s*[;].*$', ';', min, max, force)
+		CommentLine(';', '', min, max, force)
 	else
 		if e == 'vim'
-			# if first line is not vim9script use '#'
 			try
 			var content = readfile(expand('%:p'), '', 10)
 			if index(content, 'vim9script') < 0
-				CommentLine('^\s*".*$', '"', min, max, force)
+				CommentLine('"', '', min, max, force)
 				return
 			endif
 			catch
 			endtry
 		endif
-		CommentLine('^\s*[#].*$', '#', min, max, force)
+	CommentLine('#', '', min, max, force)
 	endif
 enddef
