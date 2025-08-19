@@ -21,9 +21,9 @@ elseif expand("$XDG_SESSION_TYPE") == "wayland"
 	if executable('wl-copy') == 0
 		call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
 	else
-		autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern(['wl-copy'])
+		autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern(['wl-copy', '-n'])
 		autocmd FocusGained * call FuzzyClip.LoadRegisterFromExtern(['wl-paste'])
-		command UpdateClipboard call FuzzyClip.SetClipBoardExtern(['wl-copy'])
+		command UpdateClipboard call FuzzyClip.SetClipBoardExtern(['wl-copy', '-n'])
 	endif
 elseif expand("$XDG_SESSION_TYPE") == "x11"
 	if executable('xclip') == 0
