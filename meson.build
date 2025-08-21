@@ -2,7 +2,7 @@
 # SupraVim 
 #########################
 
-project('supravim', ['c', 'vala'], version : '6.2.4', 
+project('supravim', ['c', 'vala'], version : '6.2.6', 
   default_options : [
     'warning_level=0',
     'buildtype=release',

@@ -720,11 +720,11 @@ def Welcome()
 	endif
 enddef
 
-import autoload 'Welcome.vim' as Wel 
-
-if argc() == 0
-	Wel.SupraWelcome()
-endif
+# import autoload 'Welcome.vim' as Wel 
+# 
+# if argc() == 0
+	# Wel.SupraWelcome()
+# endif
 
 # Force directory creation on save
 autocmd BufWritePre * {
