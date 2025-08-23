@@ -263,18 +263,11 @@ def g:SettingsSupravim()
 enddef
 
 if g:sp_fold == true
-	auto BufEnter * call LoadBuf()
 	def LoadBuf()
 		var l = line('.')
-		silent! loadview
 		cursor(l, 1)
 	enddef
 endif
-
-auto BufWritePost * call Save_post()
-def Save_post()
-	mkview
-enddef
 
 imap <C-F5>		<ScriptCmd>Gdbs<CR>
 map <C-F5>		<ScriptCmd>Gdbs<CR>
