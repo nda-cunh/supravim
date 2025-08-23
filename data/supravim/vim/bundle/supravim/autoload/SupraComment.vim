@@ -66,17 +66,19 @@ export def Commentary(visual: bool, force: number = NORMAL)
 		CommentLine('--', '', min, max, force)
 	elseif e == 'asm'
 		CommentLine(';', '', min, max, force)
-	else
-		if e == 'vim'
+	elseif e == 'vim'
 			try
 			var content = readfile(expand('%:p'), '', 10)
-			if index(content, 'vim9script') < 0
-				CommentLine('"', '', min, max, force)
-				return
-			endif
+			for l in content
+				if stridx(l, 'vim9script') == 0
+					CommentLine('#', '', min, max, force)
+					return
+				endif
+			endfor
+			CommentLine('"', '', min, max, force)
 			catch
 			endtry
-		endif
-	CommentLine('#', '', min, max, force)
+	else
+		CommentLine('#', '', min, max, force)
 	endif
 enddef
