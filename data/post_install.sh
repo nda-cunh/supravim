@@ -29,6 +29,9 @@ create_folder_undo () {
 }
 
 main() {
+	# Remove View (mkview)
+	rm -rf $HOME/.vim/view/
+	# Remove old vimrc and vim folder
 	rm -rf $HOME/.vimrc $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vim $HOME/.vim
 	ln -sf $PKGDIR/share/supravim/vimrc $HOME/.vimrc
