@@ -297,12 +297,12 @@ command -nargs=0 -bar Ctags :call Ctags()
 set tags=$HOME/.cache/tags
 
 def Ctags()
-	if suprabear_return == 0
+	try
+	LspDefinition
+	catch
 		system("supratags --output=" .. expand("$HOME") .. "/.cache/tags")
 		execute "tag " .. expand("<cword>")
-	else
-		LspDefinition
-	endif
+	endtry
 enddef
 
 # ------ Running Supravim-Server ------"

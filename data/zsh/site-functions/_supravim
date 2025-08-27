@@ -8,7 +8,7 @@ _supravim() {
 		-e|--enable)
 			_arguments "*:commands:($(supravim --print-options))"
 			;;
-		-d|--disable)
+		-d|--disable|-S)
 			_arguments "*:commands:($(supravim --print-options))"
 			;;
 		--remove-plugin|--enable-plugin|--disable-plugin)
