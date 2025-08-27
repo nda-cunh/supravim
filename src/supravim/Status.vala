@@ -9,6 +9,8 @@ private void print_list (ArrayElements lst, int size_max) {
 		}
 		else if (elem.type == STRING) 
 			stdout.printf ("\033[96;1m'%s'%*s\033[m", elem.value, size_max - elem.value.char_count () - 2, " ");
+		else if (elem.type == NUMBER) 
+			stdout.printf ("\033[93;1m%s%*s\033[m", elem.value, size_max - elem.value.char_count (), " ");
 		if (elem.comment != null)
 			stdout.printf (" (%s)\n", elem.comment);
 		else 
