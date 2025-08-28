@@ -210,10 +210,25 @@ g:supravim_option_changed = 'null'
 g:supravim_option_value = 'null'
 
 def g:ChangeSupravimOption(changed: string, value: string)
+	var v = get(g:, 'sp_' .. changed)
+	var type_of_value = type(v)
+	echom type_of_value
+	var text: string
+
 	g:supravim_option_changed = changed
 	g:supravim_option_value = value
-	var text = 'g:sp_' .. g:supravim_option_changed .. ' = ' .. g:supravim_option_value
-	execute text
+	
+	if type_of_value == v:t_string
+		text = 'g:sp_' .. g:supravim_option_changed .. ' = "' .. g:supravim_option_value .. '"'
+	else
+		text = 'g:sp_' .. g:supravim_option_changed .. ' = ' .. g:supravim_option_value
+	endif
+
+	try
+		execute text
+	catch
+		echom text
+	endtry
 	doautocmd User SupravimChangeOption
 enddef
 
