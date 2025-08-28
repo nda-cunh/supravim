@@ -1,0 +1,12 @@
+name: plugin-indent-rainbow
+version: 1.0
+arch: amd64-Linux
+author: 
+description: highlight indentations with alternating colors, making code easier to read.
+dependency: supravim
+optional_dependency: 
+exclude_package: 
+binary: plugin-indent-rainbow
+size_tar: 
+size_installed: 3027
+wanted: no
