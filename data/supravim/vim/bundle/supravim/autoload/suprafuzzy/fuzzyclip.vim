@@ -4,32 +4,29 @@ import autoload 'fuzzbox/utils/selector.vim'
 import autoload 'SupraNotification.vim' as Notify
 
 def Select(wid: number, result: list<any>)
-	var res = result[0]
-	if empty(res)
-		return
-	endif
-	var txt = getreg(res[0])
+	var num = str2nr(result[0]) - 1
+
+	var txt = g:SUPRA_CLIP[num]
 	setreg('@', txt)
 	setreg('0', txt)
 	UpdateClipboard
 enddef
 
 def Preview(wid: number, result: string)
-    var content = getreg(result[0]) 
-	var sp = content->split('\n')
+	var num = str2nr(result[0]) - 1
+    var content = g:SUPRA_CLIP[num]
+	# split by new line and remove all \n
+	var sp = content->split('\n\zs')->map('substitute(v:val, "\n", "", "g")')
     popup_settext(wid, sp)
 enddef
 
 def GetList(): list<string>
 	var result: list<string> = []
 	var i: number = 1
+	var len = len(g:SUPRA_CLIP)
 
-	while i < 10
-		var res: string = getreg(string(i))
-		if empty(res)
-			i += 1
-			continue
-		endif
+	while i < (len + 1)
+		var res = g:SUPRA_CLIP[i - 1]
 		var first_line: string 
 		var sp = res->split('\n')
 		var j = 0
@@ -53,6 +50,10 @@ enddef
 
 export def Start()
 	var lst = GetList()
+	if len(lst) == 0
+		call Notify.Notification(["FuzzyClip", "No clipboard history found"], {type: 'info'})
+		return
+	endif
 
 	selector.Start(lst, {
 		select_cb: Select,
@@ -69,23 +70,53 @@ export def Start()
 	})
 enddef
 
+def IsSpace(str: string): bool
+	for c in str
+		const n = char2nr(c)
+		if ((n >= 9 && n <= 13) || n == 32)
+			continue
+		else
+			return false
+		endif
+	endfor
+	return true
+enddef
+
 export def UpdateYankRegisters()
-		if has_key(v:event, 'operator') != 0 && v:event.operator != 'y'
+	# if has_key(v:event, 'operator') != 0 && v:event.operator != 'y'
+		# return
+	# endif
+	var value = getreg('0')
+	if IsSpace(value)
 		return
 	endif
-	setreg('9', getreg('8'))
-	setreg('8', getreg('7'))
-	setreg('7', getreg('6'))
-	setreg('6', getreg('5'))
-	setreg('5', getreg('4'))
-	setreg('4', getreg('3'))
-	setreg('3', getreg('2'))
-	setreg('2', getreg('1'))
-	setreg('1', getreg('0'))
+	if len(g:SUPRA_CLIP) == 0
+		g:SUPRA_CLIP = [getreg('0')]
+	else
+		var last = g:SUPRA_CLIP[-1]
+		if getreg('0') != last
+			# if already in the list, remove it first
+			var idx = index(g:SUPRA_CLIP, getreg('0'))
+			if idx != -1
+				call remove(g:SUPRA_CLIP, idx)
+			endif
+			# keep only 20 items
+			if len(g:SUPRA_CLIP) >= 20
+				call remove(g:SUPRA_CLIP, -1)
+			endif
+			insert(g:SUPRA_CLIP, getreg('0'), 0)
+		endif
+	endif
 enddef
 
 var s_time = 0
 export def LoadRegisterFromExtern(copy_os: list<string>)
+	if empty(copy_os)
+		setreg('0', getreg('+'))
+		UpdateYankRegisters()
+		return
+	endif
+
 	var t = localtime()
 	if (((s_time + 1) < t) == false)
 		return
@@ -112,6 +143,11 @@ export def LoadRegisterFromExtern(copy_os: list<string>)
 enddef
 
 export def SetClipBoardExtern(copy_os: list<string>)
+	if empty(copy_os)
+		setreg('+', getreg('0'))
+		return
+	endif
+
 	if has_key(v:event, 'operator') != 0 && v:event.operator == 'c'
 		setreg('@', getreg('0'))
 		return
