@@ -65,6 +65,7 @@ autocmd VimLeave * !echo -ne "\e[0 q"
 
 set undodir=~/.cache/vim/undo
 set undofile
+set viminfo+=!
 
 # -------------  DBG integration  --------------"
 packadd! termdebug

@@ -4,6 +4,10 @@ import autoload 'suprafuzzy/fuzzyclip.vim' as FuzzyClip
 
 command FuzzyClip call FuzzyClip.Start()
 
+if !exists('g:SUPRA_CLIP')
+	g:SUPRA_CLIP = []
+endif
+
 inoremap <c-v>	<scriptcmd>norm p<cr>
 nnoremap <del> i<del><right><esc>
 vnoremap <c-c>	y
@@ -13,7 +17,12 @@ augroup UpdateYankRegistersGroup
     autocmd TextYankPost * call FuzzyClip.UpdateYankRegisters()
 augroup END
 
-if has('macunix')
+if has('clipboard')
+	# Use system clipboard if available
+	autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern([])
+	autocmd FocusGained * call FuzzyClip.LoadRegisterFromExtern([])
+	command UpdateClipboard call FuzzyClip.SetClipBoardExtern([])
+elseif has('macunix')
     autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern(['pbcopy'])
     autocmd FocusGained * call FuzzyClip.LoadRegisterFromExtern(['pbpaste'])
 	command UpdateClipboard call FuzzyClip.SetClipBoardExtern(['pbcopy'])
