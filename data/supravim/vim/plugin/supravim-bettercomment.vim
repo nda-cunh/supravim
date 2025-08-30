@@ -35,5 +35,5 @@ def HighlightComments()
 
 enddef
 
-autocmd BufReadPost,BufNewFile *.h,*.hpp,*.c,*.cpp,*.js,*.vala,*.ts,*.rs call HighlightComments()
+autocmd BufReadPost,BufNewFile *.h,*.hpp,*.c,*.cpp,*.js,*.vala,*.ts,*.rs,*.tsx call HighlightComments()
 autocmd BufReadPost,BufNewFile *.h,*.hpp,*.c,*.cpp syntax clear cTodo

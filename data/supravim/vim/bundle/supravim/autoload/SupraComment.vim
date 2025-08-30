@@ -59,7 +59,7 @@ export def Commentary(visual: bool, force: number = NORMAL)
 		max = line('$')
 	endif
 
-	const s = ['c', 'cpp', 'cs', 'c3', 'java', 'javascript', 'php', 'swift', 'kotlin', 'go', 'rust', 'typescript', 'scala', 'vala']
+	const s = ['c', 'cpp', 'cs', 'c3', 'java', 'javascript', 'php', 'swift', 'kotlin', 'go', 'rust', 'typescript', 'scala', 'vala', 'ts', 'tsx']
 	if index(s, e) >= 0
 		CommentLine('//', '', min, max, force)
 	elseif e == 'lua' || e == 'sql'
