@@ -536,7 +536,7 @@ def OpenNewFile()
 	if filetype == ''
 		filetype = expand('%:e')
 	endif
-	ch_sendraw(supravim_server, "OpenFile: " .. filetype .. "\n")
+	ch_sendraw(supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
 enddef
 
 au BufEnter * OpenNewFile()
