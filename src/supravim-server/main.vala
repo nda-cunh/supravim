@@ -10,27 +10,35 @@
  **/
 
 public class SupraVim {
+	SourceFunc? main_loop = null;
 	MyMonitor monitor;
+	StdinStream stdin;
 	DiscordSupraVim discord;
 
 	private SupraVim (string [] args) throws Error {
 		Process.spawn_command_line_sync ("suprapack list plugin-lang-", out suprapack_list_plugin);
 		monitor = new MyMonitor (args[1]);
-		discord = new DiscordSupraVim ("1399862365800894584");
-
+		stdin = new StdinStream ();
+		try {
+			discord = new DiscordSupraVim ("1399862365800894584");
+			discord.state = "Opening Supravim";
+			discord.details = "Editing code";
+			discord.large_image = "vala";
+			discord.run.begin (() => {
+				discord.send_actvity.begin ();
+			});
+		}
+		catch (Error e) {
+			printerr ("Discord Error: %s\n", e.message);
+		}
 	}
 
-	private async void run() {
-		monitor.onStdin.connect (getInputRaw);
-		discord.state = "Opening Supravim";
-		discord.details = "Editing code";
-		discord.large_image = "vala";
+	private async void run () {
+		main_loop = run.callback;
+		stdin.onStdin.connect (getInputRaw);
 
-		discord.run.begin (() => {
-			discord.send_actvity.begin ();
-		});
 
-		yield monitor.run ();
+		yield;
 	}
 
 	public static async int main (string[] args) {
@@ -44,6 +52,8 @@ public class SupraVim {
 		}
 		return 0;
 	}
+
+
 	/**
 	* getInputRaw - Get the input from the client (vim) with a pipe
 	*
@@ -55,6 +65,9 @@ public class SupraVim {
 
 		// Send when a file is opened
 		// Format: OpenFile: <filename>
+		if (message.has_prefix ("QUIT")) {
+			Idle.add(main_loop);
+		}
 		if (message.has_prefix ("OpenFile: ")) {
 			unowned string filetype = (string)buffer1;
 			unowned string filename = (string)buffer2;
@@ -143,13 +156,6 @@ public class SupraVim {
 
 			// format: LspInstall: <message>@#@<lsp1>[@#@<lsp2>...]@#@
 			print ("LspInstall: %s\n", bs.str);
-		}
-
-		if (message == "todo\n")
-		{
-			print ("todo:4\n");
-			print ("> main.c:3\n");
-			print ("> toto.c:1\n");
 		}
 
 		// Format:  Install: <lsp_name> <package_name>
