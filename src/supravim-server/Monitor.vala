@@ -1,6 +1,13 @@
-
+/**
+  * The Monitor class check if a file is created or deleted in the directory
+  * and send a signal to the client to refresh the file tree
+  **/
 public class MyMonitor {
 
+	private Regex regex_nb = /^[0-9]*$/;
+	private FileMonitor []monitors;
+	private int depth_max = 10;
+	private bool ready = false;
 	private uint source_id = 0;
 
 	/**
@@ -77,54 +84,8 @@ public class MyMonitor {
 		}	
 	}
 
-
-	/**
-	 * stdin_pipe
-	 * This function will read the stdin and send the data to the onStdin signal
-	 */
-	public async void stdin_pipe () {
-
-		var stdin_channel = new IOChannel.unix_new(0);
-
-        stdin_channel.add_watch(IOCondition.IN, (channel, condition) => {
-            string data = null;
-			size_t length = 0;
-			size_t terminaison = 0;
-            try {
-                channel.read_line (out data, out length, out terminaison);
-            } catch (Error e) {
-                stderr.printf("Erreur de lecture : %s\n", e.message);
-                return false;
-            }
-			onStdin (data);
-            return true;
-        });
-		yield;
-	}
-	
-	/**
-	 * onStdin
-	 * This signal is emitted when a new line is read from the stdin
-	 */
-	public signal void onStdin(string line);
-
-
-	/**
-	 * run in async
-	 * This function will start the monitor
-	 */
-	public async void run () {
-		stdin_pipe.begin ();
-		yield;
-	}
-	
-	private Regex regex_nb = /^[0-9]*$/;
-	private FileMonitor []monitors;
-	private int depth_max = 10;
-	private bool ready = false;
-
 	public MyMonitor (owned string path) {
-		Timeout.add (1000, () => {
+		Timeout.add (1200, () => {
 			ready = true;
 			return false;
 		});
@@ -136,5 +97,4 @@ public class MyMonitor {
 			depth_max = 4;
 		search_directory (path);
 	}
-
 }
