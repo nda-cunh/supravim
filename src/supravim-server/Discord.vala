@@ -137,58 +137,21 @@ class DiscordSupraVim : DiscordIpc {
 
 	// Get the filetype vim of the filename or the extension
 	public void open_file(string filetype, string filename) {
-		switch (filetype) {
-			case "cpp":
-				change_image("cpp");
-				break;
-			case "cs":
-			case "csharp":
-				change_image("cs");
-				break;
-			case "go":
-				change_image("go");
-				break;
-			case "java":
-				change_image("java");
-				break;
-			case "javascript":
-			case "js":
-				change_image("js");
-				break;
-			case "nim":
-				change_image("nim");
-				break;
-			case "py":
-			case "python":
-				change_image("python");
-				break;
-			case "rb":
-				change_image("ruby");
-				break;
-			case "rs":
-			case "rust":
-				change_image("rust");
-				break;
-			case "ts":
-			case "typescript":
-				change_image("ts");
-				break;
-			case "vala":
-			case "vapi":
-				change_image("vala");
-				break;
-			case "css":
-				change_image("css");
-				break;
-			case "html":
-				change_image("html");
-				break;
-			default:
-				change_image("vim");
-				break;
-		}
 		if (filename.has_suffix (".h") || filename.has_suffix (".c"))
 			change_image("cc");
+		else if (filename == ".gitlab-ci.yml" || filename == ".gitlab-ci.yaml")
+			change_image("gitlab");
+		else if (filename == "Makefile")
+			change_image("makefile");
+		else {
+			switch (filetype) {
+				case "suprawater":
+					return;
+				default:
+					change_image(filetype);
+					break;
+			}
+		}
 
 		details = "SupraEdit " + filetype + " file";
 		base.state = "Editing " + filename;
