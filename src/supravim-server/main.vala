@@ -19,14 +19,14 @@ public class SupraVim {
 		Process.spawn_command_line_sync ("suprapack list plugin-lang-", out suprapack_list_plugin);
 		monitor = new MyMonitor (args[1]);
 		stdin = new StdinStream ();
+
+		// Discord Rich Presence
 		try {
 			discord = new DiscordSupraVim ("1399862365800894584");
 			discord.state = "Opening Supravim";
 			discord.details = "Editing code";
 			discord.large_image = "vala";
-			discord.run.begin (() => {
-				discord.send_actvity.begin ();
-			});
+			discord.run.begin ( () => discord.send_actvity.begin());
 		}
 		catch (Error e) {
 			printerr ("Discord Error: %s\n", e.message);
@@ -36,7 +36,6 @@ public class SupraVim {
 	private async void run () {
 		main_loop = run.callback;
 		stdin.onStdin.connect (getInputRaw);
-
 
 		yield;
 	}
@@ -75,7 +74,7 @@ public class SupraVim {
 			if (filetype == "")
 				return;
 
-			discord.open_file (filetype, filename);
+			discord?.open_file (filetype, filename);
 			// Check if an Lsp exist for this file
 			var possible_lsp = LspServer.get_lsp_possible (filetype);
 			var? possible_package = SupportLang.get_package_possible (filetype);
