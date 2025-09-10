@@ -2,7 +2,7 @@
 # SupraVim 
 #########################
 
-project('supravim', ['c', 'vala'], version : '6.5.1', 
+project('supravim', ['c', 'vala'], version : '6.5.2', 
   default_options : [
     'warning_level=0',
     'buildtype=release',
@@ -51,6 +51,7 @@ install_data('data/lsp_c', install_dir : 'bin')
 install_data('data/post_install.sh', install_dir : '.')
 install_data('data/pre_install.sh', install_dir : '.')
 install_data('data/uninstall', install_dir : '.')
+install_data('data/supravim_ascii', install_dir : 'share/supravim')
 
 
 
