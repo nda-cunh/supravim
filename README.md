@@ -1,4 +1,4 @@
-# SupraVim 6.2
+# SupraVim 6.6
 
 **A simple yet powerful Vim distribution** — easy to use, packed with features, and built with **Vim9** and **Vala**.
 
