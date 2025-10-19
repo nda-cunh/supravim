@@ -12,6 +12,9 @@ namespace Plugin {
 		 */
 		public PluginsLst () throws Error {
 			string contents;
+			if (!FileUtils.test (filename, FileTest.EXISTS)) {
+				FileUtils.set_contents (filename, "");
+			}
 			FileUtils.get_contents (filename, out contents);
 			var data = contents.split ("\n");
 			array.data = (owned)data;
