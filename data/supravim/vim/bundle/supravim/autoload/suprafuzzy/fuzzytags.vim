@@ -103,8 +103,7 @@ def JumpToSymbol(excmd: string)
 	endif
 enddef
 
-def CloseTab(wid: number)
-	var result = selector.GetCursorItem()
+def CloseTab(wid: number, result: string)
 	var lst = ParseResult(result)
 	if empty(lst)
 		return
@@ -116,8 +115,7 @@ def CloseTab(wid: number)
 	JumpToSymbol(lst[2])
 enddef
 
-def CloseSplit(wid: number)
-	var result = selector.GetCursorItem()
+def CloseSplit(wid: number, result: string)
 	var lst = ParseResult(result)
 	if empty(lst)
 		return
@@ -129,8 +127,7 @@ def CloseSplit(wid: number)
 	JumpToSymbol(lst[2])
 enddef
 
-def CloseVSplit(wid: number)
-	var result = selector.GetCursorItem()
+def CloseVSplit(wid: number, result: string)
 	var lst = ParseResult(result)
 	if empty(lst)
 		return
