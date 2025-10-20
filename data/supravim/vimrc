@@ -230,7 +230,11 @@ def g:ChangeSupravimOption(changed: string, value: string)
 	catch
 		echom text
 	endtry
-	doautocmd User SupravimChangeOption
+	try
+		doautocmd User SupravimChangeOption
+	catch
+		echom "SupraError: doautocmd SupravimChangeOption"
+	endtry
 enddef
 
 def SimpleSupravimChangeOption()
