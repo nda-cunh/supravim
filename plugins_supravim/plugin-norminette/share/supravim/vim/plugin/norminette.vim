@@ -58,7 +58,8 @@ def DisplayErrorMsg()
 	var current_line = line(".")
 	for error in g_errors
 		if current_line == str2nr(error[2])
-			echo "[Norminette]: " .. error[4]
+			var txt = substitute(error[4], "\033\[[0-9;]*m", '', 'g')
+			echo "[Norminette]: " .. txt
 			break
 		endif
 	endfor
@@ -97,7 +98,6 @@ def EnableNorm()
 	call EnableAugroup()
 	silent noautocmd w!
 	Norm
-
 enddef
 
 def ToggleNorm()
@@ -112,7 +112,7 @@ enddef
 def SimpleSupravimChangeOption()
 	if g:supravim_option_changed == 'symbol_signs'
 		execute 'sign define NormLinter text=' .. g:sp_symbol_signs .. ' texthl=DapBreakpoint'
-		return
+	endif
 	if g:supravim_option_changed == 'norme'
 		if g:supravim_option_value == 'true'
 			EnableNorm()
