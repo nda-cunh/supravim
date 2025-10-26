@@ -171,6 +171,9 @@ set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
+# --------------- Auto Pairs ---------------"
+
+g:AutoPairsFlyMode = 0
 
 #--------------- Lsp Interface ---------------"
 def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
@@ -725,8 +728,11 @@ g:loaded_netrwPlugin = 1
 def Welcome()
 	# Used for SupraWater with folder
 	silent! autocmd! FileExplorer
+	highlight SupraVimYellow guifg=#e4bf7d ctermfg=Yellow
 	var timer = timer_start(50, (_) => {
-		echo 'Welcome to SupraVim ! Press <F12> for help'
+		echohl SupraVimYellow
+		echo 'Welcome to SupraVim ! Press <F12> for help or curstomize your settings.'
+		echohl None
 	})
 	if g:sp_fold
 		set foldmethod=manual
@@ -762,3 +768,35 @@ def FixSupraVimColor()
 enddef
 autocmd Colorscheme * call FixSupraVimColor()
 FixSupraVimColor()
+
+g:sp_theme_style_function = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_type = 2	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_variable = 3	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_keyword = 2	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_comment = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+
+def ChangeColorStyleStatic(style: string, value: number)
+	if value == 1
+		exec 'hi! ' .. style .. ' gui=bold cterm=bold'
+	elseif value == 2
+		exec 'hi! ' .. style .. ' gui=italic cterm=italic'
+	elseif value == 3
+		exec 'hi! ' .. style .. ' gui=underline cterm=underline'
+	else 
+		exec 'hi! ' .. style .. ' gui=none cterm=none'
+	endif
+enddef
+
+def ChangeColorStyle()
+	ChangeColorStyleStatic('Function', g:sp_theme_style_function)
+	ChangeColorStyleStatic('Variable', g:sp_theme_style_variable)
+	ChangeColorStyleStatic('Type', g:sp_theme_style_type)
+	ChangeColorStyleStatic('Keyword', g:sp_theme_style_keyword)
+	ChangeColorStyleStatic('Comment', g:sp_theme_style_comment)
+enddef
+
+au User SupravimChangeOption call ChangeColorStyle()
+
+au SourcePost * {
+	call ChangeColorStyle()
+}

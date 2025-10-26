@@ -8,5 +8,5 @@ optional_dependency:
 exclude_package: 
 binary: plugin-norminette
 size_tar: 
-size_installed: 3066
+size_installed: 3119
 wanted: no
