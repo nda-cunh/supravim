@@ -7,8 +7,7 @@ def Select(wid: number, result: list<any>)
 	var num = str2nr(result[0]) - 1
 
 	var txt = g:SUPRA_CLIP[num]
-	setreg('@', txt)
-	setreg('0', txt)
+	setreg('"', txt)
 	UpdateClipboard
 enddef
 
@@ -91,12 +90,12 @@ export def UpdateYankRegisters()
 		return
 	endif
 	if len(g:SUPRA_CLIP) == 0
-		g:SUPRA_CLIP = [getreg('0')]
+		g:SUPRA_CLIP = [getreg('"')]
 	else
 		var last = g:SUPRA_CLIP[-1]
-		if getreg('0') != last
+		if getreg('"') != last
 			# if already in the list, remove it first
-			var idx = index(g:SUPRA_CLIP, getreg('0'))
+			var idx = index(g:SUPRA_CLIP, getreg('"'))
 			if idx != -1
 				call remove(g:SUPRA_CLIP, idx)
 			endif
@@ -104,7 +103,7 @@ export def UpdateYankRegisters()
 			if len(g:SUPRA_CLIP) >= 20
 				call remove(g:SUPRA_CLIP, -1)
 			endif
-			insert(g:SUPRA_CLIP, getreg('0'), 0)
+			insert(g:SUPRA_CLIP, getreg('"'), 0)
 		endif
 	endif
 enddef
@@ -112,7 +111,8 @@ enddef
 var s_time = 0
 export def LoadRegisterFromExtern(copy_os: list<string>)
 	if empty(copy_os)
-		setreg('0', getreg('+'))
+		const cpy = getreg('+')
+		setreg('"', cpy)
 		UpdateYankRegisters()
 		return
 	endif
@@ -130,26 +130,25 @@ export def LoadRegisterFromExtern(copy_os: list<string>)
 			s_time = localtime()
 			const buffer = ch->ch_getbufnr('out')
 			const all = getbufline(buffer, 0, '$')
-			const last = getreg('@')
+			const last = getreg('"')
 			const result = join(all, "\n")
 			if result == last
 				return
 			endif
 			UpdateYankRegisters()
-			setreg('@', result)
-			setreg('0', result)
+			setreg('"', result)
 		},
 	})
 enddef
 
 export def SetClipBoardExtern(copy_os: list<string>)
 	if empty(copy_os)
-		setreg('+', getreg('0'))
+		setreg('+', getreg('"'))
 		return
 	endif
 
 	if has_key(v:event, 'operator') != 0 && v:event.operator == 'c'
-		setreg('@', getreg('0'))
+		setreg('"', getreg('"'))
 		return
 	endif
 	var job: job
@@ -165,6 +164,6 @@ export def SetClipBoardExtern(copy_os: list<string>)
 			endif
 		},
 	})
-	vim9cmd call ch_sendraw(job, getreg('@'))
+	vim9cmd call ch_sendraw(job, getreg('"'))
 	vim9cmd call ch_close_in(job)
 enddef
