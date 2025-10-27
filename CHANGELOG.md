@@ -1,72 +1,84 @@
-# 📜 CHANGELOG — Supravim 6.0
+# 6.7
+- Add ChangeLog for each version in the CHANGELOG.md file
+- Add a new Notification for printing the changelog after an update
+- Fix Copy/Paste bug only if the vim support clipboard
 
-## 🚀 Major New Features
-- **Extended Multi-Language Support**  
-  Full support for many additional languages, including:
-  - TypeScript
-  - JavaScript
-  - JSON
-  - Java  
-  … and many more.
+# 6.6.2
 
-<img src="readme_img/vala-support.gif">
+- Remove the jump to the next curly braces when a '}' is writed
+- Fix the bug with plugin-norminette with the new version of norminette
+  color like "\033[0;32m" are now supported
+- When an error is detected by the supravim-gui, it's now catched and 
+  displayed in the error window instead of crashing the plugin
 
-- **SupraWater — Integrated File Manager**  
-  A new graphical file manager that allows you to:
-  - Create, rename, copy, paste, and delete files.
-  - Open files directly in their appropriate application (e.g., an image opens in an image viewer, an executable runs in the terminal).
+# 6.6.1
 
-<img src="readme_img/suprawater.gif">
+- Fix supravim.cfg is not found when added a plugin for the first time
+- Add Catpuccin theme
+- Update FuzzBox package
 
-- **SupraTree — Tree View**  
-  A tree-structured version of SupraWater to easily navigate your project files.
+# 6.6.0
+- Add a new Ascii art when updating supravim
 
-<img src="readme_img/supratree.png">
+# 6.5.1
+- supravim-server closing when discord is not running is now fixed
 
-- **SupraSearch — Advanced Graphical Search**  
-  A full-featured search-and-replace interface with real-time results and full **regular expression** support.
+# 6.5
+- Add Discord Rich Presence support
+- Add missing import in fuzzyclip.vim
 
-<img src="readme_img/suprasearch.gif">
+# 6.4.1
+- Use a global variable instead register to store the copied text (fuzzyclip)
+- Add typescript support for SupraComments
+- fix a bug in supravim command when an option in a string writed with single quotes instead of double quotes
+  now single quotes are supported
 
-- **FuzzyClip — Clipboard History Manager**  
-  Accessible via @<space> c@ to easily find all your previous clipboard entries.
+# 6.4
+- Add plugin indent-rainbow
+- Add Pylance support for Python LSP
+- print number option with supravim -s now works
+- Add a better zsh completion for supravim command
 
-<img src="readme_img/fuzzyclip.png">
+# 6.3.1
+- Fix the ft_count_line and optimize it
+- Force remove mkview folder in .vim
+- Separate SupraTree, SupraSnake, SupraIcons and SupraPopup in another repository and clone it when supravim is compiled
 
----
+# 6.3
+- Now SupraComment detect if the vim is vim9script or vimscript legacy
 
-## 🎯 Key Shortcut Changes
-- **Terminal**: @Shift+T@ → @Ctrl+T@
-- **AutoNorme**: @Ctrl+D@ → @<space> v@
-- **Enable AutoNorme**: @F2@ → @<space> F2@
-- **Disable Norminette**: @F3@ → @<space> F3@
-- **LSP / Quick Rename**: @F2@
+# 6.2.6
+- Disable Supravim-Welcome
 
----
+# 6.2.3
+- Fix the bad color for EndOfBuffer and SignColumn in supravim theme
 
-## 🛠 New Options
-- **Autoclose** (automatic closing of paired characters):
-  - `autoclose_quotes` : `"` `'` `` ` ``
-  - `autoclose_brackets` : `(` `)` et `[` `]`
-  - `autoclose_braces` : `{` `}`
-  - `autoclose_angle` : `<` `>`
+# 6.2
+- Add SupraSnake
+- Rework of SupraComment
+- Fix Wayland Copy Paste with fuzzyclip
+- Add Comment and Uncomment command (C+\) and (\)
+- Connect the option sp_symbol_sign to SupraTree
+- SupraTree: Fix bug with a line can be cut with '-' mode
 
-  Also works in **visual selection**:  
-  Example: select some text, then type @(@ → the selection will be automatically surrounded with @(...)@.
 
-<img src="readme_img/autoclose.gif">
+# 6.1
+- Add a counter for SupraSearch
+- Improve the help of SupraTree
+- Add java Lsp support
+- move some file to autload folder for optimize the loading time
+- improve F2 keybinding to rename symbols with LSP
+- Add Cursor Blink in SupraPopup (for suprasearch (ctrl + f))
+- Add OmniSharp (C#) LSP support
+- Add BluePrint GTK LSP support
 
-- **symbol_signs**: Customize error symbols in the @signcolumn@.
-
-- Enable/Disable via:
-
-```bash
-  supravim -e   # Enable
-  supravim -d   # Disable
-```
-
-## 🎨 Improvements
-
-- Optimized and better integrated themes for faster startup and a more consistent look.
-
-<img src="readme_img/fuzzyclip.png">
+# 6.0
+- More Language support
+- Add SupraWater And SupraTree explorer
+- Add SupraSnake game
+- Add SupraSearch (Ctrl + F)
+- Add FuzzyClip (Ctrl + C / Ctrl + V)
+- Change some default keybindings
+- Add new supravim's Options
+- optimize supravim's theme
+- please see the *6_0_CHANGELOG.md* file for the changelog of the 6.0 version
