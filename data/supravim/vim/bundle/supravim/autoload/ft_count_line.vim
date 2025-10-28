@@ -20,6 +20,15 @@ export def Ft_count_line()
 			break
 		endif
 		const i = searchpair("{", '', '}', 'bnW', SkipQuotesAndComments)
+		# check if it's a function
+		const line_text = getline(i)
+		if stridx(line_text, '(') == -1 || stridx(line_text, ')') == -1
+			const prev_line_text = getline(i - 1)
+			if stridx(prev_line_text, '(') == -1 || stridx(prev_line_text, ')') == -1
+				continue
+			endif
+		endif
+		echom getline(i)
 		const diff = (idx - i) - 1
 		if i == 0
 			continue
