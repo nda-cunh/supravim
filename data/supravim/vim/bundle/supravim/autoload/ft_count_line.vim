@@ -7,11 +7,16 @@ export def Ft_count_line()
 	if g:sp_count_line == false
 		return
 	endif
-	var start_line: number = 0
 	const end_view_line = line('w$')
 	const begin_view_line = line('w0')
 
-	prop_clear(begin_view_line, end_view_line, {type: 'ft_count_line'})
+	if end_view_line - begin_view_line < 3
+		return
+	endif
+	var lst = prop_list(begin_view_line, {types: ['ft_count_line'], end_lnum: end_view_line})
+	for item in lst
+		call prop_remove(item)
+	endfor
 	cursor(begin_view_line, 1)
 
 	while true
@@ -28,7 +33,6 @@ export def Ft_count_line()
 				continue
 			endif
 		endif
-		echom getline(i)
 		const diff = (idx - i) - 1
 		if i == 0
 			continue
@@ -53,7 +57,10 @@ export def SimpleSupravimChangeOption()
 			call EnableAugroup()
 		else
 			g:sp_count_line = false
-			prop_clear(1, line('$'), {type: 'ft_count_line'})
+			var lst = prop_list(1, {types: ['ft_count_line'], end_lnum: line('$')})
+			for item in lst
+				call prop_remove(item)
+			endfor
 			auto! Ft_count_line
 		endif
 	endif
