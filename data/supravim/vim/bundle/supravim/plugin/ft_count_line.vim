@@ -7,7 +7,7 @@ g:sp_count_line = true	# shows how many lines have functions
 call prop_type_add("ft_count_line", {highlight: "Ft_count_line"})
 
 if g:sp_count_line == true
-	autocmd BufEnter *.c,*.h call Ft_count_line.Ft_count_line()
+	autocmd BufEnter *.c,*.h,*.hpp,*.cpp,*.vala call Ft_count_line.Ft_count_line()
 	call Ft_count_line.EnableAugroup()
 endif
 

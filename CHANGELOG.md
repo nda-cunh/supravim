@@ -1,3 +1,7 @@
+# 6.7.1
+- Ft_count_line remove all prop_text, now it remove only ft_count_line props
+- Fix Visual highlight in markdown files or ctrl+Space popup
+
 # 6.7
 - Add ChangeLog for each version in the CHANGELOG.md file
 - Add a new Notification for printing the changelog after an update
