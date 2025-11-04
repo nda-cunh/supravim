@@ -1,6 +1,6 @@
 pkgname=plugin-polyglot
 pkgver=4.17.1
-pkgdesc='Supravim plugin for More colors support in Vim'
+pkgdesc='A solid language pack for Vim, color your vim'
 depends=('supravim')
 arch=('any')
 pkgauthor='https://github.com/sheerun/vim-polyglot'
