@@ -48,17 +48,17 @@ create_package() {
 	popd
 }
 
-git clone https://gitlab.com/supraproject/supramake supramake
-git clone https://gitlab.com/supraproject/suprabear suprabear
-git clone https://gitlab.com/nda-cunh/supravim-gui supravim-gui
-git clone https://gitlab.com/nda-cunh/makeheader.git makeheader
-git clone https://gitlab.com/supraproject/supravim-server.git
+git clone https://gitlab.com/supraproject/supramake supramake --depth 1
+git clone https://gitlab.com/supraproject/suprabear suprabear --depth 1
+git clone https://gitlab.com/nda-cunh/makeheader.git makeheader --depth 1
+git clone https://gitlab.com/nda-cunh/supravim supravim --depth 1
+git clone https://gitlab.com/nda-cunh/supravim-gui supravim-gui --depth 1
 
 create_package supramake
 create_package suprabear
 create_package supravim-gui
 create_package makeheader
-create_package supravim-server
+create_package supravim
 
 mv */*.suprapack .
 
