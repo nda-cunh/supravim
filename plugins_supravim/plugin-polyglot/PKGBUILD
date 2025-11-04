@@ -1,0 +1,30 @@
+pkgname=plugin-polyglot
+pkgver=4.17.1
+pkgdesc='Supravim plugin for More colors support in Vim'
+depends=('supravim')
+arch=('any')
+pkgauthor='https://github.com/sheerun/vim-polyglot'
+
+source=(
+	'vim-polyglot::git+https://github.com/sheerun/vim-polyglot'
+)
+
+prepare() {
+	ls -la
+	rm -rf */.git
+	rm -rf */Makefile
+	rm -rf */.vimrc
+	rm -rf */.github
+	rm -rf */.gitignore
+	rm -rf */README.md
+	rm -rf */.gitattributes
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/supravim/vim/bundle/"
+	mkdir -p "$pkgdir/usr/share/supravim/vim/plugin/"
+
+	cp -r vim-polyglot/ "$pkgdir/usr/share/supravim/vim/bundle/"
+	rm -rf "$pkgdir/usr/share/supravim/vim/bundle/vim-polyglot/syntax/markdown.vim" 
+
+}
