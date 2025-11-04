@@ -860,3 +860,6 @@ def WelcomeChangeLog(version: string)
 	})
 	g:SUPRAVIM_LAST_VERSION = version
 enddef
+
+# for the bug with line with space
+hi mkdLineBreak cterm=NONE
