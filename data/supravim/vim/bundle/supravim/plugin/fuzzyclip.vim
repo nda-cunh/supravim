@@ -21,18 +21,18 @@ augroup END
 if has('clipboard')
 	# Use system clipboard if available
 	autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern([])
-	autocmd FocusGained * call FuzzyClip.LoadRegisterFromExtern([])
+	autocmd FocusGained,VimEnter * call FuzzyClip.LoadRegisterFromExtern([])
 	command UpdateClipboard call FuzzyClip.SetClipBoardExtern([])
 elseif has('macunix')
     autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern(['pbcopy'])
-    autocmd FocusGained * call FuzzyClip.LoadRegisterFromExtern(['pbpaste'])
+    autocmd FocusGained,VimEnter * call FuzzyClip.LoadRegisterFromExtern(['pbpaste'])
 	command UpdateClipboard call FuzzyClip.SetClipBoardExtern(['pbcopy'])
 elseif expand("$XDG_SESSION_TYPE") == "wayland"
 	if executable('wl-copy') == 0
 		call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
 	else
 		autocmd TextYankPost * call FuzzyClip.SetClipBoardExtern(['wl-copy', '-n'])
-		autocmd FocusGained * call FuzzyClip.LoadRegisterFromExtern(['wl-paste'])
+		autocmd FocusGained,VimEnter * call FuzzyClip.LoadRegisterFromExtern(['wl-paste'])
 		command UpdateClipboard call FuzzyClip.SetClipBoardExtern(['wl-copy', '-n'])
 	endif
 elseif expand("$XDG_SESSION_TYPE") == "x11"
