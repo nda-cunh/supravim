@@ -1,3 +1,7 @@
+# 6.7.2
+- Add g:sp_symbol_sign for Hint And Info LSP signs (for lua-language-server)
+
+
 # 6.7.1
 - Ft_count_line remove all prop_text, now it remove only ft_count_line props
 - Fix Visual highlight in markdown files or ctrl+Space popup

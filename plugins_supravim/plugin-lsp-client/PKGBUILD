@@ -1,5 +1,5 @@
 pkgname=plugin-lsp-client
-pkgver=2.0
+pkgver=2.0.1
 arch=('any')
 depends=('supravim')
 pkgdesc='LSP client for Supravim'
