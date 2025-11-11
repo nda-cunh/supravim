@@ -1,5 +1,6 @@
 # 6.7.2
 - Add g:sp_symbol_sign for Hint And Info LSP signs (for lua-language-server)
+- Load the clipboard when starting supravim
 
 
 # 6.7.1
