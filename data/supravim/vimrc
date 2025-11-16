@@ -592,6 +592,7 @@ nnoremap <silent> <A-Up>	<scriptcmd>Utils.MoveLineUp("n")<CR>
 
 # Fuzzy Finder
 nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>
+nnoremap <silent> <leader>m			<scriptcmd>FuzzyMark<CR>
 nnoremap <silent> <leader>f			<scriptcmd>FuzzyFiles<CR>
 nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
 nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
