@@ -1,3 +1,6 @@
+# 6.8.1
+- fix buffer not closing in job_start
+
 # 6.8.0
 - Add ':Pacman' Command 󰮯 🔸🔸🔸🔸 🍒 👀 !!!
 - Add FuzzyMark (<leader> m) to navigate between marks with a FuzzyFinder
