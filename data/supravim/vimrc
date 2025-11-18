@@ -817,6 +817,7 @@ def PrintChangeLog()
 			var c = stridx(all[0], "\n", b)
 			var version = all[0][b + 2 : c - 1]
 			call WelcomeChangeLog(version)
+			execute "bd! " .. buffer
 		}
 			
 	})

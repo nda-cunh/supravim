@@ -132,6 +132,7 @@ export def LoadRegisterFromExtern(copy_os: list<string>)
 			const all = getbufline(buffer, 0, '$')
 			const last = getreg('"')
 			const result = join(all, "\n")
+			execute "bd! " .. buffer
 			if result == last
 				return
 			endif
@@ -159,9 +160,11 @@ export def SetClipBoardExtern(copy_os: list<string>)
 		out_msg: 0,
 		close_cb: (ch: channel) => {
 			var info = job_info(job)
+			const buffer = ch->ch_getbufnr('out')
 			if info.exitval != 0
 				call Notify.Notification(["Copy failed", "Please check if `" .. copy_os[0] .. "` is installed"], {type: 'error'})
 			endif
+			execute "bd! " .. buffer
 		},
 	})
 	vim9cmd call ch_sendraw(job, getreg('"'))
