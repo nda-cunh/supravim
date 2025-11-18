@@ -1,0 +1,73 @@
+From db9db264e0321c293a57da0034559c4e7297b74b Mon Sep 17 00:00:00 2001
+From: nda-cunh <hydraldev@gmail.com>
+Date: Tue, 18 Nov 2025 01:33:28 +0100
+Subject: [PATCH] Add better symbols
+
+---
+ autoload/lsp/omni.vim | 50 +++++++++++++++++++++----------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/autoload/lsp/omni.vim b/autoload/lsp/omni.vim
+index 5e00a4e..d88c2a9 100644
+--- a/autoload/lsp/omni.vim
++++ b/autoload/lsp/omni.vim
+@@ -4,31 +4,31 @@
+ let s:t_dict = type({})
+ 
+ let s:default_completion_item_kinds = {
+-            \ '1': 'text',
+-            \ '2': 'method',
+-            \ '3': 'function',
+-            \ '4': 'constructor',
+-            \ '5': 'field',
+-            \ '6': 'variable',
+-            \ '7': 'class',
+-            \ '8': 'interface',
+-            \ '9': 'module',
+-            \ '10': 'property',
+-            \ '11': 'unit',
+-            \ '12': 'value',
+-            \ '13': 'enum',
+-            \ '14': 'keyword',
+-            \ '15': 'snippet',
+-            \ '16': 'color',
+-            \ '17': 'file',
+-            \ '18': 'reference',
+-            \ '19': 'folder',
+-            \ '20': 'enum member',
+-            \ '21': 'constant',
+-            \ '22': 'struct',
+-            \ '23': 'event',
+-            \ '24': 'operator',
+-            \ '25': 'type parameter',
++            \ '1':  ' Text',
++            \ '2':  '󰊕 Method',
++            \ '3':  '󰊕 Function',
++            \ '4':  '󰣪 Constructor',
++            \ '5':  '󰅪 Field',
++            \ '6':  '󰫧 Variable',
++            \ '7':  ' Class',
++            \ '8':  ' Interface',
++            \ '9':  ' Module',
++            \ '10': '󰉺 Property',
++            \ '11': ' Unit',
++            \ '12': '󰏗 Value',
++            \ '13': ' Enum',
++            \ '14': '󰌋 Keyword',
++            \ '15': ' Snippet',
++            \ '16': ' Color',
++            \ '17': ' File',
++            \ '18': ' Reference',
++            \ '19': ' Folder',
++            \ '20': ' Num member',
++            \ '21': '󰏿 Constant',
++            \ '22': ' Cstruct',
++            \ '23': ' Event',
++            \ '24': ' Operator',
++            \ '25': ' Type parameter',
+             \ }
+ 
+ let s:completion_item_kinds = {}
+-- 
+2.34.1
+

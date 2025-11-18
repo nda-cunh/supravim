@@ -1,5 +1,5 @@
 pkgname=plugin-lsp-client
-pkgver=2.0.1
+pkgver=2.0.2
 arch=('any')
 depends=('supravim')
 pkgdesc='LSP client for Supravim'
@@ -14,14 +14,20 @@ source=(
 	'vim-lsp.vim'
 	'0001-Use-echoerr-instead-of-echom.patch'
 	'0001-Add-Better-Border-for-vim-lsp.patch'
+	'0001-Add-better-symbols.patch'
+	'0001-Remove-snippet-in-completion-and-add-symbolic.patch'
 )
 
 prepare() {
 	cp "$srcdir/0001-Use-echoerr-instead-of-echom.patch" "$srcdir/vim-lsp/"
 	cp "$srcdir/0001-Add-Better-Border-for-vim-lsp.patch" "$srcdir/vim-lsp/"
 	pushd "$srcdir/vim-lsp"
-		git apply "0001-Use-echoerr-instead-of-echom.patch"
-		git apply "0001-Add-Better-Border-for-vim-lsp.patch"
+		git apply "$srcdir/0001-Use-echoerr-instead-of-echom.patch"
+		git apply "$srcdir/0001-Add-Better-Border-for-vim-lsp.patch"
+		git apply "$srcdir/0001-Add-better-symbols.patch"
+	popd
+	pushd "$srcdir/vim-vsnip"
+		git apply "$srcdir/0001-Remove-snippet-in-completion-and-add-symbolic.patch"
 	popd
 	rm -rf $srcdir/*/.git
 	rm -rf $srcdir/*/.vimrc

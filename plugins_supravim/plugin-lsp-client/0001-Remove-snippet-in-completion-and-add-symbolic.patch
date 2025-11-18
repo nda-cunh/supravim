@@ -1,0 +1,36 @@
+From 6cfba7424b025dd016c5cc37372cc75897409fc2 Mon Sep 17 00:00:00 2001
+From: nda-cunh <hydraldev@gmail.com>
+Date: Tue, 18 Nov 2025 01:53:47 +0100
+Subject: [PATCH] Remove snippet in completion and add symbolic
+
+---
+ autoload/vsnip.vim | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/autoload/vsnip.vim b/autoload/vsnip.vim
+index 6ccf4b0..70369b1 100644
+--- a/autoload/vsnip.vim
++++ b/autoload/vsnip.vim
+@@ -201,15 +201,14 @@ function! vsnip#get_complete_items(bufnr) abort
+         let l:uniq[l:prefix] = v:true
+ 
+         let l:menu = ''
+-        let l:menu .= '[v]'
+-        let l:menu .= ' '
+-        let l:menu .= (strlen(l:snippet.description) > 0 ? l:snippet.description : l:snippet.label)
++        " let l:menu .= ''
++        " let l:menu .= ' '
++        " let l:menu .= (strlen(l:snippet.description) > 0 ? l:snippet.description : l:snippet.label)
+ 
+         call add(l:candidates, {
+         \   'word': l:prefix,
+         \   'abbr': l:prefix,
+-        \   'kind': 'Snippet',
+-        \   'menu': l:menu,
++        \   'kind': ' Snippet',
+         \   'dup': 1,
+         \   'user_data': json_encode({
+         \     'vsnip': {
+-- 
+2.34.1
+
