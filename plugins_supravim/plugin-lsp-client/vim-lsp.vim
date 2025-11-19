@@ -19,9 +19,10 @@ def g:TabFunc()
 	if info.pum_visible
 		echom info.selected
 		if info.selected == -1
-			feedkeys("\<down>", 'n')
+			feedkeys("\<tab>", 'n')
+		else
+			feedkeys("\<cr>")
 		endif
-		feedkeys("\<cr>")
 	else
 		if vsnip#jumpable(1)
 			feedkeys("\<Plug>(vsnip-jump-next)")

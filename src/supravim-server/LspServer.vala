@@ -69,7 +69,7 @@ namespace LspServer {
 		{ "lua-lsp", "lua-language-server", "lua",
 			"lua-language-server --version",
 			"suprapack add lua-language-server --yes"},
-		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,typescript,javascript",
+		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,typescript,javascript,javascriptreact,typescriptreact",
 			"typescript-language-server --version",
 			"npm install -g typescript-language-server typescript"},
 		{"yaml-lsp", "yaml-language-server,--stdio", "yaml,yml",
