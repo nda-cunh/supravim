@@ -97,7 +97,6 @@ nnoremap <S-Right>	<C-w><Right>
 nnoremap <S-Left>	<C-w><Left>
 nnoremap <S-Up>		<C-w><Up>
 nnoremap <S-Down>	<C-w><Down>
-inoremap <TAB>		<TAB>
 nnoremap <S-Tab>	<<
 nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
