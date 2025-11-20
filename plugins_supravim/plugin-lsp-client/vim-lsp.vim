@@ -43,7 +43,7 @@ def CtrlYFunc()
 enddef
 
 g:vsnip_snippet_dir = '$HOME/.local/share/supravim/data/snippets'
-g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
+# g:lsp_log_file = '/tmp/lsp_supravim-' .. expand('$USER') .. '.log'
 g:lsp_document_code_action_signs_enabled = 0
 g:lsp_diagnostics_echo_cursor = 1
 g:lsp_diagnostics_echo_delay = 50
