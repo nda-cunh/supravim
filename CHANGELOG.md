@@ -1,3 +1,6 @@
+# 6.8.2
+- Fix bug with Completion Lsp and snippets
+
 # 6.8.1
 - fix buffer not closing in job_start
 
