@@ -6,12 +6,11 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
     \ priority: 4,
     \ completor: function('asyncomplete#sources#file#completor')
     \ }))
-
-# imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
-inoremap <c-y>	<scriptcmd>CtrlYFunc()<cr>
+imap <c-y>	<scriptcmd>CtrlYFunc()<cr>
 imap <tab>	<scriptcmd>call g:TabFunc()<cr>
 
 def g:TabFunc()
@@ -19,7 +18,7 @@ def g:TabFunc()
 	if info.pum_visible
 		echom info.selected
 		if info.selected == -1
-			feedkeys("\<tab>", 'n')
+			feedkeys("\<c-i>", 'n')
 		else
 			feedkeys("\<cr>")
 		endif
@@ -27,7 +26,7 @@ def g:TabFunc()
 		if vsnip#jumpable(1)
 			feedkeys("\<Plug>(vsnip-jump-next)")
 		else
-			feedkeys("\<Tab>", 'n')
+			feedkeys("\<c-i>", 'n')
 		endif
 	endif
 enddef
