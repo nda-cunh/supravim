@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Supravim
+Comment=Launch files using Supravim text editor
+Exec=vim %U
+Icon=supracorp
+Terminal=true
+Type=Application
+MimeType=text/plain;text/x-c;text/x-cpp;text/x-chdr;text/x-csrc;text/x-c++;text/x-h++;text/x-java;text/x-makefile;text/x-php;text/x-python;text/x-sh;application/json;application/xml;text/x-vala;text/x-rust;text/x-csharp;text/javascript;text/typescript;
+Categories=Development;Utility;TextEditor;
+NoDisplay=true
+StartupNotify=false
