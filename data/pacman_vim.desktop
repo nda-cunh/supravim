@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Name=SupraVim Pacman
+Comment=Run the supravim's pacman game
+Exec=sh -c "vim __PACMAN__"
+Icon=pacman_vim
+Categories=Game;
+Keywords=vim;pacman;game;terminal;

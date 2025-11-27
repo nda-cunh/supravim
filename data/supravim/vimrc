@@ -874,5 +874,14 @@ def WelcomeChangeLog(version: string)
 	g:SUPRAVIM_LAST_VERSION = version
 enddef
 
+autocmd VimEnter __SNAKE__ {
+	:Snake
+}
+
+autocmd VimEnter __PACMAN__ {
+	:Pacman
+}
+
+
 # for the bug with line with space
 hi mkdLineBreak cterm=NONE

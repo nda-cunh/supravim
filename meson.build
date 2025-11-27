@@ -52,6 +52,12 @@ install_data('data/post_install.sh', install_dir : '.')
 install_data('data/pre_install.sh', install_dir : '.')
 install_data('data/uninstall', install_dir : '.')
 install_data('data/supravim_ascii', install_dir : 'share/supravim')
+install_data('data/snake_vim.svg', install_dir : 'share/pixmaps')
+install_data('data/pacman_vim.svg', install_dir : 'share/pixmaps')
+install_data('data/supracorp.svg', install_dir : 'share/pixmaps')
+install_data('data/snake_vim.desktop', install_dir : 'share/applications')
+install_data('data/pacman_vim.desktop', install_dir : 'share/applications')
+install_data('data/supravim_mime.desktop', install_dir : 'share/applications')
 install_data('CHANGELOG.md', install_dir : 'share/supravim')
 
 

@@ -2,6 +2,7 @@
 - Do not clear the buffer when opening a file with SupraTree
 - improve the nobackground mode
 - Add FuzzyPrevious (<leader> P) to navigate between previous files with a FuzzyFinder
+- Add DesktopEntry for supravim/pacman/snake
 
 # 6.8.2
 - Fix bug with Completion Lsp and snippets

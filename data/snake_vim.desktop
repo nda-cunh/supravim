@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Name=SupraVim Snake
+Comment=Run the supravim's snake game
+Exec=sh -c "vim __SNAKE__"
+Icon=snake_vim
+Categories=Game;
+Keywords=vim;snake;game;terminal;
