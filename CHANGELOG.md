@@ -1,5 +1,9 @@
+# 6.8.3
+- Do not clear the buffer when opening a file with SupraTree
+
 # 6.8.2
 - Fix bug with Completion Lsp and snippets
+- Remove an unnecessary mapping
 
 # 6.8.1
 - fix buffer not closing in job_start
