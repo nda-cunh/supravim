@@ -54,6 +54,9 @@ set background=dark
 
 if g:sp_nobackground == true
 	hi Normal guibg=NONE ctermbg=NONE
+	hi! link SignColumn Normal
+	hi! link EndOfBuffer Normal
+	hi! link CursorLine NonText
 endif
 #------------- Cursor Parts ------------"
 &t_SI = "\<Esc>[5 q"
@@ -206,6 +209,9 @@ def g:ChangeSupravimTheme(theme: string, typemode: string)
 	AirlineRefresh
 	if g:sp_nobackground == true
 		hi Normal guibg=NONE ctermbg=NONE
+		hi! link SignColumn Normal
+		hi! link EndOfBuffer Normal
+		hi! link CursorLine NonText
 	endif
 enddef
 
@@ -265,8 +271,13 @@ def SimpleSupravimChangeOption()
 			g:sp_nobackground = false
 		else
 			hi Normal guibg=NONE ctermbg=NONE
+			hi! link SignColumn Normal
+			hi! link EndOfBuffer Normal
+			hi! link CursorLine NonText
 			g:sp_nobackground = true
 		endif
+		redraw!
+		AirlineRefresh
 	elseif g:supravim_option_changed == 'wrap'
 		if g:supravim_option_value == 'false'
 			set nowrap

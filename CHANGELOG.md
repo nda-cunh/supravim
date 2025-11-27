@@ -1,5 +1,6 @@
 # 6.8.3
 - Do not clear the buffer when opening a file with SupraTree
+- improve the nobackground mode
 
 # 6.8.2
 - Fix bug with Completion Lsp and snippets
