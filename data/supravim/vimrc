@@ -607,6 +607,7 @@ nnoremap <silent> <leader>f			<scriptcmd>FuzzyFiles<CR>
 nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
 nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
+nnoremap <silent> <leader>p			<scriptcmd>FuzzyPrevious<cr>
 nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
 nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
 nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
