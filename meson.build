@@ -2,7 +2,7 @@
 # SupraVim 
 #########################
 
-project('supravim', ['c', 'vala'], version : '6.8.3', 
+project('supravim', ['c', 'vala'], version : '6.9.0', 
   default_options : [
     'warning_level=0',
     'buildtype=release',
@@ -54,7 +54,7 @@ install_data('data/uninstall', install_dir : '.')
 install_data('data/supravim_ascii', install_dir : 'share/supravim')
 install_data('data/snake_vim.svg', install_dir : 'share/pixmaps')
 install_data('data/pacman_vim.svg', install_dir : 'share/pixmaps')
-install_data('data/supracorp.svg', install_dir : 'share/pixmaps')
+install_data('data/supravim.svg', install_dir : 'share/pixmaps')
 install_data('data/snake_vim.desktop', install_dir : 'share/applications')
 install_data('data/pacman_vim.desktop', install_dir : 'share/applications')
 install_data('data/supravim_mime.desktop', install_dir : 'share/applications')
