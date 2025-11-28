@@ -23,6 +23,7 @@ g:sp_autoclose_braces = false # Auto Closing for braces '{' '}'
 g:sp_autoclose_angle = false # Auto Closing for angle brackets '<' '>'
 g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
 g:sp_mapleader = "\<space>"	# The leader key used in the mappings
+g:sp_autosave = true		# Auto save files
 g:sp_theme = "onedark"
 
 filetype plugin indent on
@@ -31,6 +32,14 @@ syntax on
 
 if (has("termguicolors"))
 	set termguicolors
+endif
+
+if g:sp_autosave == true
+	autocmd BufLeave,FocusLost,VimLeavePre * {
+		if &modifiable && !&readonly
+			silent! write
+		endif
+	}
 endif
 
 # Protect against invalid symbols
