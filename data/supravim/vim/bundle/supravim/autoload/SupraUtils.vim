@@ -78,6 +78,23 @@ export def AutoLspHold()
 	endif
 enddef
 
+export def AutoSaveActivate(activate: bool)
+	if activate == true 
+		augroup AutoSave
+			autocmd!
+			autocmd BufLeave,FocusLost,VimLeavePre * {
+				if &modifiable == true && &buflisted == true &&  filereadable(expand('%'))
+					silent! write
+				endif
+			}
+		augroup END
+	else
+		autocmd! AutoSave
+	endif
+enddef
+
+
+
 export def RenameSymbol()
 	const line_pt = line('.')
 	const col_pt = col('.')
