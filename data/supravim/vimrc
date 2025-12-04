@@ -7,39 +7,39 @@ filetype off
 import autoload 'supraload.vim' as SupraLoad 
 SupraLoad.Infect()
 
+filetype plugin indent on
+
 import autoload 'SupraMake.vim' as Make
 import autoload 'SupraNotification.vim' as Notify
 import autoload 'SupraPopup.vim' as Popup 
 import autoload 'SupraUtils.vim' as Utils
+import autoload 'supravim/Welcome.vim' as WelcomeModule
+import autoload 'supravim/SupravimServer.vim' as SupraVimServer
+import autoload 'supravim/SupraOptions.vim' as Options
 
-g:sp_swap = false			# create swapfile (.swp)
-g:sp_tree = true			# display folder tree at left
-g:sp_fold = false			# add fold support 
+g:sp_swap = false	# create swapfile (.swp)
+g:sp_tree = true	# display folder tree at left
+g:sp_fold = false	# add fold support 
 g:sp_nobackground = false	# remove background color and use your terminal background
-g:sp_wrap = true 			# do not wrap the text if the line is too long
-g:sp_autoclose_quotes = true	# Auto Closing for quotes '"' and ''' and '`'
-g:sp_autoclose_brackets = true # Auto Closing for brackets'(' ')' and '[' ']'
-g:sp_autoclose_braces = false # Auto Closing for braces '{' '}'
-g:sp_autoclose_angle = false # Auto Closing for angle brackets '<' '>'
+g:sp_wrap = true	# do not wrap the text if the line is too long
+g:sp_roundvisual_quotes = true	# Auto Closing for quotes '"' and ''' and '`'
+g:sp_roundvisual_brackets = true	# Auto Closing for brackets'(' ')' and '[' ']'
+g:sp_roundvisual_braces = false	# Auto Closing for braces '{' '}'
+g:sp_roundvisual_angle = false	# Auto Closing for angle brackets '<' '>'
 g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
 g:sp_mapleader = "\<space>"	# The leader key used in the mappings
-g:sp_autosave = true		# Auto save files
-g:sp_theme = "onedark"
+g:sp_autosave = false	# Auto save files
+g:sp_theme_style_function = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_type = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_variable = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_keyword = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme_style_comment = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
+g:sp_theme = "onedark"	# A cute theme color
 
-filetype plugin indent on
-#--------------- jeu de couleur ---------------"
-syntax on
-
-if (has("termguicolors"))
-	set termguicolors
-endif
+g:mapleader = g:sp_mapleader
 
 if g:sp_autosave == true
-	autocmd BufLeave,FocusLost,VimLeavePre * {
-		if &modifiable && !&readonly
-			silent! write
-		endif
-	}
+	Utils.AutoSaveActivate(true)
 endif
 
 # Protect against invalid symbols
@@ -55,7 +55,12 @@ if true
 	endif
 endif
 
-g:mapleader = g:sp_mapleader
+#--------------- Colors Theme ---------------"
+syntax on
+
+if (has("termguicolors"))
+	set termguicolors
+endif
 
 set t_Co=256
 exec 'colorscheme ' .. g:sp_theme
@@ -65,8 +70,9 @@ if g:sp_nobackground == true
 	hi Normal guibg=NONE ctermbg=NONE
 	hi! link SignColumn Normal
 	hi! link EndOfBuffer Normal
-	hi! link CursorLine NonText
+	# hi! link CursorLine Normal 
 endif
+
 #------------- Cursor Parts ------------"
 &t_SI = "\<Esc>[5 q"
 &t_SR = "\<Esc>[3 q"
@@ -74,7 +80,6 @@ endif
 autocmd VimLeave * !echo -ne "\e[0 q"
 
 #-------------- Save Undo  ------------"
-
 set undodir=~/.cache/vim/undo
 set undofile
 set viminfo+=!
@@ -83,15 +88,11 @@ set viminfo+=!
 packadd! termdebug
 g:termdebug_wide = 1
 
-#-------------- Auto Pairs ---------------------"
+#--------------- Shorcut --------------"
 inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
-
-#--------------- Onglets ---------------------"
 nnoremap <c-n>			<esc>:tabnew 
 nnoremap <C-Right>		<scriptcmd>tabnext<CR>
 nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
-
-#--------------- Racourcis --------------"
 nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
@@ -117,10 +118,31 @@ inoremap <c-a>		<esc>gg<s-v>G
 nnoremap <silent><c-@>		<cmd>LspHover<cr>
 silent! unmap <c-t>
 nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
+# Move lines
+vnoremap <silent> <A-Down>	:<scriptcmd>Utils.MoveLineDown("v")<CR><cr>
+vnoremap <silent> <A-Up>	:<scriptcmd>Utils.MoveLineUp("v")<CR><cr>
+nnoremap <silent> <A-Down>	<scriptcmd>Utils.MoveLineDown("n")<CR>
+nnoremap <silent> <A-Up>	<scriptcmd>Utils.MoveLineUp("n")<CR>
 
-# ---------------      LSP            ---------------"
-set updatetime=500
-autocmd CursorHold * call Utils.AutoLspHold()
+# Fuzzy Finder
+nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>
+nnoremap <silent> <leader>m			<scriptcmd>FuzzyMark<CR>
+nnoremap <silent> <leader>f			<scriptcmd>FuzzyFiles<CR>
+nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
+nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
+nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
+nnoremap <silent> <leader>p			<scriptcmd>FuzzyPrevious<cr>
+nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
+nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
+nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
+# SupraVim Settings
+inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
+noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
+# Mouse
+nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
+inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
+nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
+
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
 cmap <c-s>	w!<cr>
@@ -133,13 +155,13 @@ tnoremap <F5> supramake run<CR>
 tnoremap <F6> supramake run2<CR>
 tnoremap <F7> supramake run3<CR>
 tnoremap <esc>	<c-\><c-n>
-
+# Window navigation
 tnoremap <S-Right>		<C-W>N<C-w><Right>
 tnoremap <S-Left>		<C-W>N<C-w><Left>
 tnoremap <S-Up>			<C-W>N<C-w><Up>
 tnoremap <S-Down>		<C-W>N<C-w><Down>
 
-#--------------- utilitaires basiques ---------------"
+#--------------- 	Settings      ---------------"
 g:lsp_log_verbose = 0
 set mouse=a
 if g:sp_swap == false
@@ -182,9 +204,10 @@ set splitright
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
-# --------------- Auto Pairs ---------------"
 
-g:AutoPairsFlyMode = 0
+# ---------------      LSP            ---------------"
+set updatetime=500
+autocmd CursorHold * call Utils.AutoLspHold()
 
 #--------------- Lsp Interface ---------------"
 def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
@@ -196,120 +219,47 @@ def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
 	silent! lsp#activate()
 enddef
 
-#--------------- FONCTION ---------------"
+# --------------- Auto Pairs ---------------"
+g:AutoPairsFlyMode = 0
 
-def GotOutput(channel: channel, msg: string)
-	# change_theme: [onehalf] <dark>
-	if matchstr(msg, '^change_theme: ') != ''
-		var theme = matchstr(msg, '\[\zs.*\ze\]')
-		var typemode = matchstr(msg, '<\zs.*\ze>')
-		call g:ChangeSupravimTheme(theme, typemode)
-	# onChangeOption: [tree] <true>
-	elseif matchstr(msg, '^onChangeOption: ') != ''
-		var changed = matchstr(msg, '\[\zs.*\ze\]')
-		var value = matchstr(msg, '<\zs.*\ze>')
-		call g:ChangeSupravimOption(changed, value)
-	endif
-enddef
-
-def g:ChangeSupravimTheme(theme: string, typemode: string)
-	exec 'colorscheme ' .. theme
-	exec 'set background=' .. typemode
-	AirlineRefresh
-	if g:sp_nobackground == true
-		hi Normal guibg=NONE ctermbg=NONE
-		hi! link SignColumn Normal
-		hi! link EndOfBuffer Normal
-		hi! link CursorLine NonText
-	endif
-enddef
-
+#--------------- Supravim Options ---------------"
 g:supravim_option_changed = 'null'
 g:supravim_option_value = 'null'
 
+def g:ChangeSupravimTheme(theme: string, typemode: string)
+	Options.ChangeSupravimTheme(theme, typemode)
+enddef
+
 def g:ChangeSupravimOption(changed: string, value: string)
-	var v = get(g:, 'sp_' .. changed)
-	var type_of_value = type(v)
-	echom type_of_value
-	var text: string
-
-	g:supravim_option_changed = changed
-	g:supravim_option_value = value
-	
-	if type_of_value == v:t_string
-		text = 'g:sp_' .. g:supravim_option_changed .. ' = "' .. g:supravim_option_value .. '"'
-	else
-		text = 'g:sp_' .. g:supravim_option_changed .. ' = ' .. g:supravim_option_value
-	endif
-
-	try
-		execute text
-	catch
-		echom text
-	endtry
-	try
-		doautocmd User SupravimChangeOption
-	catch
-		echom "SupraError: doautocmd SupravimChangeOption"
-	endtry
+	Options.ChangeSupravimOption(changed, value)
 enddef
-
-def SimpleSupravimChangeOption()
-	if g:supravim_option_changed == 'tree'
-		if g:supravim_option_value == 'false'
-			SupraTreeClose
-		else
-			SupraTreeOpen
-		endif
-	elseif g:supravim_option_changed == 'swap'
-		if g:supravim_option_value == 'false'
-			set noswapfile
-		else
-			set swapfile
-		endif
-	elseif g:supravim_option_changed == 'fold'
-		if g:supravim_option_value == 'false'
-			set nofoldenable
-		else
-			set foldenable
-		endif
-	elseif g:supravim_option_changed == 'nobackground'
-		if g:supravim_option_value == 'false'
-			exec 'colorscheme ' .. g:sp_theme
-			exec 'set background=' .. &background
-			g:sp_nobackground = false
-		else
-			hi Normal guibg=NONE ctermbg=NONE
-			hi! link SignColumn Normal
-			hi! link EndOfBuffer Normal
-			hi! link CursorLine NonText
-			g:sp_nobackground = true
-		endif
-		redraw!
-		AirlineRefresh
-	elseif g:supravim_option_changed == 'wrap'
-		if g:supravim_option_value == 'false'
-			set nowrap
-		else
-			set wrap
-		endif
-	endif
-enddef
-
-autocmd User SupravimChangeOption call SimpleSupravimChangeOption()
 
 def g:SettingsSupravim()
 	job_start(["supravim-gui"], {
-		out_cb: GotOutput,
+		out_cb: Options.GotOutput,
 	})
 enddef
 
-if g:sp_fold == true
-	def LoadBuf()
-		var l = line('.')
-		cursor(l, 1)
-	enddef
-endif
+# ---------------  SupraVim Server  ---------------"
+g:supravim_server = job_start(["supravim-server", project_root], {
+	out_cb: SupraVimServer.GotOutputSupravimServer,
+	in_mode: 'raw',
+	in_io: 'pipe'
+})
+
+def OpenNewFile()
+	var filetype = &filetype
+	if filetype == ''
+		filetype = expand('%:e')
+	endif
+	ch_sendraw(g:supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
+enddef
+
+au BufEnter * OpenNewFile()
+
+autocmd User SupravimChangeOption call Options.SimpleSupravimChangeOption()
+
+# ---------------  Fold Support  ---------------"
 
 imap <C-F5>		<ScriptCmd>Gdbs<CR>
 map <C-F5>		<ScriptCmd>Gdbs<CR>
@@ -347,227 +297,7 @@ def Ctags()
 	endtry
 enddef
 
-# ------ Running Supravim-Server ------"
-def GotOutputSupravimServer(channel: channel, msg: string)
-	if (stridx(msg, 'refresh') == 0)
-		if Make.is_supramake == false
-			doautocmd User RefreshTree
-		endif
-	elseif (stridx(msg, 'LoadBundle: ') == 0)
-		var sp = split(msg, ' ')
-		var bundle = sp[1] 
-		var ft = sp[2]
-		execute ("set filetype=" .. ft)
-		var lst = glob($HOME .. "/.vim/bundle/" .. bundle .. '/**/*.vim', 0, 1)
-		for file in lst
-			if filereadable(file)
-				exec 'source ' .. file
-			endif
-		endfor
-	elseif (stridx(msg, 'LspGetServer') == 0)
-		var sp = split(msg, '@#@')
-		const cmds = split(sp[2], ',')
-		const filetypes = split(sp[3], ',')
-		g:AddLspServer(sp[1], cmds, filetypes)
-	elseif (stridx(msg, 'LspServerError:') == 0)
-		var new_msg = msg[15 : ]
-		new_msg = substitute(new_msg, '\r', '\n', 'g')
-		call Notify.Notification(["Error", new_msg], {type: 'error'})
-	# Used to display the list of LSPs available for installation
-	# format: LspInstall: <message>@#@<lsp1>[@#@<lsp2>...]@#@
-	elseif (stridx(msg, 'LspInstall: ') == 0)
-		var idx = stridx(msg, ': ')
-		var new_msg = msg[idx + 2 : ]
-		var sp = split(new_msg, '@#@')
-		new_msg = substitute(sp[0], '\r', '\n', 'g')
-		const items = sp[1 : ]
-		var package_name = ''
-		var items_copy = []
-		for i in items
-			if stridx(i, 'plugin-lang') != 0
-				new_msg = new_msg .. "\n • " .. i
-				add(items_copy, i)
-			else
-				package_name = i
-			endif
-		endfor
-		call Notify.Notification(['SupraPack', new_msg], {type: 'package', left_click: (wid) => {
-			if len(items_copy) == 0
-				call GetChoice('', package_name)
-			elseif len(items_copy) == 1
-				call GetChoice(items_copy[0], package_name)
-			else
-				call OpenPopupChoice(items_copy, package_name)
-			endif
-			Notify.Close(wid)
-		}})
-	elseif (stridx(msg, 'FinishInstall') == 0)
-		call FinishInstall(true)
-	elseif (stridx(msg, 'InstallError') == 0)
-		call FinishInstall(false, msg[14 : ])
-	endif
-enddef
-
-var notification_timer: number
-var notification_id: number
-
-def FinishInstall(success: bool, error_text: string = '')
-	# Vala is too speedy, so we need to wait a bit
-	if notification_timer == 0
-		timer_start(100, (_) => {
-			FinishInstall(success, error_text)
-		})
-		return
-	endif
-	timer_stop(notification_timer)
-	if success
-		Notify.SetText(notification_id, ["Installation finished successfully!"])
-		Notify.ChangeType(notification_id, 'success')
-		timer_start(2000, (_) => {
-			Notify.Close(notification_id)
-			call lsp#activate()
-		})
-	else
-		var error_msg = "Installation failed: " .. error_text
-		error_msg = substitute(error_msg, '\r', '\n', 'g')
-		Notify.SetText(notification_id, [error_msg])
-		Notify.ChangeType(notification_id, 'error')
-		timer_start(8000, (_) => {
-			Notify.Close(notification_id)
-		})
-	endif
-enddef
-
-def GetChoice(choice: string, package_name: string = '')
-	const loading = "⢿⣻⣽⣾⣷⣯⣟⡿"
-	Notify.Notification([], {
-		icon: '⮋',
-		type: 'package',
-		timeout: -1,
-		left_click: (_) => {
-		},
-		cb_get_id: (wid) => {
-			notification_id = wid
-			var i = 0
-			notification_timer = timer_start(100, (_) => {
-				i = i + 1
-				if i >= 8
-					i = 0
-				endif
-				var text = " Installing: "
-				if choice != ''
-					text ..= choice .. " "
-				endif
-				if package_name != ''
-					text ..= package_name .. " "
-				endif
-				Notify.SetText(notification_id, [loading[i] .. text])
-			}, {'repeat': -1})
-		},
-	})
-	var filetype = &filetype
-	if filetype == ''
-		filetype = expand('%:e')
-	endif
-
-	var c1: string
-	var c2: string
-	if package_name == ''
-		c2 = 'null'
-	else
-		c2 = package_name
-	endif
-	if choice == ''
-		c1 = 'null'
-	else
-		c1 = choice
-	endif
-	ch_sendraw(supravim_server, "Install: " .. c1 .. " " .. c2 .. "\n")
-enddef
-
-def OpenPopupChoice(items: list<string>, package_name: string = '')
-	var width = 50
-	const title = '─ Which Lsp to choose? '
-	var popup = popup_create([], {
-		title: repeat('─', (width / 2) - (len(title) / 2) + 2) .. ' Which Lsp to choose? ',
-		minwidth: 50,
-		minheight: 5,
-		tabpage: -1,
-		borderhighlight: ['Normal', 'Normal', 'Normal', 'Normal'],
-		borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-		highlight: 'Normal',
-		border: [1],
-		padding: [0, 1, 0, 1],
-		cursorline: 1,
-		mapping: false,
-		callback: (wid, data) => {
-			if data == []
-				return
-			endif
-			call GetChoice(data[0], package_name)
-		},
-		filter: (wid: number, key: string) => {
-			var bufnr = winbufnr(wid)
-			var cursorlinepos = line('.', wid)
-			if key == "\<Esc>"
-				popup_close(wid)
-				return 0
-			elseif key == "\<Up>"
-				win_execute(wid, 'norm! k')
-			elseif key == "\<Down>"
-				win_execute(wid, 'norm! j')
-			elseif key ==? "\<LeftMouse>"
-				var pos = getmousepos()
-				if pos.winid != wid
-					return 0
-				endif
-				win_execute(wid, 'norm! ' .. pos.line .. 'G')
-			elseif key ==? "\<2-LeftMouse>"
-				var pos = getmousepos()
-				if pos.winid != wid
-					return 0
-				endif
-				win_execute(wid, 'norm! ' .. pos.line .. 'G')
-				var linetext = getbufline(bufnr, pos.line, pos.line)[0]
-				if linetext == ''
-					popup_close(wid)
-				else
-					popup_close(wid, [linetext])
-				endif
-			elseif key == "\<CR>"
-				var linetext = getbufline(bufnr, cursorlinepos, cursorlinepos)[0]
-				if linetext == ''
-					popup_close(wid)
-				else
-					popup_close(wid, [linetext])
-				endif
-			else
-				return 0
-			endif
-			return 1
-		},
-	}
-	)
-	popup_settext(popup, items)
-enddef
-
-var supravim_server = job_start(["supravim-server", project_root], {
-	out_cb: GotOutputSupravimServer,
-	in_mode: 'raw',
-	in_io: 'pipe'
-})
-
-def OpenNewFile()
-	var filetype = &filetype
-	if filetype == ''
-		filetype = expand('%:e')
-	endif
-	ch_sendraw(supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
-enddef
-
-au BufEnter * OpenNewFile()
-
-# ----------------- AIR LINE ------------------"
+# ----------------- AIR LINE ------------------
 g:airline#extensions#whitespace#enabled = 0
 g:airline_section_z = airline#section#create(['Line:%l', 'hunks', ' Col:%c'])
 g:airline_section_b = airline#section#create(['SupraVim'])
@@ -585,7 +315,12 @@ g:airline#extensions#tabline#left_alt_sep = '╱'
 g:airline#extensions#tabline#right_sep = '◥'
 g:airline#extensions#tabline#right_alt_sep = '╱'
 
-# ----------------- POPUP ------------------ #
+# ----------------- FuzzBox ------------------
+g:fuzzbox_enable_mappings = 0
+g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
+g:fuzzbox_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
+
+# ----------------- POPUP ------------------
 autocmd VimEnter * CreatePopit()
 
 def PopUpUpdate(channel: channel, msg: string)
@@ -603,112 +338,15 @@ def CreatePopit()
 	})
 enddef
 
-# -----------------   Alt Up/Down   ------------------ #
-vnoremap <silent> <A-Down>	:<scriptcmd>Utils.MoveLineDown("v")<CR><cr>
-vnoremap <silent> <A-Up>	:<scriptcmd>Utils.MoveLineUp("v")<CR><cr>
-nnoremap <silent> <A-Down>	<scriptcmd>Utils.MoveLineDown("n")<CR>
-nnoremap <silent> <A-Up>	<scriptcmd>Utils.MoveLineUp("n")<CR>
+# ---------------  Round It ---------------"
+Options.AutoCloseActivate()
+autocmd User SupraVimChangeOption call Options.AutoCloseActivate
 
-# Fuzzy Finder
-nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>
-nnoremap <silent> <leader>m			<scriptcmd>FuzzyMark<CR>
-nnoremap <silent> <leader>f			<scriptcmd>FuzzyFiles<CR>
-nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
-nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
-nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
-nnoremap <silent> <leader>p			<scriptcmd>FuzzyPrevious<cr>
-nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
-nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
-nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
-
-g:fuzzbox_enable_mappings = 0
-g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
-g:fuzzbox_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
-
-
-# SupraVim Settings Sync
-inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
-noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
-
-nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
-inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
-nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
-
-# Round It --------------------------------------
-def RoundIt(char: string, charend: string)
-	const p1 = getpos("'<")
-	const p2 = getpos("'>")
-	call cursor(p1[1], p1[2])
-	execute('normal! i' .. char)
-	call cursor(p2[1], p2[2] + 1)
-	execute('normal! a' .. charend)
-enddef
-
-if g:sp_autoclose_quotes
-	vnoremap "		<esc><scriptcmd>RoundIt('"', '"')<CR>
-	snoremap "		""<left>
-	vnoremap '		<esc><scriptcmd>RoundIt("'", "'")<CR>
-	snoremap '		''<left>
-	vnoremap `		<esc><scriptcmd>RoundIt('`', '`')<CR>
-	snoremap `		``<left>
-endif
-if g:sp_autoclose_brackets
-	vnoremap (		<esc><scriptcmd>RoundIt('(', ')')<CR>
-	vnoremap [		<esc><scriptcmd>RoundIt('[', ']')<CR>
-	snoremap (		()<left>
-	snoremap [		[]<left>
-endif
-if g:sp_autoclose_braces
-	vnoremap {		<esc><scriptcmd>RoundIt('{', '}')<CR>
-	snoremap {		{}<left>
-endif
-if g:sp_autoclose_angle
-	vnoremap <		<esc><scriptcmd>RoundIt('<', '>')<CR>
-	snoremap <		<><left>
-endif
-
-# Popup Menu --------------------------------------
-
+# ---------------  Popup Menu  ---------------"
 set mousemodel=popup
-autocmd BufEnter * call Init_menu()
-def Init_menu()
-	vmenu PopUp.Copy			y
-	vmenu PopUp.Cut				d
-	vmenu PopUp.Paste			p
-	vmenu PopUp.Select\ All		<esc>gg<s-v>G
-	if g:sp_fold
-		vmenu PopUp.Fold			zf
-	endif
-	vmenu PopUp.Equalize		=
-	vmenu PopUp.-sep4- <Nop>
+autocmd BufEnter * call WelcomeModule.Init_menu()
 
-	nmenu PopUp.Show\ References	<esc>:LspReferences<cr>
-	nmenu PopUp.-sep5- <Nop>
-	nmenu PopUp.Save\ All		:wall<CR>
-	nmenu PopUp.Auto\ Norm		<leader><F2>
-	nmenu PopUp.Switch\ Norm		<F3>
-	nmenu PopUp.-sep0- <Nop>
-	nmenu PopUp.Select\ All		<esc>gg<s-v>G
-	nmenu PopUp.Paste			p
-	nmenu PopUp.Undo			u
-	nmenu PopUp.Redo			<C-r>
-	nmenu PopUp.-sep2- <Nop>
-	nmenu PopUp.Debug			:call Gdbf()<cr>
-	nmenu PopUp.Rename\ Symbol <F2>	
-
-	if g:sp_fold
-		nmenu PopUp.-sep3- <Nop>
-		nmenu PopUp.Fold			<scriptcmd>Fold()<CR>
-		nmenu PopUp.UnFold			zo
-		nmenu PopUp.Fold\ All		<scriptcmd>FoldAll()<CR>
-		nmenu PopUp.UnFold\ All		zR
-	endif
-	nmenu PopUp.-sep4- <Nop>
-	nmenu PopUp.SupraVim\ Settings :call SettingsSupravim()<CR>
-enddef
-
-# Fold support --------------------------------------
-
+# ---------------  Fold Support  ---------------"
 if g:sp_fold == true
 	def Fold()
 		set foldmethod=syntax
@@ -723,8 +361,7 @@ if g:sp_fold == true
 	enddef
 endif
 
-
-# SetArgv --------------------------------------
+# ---------------  SetARGS  ---------------"
 command -nargs=* -complete=file SetArgv :call SetArgv(<f-args>)
 command -nargs=* -complete=file SetArgs :call SetArgv(<f-args>)
 
@@ -733,8 +370,7 @@ def SetArgv(...args: list<string>)
 	$ARGS = str
 enddef
 
-# Welcome --------------------------------------
-
+# ---------------  Welcome ---------------"
 autocmd BufEnter * {
 	if expand('%:e') == 'water'
 		&titlestring = '[Supravim] Editing on SupraWater'
@@ -746,34 +382,12 @@ autocmd BufEnter * {
 g:loaded_netrw = 1
 g:loaded_netrwPlugin = 1
 
-def Welcome()
-	# Used for SupraWater with folder
-	silent! autocmd! FileExplorer
-	highlight SupraVimYellow guifg=#e4bf7d ctermfg=Yellow
-	var timer = timer_start(50, (_) => {
-		echohl SupraVimYellow
-		echo 'Welcome to SupraVim ! Press <F12> for help or curstomize your settings.'
-		echohl None
-	})
-	if g:sp_fold
-		set foldmethod=manual
-	endif
-enddef
-
-# import autoload 'Welcome.vim' as Wel 
-# 
-# if argc() == 0
-	# Wel.SupraWelcome()
-# endif
-
 # Force directory creation on save
 autocmd BufWritePre * {
 if filereadable(expand('%')) == 0
 	mkdir(expand('%:p:h'), 'p')
 endif
 }
-
-autocmd VimEnter * call Welcome()
 
 #--------------- SupraTree ---------------"
 g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
@@ -787,102 +401,20 @@ def FixSupraVimColor()
 	hi! link SignColumn Normal
 	hi! link EndOfBuffer Normal
 enddef
+
 autocmd Colorscheme * call FixSupraVimColor()
 FixSupraVimColor()
 
-g:sp_theme_style_function = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_type = 2	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_variable = 3	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_keyword = 2	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_comment = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-
-def ChangeColorStyleStatic(style: string, value: number)
-	if value == 1
-		exec 'hi! ' .. style .. ' gui=bold cterm=bold'
-	elseif value == 2
-		exec 'hi! ' .. style .. ' gui=italic cterm=italic'
-	elseif value == 3
-		exec 'hi! ' .. style .. ' gui=underline cterm=underline'
-	else 
-		exec 'hi! ' .. style .. ' gui=none cterm=none'
-	endif
-enddef
-
-def ChangeColorStyle()
-	ChangeColorStyleStatic('Function', g:sp_theme_style_function)
-	ChangeColorStyleStatic('Variable', g:sp_theme_style_variable)
-	ChangeColorStyleStatic('Type', g:sp_theme_style_type)
-	ChangeColorStyleStatic('Keyword', g:sp_theme_style_keyword)
-	ChangeColorStyleStatic('Comment', g:sp_theme_style_comment)
-enddef
-
-au User SupravimChangeOption call ChangeColorStyle()
-
-au SourcePost * {
-	call ChangeColorStyle()
+autocmd VimEnter * call WelcomeModule.PrintChangeLog()
+autocmd User SupravimChangeOption call Options.ChangeColorStyle()
+autocmd SourcePost * {
+	call Options.ChangeColorStyle()
 }
 
-au VimEnter * call PrintChangeLog()
+# for the bug with line with space
+hi mkdLineBreak cterm=NONE
 
-def PrintChangeLog()
-	job_start(["suprapack", "info", "supravim"], {
-		out_io: 'buffer',
-		out_msg: 0,
-		out_mode: 'raw',
-		close_cb: (ch: channel) => {
-			const buffer = ch->ch_getbufnr('out')
-			const all = getbufline(buffer, 0, '$')
-			var a = stridx(all[0], 'Version')
-			var b = stridx(all[0], '0m', a)
-			var c = stridx(all[0], "\n", b)
-			var version = all[0][b + 2 : c - 1]
-			call WelcomeChangeLog(version)
-			execute "bd! " .. buffer
-		}
-			
-	})
-enddef
-
-def WelcomeChangeLog(version: string)
-	var txt: string
-	if exists('g:SUPRAVIM_LAST_VERSION') == 0
-		txt = ''
-	else
-		if g:SUPRAVIM_LAST_VERSION == version
-			return
-		endif
-		txt = g:SUPRAVIM_LAST_VERSION .. ' → '
-	endif
-
-	var changelog = readfile(expand('$HOME/.local/share/supravim/CHANGELOG.md'))
-	var log_to_display: list<string> = ["Welcome to SupraVim " .. txt .. version]
-
-	# just print 4 log line max or stop if the line begin by '#'
-	var count = 0
-	for line in changelog
-		if count >= 4
-			break
-		endif
-		if line =~ '^#' && count > 0
-			break
-		endif
-		if line != ''
-			log_to_display += [line]
-			count += 1
-		endif
-	endfor
-	log_to_display += [" __Click here to see full changelog__"]
-	
-	Notify.Notification(log_to_display, {
-		icon: '󰪷',
-		left_click: (wid) => {
-			tabnew $HOME/.local/share/supravim/CHANGELOG.md
-			popup_close(wid)
-		},
-	})
-	g:SUPRAVIM_LAST_VERSION = version
-enddef
-
+#--------------- Games ---------------"
 autocmd VimEnter __SNAKE__ {
 	:Snake
 }
@@ -891,6 +423,4 @@ autocmd VimEnter __PACMAN__ {
 	:Pacman
 }
 
-
-# for the bug with line with space
-hi mkdLineBreak cterm=NONE
+autocmd VimEnter * call WelcomeModule.Welcome()

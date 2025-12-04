@@ -1,5 +1,6 @@
 # 6.9.0
 - add autosave option 
+- rework the vimrc
 
 # 6.8.3
 - Do not clear the buffer when opening a file with SupraTree
