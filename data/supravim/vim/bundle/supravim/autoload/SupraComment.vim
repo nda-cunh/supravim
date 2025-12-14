@@ -38,6 +38,7 @@ const comment_map: dict<list<string>> = {
 	'c3': C_COMMENT,
 	'ts': C_COMMENT,
 	'tsx': C_COMMENT,
+	'zig': C_COMMENT,
 
 # SQL/Lua style (--)
 	'lua': LUA_COMMENT,
@@ -67,6 +68,13 @@ const comment_map: dict<list<string>> = {
 	'xml': XML_COMMENT,
 	'markdown': XML_COMMENT,
 	'css': ['/*', '*/'],
+	'vue': XML_COMMENT,
+	'svg': XML_COMMENT,
+	'xhtml': XML_COMMENT,
+# Others
+	'css': ['/*', '*/'],
+	'ocaml': ['(*', '*)'],
+	'fortran': ['!', ''],
 	'dosbatch': ['REM ', ''],
 }
 
