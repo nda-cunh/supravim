@@ -1,3 +1,8 @@
+# 6.10.0
+- Rework the F12 options
+- Add blueprint-gtk support
+- Optimize and upgrade SupraComment
+
 # 6.9.0
 - add autosave option 
 - rework the vimrc
