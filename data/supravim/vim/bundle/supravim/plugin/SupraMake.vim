@@ -13,4 +13,4 @@ def g:Make(rule: string)
 	M.SupraMake(rule)
 enddef
 
-command -nargs=* -complete=customlist,AutoComplete_gMake Make M.MakeSpecial(<f-args>)
+command -nargs=* -complete=customlist,M.AutoComplete_gMake Make M.MakeSpecial(<f-args>)
