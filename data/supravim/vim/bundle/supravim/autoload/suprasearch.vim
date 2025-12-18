@@ -125,6 +125,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 			silent! jump_line = search(line, 'c')
 			search = line
 		endif
+		try
 		if jump_line != 0 
 			const pos = getpos('.')
 			const len = len(line)
@@ -135,6 +136,8 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		if mid_occurence <= 0
 			mid_occurence = 0
 		endif
+		catch
+		endtry
 
 	}
 
@@ -322,9 +325,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 enddef
 
 def CountOccurences(search_term: string): number
-	# if len(search_term) <= 1
-		# return 0
-	# endif
+	try
     var count: number = 0
     const cursor_pos = getpos(".")
     call cursor(1, 1)
@@ -339,5 +340,8 @@ def CountOccurences(search_term: string): number
 
     call setpos('.', cursor_pos)
     return count
+	catch
+		return 0 
+	endtry
 enddef
 
