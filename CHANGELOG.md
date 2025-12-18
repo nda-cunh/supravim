@@ -1,7 +1,9 @@
 # 6.10.0
-- Rework the F12 options
+- Rework the F12 options and add VERY VERY VERY MORE OPTIONS
 - Add blueprint-gtk support
-- Optimize and upgrade SupraComment
+- Optimize and upgrade SupraComment and optimize atom theme color
+- Add FuzzyLspDiag <leader> d to navigate between LSP diagnostics
+- Add a real fold support
 
 # 6.9.0
 - add autosave option 
