@@ -230,8 +230,16 @@ public class Main {
 				sb.add ("vim");
 				sb.addv(args[1:]);
 				Process.spawn_sync (null, sb.end(), Environ.get(), SpawnFlags.SEARCH_PATH + SpawnFlags.CHILD_INHERITS_STDIN, null);
+				return 0;
 			}
-			return result != null ? 0 : -1;
+			else {
+				if (result == true) {
+					return 0;
+				}
+				else {
+					return 1;
+				}
+			}
 		}
 		catch (Error e) {
 			printerr ("%s\n", e.message);
