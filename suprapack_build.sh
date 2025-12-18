@@ -16,8 +16,9 @@ git clone https://github.com/nda-cunh/SupraPopup --depth 1
 git clone https://github.com/nda-cunh/SupraPacman --depth 1
 
 rm -rf */.git
+rm -rf */test
 rm -rf */.github
-rm -rf */README.md
+rm -rf */*.md
 popd
 
 pushd ..
