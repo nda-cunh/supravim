@@ -129,6 +129,26 @@ inoremap <c-a>		<esc>gg<s-v>G
 nnoremap <silent><c-@>		<cmd>LspHover<cr>
 silent! unmap <c-t>
 nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
+# Terminal shortcuts
+map <leader>tt	<scriptcmd>call SupraTerm()<cr>
+map <leader>tf	<scriptcmd>call SupraTerm()<cr>
+map <leader>th	:horizontal term<CR>
+map <leader>tv	:vertical term<CR>
+# Lsp shortcuts 
+nnoremap <silent> gd		<cmd>LspDefinition<cr>
+nnoremap <silent> gr		<cmd>LspReferences<cr>
+nnoremap <silent> gi		<cmd>LspImplementation<cr>
+nnoremap <silent> gD		<cmd>LspTypeDefinition<cr>
+nnoremap <silent> gt		<cmd>LspTypeDefinition<cr>
+nnoremap <silent> g0		<cmd>LspDocumentSymbol<cr>
+nnoremap <silent> gW		<cmd>LspWorkspaceSymbol<cr>
+nnoremap <silent> ga		<cmd>LspCodeAction<cr>
+nnoremap <silent> K			<cmd>LspHover<cr>
+
+# Other
+inoremap <c-z>		<esc>ui
+inoremap <c-y>		<esc><c-r>i
+
 # Move lines
 vnoremap <silent> <A-Down>	:<scriptcmd>Utils.MoveLineDown("v")<CR><cr>
 vnoremap <silent> <A-Up>	:<scriptcmd>Utils.MoveLineUp("v")<CR><cr>
@@ -145,7 +165,7 @@ nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
 nnoremap <silent> <leader>p			<scriptcmd>FuzzyPrevious<cr>
 nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
-nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
+# nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
 nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
 
 # SupraVim Settings

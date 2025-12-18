@@ -4,6 +4,7 @@
 - Optimize and upgrade SupraComment and optimize atom theme color
 - Add FuzzyLspDiag <leader> d to navigate between LSP diagnostics
 - Add a real fold support
+- Add FloatTerm (<space> tt) to open a terminal in a floating window
 
 # 6.9.0
 - add autosave option 
