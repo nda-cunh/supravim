@@ -18,17 +18,28 @@ import autoload 'supravim/SupravimServer.vim' as SupraVimServer
 import autoload 'supravim/SupraOptions.vim' as Options
 
 g:sp_swap = false	# create swapfile (.swp)
-g:sp_tree = true	# display folder tree at left
-g:sp_fold = false	# add fold support 
-g:sp_nobackground = false	# remove background color and use your terminal background
 g:sp_wrap = true	# do not wrap the text if the line is too long
+g:sp_autosave = true	# Auto save files
+g:sp_nobackground = false	# remove background color and use your terminal background
+g:sp_supratree_open = false	# display folder tree at left
+g:sp_supratree_winsize = 26	# size of the folder tree window by default
+g:sp_supratree_show_hidden = false	# show hidden files in the folder tree
+g:sp_supratree_sortascending = true	# sort the folder tree ascending
+g:sp_supratree_theme_darken_percent = 15 # darken percent of the folder tree	
+g:sp_supratree_theme_forcecolor = '' # force color for supratree, like #adedb8, empty for default
+g:sp_fuzzbox_enable_icons = true # enable icons in fuzzbox
+g:sp_fuzzbox_dropdown = false # prompt at top rather than bottom
+g:sp_fuzzbox_counter = true # Show count of matches 
+g:sp_fuzzbox_scrollbar = false # Show a scrollbar in the menu window when the results do not fit 
+g:sp_fuzzbox_prompt_prefix = '➜ ' # Set the prefix for the input in the prompt window 
+g:sp_fuzzbox_wrap_menu = false # wrap menu lines in fuzzbox
+g:sp_fuzzbox_wrap_preview = true # wrap preview lines in fuzzbox
 g:sp_roundvisual_quotes = true	# Auto Closing for quotes '"' and ''' and '`'
 g:sp_roundvisual_brackets = true	# Auto Closing for brackets'(' ')' and '[' ']'
 g:sp_roundvisual_braces = false	# Auto Closing for braces '{' '}'
 g:sp_roundvisual_angle = false	# Auto Closing for angle brackets '<' '>'
 g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
 g:sp_mapleader = "\<space>"	# The leader key used in the mappings
-g:sp_autosave = false	# Auto save files
 g:sp_theme_style_function = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
 g:sp_theme_style_type = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
 g:sp_theme_style_variable = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
@@ -126,8 +137,9 @@ nnoremap <silent> <A-Up>	<scriptcmd>Utils.MoveLineUp("n")<CR>
 
 # Fuzzy Finder
 nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>
-nnoremap <silent> <leader>m			<scriptcmd>FuzzyMark<CR>
+nnoremap <silent> <leader>m			<scriptcmd>FuzzyMarks<CR>
 nnoremap <silent> <leader>f			<scriptcmd>FuzzyFiles<CR>
+nnoremap <silent> <leader>d			<scriptcmd>FuzzyLspDiag<CR>
 nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
 nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
 nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
@@ -135,6 +147,7 @@ nnoremap <silent> <leader>p			<scriptcmd>FuzzyPrevious<cr>
 nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
 nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
 nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
+
 # SupraVim Settings
 inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
@@ -259,7 +272,7 @@ au BufEnter * OpenNewFile()
 
 autocmd User SupravimChangeOption call Options.SimpleSupravimChangeOption()
 
-# ---------------  Fold Support  ---------------"
+# ---------------  GDB  ---------------"
 
 imap <C-F5>		<ScriptCmd>Gdbs<CR>
 map <C-F5>		<ScriptCmd>Gdbs<CR>
@@ -346,21 +359,6 @@ autocmd User SupraVimChangeOption call Options.AutoCloseActivate
 set mousemodel=popup
 autocmd BufEnter * call WelcomeModule.Init_menu()
 
-# ---------------  Fold Support  ---------------"
-if g:sp_fold == true
-	def Fold()
-		set foldmethod=syntax
-		execute "normal! zc"
-		set foldmethod=manual
-	enddef
-
-	def FoldAll()
-		set foldmethod=syntax
-		execute "normal! zM"
-		set foldmethod=manual
-	enddef
-endif
-
 # ---------------  SetARGS  ---------------"
 command -nargs=* -complete=file SetArgv :call SetArgv(<f-args>)
 command -nargs=* -complete=file SetArgs :call SetArgv(<f-args>)
@@ -391,10 +389,25 @@ endif
 
 #--------------- SupraTree ---------------"
 g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
-g:SupraTreeWinSize = 27
-g:SupraTreeOpenByDefault = g:sp_tree
+g:SupraTreeWinSize = g:sp_supratree_winsize
+g:SupraTreeShowHidden = g:sp_supratree_show_hidden
+g:SupraTreeSortAscending = g:sp_supratree_sortascending
+g:SupraTreeDarkenAmount = g:sp_supratree_theme_darken_percent
+if g:sp_supratree_theme_forcecolor != ''
+	g:SupraTreeForceColor = g:sp_supratree_theme_forcecolor
+endif
+g:SupraTreeOpenByDefault = g:sp_supratree_open
 g:SupraTreeSymbolSigns = g:sp_symbol_signs
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
+
+# --------------- FuzzBox ---------------"
+g:fuzzbox_devicons = g:sp_fuzzbox_enable_icons
+g:fuzzbox_dropdown = g:sp_fuzzbox_dropdown
+g:fuzzbox_counter = g:sp_fuzzbox_counter
+g:fuzzbox_scrollbar = g:sp_fuzzbox_scrollbar
+g:fuzzbox_prompt_prefix = g:sp_fuzzbox_prompt_prefix
+g:fuzzbox_menu_wrap = g:sp_fuzzbox_wrap_menu
+g:fuzzbox_preview_wrap = g:sp_fuzzbox_wrap_preview
 
 #--------------- SupraVim Color ----------"
 def FixSupraVimColor()
