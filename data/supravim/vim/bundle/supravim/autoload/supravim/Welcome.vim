@@ -7,9 +7,6 @@ export def Init_menu()
 	vmenu PopUp.Cut				d
 	vmenu PopUp.Paste			p
 	vmenu PopUp.Select\ All		<esc>gg<s-v>G
-	if g:sp_fold
-		vmenu PopUp.Fold			zf
-	endif
 	vmenu PopUp.Equalize		=
 	vmenu PopUp.-sep4- <Nop>
 
@@ -17,23 +14,19 @@ export def Init_menu()
 	nmenu PopUp.-sep5- <Nop>
 	nmenu PopUp.Save\ All		:wall<CR>
 	nmenu PopUp.Auto\ Norm		<leader><F2>
-	nmenu PopUp.Switch\ Norm		<F3>
 	nmenu PopUp.-sep0- <Nop>
 	nmenu PopUp.Select\ All		<esc>gg<s-v>G
 	nmenu PopUp.Paste			p
 	nmenu PopUp.Undo			u
 	nmenu PopUp.Redo			<C-r>
 	nmenu PopUp.-sep2- <Nop>
-	nmenu PopUp.Debug			:call Gdbf()<cr>
+	nmenu PopUp.Debug			:Gdbs<cr>
 	nmenu PopUp.Rename\ Symbol <F2>	
 
-	if g:sp_fold
-		nmenu PopUp.-sep3- <Nop>
-		nmenu PopUp.Fold			<scriptcmd>Fold()<CR>
-		nmenu PopUp.UnFold			zo
-		nmenu PopUp.Fold\ All		<scriptcmd>FoldAll()<CR>
-		nmenu PopUp.UnFold\ All		zR
-	endif
+	nmenu PopUp.-sep3- <Nop>
+	nmenu PopUp.FoldToggle		za
+	nmenu PopUp.Fold\ All		zM
+	nmenu PopUp.UnFold\ All		zR
 	nmenu PopUp.-sep4- <Nop>
 	nmenu PopUp.SupraVim\ Settings :call SettingsSupravim()<CR>
 enddef
@@ -47,9 +40,6 @@ export def Welcome()
 		echo 'Welcome to SupraVim ! Press <F12> for help or curstomize your settings.'
 		echohl None
 	})
-	if g:sp_fold
-		set foldmethod=manual
-	endif
 enddef
 
 export def PrintChangeLog()
