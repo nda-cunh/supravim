@@ -21,6 +21,8 @@ g:sp_swap = false	# create swapfile (.swp)
 g:sp_wrap = true	# do not wrap the text if the line is too long
 g:sp_autosave = true	# Auto save files
 g:sp_nobackground = false	# remove background color and use your terminal background
+g:sp_autopairs_enabled = true	# enable auto pairs
+g:sp_autopairs_flymode = false	# Jump out of closing pairs when typing the closing character
 g:sp_supratree_open = true # display folder tree at left
 g:sp_supratree_winsize = 26	# size of the folder tree window by default
 g:sp_supratree_show_hidden = false	# show hidden files in the folder tree
@@ -100,7 +102,6 @@ packadd! termdebug
 g:termdebug_wide = 1
 
 #--------------- Shorcut --------------"
-inoremap <silent><CR>	<CR><Plug>AutoPairsReturn
 nnoremap <c-n>			<esc>:tabnew 
 nnoremap <C-Right>		<scriptcmd>tabnext<CR>
 nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
@@ -406,6 +407,30 @@ if filereadable(expand('%')) == 0
 	mkdir(expand('%:p:h'), 'p')
 endif
 }
+# --------------- AutoPairs ---------------"
+g:AutoPairsEnabled = g:sp_autopairs_enabled
+g:AutoPairsFlyMode = g:sp_autopairs_flymode
+
+def AutoPairsSupravimOption()
+	if stridx(g:supravim_option_changed, 'autopairs_') != 0
+		return
+	endif
+	if g:supravim_option_changed == 'autopairs_enabled'
+		if g:supravim_option_value == 'true'
+			call g:AutoPairsEnable()
+		else
+			call g:AutoPairsDisable()
+		endif
+	elseif g:supravim_option_changed == 'autopairs_flymode'
+		if g:supravim_option_value == 'true'
+			g:AutoPairsFlyMode = 1
+		else
+			g:AutoPairsFlyMode = 0
+		endif
+	endif
+enddef
+
+au User SupravimChangeOption call AutoPairsSupravimOption()
 
 #--------------- SupraTree ---------------"
 g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']

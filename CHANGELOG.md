@@ -1,3 +1,6 @@
+# 6.11.0
+- Add a new AutoPairs plugin and more options disable FlyMode by default
+
 # 6.10.0
 - Rework the F12 options and add VERY VERY VERY MORE OPTIONS
 - Add blueprint-gtk support
