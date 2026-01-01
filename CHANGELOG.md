@@ -1,3 +1,6 @@
+# 6.12.0
+- Improve Supravim-better-comment to support more languages
+
 # 6.11.0
 - Add a new AutoPairs plugin and more options disable FlyMode by default
 
