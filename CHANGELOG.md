@@ -1,5 +1,6 @@
 # 6.12.0
 - Improve Supravim-better-comment to support more languages
+- Fix bug with clipboard if vim is compied with +clipboard but not with X11 or Wayland support
 
 # 6.11.0
 - Add a new AutoPairs plugin and more options disable FlyMode by default
