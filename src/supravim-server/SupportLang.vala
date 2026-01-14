@@ -17,8 +17,11 @@ public class SupportLang {
 	public static Support? get_package_possible (string file) {
 		if (is_loaded[file] != null)
 			return null;
+		var? suprapack_list_plugin = get_suprapack_list_plugin (); 
+		if (suprapack_list_plugin == null)
+			return null;
 
-		foreach (Support support in all_packages) {
+		foreach (unowned Support support in all_packages) {
 			if (file in support.allowed.split (","))
 			{
 				if (support.package_name in suprapack_list_plugin) {
