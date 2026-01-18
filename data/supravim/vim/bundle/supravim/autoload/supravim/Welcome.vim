@@ -2,35 +2,6 @@ vim9script
 
 import autoload 'SupraNotification.vim' as Notify
 
-export def Init_menu()
-	vmenu PopUp.Copy			y
-	vmenu PopUp.Cut				d
-	vmenu PopUp.Paste			p
-	vmenu PopUp.Select\ All		<esc>gg<s-v>G
-	vmenu PopUp.Equalize		=
-	vmenu PopUp.-sep4- <Nop>
-
-	nmenu PopUp.Show\ References	<esc>:LspReferences<cr>
-	nmenu PopUp.-sep5- <Nop>
-	nmenu PopUp.Save\ All		:wall<CR>
-	nmenu PopUp.Auto\ Norm		<leader><F2>
-	nmenu PopUp.-sep0- <Nop>
-	nmenu PopUp.Select\ All		<esc>gg<s-v>G
-	nmenu PopUp.Paste			p
-	nmenu PopUp.Undo			u
-	nmenu PopUp.Redo			<C-r>
-	nmenu PopUp.-sep2- <Nop>
-	nmenu PopUp.Debug			:Gdbs<cr>
-	nmenu PopUp.Rename\ Symbol <F2>	
-
-	nmenu PopUp.-sep3- <Nop>
-	nmenu PopUp.FoldToggle		za
-	nmenu PopUp.Fold\ All		zM
-	nmenu PopUp.UnFold\ All		zR
-	nmenu PopUp.-sep4- <Nop>
-	nmenu PopUp.SupraVim\ Settings :call SettingsSupravim()<CR>
-enddef
-
 export def Welcome()
 	# Used for SupraWater with folder
 	silent! autocmd! FileExplorer

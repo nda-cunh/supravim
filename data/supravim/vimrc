@@ -379,7 +379,6 @@ autocmd User SupraVimChangeOption call Options.AutoCloseActivate
 
 # ---------------  Popup Menu  ---------------"
 set mousemodel=popup
-autocmd BufEnter * call WelcomeModule.Init_menu()
 
 # ---------------  SetARGS  ---------------"
 command -nargs=* -complete=file SetArgv :call SetArgv(<f-args>)
