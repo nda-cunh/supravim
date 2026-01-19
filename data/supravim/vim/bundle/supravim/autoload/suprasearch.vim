@@ -20,7 +20,9 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	var visualmode = _visualmode
 	var pre_text = _pre_text
 	var history_search_idx = 0
+	var find = false
 
+	var view = winsaveview()
 	var min: number
 	var max: number
 	if visualmode == true
@@ -82,12 +84,14 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 			mid_cursor = 0
 		endif
 	}
+
 	var RemoveSupramid = () => {
 		if mid_occurence > 0
 			call matchdelete(mid_occurence)
 			mid_occurence = 0
 		endif
 	}
+
 	var RemoveMidSearch = () => {
 		if mid_search > 0
 			call matchdelete(mid_search)
@@ -256,12 +260,16 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		RemoveMidCursor()
 		RemoveSupramid()
 		RemoveMidSearch()
+		if find == false
+			call winrestview(view)
+		endif
 	})
 
 	#### When Find Popup is Entered, Go to the first match
 	Popup.AddEventInputEnter(pop1, (line) => {
 		setreg('/', line)
 		histadd('search', line)
+		find = true
 		silent! Popup.Close(pop1)
 		silent! Popup.Close(pop2)
 		silent! Popup.Close(background)
