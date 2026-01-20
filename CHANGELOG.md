@@ -3,6 +3,7 @@
 - Add a new Popup Menu with Right-Click
 - Fix bug with clipboard if vim is compied with +clipboard but not with X11 or Wayland support
 - Reset the positon if the suprasearch is cancelled
+- Add new syntax theme for C and C++
 
 # 6.11.0
 - Add a new AutoPairs plugin and more options disable FlyMode by default
