@@ -1,7 +1,5 @@
 vim9script
 
-# finish
-
 # Quit when a (custom) syntax file was already loaded
 if exists("b:current_syntax")
   finish
@@ -69,7 +67,7 @@ syntax match cConstant  display "\<\u[A-Z0-9_]*\>"
 syntax match cOperator display "\.\.\.\|<<=\|>>=\|++\|--\|<=\|>=\|==\|!=\|&&\|||\|<<\|>>\|+=\|-=\|*=\|/=\|%=\|&=\||=\|^="
 syntax match cOperator display "[<>][<>]=\?\|[!=<>]= \?\|++\|--\|&&\|||\|[+*/%&|^!<?:]"
 
-syntax match cOperator display "[+*/%&|^!<]\|-[^>]\|[^-]>\|="
+syntax match cOperator display "[+*/%&|^!<]\|-\%(\d\)\@!\|[^-]>\|="
 
 syntax match cOperator display "->\w*" contains=cMember
 
