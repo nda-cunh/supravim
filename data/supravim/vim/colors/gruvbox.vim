@@ -646,6 +646,10 @@ if version >= 700
   call s:HL('PmenuSbar', s:none, s:bg2)
   " Popup menu: scrollbar thumb
   call s:HL('PmenuThumb', s:none, s:bg4)
+  " PmenuMatch
+  call s:HL('PmenuMatch', s:yellow, s:bg2, s:bold)
+  " PmenuKind
+  call s:HL('PmenuKind', s:fg4, s:bg2)
 endif
 
 " }}}

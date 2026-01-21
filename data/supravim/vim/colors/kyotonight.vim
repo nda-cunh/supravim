@@ -113,54 +113,6 @@ if has('terminal')
   let g:terminal_ansi_colors = [g:kyotonight#bg[0], g:kyotonight#red[0], g:kyotonight#green[0], g:kyotonight#yellow[0], g:kyotonight#blue0[0], g:kyotonight#magenta[0], g:kyotonight#blue1[0], g:kyotonight#cream[0], g:kyotonight#grey0[0], g:kyotonight#red[0], g:kyotonight#green[0], g:kyotonight#yellow[0], g:kyotonight#blue0[0], g:kyotonight#magenta[0], g:kyotonight#teal[0], g:kyotonight#cyan1[0]]
 endif
 
-if has('nvim')
-  "+- Neovim Terminal Colors -+
-  let g:terminal_color_0 = g:kyotonight#bg[0]
-  let g:terminal_color_1 = g:kyotonight#red[0]
-  let g:terminal_color_2 = g:kyotonight#green[0]
-  let g:terminal_color_3 = g:kyotonight#yellow[0]
-  let g:terminal_color_4 = g:kyotonight#blue0[0]
-  let g:terminal_color_5 = g:kyotonight#magenta[0]
-  let g:terminal_color_6 = g:kyotonight#blue1[0]
-  let g:terminal_color_7 = g:kyotonight#cream[0]
-  let g:terminal_color_8 = g:kyotonight#grey0[0]
-  let g:terminal_color_9 = g:kyotonight#red[0]
-  let g:terminal_color_10 = g:kyotonight#green[0]
-  let g:terminal_color_11 = g:kyotonight#yellow[0]
-  let g:terminal_color_12 = g:kyotonight#blue0[0]
-  let g:terminal_color_13 = g:kyotonight#magenta[0]
-  let g:terminal_color_14 = g:kyotonight#teal[0]
-  let g:terminal_color_15 = g:kyotonight#cyan1[0]
-
-  "+- Neovim Support -+
-  call s:hi("healthError", g:kyotonight#red, g:kyotonight#bg, "", "")
-  call s:hi("healthSuccess", g:kyotonight#green, g:kyotonight#bg, "", "")
-  call s:hi("healthWarning", g:kyotonight#yellow, g:kyotonight#bg, "", "")
-  call s:hi("TermCursorNC", "", g:kyotonight#bg, "", "")
-
-  "+- Neovim Diagnostics API -+
-  call s:hi("DiagnosticWarn", g:kyotonight#yellow, "", "", "")
-  call s:hi("DiagnosticError", g:kyotonight#red, "", "", "")
-  call s:hi("DiagnosticInfo", g:kyotonight#blue1, "", "", "")
-  call s:hi("DiagnosticHint", g:kyotonight#cyan1, "", "", "")
-  call s:hi("DiagnosticSignWarn", g:kyotonight#yellow, "", "", "")
-  call s:hi("DiagnosticSignError", g:kyotonight#red, "", "", "")
-  call s:hi("DiagnosticSignInfo", g:kyotonight#blue1, "", "", "")
-  call s:hi("DiagnosticSignHint", g:kyotonight#cyan1, "", "", "")
-  call s:hi("DiagnosticUnderlineWarn", g:kyotonight#yellow, "", "undercurl", "")
-  call s:hi("DiagnosticUnderlineError", g:kyotonight#red, "", "undercurl", "")
-  call s:hi("DiagnosticUnderlineInfo", g:kyotonight#blue1, "", "undercurl", "")
-  call s:hi("DiagnosticUnderlineHint", g:kyotonight#cyan1, "", "undercurl", "")
-
-  "+- Neovim DocumentHighlight -+
-  call s:hi("LspReferenceText", "", g:kyotonight#grey0, "", "")
-  call s:hi("LspReferenceRead", "", g:kyotonight#grey0, "", "")
-  call s:hi("LspReferenceWrite", "", g:kyotonight#grey0, "", "")
-
-  "+- Neovim LspSignatureHelp -+
-  call s:hi("LspSignatureActiveParameter", g:kyotonight#blue0, "", s:underline, "")
-endif
-
 "+--- Gutter ---+
 call s:hi("CursorColumn", "", g:kyotonight#bg, "", "")
 if g:kyotonight_cursor_line_number_background == 0
@@ -811,6 +763,9 @@ call s:hi("VimwikiLink", g:kyotonight#blue1, "", s:underline, "")
 hi! link VimwikiHeaderChar markdownHeadingDelimiter
 hi! link VimwikiHR Keyword
 hi! link VimwikiList markdownListMarker
+
+hi! PmenuMatch guibg=NONE guifg=#07d7ff
+hi! PmenuKind guibg=NONE guifg=#49a8f5
 
 " YAML
 " > stephpy/vim-yaml

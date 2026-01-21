@@ -1,16 +1,17 @@
-" _________________________________________
-" \_ _/ ____| ____| ___ \ ____| ___ \  ___/
-"  | | |____| ____| ___ < ____| __  / |__ \
-" /___\_____|_____|_____/_____|_| \_\_____/
-"
-" File:       iceberg.vim
-" Maintainer: cocopon <cocopon@me.com>
-" Modified:   2022-04-26 21:56+0900
-" License:    MIT
+vim9script
+# _________________________________________
+# \_ _/ ____| ____| ___ \ ____| ___ \  ___/
+#  | | |____| ____| ___ < ____| __  / |__ \
+# /___\_____|_____|_____/_____|_| \_\_____/
+#
+# File:       iceberg.vim
+# Maintainer: cocopon <cocopon@me.com>
+# Modified:   2022-04-26 21:56+0900
+# License:    MIT
 
 
-if !has('gui_running') && &t_Co < 256
-  finish
+if !has('gui_running') && str2nr(&t_Co) < 256
+	finish
 endif
 
 hi clear
@@ -18,7 +19,7 @@ if exists('syntax_on')
   syntax reset
 endif
 
-let g:colors_name = 'iceberg'
+g:colors_name = 'iceberg'
 
 if &background == 'light'
   hi Normal ctermbg=254 ctermfg=237 guibg=#e8e9ec guifg=#33374c
@@ -57,6 +58,8 @@ if &background == 'light'
   hi Pmenu ctermbg=251 ctermfg=237 guibg=#cad0de guifg=#33374c
   hi PmenuSbar ctermbg=251 ctermfg=NONE guibg=#cad0de guifg=NONE
   hi PmenuSel ctermbg=248 ctermfg=235 guibg=#a7b2cd guifg=#33374c
+  hi PmenuMatch ctermbg=180 ctermfg=94 guibg=#eac6ad
+  hi PmenuKind ctermbg=251 ctermfg=237 guibg=#cad0de guifg=#33374c	
   hi PmenuThumb ctermbg=237 ctermfg=NONE guibg=#33374c guifg=NONE
   hi PreProc ctermfg=64 guifg=#668e3d
   hi Question ctermfg=64 guifg=#668e3d
@@ -133,27 +136,7 @@ if &background == 'light'
   hi DiagnosticSignError ctermbg=253 ctermfg=125 guibg=#dcdfe7 guifg=#cc517a
   hi DiagnosticFloatingHint ctermbg=251 ctermfg=237 guibg=#cad0de guifg=#33374c
   hi icebergALAccentRed ctermfg=125 guifg=#cc517a
-
-  if has('nvim')
-    let g:terminal_color_0 = '#dcdfe7'
-    let g:terminal_color_1 = '#cc517a'
-    let g:terminal_color_2 = '#668e3d'
-    let g:terminal_color_3 = '#c57339'
-    let g:terminal_color_4 = '#2d539e'
-    let g:terminal_color_5 = '#7759b4'
-    let g:terminal_color_6 = '#3f83a6'
-    let g:terminal_color_7 = '#33374c'
-    let g:terminal_color_8 = '#8389a3'
-    let g:terminal_color_9 = '#cc3768'
-    let g:terminal_color_10 = '#598030'
-    let g:terminal_color_11 = '#b6662d'
-    let g:terminal_color_12 = '#22478e'
-    let g:terminal_color_13 = '#6845ad'
-    let g:terminal_color_14 = '#327698'
-    let g:terminal_color_15 = '#262a3f'
-  else
-    let g:terminal_ansi_colors = ['#dcdfe7', '#cc517a', '#668e3d', '#c57339', '#2d539e', '#7759b4', '#3f83a6', '#33374c', '#8389a3', '#cc3768', '#598030', '#b6662d', '#22478e', '#6845ad', '#327698', '#262a3f']
-  endif
+g:terminal_ansi_colors = ['#dcdfe7', '#cc517a', '#668e3d', '#c57339', '#2d539e', '#7759b4', '#3f83a6', '#33374c', '#8389a3', '#cc3768', '#598030', '#b6662d', '#22478e', '#6845ad', '#327698', '#262a3f']
 else
   hi Normal ctermbg=234 ctermfg=252 guibg=#161821 guifg=#c6c8d1
   hi ColorColumn cterm=NONE ctermbg=235 ctermfg=NONE guibg=#1e2132 guifg=NONE
@@ -223,6 +206,8 @@ else
   hi Visual ctermbg=236 ctermfg=NONE guibg=#272c42 guifg=NONE
   hi VisualNOS ctermbg=236 ctermfg=NONE guibg=#272c42 guifg=NONE
   hi WildMenu ctermbg=255 ctermfg=234 guibg=#d4d5db guifg=#17171b
+  hi PmenuMatch ctermbg=180 ctermfg=94 guifg=#eac6ad guibg=NONE
+  hi PmenuKind ctermbg=236 ctermfg=252 guifg=#3d425b guibg=NONE
   hi icebergNormalFg ctermfg=252 guifg=#c6c8d1
   hi diffAdded ctermfg=150 guifg=#b4be82
   hi diffRemoved ctermfg=203 guifg=#e27878
@@ -268,26 +253,7 @@ else
   hi DiagnosticFloatingHint ctermbg=236 ctermfg=251 guibg=#3d425b guifg=#c6c8d1
   hi icebergALAccentRed ctermfg=203 guifg=#e27878
 
-  if has('nvim')
-    let g:terminal_color_0 = '#1e2132'
-    let g:terminal_color_1 = '#e27878'
-    let g:terminal_color_2 = '#b4be82'
-    let g:terminal_color_3 = '#e2a478'
-    let g:terminal_color_4 = '#84a0c6'
-    let g:terminal_color_5 = '#a093c7'
-    let g:terminal_color_6 = '#89b8c2'
-    let g:terminal_color_7 = '#c6c8d1'
-    let g:terminal_color_8 = '#6b7089'
-    let g:terminal_color_9 = '#e98989'
-    let g:terminal_color_10 = '#c0ca8e'
-    let g:terminal_color_11 = '#e9b189'
-    let g:terminal_color_12 = '#91acd1'
-    let g:terminal_color_13 = '#ada0d3'
-    let g:terminal_color_14 = '#95c4ce'
-    let g:terminal_color_15 = '#d2d4de'
-  else
-    let g:terminal_ansi_colors = ['#1e2132', '#e27878', '#b4be82', '#e2a478', '#84a0c6', '#a093c7', '#89b8c2', '#c6c8d1', '#6b7089', '#e98989', '#c0ca8e', '#e9b189', '#91acd1', '#ada0d3', '#95c4ce', '#d2d4de']
-  endif
+g:terminal_ansi_colors = ['#1e2132', '#e27878', '#b4be82', '#e2a478', '#84a0c6', '#a093c7', '#89b8c2', '#c6c8d1', '#6b7089', '#e98989', '#c0ca8e', '#e9b189', '#91acd1', '#ada0d3', '#95c4ce', '#d2d4de']
 endif
 
 hi! link TermCursor Cursor
@@ -448,7 +414,3 @@ hi! link typescriptIdentifier Statement
 hi! link typescriptMessage icebergNormalFg
 hi! link typescriptNull Constant
 hi! link typescriptParens icebergNormalFg
-
-if !has('nvim')
-  hi! link SpecialKey Whitespace
-endif

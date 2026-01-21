@@ -141,6 +141,9 @@ call s:hi("Structure", "NONE", s:yellow, "NONE", "NONE", "NONE")
 call s:hi("Typedef", "NONE", s:yellow, "NONE", "NONE", "NONE")
 call s:hi("debugPC", "NONE", "NONE", s:crust, "NONE", "NONE")
 call s:hi("debugBreakpoint", "NONE", s:overlay0, s:base, "NONE", "NONE")
+" Pmenumatch and kind
+call s:hi("PmenuMatch", "NONE", s:yellow, "NONE", "bold", "bold")
+call s:hi("PmenuKind", "NONE", s:blue, "NONE", "NONE", "NONE")
 
 hi link Define PreProc
 hi link Macro PreProc

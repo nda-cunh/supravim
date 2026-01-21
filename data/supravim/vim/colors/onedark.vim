@@ -102,6 +102,10 @@ hi Visual guifg=NONE guibg=#3E4452 guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 
 hi VisualNOS guifg=NONE guibg=#3E4452 guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 cterm=NONE
 hi WarningMsg guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
 hi WildMenu guifg=#282C34 guibg=#61AFEF guisp=NONE gui=NONE ctermfg=235 ctermbg=39 cterm=NONE
+
+hi PMenuMatch guifg=#E5C07B guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=237 cterm=NONE
+hi PMenuKind guifg=#C678DD guibg=NONE guisp=NONE cterm=NONE gui=NONE ctermfg=38
+
 hi debugPC guifg=NONE guibg=#3B4048 guisp=NONE gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
 hi debugBreakpoint guifg=#282C34 guibg=#E06C75 guisp=NONE gui=NONE ctermfg=235 ctermbg=204 cterm=NONE
 hi cssAttrComma guifg=#C678DD guibg=NONE guisp=NONE gui=NONE ctermfg=170 ctermbg=NONE cterm=NONE
@@ -397,6 +401,8 @@ hi link gitcommitSelected gitcommitComment
 hi link gitcommitDiscardedArrow gitcommitDiscardedFile
 hi link gitcommitSelectedArrow gitcommitSelectedFile
 hi link gitcommitUnmergedArrow gitcommitUnmergedFile
+hi link vim9MethodDefName Function
+
 import autoload 'onedark.vim' as OneDark
 
 var colors = OneDark.GetColors()
