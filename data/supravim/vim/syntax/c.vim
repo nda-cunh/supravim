@@ -54,6 +54,8 @@ syntax match cConstant  display "\<\u[A-Z0-9_]*\>"
 syntax match cOperator display /\%(>>>=\|<<=\|>>=\|\.\.\.\|++\|--\|<=\|>=\|==\|!=\|&&\|||\|<<\|>>\|+=\|-=\|*=\|\/=\|%=\|&=\||=\|^=\|-\%(\d\)\@!\|[^-]>\|=\|[+*/%&|^!<=]\)/
 syntax match cOperator display "->\w*" contains=cMember
 syntax match cMember display "\(\.\|->\)\zs\h\w*\ze" contained
+# hi FunctionRegion gui=bold cterm=bold
+
 
 if !exists("c_no_cformat")
 	# Highlight % items in strings.
@@ -378,7 +380,7 @@ if !exists("c_no_ansi") || exists("c_ansi_constants") || exists("c_gnu")
 	syn keyword cConstant M_1_PI M_2_PI M_2_SQRTPI M_SQRT2 M_SQRT1_2
 endif
 if !exists("c_no_c99")
-	syn keyword cConstant true false
+	syn keyword cBoolean	true false TRUE FALSE
 endif
 
 # Accept %: for # (C99)
@@ -531,6 +533,7 @@ hi def link cCustomType Type
 hi def link cDoxygenTag Special
 hi def link cDoxygenParam Identifier
 hi def link cParam Identifier
+hi def link cBoolean Boolean
 
 b:current_syntax = "c"
 
