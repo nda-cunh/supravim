@@ -264,6 +264,8 @@ if t_Co >= 256
 	hi PmenuSbar ctermfg=NONE ctermbg=235 cterm=NONE
 	hi PmenuSel ctermfg=189 ctermbg=237 cterm=NONE
 	hi PmenuThumb ctermfg=NONE ctermbg=60 cterm=NONE
+  hi PmenuKind guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
+  hi PmenuMatch guifg=#f6c177 guibg=NONE gui=NONE cterm=bold
 	hi Question ctermfg=222 ctermbg=NONE cterm=NONE
 	hi Search ctermfg=NONE ctermbg=60 cterm=NONE
 	hi SpecialKey ctermfg=152 ctermbg=NONE cterm=NONE

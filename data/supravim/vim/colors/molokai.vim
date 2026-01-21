@@ -1,31 +1,27 @@
-" Vim color file
-"
-" Author: Tomas Restrepo <tomas@winterdom.com>
-" https://github.com/tomasr/molokai
-"
-" Note: Based on the Monokai theme for TextMate
-" by Wimer Hazenberg and its darker variant
-" by Hamish Stuart Macpherson
-"
+vim9script
+# Vim color file
+#
+# Author: Tomas Restrepo <tomas@winterdom.com>
+# https://github.com/tomasr/molokai
+#
+# Note: Based on the Monokai theme for TextMate
+# by Wimer Hazenberg and its darker variant
+# by Hamish Stuart Macpherson
+#
 
 hi clear
 
-if version > 580
-    " no guarantees for version 5.8 and below, but this makes it stop
-    " complaining
+if v:version > 580
+    # no guarantees for version 5.8 and below, but this makes it stop
+    # complaining
     hi clear
     if exists("syntax_on")
         syntax reset
     endif
 endif
-let g:colors_name="molokai"
+g:colors_name = "molokai"
 
-if exists("g:molokai_original")
-    let s:molokai_original = g:molokai_original
-else
-    let s:molokai_original = 0
-endif
-
+var molokai_original: number = get(g:, 'molokai_original', 0)
 
 hi Boolean         guifg=#AE81FF
 hi Character       guifg=#E6DB74
@@ -65,7 +61,7 @@ hi ModeMsg         guifg=#E6DB74
 hi MoreMsg         guifg=#E6DB74
 hi Operator        guifg=#F92672
 
-" complete menu
+# complete menu
 hi Pmenu           guifg=#66D9EF guibg=#000000
 hi PmenuSel                      guibg=#808080
 hi PmenuSbar                     guibg=#080808
@@ -76,7 +72,7 @@ hi PreProc         guifg=#A6E22E
 hi Question        guifg=#66D9EF
 hi Repeat          guifg=#F92672               gui=bold
 hi Search          guifg=#000000 guibg=#FFE792
-" marks
+# marks
 hi SignColumn      guifg=#A6E22E guibg=#232526
 hi SpecialChar     guifg=#F92672               gui=bold
 hi SpecialComment  guifg=#7E8E91               gui=bold
@@ -100,7 +96,7 @@ hi Typedef         guifg=#66D9EF
 hi Type            guifg=#66D9EF               gui=none
 hi Underlined      guifg=#808080               gui=underline
 
-hi VertSplit       guifg=#808080 guibg=#080808 gui=bold
+hi VertSplit       guifg=#808080 guibg=#232526 gui=bold
 hi VisualNOS                     guibg=#403D3D
 hi Visual                        guibg=#403D3D
 hi WarningMsg      guifg=#FFFFFF guibg=#333333 gui=bold
@@ -109,7 +105,7 @@ hi WildMenu        guifg=#66D9EF guibg=#000000
 hi TabLineFill     guifg=#1B1D1E guibg=#1B1D1E
 hi TabLine         guibg=#1B1D1E guifg=#808080 gui=none
 
-if s:molokai_original == 1
+if molokai_original == 1
    hi Normal          guifg=#F8F8F2 guibg=#272822
    hi Comment         guifg=#75715E
    hi CursorLine                    guibg=#3E3D32
@@ -129,13 +125,13 @@ else
    hi LineNr          guifg=#465457 guibg=#232526
    hi NonText         guifg=#465457
    hi SpecialKey      guifg=#465457
-end
+endif
 
-"
-" Support for 256-color terminal
-"
-if &t_Co > 255
-   if s:molokai_original == 1
+#
+# Support for 256-color terminal
+#
+if str2nr(&t_Co) > 255
+   if molokai_original == 1
       hi Normal                   ctermbg=234
       hi CursorLine               ctermbg=235   cterm=none
       hi CursorLineNr ctermfg=208               cterm=none
@@ -182,7 +178,7 @@ if &t_Co > 255
    hi MoreMsg         ctermfg=229
    hi Operator        ctermfg=161
 
-   " complete menu
+   # complete menu
    hi Pmenu           ctermfg=81  ctermbg=16
    hi PmenuSel        ctermfg=255 ctermbg=242
    hi PmenuSbar                   ctermbg=232
@@ -194,7 +190,7 @@ if &t_Co > 255
    hi Repeat          ctermfg=161               cterm=bold
    hi Search          ctermfg=0   ctermbg=222   cterm=NONE
 
-   " marks column
+   # marks column
    hi SignColumn      ctermfg=118 ctermbg=235
    hi SpecialChar     ctermfg=161               cterm=bold
    hi SpecialComment  ctermfg=245               cterm=bold
@@ -231,6 +227,8 @@ if &t_Co > 255
    hi NonText         ctermfg=59
 
    hi SpecialKey      ctermfg=59
+   hi PmenuMatch  guibg=NONE guifg=#F92672 ctermfg=161 ctermbg=NONE cterm=bold
+   hi PmenuKind  guibg=NONE guifg=#A6E22E ctermfg=118 ctermbg=NONE cterm=bold
 
    if exists("g:rehash256") && g:rehash256 == 1
        hi Normal       ctermfg=252 ctermbg=234
@@ -269,8 +267,8 @@ if &t_Co > 255
        hi NonText         ctermfg=239
        hi SpecialKey      ctermfg=239
    endif
-end
+endif
 
-" Must be at the end, because of ctermbg=234 bug.
-" https://groups.google.com/forum/#!msg/vim_dev/afPqwAFNdrU/nqh6tOM87QUJ
+# Must be at the end, because of ctermbg=234 bug.
+# https://groups.google.com/forum/#!msg/vim_dev/afPqwAFNdrU/nqh6tOM87QUJ
 set background=dark

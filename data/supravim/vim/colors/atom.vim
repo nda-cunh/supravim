@@ -645,3 +645,5 @@ hi Conceal term=NONE cterm=NONE ctermbg=248 ctermfg=252 gui=NONE guibg=DarkGrey 
 hi SpellBad term=reverse ctermbg=bg ctermfg=196 guibg=bg guifg=fg guisp=#FF0000
 hi SpellCap term=reverse ctermbg=bg ctermfg=63 guibg=bg guifg=fg guisp=#7070F0
 hi VertSplit cterm=NONE ctermfg=232 ctermbg=NONE guifg=#808080 guibg=NONE
+hi PmenuMatch term=bold cterm=bold ctermbg=NONE ctermfg=81 gui=bold guibg=NONE guifg=#66D9EF
+hi PmenuKind term=bold cterm=bold ctermbg=NONE ctermfg=146 gui=bold guibg=NONE guifg=#B6B7EB
