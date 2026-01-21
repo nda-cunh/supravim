@@ -8,4 +8,5 @@ optional_dependency:
 exclude_package: 
 binary: plugin-makeheader
 size_tar: 
-size_installed: 721
+size_installed: 914
+wanted: no
