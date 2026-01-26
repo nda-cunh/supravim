@@ -4,6 +4,17 @@ vim9script
 set nocompatible
 filetype off
 
+### Supravim Minimum Version Check ###
+import autoload 'CheckVersion.vim' as CheckVersion
+
+if !has('patch-9.1.1100')
+	CheckVersion.Check()
+	exit!
+	finish
+endif
+
+# ---------------  Supraload  ---------------"
+
 import autoload 'supraload.vim' as SupraLoad 
 SupraLoad.Infect()
 
