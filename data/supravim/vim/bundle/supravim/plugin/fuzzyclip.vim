@@ -31,6 +31,7 @@ elseif session_type == 'x11'
 		autocmd FocusGained,VimEnter * call FuzzyClip.LoadRegisterFromExtern([])
 		command UpdateClipboard call FuzzyClip.SetClipBoardExtern([])
 	else
+		set clipboard=
 		if executable('xclip') == 0
 			call Notify.Notification(["xclip not found", "Please install xclip for copy/paste support"], {type: 'error'})
 		else
@@ -46,6 +47,7 @@ elseif session_type == 'wayland'
 		autocmd FocusGained,VimEnter * call FuzzyClip.LoadRegisterFromExtern([])
 		command UpdateClipboard call FuzzyClip.SetClipBoardExtern([])
 	elseif expand("$XDG_SESSION_TYPE") == "wayland"
+		set clipboard=
 		if executable('wl-copy') == 0
 			call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
 		else
