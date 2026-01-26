@@ -8,7 +8,7 @@ g:supra_menu_loaded = 1
 
 import autoload 'SupraMenu.vim'
 
-map <RightMouse>			<scriptcmd>SupraMenu.Open()<cr>
+noremap <RightMouse>			<scriptcmd>SupraMenu.Open()<cr>
 
 ##########
 # Format of the row
@@ -42,9 +42,14 @@ const EditionBlock = {
 		{ label: 'Copy',       cmd: 'y',         icon: '󰆏', type: 'v' },
 		{ label: 'Cut',        cmd: 'd',         icon: '󰆐', type: 'v' },
 		{ label: 'Paste',      cmd: 'p',         icon: '󰅍', type: 'v' },
-		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', type: 'v' }, # 'a' pour Normal & Visuel
+		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', type: 'v' },
+		{ type: 's'},
 		{ label: 'Equalize',   cmd: '=',         icon: '󰉼', type: 'v' },
-		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', type: 'n' }, # 'a' pour Normal & Visuel
+		{ label: 'Uppercase',  cmd: 'gU',        icon: '󰬶', type: 'v' },
+		{ label: 'Lowercase',  cmd: 'gu',        icon: '󰬵', type: 'v' },
+		{ label: 'sort Ascending',  cmd: ':sort<cr>',      icon: '', type: 'v' },
+		{ label: 'sort Descending', cmd: ':sort!<cr>',     icon: '', type: 'v' },
+		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', type: 'n' },
 		{ label: 'Paste',      cmd: 'p',         icon: '󰅍', type: 'n' },
         { label: 'Undo',       cmd: 'u',         icon: '󰕌', type: 'n' },
         { label: 'Redo',       cmd: '<C-r>',     icon: '󰑎', type: 'n' },
@@ -69,7 +74,7 @@ const FoldingBlock = {
 }
 
 const SettingsBlock = {
-    priority: 100,
+    priority: -1,
     rows: [
         { label: 'SupraVim Settings', cmd: ':call SettingsSupravim()<CR>', icon: '󰒓', type: 'n' }
     ]
@@ -91,10 +96,19 @@ call SupraMenu.Register((_) => {
 	return DebugBlock
 })
 
-call SupraMenu.Register((_) => {
-	return FoldingBlock
-})
+# call SupraMenu.Register((_) => {
+	# return FoldingBlock
+# })
 
 call SupraMenu.Register((_) => {
 	return SettingsBlock
 })
+
+
+def Loaded()
+	timer_start(500, (_) => {
+		silent! doautocmd User SupraMenuLoaded
+	})
+enddef
+		
+au VimEnter * call Loaded()
