@@ -7,6 +7,14 @@ public string cfg_dir;
 public string cfg_fpath;
 public string rc_path;
 
+public errordomain SupravimError {
+	BAD_VALUE,
+	VIM_CALL,
+	NOT_FOUND,
+	ALREADY_EXISTS,
+	UNKNOWN_ERROR
+}
+
 public class Main {
 	// Array of strings to hold the options passed from the command line. 
 	[CCode (array_length = false, array_null_terminated = true)]
@@ -15,6 +23,8 @@ public class Main {
 	private static string[]? enable = null;
 	[CCode (array_length = false, array_null_terminated = true)]
 	private static string[]? variable_set = null;
+	[CCode (array_length = false, array_null_terminated = true)]
+	private static string[]? reset = null;
 
 	// Boolean Options
 	private static bool is_version = false;
@@ -50,6 +60,7 @@ public class Main {
 		{ "update-plugin", '\0',NONE, 		STRING,			ref update_plugin,	"Update plugin.",							null },
 		{ "disable", 'd',		NONE, 		STRING_ARRAY,	ref disable,		"Disable options.",							"optA[,optB]"},
 		{ "enable", 'e',		NONE, 		STRING_ARRAY,	ref enable,			"Enable options.",							"optA[,optB]"},
+		{ "reset", 'r',			NONE, 		STRING_ARRAY,	ref reset,			"Reset options to their default values.",	"optA[,optB]"},
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
 		{ "print-options", 0,	HIDDEN, 	NONE,			ref print_opts,		"Print available options.",					null },
 		{ "print-themes", 0,	HIDDEN, 	NONE,			ref print_themes,	"Print available themes.",					null },
@@ -127,10 +138,7 @@ public class Main {
 		if (print_plugins)
 			return Plugin.print_all_installed_plugins ();
 		if (print_opts) {
-			var opts = General.get ();
-			foreach (var i in opts) {
-				print ("%s ", i.name);
-			}
+			Options.print_options ();
 			return true;
 		}
 		if (print_themes)
@@ -152,13 +160,22 @@ public class Main {
 		else if (is_uninstall)
 			return Process.spawn_command_line_sync ("suprapack remove supravim");
 		else if (is_status) {
-			print_status ();
+			Options.print_status ();
 			return true;
 		}
 		
 		foreach (unowned string str in disable) {
 			try {
-				Modificator.disable (str);
+				Options.disable (str);
+			}
+			catch (Error e) {
+				warning (e.message);
+			}
+		}
+
+		foreach (unowned string str in reset) {
+			try {
+				Options.reset (str);
 			}
 			catch (Error e) {
 				warning (e.message);
@@ -167,7 +184,7 @@ public class Main {
 
 		foreach (unowned string str in enable) {
 			try {
-				Modificator.enable (str);
+				Options.enable (str);
 			}
 			catch (Error e) {
 				warning (e.message);
@@ -176,7 +193,12 @@ public class Main {
 
 		foreach (unowned string str in variable_set) {
 			try {
-				Modificator.set_value (str);
+				// Str format is: opt=value
+				if (!("=" in str))
+					throw new SupravimError.BAD_VALUE("Invalid format for variable set. Expected format: opt=value");
+				string key = str[0:str.index_of_char('=')];
+				string v = str[str.index_of_char('=') + 1:];
+				Options.update_value(key, v);
 			}
 			catch (Error e) {
 				warning (e.message);
