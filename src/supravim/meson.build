@@ -2,17 +2,14 @@
 config_vala_file = configure_file(input : 'Config.vala.in', output : 'Config.vala', configuration : conf_data)
 
 srcs = files (
-   'main.vala',
-   'Theme.vala',
-   'Plugin.vala',
-   'General.vala',
-   'Element.vala',
-   'Modificator.vala',
-   'Status.vala',
    'Cfg.vala',
-   'ArrayElement.vala',
+   'Options.vala',
+   'Plugin.vala',
+   'PluginLst.vala',
+   'SupraParser.vala',
+   'Theme.vala',
    'Utils.vala',
-   'PluginLst.vala'
+   'main.vala',
 )
 
 executable('supravim',
