@@ -104,15 +104,15 @@ export def Start()
 		}
 	})
 	win_execute(dic.menu, 'setlocal syntax=fuzzbox_lsp_diag')
-	# hi LspDiagInfo guifg=#00afff ctermfg=75
-	# hi LspDiagHint guifg=#5f87ff ctermfg=111
-	# hi link LspDiagWarning WarningMsg 
-	# hi link LspDiagError ErrorMsg
-	# call matchadd('LspDiagError', '│ E.*$', 10000, -1, {'window': dic.menu})
-	# call matchadd('LspDiagWarning', '│ W.*$', 10000, -1, {'window': dic.menu})
-	# call matchadd('LspDiagInfo', '│ I.*$', 10000, -1, {'window': dic.menu})
-	# call matchadd('LspDiagHint', '│ H.*$', 10000, -1, {'window': dic.menu})
-# 
-	# call matchadd('Directory', '\zs[^│]*\ze │', 10000, -1, {'window': dic.menu})
+	hi LspDiagInfo guifg=#00afff ctermfg=75
+	hi LspDiagHint guifg=#5f87ff ctermfg=111
+	hi link LspDiagWarning WarningMsg 
+	hi link LspDiagError ErrorMsg
+	call matchadd('LspDiagError', '│ E.*$', 10000, -1, {'window': dic.menu})
+	call matchadd('LspDiagWarning', '│ W.*$', 10000, -1, {'window': dic.menu})
+	call matchadd('LspDiagInfo', '│ I.*$', 10000, -1, {'window': dic.menu})
+	call matchadd('LspDiagHint', '│ H.*$', 10000, -1, {'window': dic.menu})
+
+	call matchadd('Directory', '\zs[^│]*\ze │', 10000, -1, {'window': dic.menu})
 
 enddef

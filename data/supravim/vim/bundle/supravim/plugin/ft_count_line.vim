@@ -1,14 +1,4 @@
-vim9script
+vim9script noclear
 
-import autoload 'ft_count_line.vim' as Ft_count_line
-
-highlight Ft_count_line cterm=bold
-g:sp_count_line = true	# shows how many lines have functions
-call prop_type_add("ft_count_line", {highlight: "Ft_count_line"})
-
-if g:sp_count_line == true
-	autocmd BufEnter *.c,*.h,*.hpp,*.cpp,*.vala call Ft_count_line.Ft_count_line()
-	call Ft_count_line.EnableAugroup()
-endif
-
-autocmd User SupravimChangeOption call Ft_count_line.SimpleSupravimChangeOption()
+hi Ft_count_line cterm=bold
+prop_type_add("ft_count_line", {highlight: "Ft_count_line"})

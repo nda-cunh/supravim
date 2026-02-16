@@ -80,30 +80,25 @@ const SettingsBlock = {
     ]
 }
 
-call SupraMenu.Register((_) => {
-	return LspBlock
+SupraMenu.Register((_: dict<any>): dict<any> => {
+    return LspBlock
 })
 
-call SupraMenu.Register((_) => {
-	return SystemBlock
+SupraMenu.Register((_: dict<any>): dict<any> => {
+    return SystemBlock
 })
 
-call SupraMenu.Register((_) => {
-	return EditionBlock
+SupraMenu.Register((_: dict<any>): dict<any> => {
+    return EditionBlock
 })
 
-call SupraMenu.Register((_) => {
-	return DebugBlock
+SupraMenu.Register((_: dict<any>): dict<any> => {
+    return DebugBlock
 })
 
-# call SupraMenu.Register((_) => {
-	# return FoldingBlock
-# })
-
-call SupraMenu.Register((_) => {
-	return SettingsBlock
+SupraMenu.Register((_: dict<any>): dict<any> => {
+    return SettingsBlock
 })
-
 
 def Loaded()
 	timer_start(500, (_) => {

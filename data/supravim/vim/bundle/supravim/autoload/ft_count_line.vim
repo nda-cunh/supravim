@@ -4,9 +4,6 @@ const SkipQuotesAndComments = "synIDattr(synID(line('.'), col('.'), 1), 'name') 
 
 export def Ft_count_line()
 	const position = getpos('.')
-	if g:sp_count_line == false
-		return
-	endif
 	const end_view_line = line('w$')
 	const begin_view_line = line('w0')
 
@@ -49,19 +46,20 @@ export def EnableAugroup()
 	augroup END
 enddef
 
-export def SimpleSupravimChangeOption()
-	if g:supravim_option_changed == 'count_line'
-		if g:supravim_option_value == 'true'
-			g:sp_count_line = true
-			call Ft_count_line()
-			call EnableAugroup()
-		else
-			g:sp_count_line = false
-			var lst = prop_list(1, {types: ['ft_count_line'], end_lnum: line('$')})
-			for item in lst
-				call prop_remove(item)
-			endfor
-			auto! Ft_count_line
-		endif
+export def SimpleSupravimChangeOption(value: bool)
+	if value == true
+		hi! Ft_count_line cterm=bold
+		call prop_type_add("ft_count_line", {highlight: "Ft_count_line"})
+		call Ft_count_line()
+		call EnableAugroup()
+	else
+		try 
+		var lst = prop_list(1, {types: ['ft_count_line'], end_lnum: line('$')})
+		for item in lst
+			call prop_remove(item)
+		endfor
+		auto! Ft_count_line
+		catch
+		endtry
 	endif
 enddef
