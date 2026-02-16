@@ -13,9 +13,26 @@ if !has('patch-9.1.1100')
 	finish
 endif
 
+#--------------- Colors Theme ---------------"
+syntax on
+
+if (has("termguicolors"))
+	set termguicolors
+endif
+
+set t_Co=256
+set background=dark
 # ---------------  Supraload  ---------------"
 
 import autoload 'supraload.vim' as SupraLoad 
+import autoload 'supraconfig.vim' as SupraConfig
+
+{
+	const lst_glob = glob($HOME .. "/.vim/bundle_supravim/*") .. "\n" .. glob(expand("$HOME") .. "/.vim/bundle_supravim/*/after")
+	const lst = substitute(lst_glob, "\n", ",", "g")
+	execute "set runtimepath+=" .. lst 
+}
+# Load plugins in bundles directories
 SupraLoad.Infect()
 
 filetype plugin indent on
@@ -28,74 +45,266 @@ import autoload 'supravim/Welcome.vim' as WelcomeModule
 import autoload 'supravim/SupravimServer.vim' as SupraVimServer
 import autoload 'supravim/SupraOptions.vim' as Options
 
-g:sp_swap = false	# create swapfile (.swp)
-g:sp_wrap = true	# do not wrap the text if the line is too long
-g:sp_autosave = true	# Auto save files
-g:sp_nobackground = false	# remove background color and use your terminal background
-g:sp_autopairs_enabled = true	# enable auto pairs
-g:sp_autopairs_flymode = false	# Jump out of closing pairs when typing the closing character
-g:sp_supratree_open = true # display folder tree at left
-g:sp_supratree_winsize = 26	# size of the folder tree window by default
-g:sp_supratree_show_hidden = false	# show hidden files in the folder tree
-g:sp_supratree_sortascending = true	# sort the folder tree ascending
-g:sp_supratree_theme_darken_percent = 18 # darken percent of the folder tree	
-g:sp_supratree_theme_forcecolor = '' # force color for supratree, like #adedb8, empty for default
-g:sp_fuzzbox_enable_icons = true # enable icons in fuzzbox
-g:sp_fuzzbox_dropdown = false # prompt at top rather than bottom
-g:sp_fuzzbox_counter = true # Show count of matches 
-g:sp_fuzzbox_scrollbar = false # Show a scrollbar in the menu window when the results do not fit 
-g:sp_fuzzbox_prompt_prefix = '➜ ' # Set the prefix for the input in the prompt window 
-g:sp_fuzzbox_wrap_menu = false # wrap menu lines in fuzzbox
-g:sp_fuzzbox_wrap_preview = true # wrap preview lines in fuzzbox
-g:sp_roundvisual_quotes = true	# Auto Closing for quotes '"' and ''' and '`'
-g:sp_roundvisual_brackets = true	# Auto Closing for brackets'(' ')' and '[' ']'
-g:sp_roundvisual_braces = false	# Auto Closing for braces '{' '}'
-g:sp_roundvisual_angle = false	# Auto Closing for angle brackets '<' '>'
-g:sp_symbol_signs = "┃"	# The symbol used for the signs before it is this: ✖
-g:sp_mapleader = "\<space>"	# The leader key used in the mappings
-g:sp_theme_style_function = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_type = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_variable = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_keyword = 1	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme_style_comment = 0	# 0 = none, 1 = bold, 2 = italic, 3 = underline
-g:sp_theme = "onedark"	# A cute theme color
+SupraConfig.RegisterGroup('autopairs', 'Options related to the Auto Pairs plugin')
+SupraConfig.RegisterGroup('fuzzbox', 'Options related to the Fuzzbox plugin')
+SupraConfig.RegisterGroup('roundvisual', 'Options related to the RoundVisual plugin for auto closing')
+SupraConfig.RegisterGroup('theme/style', 'Options related to the styling of the current theme')
+SupraConfig.RegisterGroup('theme', 'General options related to the theme and colorscheme')
 
-g:mapleader = g:sp_mapleader
+SupraConfig.RegisterMany([
+    # --- GENERAL ---
+    {
+        id: 'theme',
+        type: 'string',
+        default: 'onedark',
+        lore: 'Sets the main color scheme',
+        handler: (v) => {
+			# a theme can be have the format 'theme[-<light|dark>]'
+			var name = matchstr(v, '^[^-]*')
+			var typemode = matchstr(v, '-\zs.*') == 'light' ? 'light' : 'dark'
+			Options.ChangeSupravimTheme(name, typemode)
+		}
+    },
+    {
+        id: 'swap',
+        type: 'bool',
+        default: false,
+        lore: 'Enable the creation of swap files (.swp)',
+        handler: (v) => {
+			exec ($'{v}' == 'true' ? 'set swapfile' : 'set noswapfile')
+		}
+    },
+    {
+        id: 'wrap',
+        type: 'bool',
+        default: true,
+        lore: 'Enable automatic line wrapping',
+        handler: (v) => {
+			exec ($'{v}' == 'true' ? 'set wrap' : 'set nowrap')
+		}
+    },
+    {
+        id: 'autosave',
+        type: 'bool',
+        default: false,
+        lore: 'Automatically save files on changes',
+        handler: (v) => {
+			g:sp_autosave = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'nobackground',
+        type: 'bool',
+        default: false,
+        lore: 'Remove background color to use terminal transparency',
+        handler: (v) => {
+			Options.ChangeNoBackgroundOption(v == 'true')
+		}
+    },
 
-if g:sp_autosave == true
-	Utils.AutoSaveActivate(true)
-endif
+    # --- AUTO PAIRS ---
+    {
+        id: 'autopairs/enabled',
+        type: 'bool',
+        default: true,
+        lore: 'Enable automatic closing of brackets and quotes',
+        handler: (v) => {
+			g:autopairs_enabled = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'autopairs/flymode',
+        type: 'bool',
+        default: false,
+        lore: 'Enable Fly Mode for Auto Pairs (experimental)',
+        handler: (v) => {
+			g:AutoPairsFlyMode = ($'{v}' == 'true' ? 1 : 0)
+		}
+    },
 
-# Protect against invalid symbols
-if true
-	g:sp_symbol_signs = substitute(g:sp_symbol_signs, '\s+', '', 'g')
-	const len = strcharlen(g:sp_symbol_signs)
-	if len > 2
-		call Notify.Notification(["Invalid symbol", "The symbol used for the signs must be a single character"], {type: 'error'})
-		g:sp_symbol_signs = '✖'
-	elseif len == 0
-		call Notify.Notification(["Invalid symbol", "The symbol used for the signs must not be empty"], {type: 'error'})
-		g:sp_symbol_signs = '✖'
-	endif
-endif
+    # --- FUZZBOX ---
+    {
+        id: 'fuzzbox/enable_icons',
+        type: 'bool',
+        default: true,
+        lore: 'Show file icons in Fuzzbox search results',
+        handler: (v) => {
+			g:fuzzbox_enable_icons = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'fuzzbox/dropdown',
+        type: 'bool',
+        default: false,
+        lore: 'Display the search prompt at the top instead of the bottom',
+        handler: (v) => {
+			g:fuzzbox_dropdown = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'fuzzbox/counter',
+        type: 'bool',
+        default: true,
+        lore: 'Show the number of matches in Fuzzbox',
+        handler: (v) => {
+			g:fuzzbox_counter = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'fuzzbox/scrollbar',
+        type: 'bool',
+        default: false,
+        lore: 'Show a scrollbar when results exceed window size',
+        handler: (v) => {
+			g:fuzzbox_scrollbar = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'fuzzbox/prompt_prefix',
+        type: 'string',
+        default: "➜ ",
+        lore: 'Prefix character for the Fuzzbox input prompt',
+        handler: (v) => {
+			g:fuzzbox_prompt_prefix = v
+		}
+    },
+    {
+        id: 'fuzzbox/wrap_menu',
+        type: 'bool',
+        default: false,
+        lore: 'Wrap long lines in the Fuzzbox menu',
+        handler: (v) => {
+			g:fuzzbox_wrap_menu = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'fuzzbox/wrap_preview',
+        type: 'bool',
+        default: true,
+        lore: 'Wrap long lines in the Fuzzbox preview window',
+        handler: (v) => {
+			g:fuzzbox_wrap_preview = ($'{v}' == 'true')
+		}
+    },
 
-#--------------- Colors Theme ---------------"
-syntax on
+    # --- ROUNDVISUAL (AUTO CLOSING) ---
+    {
+        id: 'roundvisual/quotes',
+        type: 'bool',
+        default: true,
+        lore: 'Auto-close quotes " and' .. " \' and `'",
+        handler: (v) => {
+			g:roundvisual_quotes = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'roundvisual/brackets',
+        type: 'bool',
+        default: true,
+        lore: 'Auto-close parenthesis () and brackets []',
+        handler: (v) => {
+			g:roundvisual_brackets = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'roundvisual/braces',
+        type: 'bool',
+        default: false,
+        lore: 'Auto-close braces {}',
+        handler: (v) => {
+			g:roundvisual_braces = ($'{v}' == 'true')
+		}
+    },
+    {
+        id: 'roundvisual/angle',
+        type: 'bool',
+        default: false,
+        lore: 'Auto-close angle brackets <>',
+        handler: (v) => {
+			g:roundvisual_angle = ($'{v}' == 'true')
+		}
+    },
 
-if (has("termguicolors"))
-	set termguicolors
-endif
+    # --- UI ELEMENTS ---
+    {
+        id: 'symbol_signs',
+        type: 'string',
+        default: "┃",
+        lore: 'Vertical symbol used for sidebar signs (e.g. Git markers)',
+        handler: (v) => {
 
-set t_Co=256
-exec 'colorscheme ' .. g:sp_theme
-set background=dark
+			var clean = substitute($'{v}', '\s+', '', 'g')
+            g:sp_symbol_signs = (empty(clean) || strcharlen(clean) > 2) ? '✖' : clean
+        }
+    },
+    {
+        id: 'mapleader',
+        type: 'string',
+        default: "\<space>",
+        lore: 'The leader key used for Supravim shortcuts',
+        handler: (v) => {
+			g:mapleader = v
+			g:maplocalleader = v
+		}
+    },
 
-if g:sp_nobackground == true
-	hi Normal guibg=NONE ctermbg=NONE
-	hi! link SignColumn Normal
-	hi! link EndOfBuffer Normal
-	# hi! link CursorLine Normal 
-endif
+    # --- THEME STYLES ---
+    {
+        id: 'theme/style/function',
+        type: 'string',
+        default: 'italic,bold,underline',
+        lore: 'Style for functions none, bold, italic, underline', 
+        handler: (v) => {
+			Options.ChangeColorStyleStatic('Function', v)
+		}
+    },
+    {
+        id: 'theme/style/type',
+        type: 'string',
+        default: 'none',
+        lore: 'Style for types none, bold, italic, underline',
+        handler: (v) => {
+			Options.ChangeColorStyleStatic('Type', v)
+		}
+    },
+    {
+        id: 'theme/style/variable',
+        type: 'string',
+        default: 'none',
+        lore: 'Style for variables none, bold, italic, underline',
+        handler: (v) => {
+			Options.ChangeColorStyleStatic('Variable', v)
+		}
+    },
+    {
+        id: 'theme/style/keyword',
+        type: 'string',
+        default: 'none',
+        lore: 'Style for keywords none, bold, italic, underline',
+        handler: (v) => {
+			Options.ChangeColorStyleStatic('Keyword', v)
+		}
+    },
+    {
+        id: 'theme/style/comment',
+        type: 'string',
+        default: 'none',
+        lore: 'Style for comments none, bold, italic, underline',
+        handler: (v) => {
+			Options.ChangeColorStyleStatic('Comment', v)
+		}
+    },
+	{
+		id: 'theme/style/string',
+		type: 'string',
+		default: 'none',
+		lore: 'Style for strings none, bold, italic, underline',
+		handler: (v) => {
+			Options.ChangeColorStyleStatic('String', v)
+		}
+	},
+
+])
 
 #------------- Cursor Parts ------------"
 &t_SI = "\<Esc>[5 q"
@@ -209,14 +418,6 @@ tnoremap <S-Down>		<C-W>N<C-w><Down>
 #--------------- 	Settings      ---------------"
 g:lsp_log_verbose = 0
 set mouse=a
-if g:sp_swap == false
-	set noswapfile
-endif
-if g:sp_wrap == true
-	set wrap
-else
-	set nowrap
-endif
 set cursorline
 set shortmess+=I
 set nu
@@ -230,22 +431,33 @@ silent! exec 'cd ' .. expand('%:p:h')
 silent! var project_root = system('suprabear -p')
 var suprabear_return = v:shell_error
 silent! exec 'chdir ' .. project_root
-set title
-set wildmenu
-set tabstop=4
-set shiftwidth=4
-set smartindent
 set autoindent
-set shiftround
-set showmode
 set backspace=indent,eol,start
-set pumheight=50
-set notimeout
-set ttimeout
-set timeoutlen=100
+set breakindent
 set encoding=utf-8
+set notimeout
+set pumheight=50
+set shiftround
+set shiftwidth=4
+set showmode
+set smartindent
 set splitbelow
+if exists('+smoothscroll')
+	set smoothscroll
+endif
+syntax sync minlines=100
+hi! link Pmenu Normal
+if exists('+pumborder')
+	set pumborder=round
+	set pumheight=10
+endif
+set display=lastline
 set splitright
+set tabstop=4
+set timeoutlen=100
+set title
+set ttimeout
+set wildmenu
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set fillchars=vert:│
 auto BufEnter,VimEnter *.tpp set filetype=cpp
@@ -253,56 +465,44 @@ auto BufEnter,VimEnter *.tpp set filetype=cpp
 # ---------------      LSP            ---------------"
 set updatetime=500
 autocmd CursorHold * call Utils.AutoLspHold()
-
 #--------------- Lsp Interface ---------------"
 def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
-	silent! lsp#register_server({
-		\ name: name,
-		\ cmd: (_) => cmd,
-		\ allowlist: filetypes,
-	\ })
-	silent! lsp#activate()
+	call timer_start(2000, (_) => {
+		silent! lsp#register_server({
+			\ name: name,
+			\ cmd: (_) => cmd,
+			\ allowlist: filetypes,
+		\ })
+		silent! lsp#activate()
+	}) 
 enddef
 
 # --------------- Auto Pairs ---------------"
 g:AutoPairsFlyMode = 0
 
 #--------------- Supravim Options ---------------"
-g:supravim_option_changed = 'null'
-g:supravim_option_value = 'null'
-
-def g:ChangeSupravimTheme(theme: string, typemode: string)
-	Options.ChangeSupravimTheme(theme, typemode)
-enddef
-
-def g:ChangeSupravimOption(changed: string, value: string)
-	Options.ChangeSupravimOption(changed, value)
-enddef
-
 def g:SettingsSupravim()
-	job_start(["supravim-gui"], {
-		out_cb: Options.GotOutput,
-	})
+	Options.OpenWindow()
 enddef
 
 # ---------------  SupraVim Server  ---------------"
-g:supravim_server = job_start(["supravim-server", project_root], {
-	out_cb: SupraVimServer.GotOutputSupravimServer,
-	in_mode: 'raw',
-	in_io: 'pipe'
-})
+if executable('supravim-server')
+	g:supravim_server = job_start(["supravim-server", project_root], {
+		out_cb: SupraVimServer.GotOutputSupravimServer,
+		in_mode: 'raw',
+		in_io: 'pipe'
+	})
 
-def OpenNewFile()
-	var filetype = &filetype
-	if filetype == ''
-		filetype = expand('%:e')
-	endif
-	ch_sendraw(g:supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
-enddef
+	def OpenNewFile()
+		var filetype = &filetype
+		if filetype == ''
+			filetype = expand('%:e')
+		endif
+		ch_sendraw(g:supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
+	enddef
 
-au BufEnter * OpenNewFile()
-
-autocmd User SupravimChangeOption call Options.SimpleSupravimChangeOption()
+	au BufEnter * OpenNewFile()
+endif
 
 # ---------------  GDB  ---------------"
 
@@ -384,10 +584,6 @@ def CreatePopit()
 	})
 enddef
 
-# ---------------  Round It ---------------"
-Options.AutoCloseActivate()
-autocmd User SupraVimChangeOption call Options.AutoCloseActivate
-
 # ---------------  Popup Menu  ---------------"
 set mousemodel=popup
 
@@ -418,52 +614,7 @@ if filereadable(expand('%')) == 0
 	mkdir(expand('%:p:h'), 'p')
 endif
 }
-# --------------- AutoPairs ---------------"
-g:AutoPairsEnabled = g:sp_autopairs_enabled
-g:AutoPairsFlyMode = g:sp_autopairs_flymode
-
-def AutoPairsSupravimOption()
-	if stridx(g:supravim_option_changed, 'autopairs_') != 0
-		return
-	endif
-	if g:supravim_option_changed == 'autopairs_enabled'
-		if g:supravim_option_value == 'true'
-			call g:AutoPairsEnable()
-		else
-			call g:AutoPairsDisable()
-		endif
-	elseif g:supravim_option_changed == 'autopairs_flymode'
-		if g:supravim_option_value == 'true'
-			g:AutoPairsFlyMode = 1
-		else
-			g:AutoPairsFlyMode = 0
-		endif
-	endif
-enddef
-
-au User SupravimChangeOption call AutoPairsSupravimOption()
-
-#--------------- SupraTree ---------------"
-g:SupraTreeIgnoreTree = ['\.png$\', '\.jpg$', '\.o$']
-g:SupraTreeWinSize = g:sp_supratree_winsize
-g:SupraTreeShowHidden = g:sp_supratree_show_hidden
-g:SupraTreeSortAscending = g:sp_supratree_sortascending
-g:SupraTreeDarkenAmount = g:sp_supratree_theme_darken_percent
-if g:sp_supratree_theme_forcecolor != ''
-	g:SupraTreeForceColor = g:sp_supratree_theme_forcecolor
-endif
-g:SupraTreeOpenByDefault = g:sp_supratree_open
-g:SupraTreeSymbolSigns = g:sp_symbol_signs
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
-
-# --------------- FuzzBox ---------------"
-g:fuzzbox_devicons = g:sp_fuzzbox_enable_icons
-g:fuzzbox_dropdown = g:sp_fuzzbox_dropdown
-g:fuzzbox_counter = g:sp_fuzzbox_counter
-g:fuzzbox_scrollbar = g:sp_fuzzbox_scrollbar
-g:fuzzbox_prompt_prefix = g:sp_fuzzbox_prompt_prefix
-g:fuzzbox_menu_wrap = g:sp_fuzzbox_wrap_menu
-g:fuzzbox_preview_wrap = g:sp_fuzzbox_wrap_preview
 
 #--------------- SupraVim Color ----------"
 def FixSupraVimColor()
@@ -475,10 +626,6 @@ autocmd Colorscheme * call FixSupraVimColor()
 FixSupraVimColor()
 
 autocmd VimEnter * call WelcomeModule.PrintChangeLog()
-autocmd User SupravimChangeOption call Options.ChangeColorStyle()
-autocmd SourcePost * {
-	call Options.ChangeColorStyle()
-}
 
 # for the bug with line with space
 hi mkdLineBreak cterm=NONE

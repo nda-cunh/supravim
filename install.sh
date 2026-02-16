@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#create a finction to install supravim
+#create a function to install supravim
 
 install_supravim() {
 	export PATH=$TMPDIR/suprapack:$PWD:$PATH
@@ -17,7 +17,7 @@ install_supravim() {
 
 # check if git, make, zstd is installed
 required_commands=("git" "make" "zstd")
-# Vérification de chaque commande
+
 missing_commands=()
 for cmd in "${required_commands[@]}"; do
 	if ! command -v "$cmd" &> /dev/null; then
@@ -70,4 +70,3 @@ cd suprapack
 make install
 install_supravim
 popd
-

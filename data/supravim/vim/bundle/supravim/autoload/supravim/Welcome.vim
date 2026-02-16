@@ -14,22 +14,23 @@ export def Welcome()
 enddef
 
 export def PrintChangeLog()
-	job_start(["suprapack", "info", "supravim"], {
-		out_io: 'buffer',
-		out_msg: 0,
-		out_mode: 'raw',
-		close_cb: (ch: channel) => {
-			const buffer = ch->ch_getbufnr('out')
-			const all = getbufline(buffer, 0, '$')
-			var a = stridx(all[0], 'Version')
-			var b = stridx(all[0], '0m', a)
-			var c = stridx(all[0], "\n", b)
-			var version = all[0][b + 2 : c - 1]
-			call WelcomeChangeLog(version)
-			execute "bd! " .. buffer
-		}
-			
-	})
+	if executable('suprapack')
+		job_start(["suprapack", "info", "supravim"], {
+			out_io: 'buffer',
+			out_msg: 0,
+			out_mode: 'raw',
+			close_cb: (ch: channel) => {
+				const buffer = ch->ch_getbufnr('out')
+				const all = getbufline(buffer, 0, '$')
+				var a = stridx(all[0], 'Version')
+				var b = stridx(all[0], '0m', a)
+				var c = stridx(all[0], "\n", b)
+				var version = all[0][b + 2 : c - 1]
+				call WelcomeChangeLog(version)
+				execute "bd! " .. buffer
+			}
+		})
+	endif
 enddef
 
 def WelcomeChangeLog(version: string)
