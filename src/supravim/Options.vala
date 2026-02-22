@@ -87,7 +87,7 @@ namespace Options {
 
 			// Construction de la ligne d'option par concaténation
 			print (opt_indent + NAME_COLOR + short_name + RESET + ": " + 
-					v_color + opt.value + RESET + padding + LORE_COLOR + opt.lore + RESET + "\n");
+					v_color + opt.value + RESET + "\033[31j" + LORE_COLOR + opt.lore + RESET + "\n");
 
 			last_parts = current_parts;
 		}
