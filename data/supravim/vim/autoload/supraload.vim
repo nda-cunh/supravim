@@ -30,4 +30,5 @@ export def Infect()
 	catch
 		execute "set runtimepath+=" .. lst 
 	endtry
+	runtime! ftdetect/*.vim
 enddef
