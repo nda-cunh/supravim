@@ -169,6 +169,15 @@ SupraConfig.RegisterMany([
 		}
     },
     {
+        id: 'fuzzbox/selection_prefix',
+        type: 'string',
+        default: "➜ ",
+        lore: 'Prefix character for the selected item in Fuzzbox results',
+		handler: (v) => {
+			g:fuzzbox_selection_sign = v
+		}
+    },
+    {
         id: 'fuzzbox/wrap_menu',
         type: 'bool',
         default: false,
