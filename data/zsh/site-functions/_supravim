@@ -14,7 +14,7 @@ _supravim() {
 		--remove-plugin|--enable-plugin|--disable-plugin)
 			_arguments "*:commands:($(supravim --print-plugins))"
 			;;
-		-e|--theme)
+		-t|--theme)
 			_arguments "*:commands:($(supravim --print-themes))"
 			;;
 	esac
