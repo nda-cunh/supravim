@@ -1,0 +1,26 @@
+pkgname=plugin-norminette
+pkgver=3.0
+arch=('any')
+depends=('supravim')
+pkgdesc='press <Space><F3> to disable/enable plugin for norminette support'
+
+source=(
+	'SupraNorminette::git+https://github.com/nda-cunh/vim9-norminette.git'
+)
+
+prepare() {
+	rm -rf $srcdir/*/.git
+	rm -rf $srcdir/*/.vimrc
+	rm -rf $srcdir/*/.github
+	rm -rf $srcdir/*/.gitignore
+	rm -rf $srcdir/*/README.*
+	rm -rf $srcdir/*/.gitattributes
+	rm -rf $srcdir/vim-lsp/minimal.vimrc
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/supravim/vim/bundle/"
+
+	# Bundle directory
+	cp -rf "$srcdir/SupraNorminette"	"$pkgdir/usr/share/supravim/vim/bundle/"
+}
