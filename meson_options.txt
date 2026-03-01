@@ -1,0 +1,2 @@
+option('discord-presence', type : 'boolean', value : true, description : 'The discord presence')
+option('suprapack', type : 'boolean', value : true, description : 'create the suprapack package')

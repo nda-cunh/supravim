@@ -85,7 +85,7 @@ public class Main {
 	}
 
 	// [installed] plugin-autobear 1.3 [auto generate a compile_commands.json for your project]
-	public static void ft_print_supramenu_plugin () {
+	public static void ft_print_supramenu_plugin () throws Error {
 		var regex = new Regex (""" (?<name>\S+) \s+ (?<version>\S+) \s+ \[(?<Comment>[^\]]+)   """, RegexCompileFlags.EXTENDED);
 		print ("-- Supramenu Plugins --\n\n");
 		string stdout;
@@ -103,7 +103,7 @@ public class Main {
 				var name = info.fetch_named("name");
 				var version = info.fetch_named("version");
 				var comment = info.fetch_named("Comment");
-				plugins += new SupraVimPlugin (name, version, comment, installed);
+				plugins += SupraVimPlugin (name, version, comment, installed);
 			}
 		}
 		int max_name_len = 0;
@@ -165,30 +165,15 @@ public class Main {
 		}
 		
 		foreach (unowned string str in disable) {
-			try {
-				Options.disable (str);
-			}
-			catch (Error e) {
-				warning (e.message);
-			}
+			Options.disable (str);
 		}
 
 		foreach (unowned string str in reset) {
-			try {
-				Options.reset (str);
-			}
-			catch (Error e) {
-				warning (e.message);
-			}
+			Options.reset (str);
 		}
 
 		foreach (unowned string str in enable) {
-			try {
-				Options.enable (str);
-			}
-			catch (Error e) {
-				warning (e.message);
-			}
+			Options.enable (str);
 		}
 
 		foreach (unowned string str in variable_set) {

@@ -10,7 +10,7 @@ public const string VAL_STRING = "\033[97m";
 
 namespace Options {
 
-	public void update_value (string key, string value) {
+	public void update_value (string key, string value) throws Error {
 		string trash;
 		var cmd = "vim -es -u ~/.vimrc -c 'call supraconfig#UpdateWithStringWithoutApply(";
 		cmd += "\""+key+"\", \""+value+"\"";
@@ -18,11 +18,11 @@ namespace Options {
 		Process.spawn_command_line_sync (cmd, out trash, out trash);
 	}
 
-	public void reset_value (string key) {
+	public void reset_value (string key) throws Error {
 
 		// get the default value for reset it:
 		var lst = SupraParser.get_from_vim();
-		foreach (var opt in lst) {
+		foreach (unowned var opt in lst) {
 			if (opt == null) continue;
 			if (opt.id == key) {
 				update_value (key, opt.default_value);
@@ -33,7 +33,7 @@ namespace Options {
 	}
 
 
-	public void print_status () {
+	public void print_status () throws Error {
 		var lst = SupraParser.get_from_vim();
 		lst.sort ((a, b) => strcmp(a.id, b.id));
 
@@ -44,14 +44,12 @@ namespace Options {
 
 			string[] current_parts = opt.id.split("/");
 
-			// 1. Logique des Groupes
 			string path_acc = "";
 			for (int i = 0; i < current_parts.length; i++) {
 				string segment = current_parts[i];
 				bool is_last = (i == current_parts.length - 1);
 				path_acc = (path_acc == "") ? segment : path_acc + "/" + segment;
 
-				// On ne traite pas le dernier segment comme un groupe sauf s'il est déclaré comme tel
 				if (is_last && !(path_acc in SupraParser.group_lores)) break;
 
 				if (i >= last_parts.length || segment != last_parts[i]) {
@@ -61,31 +59,25 @@ namespace Options {
 					}
 
 					string indent = string.nfill(i * 2, ' ');
-					// Concaténation pure pour l'en-tête du groupe
 					print (indent + GROUP_COLOR + "[" + segment + "]" + "   " + LORE_COLOR + group_lore + RESET + "\n");
 				}
 				if (is_last) break; 
 			}
 
-			// 2. Logique de l'Option
 			string short_name = current_parts[current_parts.length - 1];
 			int depth = current_parts.length - 1;
 			if (opt.id in SupraParser.group_lores) depth++;
 
 			string opt_indent = string.nfill(depth * 2 + 2, ' ');
 
-			// Détermination de la couleur de la valeur
 			string v_color = VAL_STRING;
 			if (opt.value == "true") v_color = VAL_BOOL_TRUE;
 			else if (opt.value == "false") v_color = VAL_BOOL_FALSE;
 			else if (opt.type == "number") v_color = VAL_NUMBER;
 
-			// Alignement (Padding)
 			int padding_size = 25 - short_name.length - (depth * 2);
 			if (padding_size < 1) padding_size = 1;
-			string padding = string.nfill(padding_size, ' ');
 
-			// Construction de la ligne d'option par concaténation
 			print (opt_indent + NAME_COLOR + short_name + RESET + ": " + 
 					v_color + opt.value + RESET + "\033[31j" + LORE_COLOR + opt.lore + RESET + "\n");
 
@@ -94,7 +86,7 @@ namespace Options {
 	}
 
 	// for zsh and bash completion
-	public void print_options() {
+	public void print_options() throws Error {
 		var lst = SupraParser.get_from_vim();
 		foreach (unowned var opt in lst) {
 			if (opt == null)
@@ -103,15 +95,15 @@ namespace Options {
 		}
 	}
 
-	public void reset (string key) {
+	public void reset (string key) throws Error {
 		reset_value (key);
 	}
 
-	public void disable (string key) {
+	public void disable (string key) throws Error {
 		update_value (key, "false");
 	}
 
-	public void enable (string key) {
+	public void enable (string key) throws Error {
 		update_value (key, "true");
 	}
 }

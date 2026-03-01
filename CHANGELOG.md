@@ -1,10 +1,13 @@
 # 6.12.0
-- Add Go LSP support
+- Add Go,Zig,Markdown... LSP support
 - Improve Supravim-better-comment to support more languages
 - Add a new Popup Menu with Right-Click
 - Fix bug with clipboard if vim is compied with +clipboard but not with X11 or Wayland support
 - Reset the positon if the suprasearch is cancelled
-- Add new syntax theme for C and C++
+- Add new syntax theme for C and C++, Vala, Nasm
+- Add option in meson.build for disable discord-rich-presence support
+- Add Supravim-Options a new plugin to manage supravim's options
+- Optimize some themes
 
 # 6.11.0
 - Add a new AutoPairs plugin and more options disable FlyMode by default
