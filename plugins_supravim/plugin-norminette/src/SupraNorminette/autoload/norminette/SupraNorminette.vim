@@ -1,12 +1,7 @@
 vim9script
 
-g:sp_norme = true # norminette hint, press <leader>F3 to switch
-
-highlight DapBreakpoint ctermfg=135
-execute 'sign define NormLinter text=' .. g:sp_symbol_signs .. ' texthl=DapBreakpoint'
-hi def link NormErrors Underlined
-
 var g_errors: list<list<string>> = []
+var filename_norm: string
 
 def CountLine(linenb: number): number
 	var start = linenb
@@ -20,7 +15,6 @@ def CountLine(linenb: number): number
 	return start - i - 1
 enddef
 
-var filename_norm: string
 
 def GotOutput(channel: channel, msg: string)
 	var filename = filename_norm
@@ -33,7 +27,7 @@ def GotOutput(channel: channel, msg: string)
 			if txt >= 100
 				exe "sign place 2 line=" .. groups[2] .. " name=NormLinter file=" .. filename
 			else
-				exe "sign define FunctionLines_" .. txt .. " text=" .. txt .. " icon=FunctionLines texthl=DapBreakpoint"
+				exe "sign define FunctionLines_" .. txt .. " text=" .. txt .. " icon=FunctionLines texthl=SupraNormPoint"
 				exe ":sign place 1 line=" .. groups[2] " name=FunctionLines_" .. txt .. " file=" .. filename
 			endif
 		elseif groups[4] != "Missing or invalid 42 header"
@@ -43,7 +37,7 @@ def GotOutput(channel: channel, msg: string)
 enddef
 
 
-def HighlightNorm(filename: string)
+export def HighlightNorm(filename: string)
 	g_errors = []
 	filename_norm = filename
 	sign unplace *
@@ -69,57 +63,35 @@ enddef
 # Supravim Settings Block
 ###########################
 
-command Norm HighlightNorm(expand("%"))
-
-def EnableAugroup()
+export def EnableAugroup()
 	augroup Norminette
 		autocmd!
 		autocmd CursorMoved *.c,*.h DisplayErrorMsg()
 		autocmd BufEnter,BufWritePost *.c,*.h Norm
 	augroup END
+	HighlightNorm(expand("%"))
 enddef
 
-if g:sp_norme == true
-	call EnableAugroup()
-endif
-
-noremap <leader><F3>		<scriptcmd>ToggleNorm()<CR>
-
-def DisableNorm()
+export def DisableNorm()
 	sign unplace *
 	echo "[SupraNorm disabled]"
-	g:sp_norme = false
-	auto! Norminette 
+	g:supranorminette_enabled = false
+	silent! auto! Norminette 
 enddef
 
-def EnableNorm()
+export def EnableNorm()
 	echo "[SupraNorm enabled]"
-	g:sp_norme = true
-	call EnableAugroup()
+	g:supranorminette_enabled = true
+	EnableAugroup()
 	silent noautocmd w!
 	Norm
 enddef
 
-def ToggleNorm()
-	g:sp_norme = !g:sp_norme
-	if g:sp_norme == true
+export def ToggleNorm()
+	g:supranorminette_enabled = !g:supranorminette_enabled 
+	if g:supranorminette_enabled == true
 		EnableNorm()
 	else
 		DisableNorm()
 	endif
 enddef
-
-def SimpleSupravimChangeOption()
-	if g:supravim_option_changed == 'symbol_signs'
-		execute 'sign define NormLinter text=' .. g:sp_symbol_signs .. ' texthl=DapBreakpoint'
-	endif
-	if g:supravim_option_changed == 'norme'
-		if g:supravim_option_value == 'true'
-			EnableNorm()
-		else
-			DisableNorm()
-		endif
-	endif
-enddef
-
-autocmd User SupravimChangeOption call SimpleSupravimChangeOption()

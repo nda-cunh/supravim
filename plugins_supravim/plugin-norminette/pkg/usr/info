@@ -1,12 +1,12 @@
 name: plugin-norminette
-version: 2.9
+version: 3.0
 arch: any
-author: nda-cunh
-description: press <leader><F3> to disable/enable plugin for norminette support
+author: 
+description: press <Space><F3> to disable/enable plugin for norminette support
 dependency: supravim
 optional_dependency: 
 exclude_package: 
 binary: plugin-norminette
 size_tar: 
-size_installed: 3119
+size_installed: 3881
 wanted: no
