@@ -1,4 +1,7 @@
-vim9script
+vim9script noclear
+
+if exists("g:loaded_suprahighlight") | finish | endif
+g:loaded_suprahighlight = true
 
 highlight PerfComment guifg=#61afef
 highlight HackComment guifg=#ee6666
