@@ -14,7 +14,7 @@ supraconfig#RegisterMany([
 		default: true,
 		lore: 'Enable the count line feature',
 		handler: (v) => {
-			Ft_count_line.SimpleSupravimChangeOption(v == 'true')
+			Ft_count_line.SimpleSupravimChangeOption(v)
 		}
 	},
 	{
@@ -23,7 +23,7 @@ supraconfig#RegisterMany([
 		default: true,
 		lore: 'Automatically generate the compile_commands.json file for Makefile projects',
 		handler: (v) => {
-			if v == 'true'
+			if v
 				Autobear.Enable()
 			else
 				Autobear.Disable()

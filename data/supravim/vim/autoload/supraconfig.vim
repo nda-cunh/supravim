@@ -31,9 +31,13 @@ export def Register(option: dict<any>)
 	endif
     
 	registry[option.id] = option
-	var val_to_apply = get(user_settings, option.id, get(option, 'default', ''))
+	var val_to_apply: any = get(user_settings, option.id, get(option, 'default', ''))
 	try
-	Apply(option.id, val_to_apply)
+		if !has_key(option, 'spawn') || option.spawn == true
+			Apply(option.id, val_to_apply)
+		else
+			current_values[option.id] = val_to_apply
+		endif
 	catch
 		echom "Error applying option '" v:exception .. "'"
 	endtry
@@ -58,7 +62,7 @@ export def Apply(id: string, value: any)
     if has_key(registry, id)
         current_values[id] = value
         var val_str = (type(value) == v:t_bool ? $'{value}' : value)
-        registry[id].handler(val_str)
+        registry[id].handler(value)
     endif
 enddef
 
