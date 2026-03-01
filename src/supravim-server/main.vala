@@ -37,7 +37,9 @@ public class SupraVim {
 	SourceFunc? main_loop = null;
 	MyMonitor monitor;
 	StdinStream stdin;
+#if DISCORD_PRESENCE
 	DiscordSupraVim discord;
+#endif
 
 	private SupraVim (string [] args) throws Error {
 		load_suprapack_list_plugin.begin ();
@@ -45,6 +47,7 @@ public class SupraVim {
 		monitor = new MyMonitor (args[1]);
 		stdin = new StdinStream ();
 
+#if DISCORD_PRESENCE
 		// Discord Rich Presence
 		try {
 			discord = new DiscordSupraVim ("1399862365800894584");
@@ -56,6 +59,7 @@ public class SupraVim {
 		catch (Error e) {
 			printerr ("Discord Error: %s\n", e.message);
 		}
+#endif
 	}
 
 	private async void run () {
@@ -92,6 +96,12 @@ public class SupraVim {
 		if (message.has_prefix ("QUIT")) {
 			Idle.add(main_loop);
 		}
+
+		if (message.has_prefix ("LspReady")) {
+			Ready ();
+			return;
+		}
+
 		if (message.has_prefix ("OpenFile: ")) {
 			unowned string filetype = (string)buffer1;
 			unowned string filename = (string)buffer2;
@@ -99,7 +109,9 @@ public class SupraVim {
 			if (filetype == "")
 				return;
 
+#if DISCORD_PRESENCE
 			discord?.open_file (filetype, filename);
+#endif
 			// Check if an Lsp exist for this file
 			var possible_lsp = LspServer.get_lsp_possible (filetype);
 			var? possible_package = SupportLang.get_package_possible (filetype);
@@ -144,7 +156,8 @@ public class SupraVim {
 					if (bs_error.len != 0)
 						print ("LspServerError:%s\rbut launch %s instead\n", bs_error.str, lsp.name);
 					// Send the LSP to the client
-					print ("LspGetServer@#@%s\n", lsp_str);
+					send_lsp_to_server(lsp_str);
+					// print ("LspGetServer@#@%s\n", lsp_str);
 					if (possible_package != null) {
 						print ("LspInstall: Found a vim-package for color@#@%s\n", possible_package.package_name);
 					}
@@ -203,5 +216,25 @@ public class SupraVim {
 			}
 		}
 	}
+
+	private void send_lsp_to_server (string lsp_str) {
+		if (LspIsReady == false) {
+			LspReady.append (lsp_str);
+		}
+		else {
+			print ("LspGetServer@#@%s\n", lsp_str);
+		}
+	}
+
+	private void Ready () {
+		LspIsReady = true;
+		foreach (string lsp in LspReady) {
+			print ("LspGetServer@#@%s\n", lsp);
+		}
+		LspReady = null;
+	}
+
+	private bool LspIsReady = false;
+	private SList<string> LspReady = new SList<string> ();
 }
 
