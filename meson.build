@@ -30,16 +30,7 @@ conf_data.set('version', meson.project_version())
 # Create the supravim executable
 ####################################
 
-vala_dependencies = [
-  dependency('glib-2.0'),
-  dependency('gobject-2.0'),
-  dependency('gio-2.0'),
-  dependency('gio-unix-2.0')
-]
-
 subdir('src')
-
-
 
 ###################################
 # Install
@@ -61,17 +52,23 @@ install_data('data/supravim_mime.desktop', install_dir : 'share/applications')
 install_data('CHANGELOG.md', install_dir : 'share/supravim')
 
 
-
 ###################################
 # Suprapack
 ###################################
 
-if find_program('suprapack').found()
-  description = 'a makefile compatibility layer. it can do it for you meson|make|none'
+suprapack_bin = find_program('suprapack', required: false)
 
+meson.add_install_script('suprapack_build.sh')
+
+if suprapack_bin.found() and get_option('suprapack') == true
+  description = 'a makefile compatibility layer. it can do it for you meson|make|none'
   info_file = configure_file(input : 'data/info.in', output : 'info', configuration : conf_data)
 
   install_data(info_file, install_dir: '.')
-  meson.add_install_script('suprapack_build.sh')
+  meson.add_install_script(
+    'sh', '-c', 'cd .. && suprapack build "$MESON_INSTALL_DESTDIR_PREFIX" --install || echo "Suprapack failed, manual install needed "'
+  )
+else
+  # On utilise l'objet 'post_install_script' pour que Meson trouve le bon chemin
+  meson.add_install_script('data/post_install')
 endif
-

@@ -20,7 +20,3 @@ rm -rf */test
 rm -rf */.github
 rm -rf */*.md
 popd
-
-pushd ..
-suprapack build $MESON_INSTALL_DESTDIR_PREFIX --install
-popd
