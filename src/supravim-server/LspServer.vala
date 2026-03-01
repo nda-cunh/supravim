@@ -93,7 +93,34 @@ namespace LspServer {
 		{ "vue3", "vue-language-server", "vue,js,ts",
 			"vue-language-server --version",
 			"npm install -g @vue/language-server"},
-	};
+		{ "ansible-lsp", "ansible-language-server,--stdio", "yaml.ansible,ansible",
+			"ansible-language-server --version",
+			"npm install -g @ansible/ansible-language-server" },
+		{ "jinja-lsp", "jinja-lsp", "jinja,jinja2,html.jinja",
+			"jinja-lsp --version",
+			"suprapack add jinja-lsp --yes" },
+		{ "docker-lsp", "docker-langserver,--stdio", "dockerfile",
+			"docker-langserver --version",
+			"npm install -g dockerfile-language-server-nodejs" },
+		{ "tailwind-lsp", "tailwindcss-language-server,--stdio", "html,css,js,ts,vue",
+			"tailwindcss-language-server --version",
+			"npm install -g @tailwindcss/language-server" },
+		{ "markdown-lsp", "marksman,server", "md,markdown",
+			"marksman --version",
+			"suprapack add marksman --yes" },
+		{ "sql-lsp", "sql-language-server,up,--method,stdio", "sql",
+			"sql-language-server --version",
+			"npm install -g sql-language-server" },
+		{ "terraform-lsp", "terraform-ls,serve", "tf,terraform,hcl",
+			"terraform-ls --version",
+			"suprapack add terraform-ls --yes" },
+		{ "toml-lsp", "taplo,lsp,stdio", "toml",
+			"taplo --version",
+			"suprapack add taplo --yes" },
+		{ "zig", "zls", "zig",
+			"zls --version",
+			"suprapack add zls --yes" }
+		};
 
 	private string get_command (string command) {
 		string cmd;

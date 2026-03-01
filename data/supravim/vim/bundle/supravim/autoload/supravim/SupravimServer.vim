@@ -3,8 +3,42 @@ vim9script
 import autoload 'SupraMake.vim' as Make
 import autoload 'SupraNotification.vim' as Notify
 
+var supravim_server: job 
+
+export def RunServer(project_root: string)
+	if executable('supravim-server')
+		supravim_server = job_start(["supravim-server", project_root], {
+			out_cb: GotOutputSupravimServer,
+			in_mode: 'raw',
+			in_io: 'pipe'
+		})
+
+		augroup SupravimServer
+			autocmd!
+			au BufEnter * OpenNewFile()
+			au User LspIsReady call ReadySupravimServer()
+		augroup END
+	endif
+enddef
+
+def OpenNewFile()
+	var filetype = &filetype
+	if filetype == ''
+		filetype = expand('%:e')
+	endif
+	ch_sendraw(supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
+enddef
+
+def ReadySupravimServer()
+	ch_sendraw(supravim_server, "LspReady\n")
+enddef
+
+
+
+
+
 # ------ Running Supravim-Server ------"
-export def GotOutputSupravimServer(channel: channel, msg: string)
+def GotOutputSupravimServer(channel: channel, msg: string)
 	if (stridx(msg, 'refresh') == 0)
 		if Make.is_supramake == false
 			doautocmd User RefreshTree
@@ -81,7 +115,7 @@ def FinishInstall(success: bool, error_text: string = '')
 		Notify.ChangeType(notification_id, 'success')
 		timer_start(2000, (_) => {
 			Notify.Close(notification_id)
-			call lsp#activate()
+			g:LspServerActivate()
 		})
 	else
 		var error_msg = "Installation failed: " .. error_text
@@ -138,7 +172,7 @@ def GetChoice(choice: string, package_name: string = '')
 	else
 		c1 = choice
 	endif
-	ch_sendraw(g:supravim_server, "Install: " .. c1 .. " " .. c2 .. "\n")
+	ch_sendraw(supravim_server, "Install: " .. c1 .. " " .. c2 .. "\n")
 enddef
 
 def OpenPopupChoice(items: list<string>, package_name: string = '')
