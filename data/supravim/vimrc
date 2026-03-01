@@ -18,11 +18,6 @@ set background=dark
 import autoload 'supraload.vim' as SupraLoad 
 import autoload 'supraconfig.vim' as SupraConfig
 
-{
-	const lst_glob = glob($HOME .. "/.vim/bundle_supravim/*") .. "\n" .. glob(expand("$HOME") .. "/.vim/bundle_supravim/*/after")
-	const lst = substitute(lst_glob, "\n", ",", "g")
-	execute "set runtimepath+=" .. lst 
-}
 # Load plugins in bundles directories
 SupraLoad.Infect()
 
@@ -326,17 +321,13 @@ set undodir=~/.cache/vim/undo
 set undofile
 set viminfo+=!
 
-# -------------  DBG integration  --------------"
-packadd! termdebug
-g:termdebug_wide = 1
-
 #--------------- Shorcut --------------"
 nnoremap <c-n>			<esc>:tabnew 
 nnoremap <C-Right>		<scriptcmd>tabnext<CR>
 nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
-nnoremap <C-Up>		<scriptCmd>call Ctags()<CR>
+nnoremap <C-Up>		<scriptCmd>LspDefinition<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
-inoremap <C-Up>		<scriptcmd>call Ctags()<CR>
+inoremap <C-Up>		<scriptcmd>LspDefinition<CR>
 inoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <c-q>		<cmd>q!<CR>
 noremap <c-q>		<cmd>q!<CR>
@@ -404,7 +395,7 @@ noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 # Mouse
 nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
-nnoremap <c-leftmouse>	<leftmouse><scriptcmd>call Ctags()<cr>
+nnoremap <c-leftmouse>	<leftmouse><scriptcmd>LspDefinition<cr>
 
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
@@ -425,7 +416,6 @@ tnoremap <S-Up>			<C-W>N<C-w><Up>
 tnoremap <S-Down>		<C-W>N<C-w><Down>
 
 #--------------- 	Settings      ---------------"
-g:lsp_log_verbose = 0
 set mouse=a
 set cursorline
 set shortmess+=I
@@ -469,12 +459,13 @@ set ttimeout
 set wildmenu
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set fillchars=vert:│
-auto BufEnter,VimEnter *.tpp set filetype=cpp
+au BufRead,BufNewFile *.tpp set filetype=cpp
 
-# ---------------      LSP            ---------------"
+#--------------- Lsp Interface ---------------"
+g:lsp_log_verbose = 0
 set updatetime=500
 autocmd CursorHold * call Utils.AutoLspHold()
-#--------------- Lsp Interface ---------------"
+
 def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
 	silent! lsp#register_server({
 		name: name,
@@ -490,9 +481,6 @@ enddef
 
 au User lsp_setup doautocmd User LspIsReady
 
-# --------------- Auto Pairs ---------------"
-g:AutoPairsFlyMode = 0
-
 #--------------- Supravim Options ---------------"
 def g:SettingsSupravim()
 	Options.OpenWindow()
@@ -504,42 +492,10 @@ import autoload 'supravim/SupravimServer.vim' as SupraVimServer
 SupraVimServer.RunServer(project_root)
 
 # ---------------  GDB  ---------------"
+import autoload 'supravim/Gdb.vim' as Gdb 
 
-imap <C-F5>		<ScriptCmd>Gdbs<CR>
-map <C-F5>		<ScriptCmd>Gdbs<CR>
-
-command -nargs=0 -bar Gdbs :call Gdbf()
-
-def Gdbf()
-	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
-		echo "Tu veux debugger quoi là ?"
-	else
-		set splitbelow nosplitbelow
-		set splitright nosplitright
-		SupraTreeClose
-		if !filereadable("Makefile")
-			exec ":Termdebug -n ./a.out"
-		else
-			exec ":Termdebug -n"
-		endif
-	endif
-	set splitbelow
-	set splitright
-enddef
-# -------------- Ctags ----------------"
-
-command -nargs=0 -bar Ctags :call Ctags()
-
-set tags=$HOME/.cache/tags
-
-def Ctags()
-	try
-	LspDefinition
-	catch
-		system("supratags --output=" .. expand("$HOME") .. "/.cache/tags")
-		execute "tag " .. expand("<cword>")
-	endtry
-enddef
+imap <C-F5>		<ScriptCmd>Gdb.Gdbf()<CR>
+map <C-F5>		<ScriptCmd>Gdb.Gdbf()<CR>
 
 # ----------------- AIR LINE ------------------
 g:airline#extensions#whitespace#enabled = 0
@@ -638,4 +594,4 @@ autocmd VimEnter __PACMAN__ {
 	:Pacman
 }
 
-autocmd VimEnter * call WelcomeModule.Welcome()
+autocmd VimEnter * timer_start(20, (_) => WelcomeModule.Welcome())
