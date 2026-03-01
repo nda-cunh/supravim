@@ -4,15 +4,6 @@ vim9script
 set nocompatible
 filetype off
 
-### Supravim Minimum Version Check ###
-import autoload 'CheckVersion.vim' as CheckVersion
-
-if !has('patch-9.1.1100')
-	CheckVersion.Check()
-	exit!
-	finish
-endif
-
 #--------------- Colors Theme ---------------"
 syntax on
 
@@ -42,8 +33,14 @@ import autoload 'SupraNotification.vim' as Notify
 import autoload 'SupraPopup.vim' as Popup 
 import autoload 'SupraUtils.vim' as Utils
 import autoload 'supravim/Welcome.vim' as WelcomeModule
-import autoload 'supravim/SupravimServer.vim' as SupraVimServer
 import autoload 'supravim/SupraOptions.vim' as Options
+
+if !has('patch-9.1.1100')
+	Notify.Notification(["Unsupported Vim version !!!",
+		"Some features may not work properly",
+		"Please update to Vim 9.1.1100 or later"
+	], {type: 'error'})
+endif
 
 SupraConfig.RegisterGroup('autopairs', 'Options related to the Auto Pairs plugin')
 SupraConfig.RegisterGroup('fuzzbox', 'Options related to the Fuzzbox plugin')
@@ -71,8 +68,9 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Enable the creation of swap files (.swp)',
         handler: (v) => {
-			exec ($'{v}' == 'true' ? 'set swapfile' : 'set noswapfile')
-		}
+			# exec ($'{v}' == 'true' ? 'set swapfile' : 'set noswapfile')
+			&swapfile = v
+	}
     },
     {
         id: 'wrap',
@@ -80,7 +78,8 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Enable automatic line wrapping',
         handler: (v) => {
-			exec ($'{v}' == 'true' ? 'set wrap' : 'set nowrap')
+			# exec ($'{v}' == 'true' ? 'set wrap' : 'set nowrap')
+			&wrap = v 
 		}
     },
     {
@@ -89,7 +88,8 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Automatically save files on changes',
         handler: (v) => {
-			g:sp_autosave = ($'{v}' == 'true')
+			# g:sp_autosave = ($'{v}' == 'true')
+			g:sp_autosave = v
 		}
     },
     {
@@ -98,7 +98,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Remove background color to use terminal transparency',
         handler: (v) => {
-			Options.ChangeNoBackgroundOption(v == 'true')
+			Options.ChangeNoBackgroundOption(v)
 		}
     },
 
@@ -109,7 +109,7 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Enable automatic closing of brackets and quotes',
         handler: (v) => {
-			g:autopairs_enabled = ($'{v}' == 'true')
+			g:autopairs_enabled = v
 		}
     },
     {
@@ -118,7 +118,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Enable Fly Mode for Auto Pairs (experimental)',
         handler: (v) => {
-			g:AutoPairsFlyMode = ($'{v}' == 'true' ? 1 : 0)
+			g:AutoPairsFlyMode = v
 		}
     },
 
@@ -129,7 +129,7 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Show file icons in Fuzzbox search results',
         handler: (v) => {
-			g:fuzzbox_enable_icons = ($'{v}' == 'true')
+			g:fuzzbox_enable_icons = v 
 		}
     },
     {
@@ -138,7 +138,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Display the search prompt at the top instead of the bottom',
         handler: (v) => {
-			g:fuzzbox_dropdown = ($'{v}' == 'true')
+			g:fuzzbox_dropdown = v
 		}
     },
     {
@@ -147,7 +147,7 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Show the number of matches in Fuzzbox',
         handler: (v) => {
-			g:fuzzbox_counter = ($'{v}' == 'true')
+			g:fuzzbox_counter = v
 		}
     },
     {
@@ -156,7 +156,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Show a scrollbar when results exceed window size',
         handler: (v) => {
-			g:fuzzbox_scrollbar = ($'{v}' == 'true')
+			g:fuzzbox_scrollbar = v
 		}
     },
     {
@@ -183,7 +183,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Wrap long lines in the Fuzzbox menu',
         handler: (v) => {
-			g:fuzzbox_wrap_menu = ($'{v}' == 'true')
+			g:fuzzbox_wrap_menu = v
 		}
     },
     {
@@ -192,7 +192,7 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Wrap long lines in the Fuzzbox preview window',
         handler: (v) => {
-			g:fuzzbox_wrap_preview = ($'{v}' == 'true')
+			g:fuzzbox_wrap_preview = v 
 		}
     },
 
@@ -203,7 +203,7 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Auto-close quotes " and' .. " \' and `'",
         handler: (v) => {
-			g:roundvisual_quotes = ($'{v}' == 'true')
+			g:roundvisual_quotes = v 
 		}
     },
     {
@@ -212,7 +212,7 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Auto-close parenthesis () and brackets []',
         handler: (v) => {
-			g:roundvisual_brackets = ($'{v}' == 'true')
+			g:roundvisual_brackets = v 
 		}
     },
     {
@@ -221,7 +221,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Auto-close braces {}',
         handler: (v) => {
-			g:roundvisual_braces = ($'{v}' == 'true')
+			g:roundvisual_braces = v
 		}
     },
     {
@@ -230,7 +230,7 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Auto-close angle brackets <>',
         handler: (v) => {
-			g:roundvisual_angle = ($'{v}' == 'true')
+			g:roundvisual_angle = v
 		}
     },
 
@@ -476,15 +476,19 @@ set updatetime=500
 autocmd CursorHold * call Utils.AutoLspHold()
 #--------------- Lsp Interface ---------------"
 def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
-	call timer_start(2000, (_) => {
-		silent! lsp#register_server({
-			\ name: name,
-			\ cmd: (_) => cmd,
-			\ allowlist: filetypes,
-		\ })
-		silent! lsp#activate()
-	}) 
+	silent! lsp#register_server({
+		name: name,
+		cmd: (_) => cmd,
+		allowlist: filetypes,
+	})
+	silent! lsp#activate()
 enddef
+
+def g:LspServerActivate()
+	silent! lsp#activate()
+enddef
+
+au User lsp_setup doautocmd User LspIsReady
 
 # --------------- Auto Pairs ---------------"
 g:AutoPairsFlyMode = 0
@@ -495,23 +499,9 @@ def g:SettingsSupravim()
 enddef
 
 # ---------------  SupraVim Server  ---------------"
-if executable('supravim-server')
-	g:supravim_server = job_start(["supravim-server", project_root], {
-		out_cb: SupraVimServer.GotOutputSupravimServer,
-		in_mode: 'raw',
-		in_io: 'pipe'
-	})
+import autoload 'supravim/SupravimServer.vim' as SupraVimServer
 
-	def OpenNewFile()
-		var filetype = &filetype
-		if filetype == ''
-			filetype = expand('%:e')
-		endif
-		ch_sendraw(g:supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
-	enddef
-
-	au BufEnter * OpenNewFile()
-endif
+SupraVimServer.RunServer(project_root)
 
 # ---------------  GDB  ---------------"
 
