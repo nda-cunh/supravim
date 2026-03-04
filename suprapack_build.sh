@@ -14,6 +14,8 @@ git clone https://github.com/nda-cunh/SupraWater --depth 1
 git clone https://github.com/nda-cunh/SupraIcons --depth 1
 git clone https://github.com/nda-cunh/SupraPopup --depth 1
 git clone https://github.com/nda-cunh/SupraPacman --depth 1
+git clone https://github.com/hrsh7th/vim-vsnip --depth 1
+git clone https://github.com/hrsh7th/vim-vsnip-integ --depth 1
 
 rm -rf */.git
 rm -rf */test
