@@ -325,17 +325,17 @@ set viminfo+=!
 nnoremap <c-n>			<esc>:tabnew 
 nnoremap <C-Right>		<scriptcmd>tabnext<CR>
 nnoremap <C-Left>		<scriptcmd>tabprevious<CR>
-nnoremap <C-Up>		<scriptCmd>LspDefinition<CR>
+nnoremap <C-Up>		<scriptCmd>g:LspDefinition()<CR>
 nnoremap <C-Down>	<scriptcmd>pop<cr>
-inoremap <C-Up>		<scriptcmd>LspDefinition<CR>
+inoremap <C-Up>		<scriptcmd>g:LspDefinition()<CR>
 inoremap <C-Down>	<scriptcmd>pop<cr>
 inoremap <c-q>		<cmd>q!<CR>
 noremap <c-q>		<cmd>q!<CR>
 inoremap <c-s>		<cmd>w!<CR><esc>
 noremap <c-s>		<cmd>w!<CR><esc>
 nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
-nnoremap <F2> 		<ScriptCmd>call Utils.RenameSymbol()<CR>
-inoremap <F2> 		<ScriptCmd>call Utils.RenameSymbol()<CR>
+nnoremap <F2> 		<ScriptCmd>call g:RenameSymbol()<CR>
+inoremap <F2> 		<ScriptCmd>call g:RenameSymbol()<CR>
 nnoremap <leader>v		:vs<cr>
 nnoremap <leader>s		:split<cr>
 nnoremap <S-Right>	<C-w><Right>
@@ -347,7 +347,7 @@ nnoremap <Tab>		>>
 vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 inoremap <c-a>		<esc>gg<s-v>G
-nnoremap <silent><c-@>		<cmd>LspHover<cr>
+nnoremap <silent><c-@>		<scriptcmd>g:LspHover()<cr>
 silent! unmap <c-t>
 nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
 # Terminal shortcuts
@@ -356,15 +356,15 @@ map <leader>tf	<scriptcmd>call SupraTerm()<cr>
 map <leader>th	:horizontal term<CR>
 map <leader>tv	:vertical term<CR>
 # Lsp shortcuts 
-nnoremap <silent> gd		<cmd>LspDefinition<cr>
-nnoremap <silent> gr		<cmd>LspReferences<cr>
-nnoremap <silent> gi		<cmd>LspImplementation<cr>
-nnoremap <silent> gD		<cmd>LspTypeDefinition<cr>
-nnoremap <silent> gt		<cmd>LspTypeDefinition<cr>
-nnoremap <silent> g0		<cmd>LspDocumentSymbol<cr>
-nnoremap <silent> gW		<cmd>LspWorkspaceSymbol<cr>
-nnoremap <silent> ga		<cmd>LspCodeAction<cr>
-nnoremap <silent> K			<cmd>LspHover<cr>
+nnoremap <silent> gd		<scriptcmd>g:LspDefinition()<cr>
+nnoremap <silent> gr		<scriptcmd>g:LspReferences()<cr>
+nnoremap <silent> gi		<scriptcmd>g:LspImplementation()<cr>
+nnoremap <silent> gD		<scriptcmd>g:LspTypeDefinition()<cr>
+nnoremap <silent> gt		<scriptcmd>g:LspTypeDefinition()<cr>
+nnoremap <silent> g0		<scriptcmd>g:LspDocumentSymbol()<cr>
+nnoremap <silent> gW		<scriptcmd>g:LspWorkspaceSymbol()<cr>
+nnoremap <silent> ga		<scriptcmd>g:LspCodeAction()<cr>
+nnoremap <silent> K			<scriptcmd>g:LspHover()<cr>
 
 # Other
 inoremap <c-z>		<esc>ui
@@ -395,7 +395,7 @@ noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 # Mouse
 nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
-nnoremap <c-leftmouse>	<leftmouse><scriptcmd>LspDefinition<cr>
+nnoremap <c-leftmouse>	<leftmouse><scriptcmd>g:LspDefinition()<cr>
 
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
@@ -460,26 +460,6 @@ set wildmenu
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 set fillchars=vert:│
 au BufRead,BufNewFile *.tpp set filetype=cpp
-
-#--------------- Lsp Interface ---------------"
-g:lsp_log_verbose = 0
-set updatetime=500
-autocmd CursorHold * call Utils.AutoLspHold()
-
-def g:AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
-	silent! lsp#register_server({
-		name: name,
-		cmd: (_) => cmd,
-		allowlist: filetypes,
-	})
-	silent! lsp#activate()
-enddef
-
-def g:LspServerActivate()
-	silent! lsp#activate()
-enddef
-
-au User lsp_setup doautocmd User LspIsReady
 
 #--------------- Supravim Options ---------------"
 def g:SettingsSupravim()
