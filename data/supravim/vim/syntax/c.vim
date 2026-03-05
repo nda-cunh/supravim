@@ -27,15 +27,12 @@ syn keyword	cLabel		case default
 syn keyword	cConditional	if else switch
 syn keyword	cRepeat		while for do
 
-syn keyword	cTodo		contained TODO FIXME XXX
-
 # It's easy to accidentally add a space after a backslash that was intended
 # for line continuation.  Some compilers allow it, which makes it
 # unpredictable and should be avoided.
 syn match	cBadContinuation contained "\\\s\+$"
 
 # cCommentGroup allows adding matches for special things in comments
-syn cluster	cCommentGroup	contains=cTodo,cBadContinuation
 
 # String and Character constants
 # Highlight special characters (those which have a backslash) differently
@@ -464,12 +461,10 @@ else
 endif
 
 # Supravim
-## Doxygen tags
 syntax match cDoxygenTag contained "\([@\\]\)\%(param\|return\|brief\|note\|details\|see\|author\|version\|bug\|warning\|date\|since\|deprecated\|todo\|defgroup\|addtogroup\|ingroup\|copyright\|file\|fn\|hideinitializer\|internal\|link\|endlink\|name\|namespace\|package\|page\|ref\|section\|subsection\|subsubsection\|test\)\>"
 syntax match cDoxygenParam contained "\([@\\]param\s\+\)\@<=\w\+"
-syntax cluster cCommentGroup add=cDoxygenTag,cDoxygenParam
-syntax region cDoxygenDesc start="/\*\*\|/\*!\|//!" end="\*/\|$" contains=@cCommentGroup,cDoxygenTag,cDoxygenParam containedin=cComment,cCommentL
 
+syntax cluster cCommentGroup add=cDoxygenTag,cDoxygenParam,cBadContinuation
 
 # Define the default highlighting.
 # Only used when an item doesn't have highlighting yet
@@ -520,7 +515,6 @@ hi def link cCommentSkip	cComment
 hi def link cString		String
 hi def link cComment		Comment
 hi def link cSpecial		SpecialChar
-hi def link cTodo		Todo
 hi def link cBadContinuation	Error
 hi def link cCppOutSkip		cCppOutIf2
 hi def link cCppInElse2		cCppOutIf2
