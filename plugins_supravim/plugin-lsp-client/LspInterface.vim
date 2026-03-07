@@ -15,21 +15,6 @@ export def LspServerActivate()
 	silent! lsp#activate()
 enddef
 
-export def AutoLspHold()
-	# var c_pos = getcurpos()
-	# var m_pos = getmousepos()
-	# var cm = m_pos.column
-	# var lm = m_pos.line
-	# var cc = c_pos[2]
-	# var lc = c_pos[1]
-	# if cm == cc && lm == lc
-		# var word = expand('<cword>')
-		# if word != ''
-			# silent! LspHover
-		# endif
-	# endif
-enddef
-
 export def RenameSymbol()
 	const line_pt = line('.')
 	const col_pt = col('.')
@@ -156,5 +141,153 @@ export def LspWorkspaceSymbol()
     var query = input('Search Workspace Symbol: ')
     if query != ''
         execute 'LspWorkspaceSymbol ' .. query
+    endif
+enddef
+
+const Markdown = vital#lsp#import('VS.Vim.Syntax.Markdown')
+const MarkupContent = vital#lsp#import('VS.LSP.MarkupContent')
+const FloatingWindow = vital#lsp#import('VS.Vim.Window.FloatingWindow')
+const Window = vital#lsp#import('VS.Vim.Window')
+const Buffer = vital#lsp#import('VS.Vim.Buffer')
+
+export def BalloonPopup(): string
+	const servers = filter(lsp#get_allowed_servers(), 'lsp#capabilities#has_hover_provider(v:val)')
+	const pos = {'character': v:beval_col - 1, 'line': v:beval_lnum - 1}
+	const request = {
+        'method': 'textDocument/hover',
+		'params': {
+			'textDocument': lsp#get_text_document_identifier(),
+			'position': pos,
+		},
+	}
+
+	lsp#callbag#pipe(
+		lsp#callbag#fromList(servers),
+		lsp#callbag#flatMap((server) => {
+			return lsp#request(server, request)
+		}),
+		lsp#callbag#tap((x) => {
+		}),
+		lsp#callbag#takeUntil(lsp#callbag#pipe(
+			lsp#stream(),
+			lsp#callbag#filter((x) => has_key(x, 'command'))
+		)),
+		lsp#callbag#subscribe({
+			next: (x) => {
+				try
+				call Show_hover(x.server_name, x.request, x.response)
+				catch
+					echo "Error showing hover: " .. v:exception
+				endtry
+            },
+		})
+	)
+	return '' 
+enddef
+
+var id_popup: number = -1
+
+def Show_hover(server_name: string, request: dict<any>, response: dict<any>)
+    if !has_key(response, 'result') || empty(response.result) || empty(response.result.contents)
+        return
+    endif
+
+    var contents = GetContents(response.result.contents)
+
+    if empty(contents)
+        return
+    endif
+
+    var lines = lsp#utils#_split_by_eol(join(contents, "\n\n"))
+
+    if id_popup > 0 && popup_getoptions(id_popup) != {}
+        popup_close(id_popup)
+    endif
+
+	var maxwidth: number
+    if g:lsp_float_max_width >= 1
+        maxwidth = g:lsp_float_max_width
+    elseif g:lsp_float_max_width == 0
+        maxwidth = &columns
+    else
+        maxwidth = float2nr(&columns * 0.4)
+    endif
+    var maxheight = float2nr(&lines * 0.4)
+
+	var spos = screenpos(v:beval_winid, v:beval_lnum, v:beval_col)
+	var show_above = spos.row > (&lines / 2)
+	var target_col = spos.col
+    if (target_col + maxwidth) > &columns
+        target_col = &columns - maxwidth - 2
+	endif
+
+    id_popup = popup_create(lines, {
+		line: show_above ? spos.row - 1 : spos.row + 1,
+        col: target_col,
+		maxwidth: maxwidth,
+		maxheight: maxheight,
+        padding: [0, 0, 0, 0],
+        border: [1],
+        borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+        zindex: 300,
+        wrap: 1,
+        fixed: 1,
+        mousemoved: [v:beval_lnum, v:beval_col, v:beval_col],
+    })
+
+    if id_popup > 0
+        var bnr = winbufnr(id_popup)
+
+        setbufvar(bnr, '&buftype', 'nofile')
+        setbufvar(bnr, '&bufhidden', 'hide')
+        setbufvar(bnr, '&bufhidden', 'hide')
+
+        Window.do(id_popup, () => {
+			Markdown.apply()
+			setlocal conceallevel=3
+			setlocal concealcursor=niv
+        })
+
+		setwinvar(id_popup, '&textwidth', 80)
+        Window.do(id_popup, () => {
+			silent! :global/^/normal! gqgq
+			silent normal! gg
+        })
+    endif
+enddef
+
+def GetContents(contents: any): list<string> 
+    if type(contents) == type('')
+        return [contents]
+    elseif type(contents) == type([])
+        var result = []
+        for content in contents
+            result += GetContents(content)
+        endfor
+        return result
+    elseif type(contents) == type({})
+        if has_key(contents, 'value')
+            if has_key(contents, 'kind')
+                if contents['kind'] ==? 'markdown'
+                    const detail = MarkupContent.normalize(contents['value'], {
+						'compact': !g:lsp_preview_fixup_conceal
+                    })
+                    return [detail]
+                else
+                    return [contents['value']]
+                endif
+            elseif has_key(contents, 'language')
+                const detail = MarkupContent.normalize(contents, {
+					'compact': !g:lsp_preview_fixup_conceal
+                })
+                return [detail]
+            else
+                return ['']
+            endif
+        else
+            return ['']
+        endif
+    else
+        return ['']
     endif
 enddef

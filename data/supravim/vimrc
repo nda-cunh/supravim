@@ -461,6 +461,11 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 set fillchars=vert:│
 au BufRead,BufNewFile *.tpp set filetype=cpp
 
+set ballooneval
+set balloonevalterm
+set balloonexpr=g:BalloonPopup()
+set balloondelay=200
+
 #--------------- Supravim Options ---------------"
 def g:SettingsSupravim()
 	Options.OpenWindow()

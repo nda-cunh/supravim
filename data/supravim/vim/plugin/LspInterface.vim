@@ -97,6 +97,10 @@ def g:LspWorkspaceSymbol()
     Lsp.LspWorkspaceSymbol()
 enddef
 
+def g:BalloonPopup(): string
+	return Lsp.BalloonPopup()
+enddef
+
 catch
 #################################################
 ### Fake implementations if the LspInterface plugin is not available
@@ -178,6 +182,11 @@ enddef
 
 def g:LspShowDiagnostics()
 	echom LspInterfaceNotFoundMessage
+enddef
+
+def g:BalloonPopup(): string
+	echom LspInterfaceNotFoundMessage
+	return ''
 enddef
 
 # --- Symboles ---
