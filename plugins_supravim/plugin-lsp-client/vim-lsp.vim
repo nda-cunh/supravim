@@ -340,6 +340,11 @@ export def InitMenuActionLsp()
 	call SupraMenu#Register(MenuActionLsp)
 enddef
 
+def g:HasCodeAction(): bool
+	const v = sign_getplaced(bufnr(), {'lnum': 16, 'group': 'vim_lsp_document_code_action_signs'})
+	return !empty(v) && !empty(v[0].signs)
+enddef
+
 def LspMenuActionRunSupraMenu(col: number, line: number)
 	# move to the position to ensure the code action menu is relevant to the
 	cursor(line, col)
