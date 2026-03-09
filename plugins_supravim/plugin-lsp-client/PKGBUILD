@@ -10,6 +10,7 @@ source=(
 	'asyncomplete-file::git+https://github.com/prabirshrestha/asyncomplete-file.vim.git'
 	'asyncomplete-lsp::git+https://github.com/prabirshrestha/asyncomplete-lsp.vim.git'
 	'LspInterface.vim'
+	'vim-lsp.vim'
 	'0001-Use-echoerr-instead-of-echom.patch'
 	'0001-Add-Better-Border-for-vim-lsp.patch'
 	'0001-Add-better-symbols.patch'
@@ -45,4 +46,5 @@ package() {
 
 	# Plugin directory
 	cp -rf "$srcdir/LspInterface.vim"	"$pkgdir/usr/share/supravim/vim/autoload/LspInterface/"
+	cp -rf "$srcdir/vim-lsp.vim"		"$pkgdir/usr/share/supravim/vim/plugin/"
 }

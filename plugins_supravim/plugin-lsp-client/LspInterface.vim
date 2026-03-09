@@ -235,6 +235,13 @@ def Show_hover(server_name: string, request: dict<any>, response: dict<any>)
         mousemoved: [v:beval_lnum, v:beval_col, v:beval_col],
     })
 
+	# close the popup if mode changed 
+	augroup SupraLspHoverPopup
+		autocmd! * <buffer>
+		autocmd ModeChanged <buffer> if mode() !=# 'n' | silent! call popup_close(id_popup) | endif
+		autocmd CursorMoved <buffer> silent! call popup_close(id_popup)
+	augroup END
+
     if id_popup > 0
         var bnr = winbufnr(id_popup)
 
