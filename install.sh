@@ -16,22 +16,37 @@ install_supravim() {
 }
 
 # check if git, make, zstd is installed
-required_commands=("git" "make" "zstd")
-
+required_commands=("git" "make" "zstd", "pkg-config")
+missing_libs=()
 missing_commands=()
+
 for cmd in "${required_commands[@]}"; do
 	if ! command -v "$cmd" &> /dev/null; then
 		missing_commands+=("$cmd")
 	fi
 done
 
-if [ ${#missing_commands[@]} -ne 0 ]; then
-	echo -e "\033[31;1m[Error]:\033[0m The following commands are required to run this script: ${missing_commands[*]}"
-	echo -e ""
-	echo -e '\033[93;1mUbuntu: \033[0m\033[93mapt install git make zstd glib-networking valac\033[0m'
-	echo -e '\033[96;1mArchLinux: \033[0m\033[96mpacman -S git make zstd glib-networking vala\033[0m'
-	echo -e "\033[95;1mmacOS: \033[0m\033[95mbrew install git make zstd glib-networking vala\033[0m"
-	exit 1
+if command -v pkg-config &> /dev/null; then
+    # On vérifie glib et gio qui manquent dans ton erreur
+    for lib in "glib-2.0" "gio-2.0" "gobject-2.0"; do
+        if ! pkg-config --exists "$lib"; then
+            missing_libs+=("$lib")
+        fi
+    done
+fi
+
+if [ ${#missing_commands[@]} -ne 0 ] || [ ${#missing_libs[@]} -ne 0 ]; then
+    echo -e "\033[31;1m[Error]:\033[0m Des dépendances sont manquantes pour la compilation."
+    
+    if [ ${#missing_libs[@]} -ne 0 ]; then
+        echo -e "Bibliothèques manquantes : ${missing_libs[*]}"
+    fi
+
+    echo -e ""
+    echo -e '\033[93;1mUbuntu/Debian: \033[0m\033[93mapt install git make zstd libglib2.0-dev valac pkg-config\033[0m'
+    echo -e '\033[96;1mArchLinux: \033[0m\033[96mpacman -S git make zstd glib2 vala pkgconf\033[0m'
+    echo -e "\033[95;1mmacOS: \033[0m\033[95mbrew install git make zstd glib vala pkg-config\033[0m"
+    exit 1
 fi
 
 # check if IS42 is equal to true
