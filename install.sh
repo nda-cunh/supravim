@@ -16,7 +16,7 @@ install_supravim() {
 }
 
 # check if git, make, zstd is installed
-required_commands=("git" "make" "zstd", "pkg-config")
+required_commands=("git" "make" "zstd" "pkg-config")
 missing_libs=()
 missing_commands=()
 
