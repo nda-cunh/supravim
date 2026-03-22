@@ -12,6 +12,7 @@ var group_registry: dict<string> = {}
 #   type: string,     # 'bool', 'string', 'number', 'choice' (pour ton CLI)
 #   lore: string,     # La description affichée à l'utilisateur
 #   default: any,     # La valeur par défaut si absente du JSON
+#   spawn: func,      # (optionnel) Fonction exécutée une seule fois mais n'appelles pas handler() au demmarage
 #   handler: func,    # La fonction exécutée : (val) => { ... }
 # }
 
@@ -33,13 +34,14 @@ export def Register(option: dict<any>)
 	registry[option.id] = option
 	var val_to_apply: any = get(user_settings, option.id, get(option, 'default', ''))
 	try
-		if !has_key(option, 'spawn') || option.spawn == true
-			Apply(option.id, val_to_apply)
+		current_values[option.id] = val_to_apply
+		if has_key(option, 'spawn')
+			SpawnFunction(option.id, val_to_apply)
 		else
-			current_values[option.id] = val_to_apply
+			Apply(option.id, val_to_apply)
 		endif
 	catch
-		echom "Error applying option '" v:exception .. "'"
+		echom "Error applying option '" .. v:exception .. "'"
 	endtry
 enddef
 
@@ -63,6 +65,14 @@ export def Apply(id: string, value: any)
         current_values[id] = value
         var val_str = (type(value) == v:t_bool ? $'{value}' : value)
         registry[id].handler(value)
+    endif
+enddef
+
+def SpawnFunction(id: string, value: any)
+    if has_key(registry, id)
+        current_values[id] = value
+        var val_str = (type(value) == v:t_bool ? $'{value}' : value)
+        registry[id].spawn(value)
     endif
 enddef
 
