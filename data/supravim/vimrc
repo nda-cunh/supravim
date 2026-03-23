@@ -63,9 +63,8 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Enable the creation of swap files (.swp)',
         handler: (v) => {
-			# exec ($'{v}' == 'true' ? 'set swapfile' : 'set noswapfile')
 			&swapfile = v
-	}
+		}
     },
     {
         id: 'wrap',
@@ -73,7 +72,6 @@ SupraConfig.RegisterMany([
         default: true,
         lore: 'Enable automatic line wrapping',
         handler: (v) => {
-			# exec ($'{v}' == 'true' ? 'set wrap' : 'set nowrap')
 			&wrap = v 
 		}
     },
@@ -83,8 +81,19 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Automatically save files on changes',
         handler: (v) => {
-			# g:sp_autosave = ($'{v}' == 'true')
-			g:sp_autosave = v
+			if v
+				augroup SupravimAutoSave
+					autocmd!
+					autocmd BufLeave * {
+						if &modifiable && expand('%') != ''
+							write
+						endif
+					}
+				augroup END
+			else
+				silent! autocmd! SupravimAutoSave
+			endif
+
 		}
     },
     {
@@ -236,7 +245,6 @@ SupraConfig.RegisterMany([
         default: "┃",
         lore: 'Vertical symbol used for sidebar signs (e.g. Git markers)',
         handler: (v) => {
-
 			var clean = substitute($'{v}', '\s+', '', 'g')
             g:sp_symbol_signs = (empty(clean) || strcharlen(clean) > 2) ? '✖' : clean
         }
