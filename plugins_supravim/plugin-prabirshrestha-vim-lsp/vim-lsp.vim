@@ -36,7 +36,8 @@ SupraConfig.RegisterMany([
         type: 'bool',
         default: true,
         lore: 'Enable or disable the Language Server Protocol interface',
-		spawn: false,
+		spawn: (v) => {
+		},
         handler: (v) => {
             if v
 				silent! call lsp#enable()
@@ -340,8 +341,8 @@ export def InitMenuActionLsp()
 	call SupraMenu#Register(MenuActionLsp)
 enddef
 
-def g:HasCodeAction(): bool
-	const v = sign_getplaced(bufnr(), {'lnum': 16, 'group': 'vim_lsp_document_code_action_signs'})
+def HasCodeAction(line: number): bool
+	const v = sign_getplaced(bufnr(), {'lnum': line, 'group': 'vim_lsp_document_code_action_signs'})
 	return !empty(v) && !empty(v[0].signs)
 enddef
 
@@ -356,10 +357,11 @@ def LspMenuActionRunSupraMenu(col: number, line: number)
 enddef
 
 const SID = expand('<SID>')
+
 def MenuActionLsp(ctx: dict<any>): dict<any>
     const col = ctx.col
 	const line = ctx.line
-	if !g:HasCodeAction()
+	if !HasCodeAction(line)
 		 return {}
 	endif
     return {
