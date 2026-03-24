@@ -4,7 +4,6 @@ export def TextCompletion()
     prop_remove({type: 'ghost_text', all: true})
 
    	const info = complete_info(['selected', 'items', 'preinserted_text'])
-	echom pum_getpos() 
 
     if info.selected == -1 || empty(info.items)
         return
