@@ -7,8 +7,9 @@ if !exists('g:SUPRA_CLIP')
 	g:SUPRA_CLIP = []
 endif
 
-inoremap <c-v>	<scriptcmd>norm p<cr>
-nnoremap <del> i<del><right><esc>
+inoremap <c-v>	<C-R>+
+nnoremap <del>  "_x
+vnoremap <del> "_d
 vnoremap <c-c>	y
 
 augroup UpdateYankRegistersGroup
@@ -44,7 +45,7 @@ elseif session_type == 'wayland'
 		autocmd TextYankPost * call SupraCopy.SetClipBoardExtern([])
 		autocmd FocusGained,VimEnter * call SupraCopy.LoadRegisterFromExtern([])
 		command UpdateClipboard call SupraCopy.SetClipBoardExtern([])
-	elseif expand("$XDG_SESSION_TYPE") == "wayland"
+	else
 		set clipboard=
 		if executable('wl-copy') == 0
 			call Notify.Notification(["wl-copy not found", "Please install wl-clipboard for copy/paste support"], {type: 'error'})
