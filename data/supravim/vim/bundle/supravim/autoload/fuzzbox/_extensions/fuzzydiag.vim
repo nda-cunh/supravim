@@ -112,7 +112,5 @@ export def Start()
 	call matchadd('LspDiagWarning', '│ W.*$', 10000, -1, {'window': dic.menu})
 	call matchadd('LspDiagInfo', '│ I.*$', 10000, -1, {'window': dic.menu})
 	call matchadd('LspDiagHint', '│ H.*$', 10000, -1, {'window': dic.menu})
-
 	call matchadd('Directory', '\zs[^│]*\ze │', 10000, -1, {'window': dic.menu})
-
 enddef
