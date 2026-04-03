@@ -100,7 +100,7 @@ namespace LspServer {
 			"jinja-lsp --version",
 			"suprapack add jinja-lsp --yes" },
 		{ "docker-lsp", "docker-langserver,--stdio", "dockerfile",
-			"docker-langserver --version",
+			null,
 			"npm install -g dockerfile-language-server-nodejs" },
 		{ "tailwind-lsp", "tailwindcss-language-server,--stdio", "html,css,js,ts,vue",
 			"tailwindcss-language-server --version",
