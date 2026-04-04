@@ -12,7 +12,7 @@ def Select(wid: number, result: list<any>)
 enddef
 
 def Preview(wid: number, result: string)
-	var num = str2nr(result[0]) - 1
+	var num = str2nr(matchstr(result, '^\d\+')) - 1
     var content = g:SUPRA_CLIP[num]
 	# split by new line and remove all \n
 	var sp = content->split('\n\zs')->map('substitute(v:val, "\n", "", "g")')
