@@ -31,10 +31,18 @@ import autoload 'supravim/Welcome.vim' as WelcomeModule
 import autoload 'supravim/SupraOptions.vim' as Options
 
 if !has('patch-9.1.1100')
-	Notify.Notification(["Unsupported Vim version !!!",
-		"Some features may not work properly",
-		"Please update to Vim 9.1.1100 or later"
-	], {type: 'error'})
+	def NotifiSupport()
+		Notify.Notification(["Unsupported Vim version !!!",
+			"Some features may not work properly",
+			"Please update to Vim 9.1.1100 or later"],
+		{
+			type: 'error',
+			left_click: (_) => {
+				g:SupraTerm("suprapack add vim\n")
+			}
+		})
+	enddef
+	autocmd VimEnter * ++once NotifiSupport()
 endif
 
 SupraConfig.RegisterGroup('autopairs', 'Options related to the Auto Pairs plugin')
@@ -264,7 +272,7 @@ SupraConfig.RegisterMany([
     {
         id: 'theme/style/function',
         type: 'string',
-        default: 'italic,bold,underline',
+        default: 'bold',
         lore: 'Style for functions none, bold, italic, underline', 
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Function', v)
