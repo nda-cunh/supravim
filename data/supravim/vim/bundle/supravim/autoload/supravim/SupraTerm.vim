@@ -21,7 +21,7 @@ def ResizePopup(winid: number)
 	})
 enddef
 
-export def SupraTerm()
+export def SupraTerm(command: string = null_string)
 	hi link Terminal Search
 	var buf = term_start([expand("$SHELL")], {
 		hidden: 1,
@@ -54,4 +54,7 @@ export def SupraTerm()
 	win_execute(winid, 'tnoremap <buffer> <esc>		<c-\><c-n>' .. close_call)
 	win_execute(winid, 'tnoremap <buffer> <c-q>		<c-\><c-n>' .. close_call)
 	win_execute(winid, 'tmap <buffer> <c-\><c-n>	<c-\><c-n>' .. close_call)
+	if command != null_string
+		term_sendkeys(buf, command)
+	endif
 enddef
