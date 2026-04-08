@@ -18,18 +18,29 @@ def GotOutput(channel: channel, msg: string)
 	endif
 enddef
 
+var normal_bg: string = ''
+var endofbuffer_bg: string = ''
+var nontext_bg: string = ''
+
 export def ChangeNoBackgroundOption(value: bool)
 	if value == true
-		g:sp_nobackground = true
+		silent! hi Normal guibg=NONE ctermbg=NONE
+		silent! hi NonText guibg=NONE ctermbg=NONE
+		silent! hi EndOfBuffer guibg=NONE ctermbg=NONE
 	else
-		g:sp_nobackground = false
+		exec 'silent! hi! Normal guibg=' .. normal_bg
+		exec 'silent! hi! NonText guibg=' .. nontext_bg
+		exec 'silent! hi! EndOfBuffer guibg=' .. endofbuffer_bg
 	endif
+	silent! doautocmd ColorScheme
 enddef
 
 export def ChangeSupravimTheme(theme: string, typemode: string)
 	exec 'colorscheme ' .. theme
 	exec 'set background=' .. typemode
-	# AirlineRefresh
+	normal_bg = synIDattr(synIDtrans(hlID('Normal')), 'bg#')
+	endofbuffer_bg = synIDattr(synIDtrans(hlID('EndOfBuffer')), 'bg#')
+	nontext_bg = synIDattr(synIDtrans(hlID('NonText')), 'bg#')
 enddef
 
 export def ChangeColorStyleStatic(style: string, value: string)
