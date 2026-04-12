@@ -17,8 +17,8 @@ syn match nasmJumpTarget /[a-zA-Z0-9_\.]\+/ contained
 syn match nasmCallInstr /\<call\>/ nextgroup=nasmCallTarget skipwhite
 syn match nasmJumpInst /\<\%(jmp\|je\|jne\|jz\|jnz\|jg\|jge\|jl\|jle\)\>/ nextgroup=nasmJumpTarget skipwhite
 syn keyword nasmInstruction mov movq movsd movss movzx movsx movaps movups
-syn keyword nasmInstruction add sub mul div cmp ret push pushq pop popq nop leave
-syn keyword nasmInstruction lea inc dec interrupt syscall int
+syn keyword nasmInstruction add sub mul div cmp xor iretd iret ret pusha popa push pushq pop popq nop leave
+syn keyword nasmInstruction lea inc dec interrupt syscall int hlt outb inb cli sti out in 
 syn keyword nasmStorage db dw dd dq resb resw resd resq
 syn keyword nasmOperator wrt rel abs rel rel8 rel16 rel32
 syn keyword nasmSection section segment global extern macro endmacro
