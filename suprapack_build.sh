@@ -11,6 +11,7 @@ git clone https://github.com/nda-cunh/vim9-autopairs.git --depth 1
 git clone https://github.com/nda-cunh/SupraSnake --depth 1
 git clone https://github.com/nda-cunh/SupraTree --depth 1
 git clone https://github.com/nda-cunh/SupraWater --depth 1
+git clone https://github.com/nda-cunh/SupraComment --depth 1
 git clone https://github.com/nda-cunh/SupraIcons --depth 1
 git clone https://github.com/nda-cunh/SupraPopup --depth 1
 git clone https://github.com/nda-cunh/SupraPacman --depth 1
