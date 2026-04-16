@@ -4,7 +4,7 @@ export def TabFunc()
 	const info = complete_info()
 	if info.pum_visible
 		if info.selected == -1
-			feedkeys("\<c-i>", 'n')
+			feedkeys("\<Plug>(vsnip-jump-next)")
 		else
 			feedkeys("\<cr>")
 		endif
