@@ -5,7 +5,7 @@ namespace Cfg {
 	public void save_config () throws Error {
 		var bs = new StringBuilder.sized (2048);
 		try {
-			var regex = new Regex("""^[#][=]{22}?[ ]\bYOUR CONFIG\b[ ][=]{23}\n(.*?)\n#={58}""", MULTILINE | DOTALL);
+			var regex = new Regex("""^[#][=]{5,60}[ ]*\bYOUR CONFIG\b[ ]*[=]{5,60}\n(.*)""", MULTILINE | DOTALL);
 			MatchInfo info;
 			string contents;
 			FileUtils.get_contents (rc_path, out contents);
@@ -51,7 +51,6 @@ namespace Cfg {
 			sb.append (ptr);
 			sb.append_c ('\n');
 		}
-		sb.append ("#==========================================================\n");
 	}
 
 }
