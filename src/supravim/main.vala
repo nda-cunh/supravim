@@ -29,8 +29,6 @@ public class Main {
 	// Boolean Options
 	private static bool is_version = false;
 	private static bool is_status = false;
-	private static bool is_update = false;
-	private static bool is_uninstall = false;
 	private static bool print_opts = false;
 	private static bool print_themes = false;
 	private static bool print_plugins = false;
@@ -49,8 +47,6 @@ public class Main {
 	private const GLib.OptionEntry[] options = {
 		{ "status", 's',		NONE, 		NONE,			ref is_status,		"Display status of your supravim config.",	null },
 		{ "version", 'v',		NONE, 		NONE,			ref is_version,		"Give your supravim version",				null },
-		{ "update", '\0',		NONE, 		NONE,			ref is_update,		"Update supravim",							null },
-		{ "uninstall", '\0',	NONE, 		NONE,			ref is_uninstall,	"Uninstall supravim",						null },
 		{ "list-plugin", '\0',	NONE, 		NONE,			ref list_plugin,	"List plugin.",								null },
 		{ "theme", 't',			NONE, 		STRING,			ref theme,			"Set theme.",								null },
 		{ "add-plugin", '\0',	NONE, 		STRING,			ref add_plugin,		"Add plugin.",								null },
@@ -155,10 +151,6 @@ public class Main {
 			Cfg.apply_config ();
 			return true;
 		}
-		else if (is_update)
-			return Process.spawn_command_line_sync ("suprapack update");
-		else if (is_uninstall)
-			return Process.spawn_command_line_sync ("suprapack remove supravim");
 		else if (is_status) {
 			Options.print_status ();
 			return true;
