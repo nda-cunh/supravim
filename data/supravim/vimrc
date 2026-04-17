@@ -571,6 +571,7 @@ if filereadable(expand('%')) == 0
 endif
 }
 nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
+autocmd User RefreshTree :SupraTreeRefresh
 
 #--------------- SupraVim Color ----------"
 def FixSupraVimColor()
