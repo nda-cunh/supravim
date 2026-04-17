@@ -41,7 +41,7 @@ enddef
 def GotOutputSupravimServer(channel: channel, msg: string)
 	if (stridx(msg, 'refresh') == 0)
 		if Make.is_supramake == false
-			doautocmd User RefreshTree
+			silent! doautocmd User RefreshTree
 		endif
 	elseif (stridx(msg, 'LoadBundle: ') == 0)
 		var sp = split(msg, ' ')
