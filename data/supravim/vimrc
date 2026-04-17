@@ -570,7 +570,7 @@ if filereadable(expand('%')) == 0
 	mkdir(expand('%:p:h'), 'p')
 endif
 }
-nnoremap <c-g> <cmd>SupraTreeToggle<cr> 
+nnoremap <c-g> <Plug>(SupraTreeToggle)
 autocmd User RefreshTree :SupraTreeRefresh
 
 #--------------- SupraVim Color ----------"
