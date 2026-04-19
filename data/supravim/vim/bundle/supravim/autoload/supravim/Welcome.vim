@@ -34,19 +34,37 @@ export def PrintChangeLog()
 enddef
 
 def WelcomeChangeLog(version: string)
-	var txt: string
-	if exists('g:SUPRAVIM_LAST_VERSION') == 0
-		txt = ''
-	else
-		if g:SUPRAVIM_LAST_VERSION == version
-			return
-		endif
-		txt = g:SUPRAVIM_LAST_VERSION .. ' → '
+	
+    var current_version = get(g:, 'supravim_version', '0.0.0')
+    
+    var version_file = expand('$HOME/.config/supravim/last_version.txt')
+    var last_run_version = ''
+
+    if filereadable(version_file)
+        last_run_version = readfile(version_file)->get(0, '')
+    endif
+
+    if last_run_version == current_version
+        return
+    endif
+	
+	var last_version = ''
+
+	if filereadable(version_file)
+		last_version = readfile(version_file)->get(0, '')
 	endif
 
-	var changelog = readfile(expand('$HOME/.local/share/supravim/CHANGELOG.md'))
-	var log_to_display: list<string> = ["Welcome to SupraVim " .. txt .. version]
+	if last_version == version
+		return
+	endif
 
+	var txt = (last_version == '' ? '' : last_version .. ' → ')
+
+	var changelog_path = expand('$HOME/.local/share/supravim/CHANGELOG.md')
+	if !filereadable(changelog_path) | return | endif # Sécurité si le fichier n'existe pas
+
+	var changelog = readfile(changelog_path)
+	var log_to_display: list<string> = ["Welcome to SupraVim " .. txt .. version]
 	# just print 4 log line max or stop if the line begin by '#'
 	var count = 0
 	for line in changelog
@@ -62,7 +80,7 @@ def WelcomeChangeLog(version: string)
 		endif
 	endfor
 	log_to_display += [" __Click here to see full changelog__"]
-	
+
 	Notify.Notification(log_to_display, {
 		icon: '󰪷',
 		left_click: (wid) => {
@@ -70,6 +88,6 @@ def WelcomeChangeLog(version: string)
 			popup_close(wid)
 		},
 	})
-	g:SUPRAVIM_LAST_VERSION = version
+	writefile([version], version_file)
 enddef
 

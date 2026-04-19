@@ -13,6 +13,9 @@ endif
 
 set t_Co=256
 set background=dark
+
+g:supravim_version = "@version@"
+
 # ---------------  Supraload  ---------------"
 
 import autoload 'supraload.vim' as SupraLoad 
