@@ -94,7 +94,7 @@ SupraConfig.RegisterMany([
 					autocmd!
 					autocmd BufLeave * {
 						if &modifiable && expand('%') != ''
-							write
+							update
 						endif
 					}
 				augroup END
@@ -461,7 +461,7 @@ if exists('+smoothscroll')
 	set smoothscroll
 endif
 syntax sync minlines=100
-hi! link Pmenu Normal
+au VimEnter,ColorScheme * :silent! hi! link Pmenu Normal
 if exists('+pumborder')
 	set pumborder=round
 	set pumheight=10
