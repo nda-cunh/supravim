@@ -24,7 +24,7 @@ conf_data = configuration_data()
 conf_data.set('description', description)
 conf_data.set('name', meson.project_name())
 conf_data.set('version', meson.project_version())
-
+vimrc = configure_file(input : 'vimrc.in', output : 'vimrc', configuration : conf_data)
 
 ####################################
 # Create the supravim executable
@@ -36,6 +36,7 @@ subdir('src')
 # Install
 ###################################
 
+install_data(vimrc, install_dir : 'share/supravim')
 install_subdir('data/supravim', install_dir : 'share')
 install_subdir('data/zsh', install_dir : 'share')
 install_data('data/lsp_c', install_dir : 'bin')
