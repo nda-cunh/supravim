@@ -38,7 +38,6 @@ subdir('src')
 
 install_data(vimrc, install_dir : 'share/supravim')
 install_subdir('data/supravim', install_dir : 'share')
-install_subdir('data/zsh', install_dir : 'share')
 install_data('data/lsp_c', install_dir : 'bin')
 install_data('data/post_install', install_dir : '.')
 install_data('data/pre_install', install_dir : '.')
@@ -52,6 +51,7 @@ install_data('data/pacman_vim.desktop', install_dir : 'share/applications')
 install_data('data/supravim_mime.desktop', install_dir : 'share/applications')
 install_data('CHANGELOG.md', install_dir : 'share/supravim')
 
+subdir('completions')
 
 ###################################
 # Suprapack
