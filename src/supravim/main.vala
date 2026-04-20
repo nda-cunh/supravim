@@ -44,6 +44,8 @@ public class Main {
 	private static bool save_config = false;
 	private static bool apply_config = false;
 
+	private static string? _list_options = null;
+
 	private const GLib.OptionEntry[] options = {
 		{ "status", 's',		NONE, 		NONE,			ref is_status,		"Display status of your supravim config.",	null },
 		{ "version", 'v',		NONE, 		NONE,			ref is_version,		"Give your supravim version",				null },
@@ -64,6 +66,7 @@ public class Main {
 		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"",				null },
 		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"",				null },
 		{ "supramenu_pl", 0,	HIDDEN, 	NONE,			ref print_supramenu_plugin,	"",		null },
+		{ "_list-options", '\0', OptionFlags.HIDDEN, OptionArg.STRING, ref _list_options, null, null },
 		{ null }
 	};
 
@@ -127,6 +130,23 @@ public class Main {
 	 * Run arguments based on the options set.
 	 */
 	public static bool? run () throws Error {
+		if (_list_options == "zsh") {
+			foreach (unowned var entry in options) {
+				if (entry.long_name != null && entry.long_name != "list-options" && entry.flags != OptionFlags.HIDDEN) {
+					unowned string desc = entry.description;
+					stdout.printf("--%s:%s\n", entry.long_name, desc ?? "");
+				}
+			}
+			return true;
+		}
+		else if (_list_options != null) {
+			foreach (unowned var entry in options) {
+				if (entry.long_name != null && entry.long_name != "list-options" && entry.flags != OptionFlags.HIDDEN) {
+					print ("--%s\n", entry.long_name);
+				}
+			}
+			return true;
+		}
 		if (is_version) {
 			print ("Supravim version %s\n", Config.VERSION);
 			return true;
