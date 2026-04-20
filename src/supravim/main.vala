@@ -40,6 +40,7 @@ public class Main {
 	private static string? enable_plugin = null;
 	private static string? disable_plugin = null;
 	private static string? update_plugin = null;
+	private static bool update_plugin_all = false;
 	
 	private static bool save_config = false;
 	private static bool apply_config = false;
@@ -56,6 +57,7 @@ public class Main {
 		{ "enable-plugin", '\0',NONE, 		STRING,			ref enable_plugin,	"Enable plugin.",							null },
 		{ "disable-plugin", '\0',NONE, 		STRING,			ref disable_plugin,	"Disable plugin.",							null },
 		{ "update-plugin", '\0',NONE, 		STRING,			ref update_plugin,	"Update plugin.",							null },
+		{ "update-plugin-all", '\0',NONE, 	NONE,			ref update_plugin_all,	"Update all plugins.",						null },
 		{ "disable", 'd',		NONE, 		STRING_ARRAY,	ref disable,		"Disable options.",							"optA[,optB]"},
 		{ "enable", 'e',		NONE, 		STRING_ARRAY,	ref enable,			"Enable options.",							"optA[,optB]"},
 		{ "reset", 'r',			NONE, 		STRING_ARRAY,	ref reset,			"Reset options to their default values.",	"optA[,optB]"},
@@ -215,8 +217,12 @@ public class Main {
 			return Plugin.enable(enable_plugin);
 		if (disable_plugin != null)
 			return Plugin.disable (disable_plugin);
-		if (update_plugin != null)
+		// Update
+		if (update_plugin_all == true)
+			return Plugin.update_all ();
+		else if (update_plugin != null)
 			return Plugin.update (update_plugin);
+		// List
 		if (list_plugin)
 			return Plugin.list ();
 		return null;

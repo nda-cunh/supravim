@@ -96,8 +96,10 @@ namespace Plugin {
 	public bool update_all () throws Error {
 		var plugins = new PluginsLst ();
 		foreach (unowned string item in plugins) {
+			stdout.printf (BOLD + GREEN + "Updating plugin %s...\n" + DEFAULT, item);
 			unowned string name = item.offset (item.last_index_of_char (' ') + 1);
 			Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$name pull");
+			stdout.printf (BOLD + GREEN + "Plugin %s updated successfully\n" + DEFAULT, name);
 		}
 		return true;
 	}
