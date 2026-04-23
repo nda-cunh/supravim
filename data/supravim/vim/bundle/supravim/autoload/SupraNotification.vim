@@ -8,6 +8,15 @@ highlight SupraNotificationSuccess cterm=bold ctermfg=green guifg=#16B84E gui=bo
 # All Notifications
 var popup_wins: dict<any>
 
+export def RepositionNotifications()
+    var current_top = 2
+    for wid in keys(popup_wins)->map((_, v) => str2nr(v))
+        popup_move(wid, {col: &columns, line: current_top})
+        current_top += popup_getpos(wid).height
+    endfor
+    actual_line = current_top
+enddef
+
 # Callback for notification popups
 def FilterNotification(wid: number, key: string): number
 	if key ==? "\<LeftMouse>" || key ==? "\<2-LeftMouse>"
