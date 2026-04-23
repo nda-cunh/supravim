@@ -223,14 +223,14 @@ def AnimationOpenSlide(popup: number)
 	var new_title = popup_getoptions(popup).title
 	timer_start(9, (timer) => {
 		popup_move(popup, {maxwidth: width, width: width})
-		width = width + 1
+		width = width + 2
 		# to remove TODO
 		if width < len(new_title)
 			var title = new_title[0 : width - 1]
 			popup_setoptions(popup, {title: title})
 		endif
 		
-		if width == actual_width
+		if width >= actual_width
 			timer_stop(timer)
 		endif
 	}, {repeat: 9999})
@@ -375,13 +375,13 @@ export def Close(popup: number)
 	var timer: any 
 	timer = timer_start(9, (_) => {
 		popup_move(popup, {maxwidth: width, width: width})
-		width = width - 1
+		width = width - 2
 		if width < len(new_title)
 			var title = new_title[0 : width - 1]
 			popup_setoptions(popup, {title: title})
 		endif
 		
-		if width == -1
+		if width <= 0
 			timer_stop(timer)
 			popup_close(popup)
 		endif
