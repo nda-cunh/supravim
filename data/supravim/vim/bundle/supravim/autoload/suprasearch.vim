@@ -3,6 +3,35 @@ vim9script
 import autoload 'SupraPopup.vim' as Popup
 
 var first_buffer = []
+#
+########### MENU Part ############
+export def InitMenu()
+	call SupraMenu#Register(MenuSearch)
+enddef
+
+export def SupraSearchMenu()
+	var pos1 = getpos("'<")
+	var pos2 = getpos("'>")
+	var content = getregion(pos1, pos2, {type: visualmode()})
+	var text = join(content, '\n')
+	SupraSearch(false, text)
+enddef
+
+def MenuSearch(ctx: dict<any>): dict<any>
+	return {
+        priority: 0,
+        rows: [
+            {
+                label: 'Search selection',
+                cmd: $':vim9cmd call suprasearch#SupraSearchMenu()<cr>',
+                icon: '󱈄',
+                type: 'v'
+            }
+        ]
+    }
+enddef
+
+############ END of MENU Part ############
 
 export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	const r1 = getreg('1')
