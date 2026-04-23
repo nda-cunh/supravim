@@ -112,6 +112,9 @@ public class SupraVim {
 #if DISCORD_PRESENCE
 			discord?.open_file (filetype, filename);
 #endif
+			if (filetype in lspServerEverLoad)
+				return;
+			lspServerEverLoad[filetype] = true;
 			// Check if an Lsp exist for this file
 			var possible_lsp = LspServer.get_lsp_possible (filetype);
 			var? possible_package = SupportLang.get_package_possible (filetype);
@@ -236,5 +239,6 @@ public class SupraVim {
 
 	private bool LspIsReady = false;
 	private SList<string> LspReady = new SList<string> ();
+	private HashTable<string, bool> lspServerEverLoad = new HashTable<string, bool> (str_hash, str_equal);
 }
 
