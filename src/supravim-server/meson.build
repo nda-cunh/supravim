@@ -1,9 +1,11 @@
 sources = files(
+  'Command.vala',
   'LspServer.vala',
-  'main.vala',
   'Monitor.vala',
   'Stdin.vala',
   'SupportLang.vala',
+  'Utils.vala',
+  'main.vala',
 )
 
 vala_dependencies = [
