@@ -2,7 +2,7 @@ name: @name@
 version: @version@
 author: nda-cunh
 description: @description@
-dependency: supramake suprabear supratags
+dependency: supramake suprabear
 optional_dependency: plugin-autobear plugin-prabirshrestha-vim-lsp supravim-gui
 exclude_package: supravim-server plugin-lsp-client
 binary: @name@ 
