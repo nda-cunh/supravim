@@ -38,6 +38,7 @@ def WelcomeChangeLog(version: string)
     var current_version = get(g:, 'supravim_version', '0.0.0')
     
     var version_file = expand('$HOME/.config/supravim/last_version.txt')
+	mkdir(expand('$HOME/.config/supravim'), 'p')
     var last_run_version = ''
 
     if filereadable(version_file)
