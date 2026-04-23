@@ -173,6 +173,7 @@ def OpenNotification(msg: list<string>, opts: dict<any> = {}): number
     setbufvar(buf, '&swapfile', 0)
     setbufvar(buf, '&undolevels', -1)
 	setbufvar(buf, '&filetype', 'markdown')
+	setwinvar(popup, '&conceallevel', 3)
 	
 	# Add the Event handler for left click
 	var Leftclick = null_function
