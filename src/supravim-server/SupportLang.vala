@@ -17,7 +17,7 @@ public class SupportLang {
 	public static Support? get_package_possible (string file) {
 		if (is_loaded[file] != null)
 			return null;
-		var? suprapack_list_plugin = get_suprapack_list_plugin (); 
+		var? suprapack_list_plugin = Utils.get_suprapack_list_plugin (); 
 		if (suprapack_list_plugin == null)
 			return null;
 

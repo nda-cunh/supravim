@@ -130,7 +130,7 @@ public class DiscordIpc {
 }
 
 
-class DiscordSupraVim : DiscordIpc {
+public class DiscordSupraVim : DiscordIpc {
 	public DiscordSupraVim (string client_id) throws Error {
 		base(client_id);
 	}
