@@ -174,7 +174,7 @@ SupraConfig.RegisterMany([
 	{
 		id: 'lsp/diagnostics/signs/action_enabled',
 		type: 'bool',
-		default: true,
+		default: false,
 		lore: 'Show signs for available code actions',
 		handler: (v) => {
 			g:lsp_document_code_action_signs_enabled = v ? 1 : 0
