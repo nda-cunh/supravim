@@ -367,6 +367,7 @@ vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 inoremap <c-a>		<esc>gg<s-v>G
 nnoremap <silent><c-@>		<scriptcmd>g:LspHover()<cr>
+nnoremap <silent><c-space>		<scriptcmd>g:LspHover()<cr>
 silent! unmap <c-t>
 nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
 # Terminal shortcuts
@@ -518,7 +519,7 @@ g:airline#extensions#tabline#left_sep = '◤'
 g:airline#extensions#tabline#left_alt_sep = '╱'
 g:airline#extensions#tabline#right_sep = '◥'
 g:airline#extensions#tabline#right_alt_sep = '╱'
-
+g:airline_experimental = 1
 # ----------------- FuzzBox ------------------
 g:fuzzbox_enable_mappings = 0
 g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
