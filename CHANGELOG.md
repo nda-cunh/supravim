@@ -1,3 +1,8 @@
+# 6.67.0
+- New Tree
+- New Options
+- prepare the 7.0 version with a new architecture and a new way to manage plugins
+
 # 6.12.0
 - Add Go,Zig,Markdown... LSP support
 - Improve Supravim-better-comment to support more languages

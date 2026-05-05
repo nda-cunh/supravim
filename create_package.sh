@@ -1,9 +1,5 @@
 #!/bin/bash
 
-
-
-
-
 # On MacOs check if Homebrew is installed and install required packages
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	if ! command -v brew &> /dev/null; then
@@ -20,7 +16,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 required_commands=("git" "make" "zstd" "valac" "meson" "ninja" "fakeroot")
-# Vérification de chaque commande
+
 missing_commands=()
 for cmd in "${required_commands[@]}"; do
 	if ! command -v "$cmd" &> /dev/null; then
