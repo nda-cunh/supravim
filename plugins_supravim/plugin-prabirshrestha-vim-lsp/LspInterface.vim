@@ -7,6 +7,9 @@ export def AddLspServer(name: string, cmd: list<string>, filetypes: list<string>
 		name: name,
 		cmd: (_) => cmd,
 		allowlist: filetypes,
+		initialization_options: {
+			'ui.semanticTokens': true,
+		},
 	})
 	silent! lsp#activate()
 enddef
