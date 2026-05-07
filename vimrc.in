@@ -522,6 +522,7 @@ g:airline#extensions#tabline#left_alt_sep = '╱'
 g:airline#extensions#tabline#right_sep = '◥'
 g:airline#extensions#tabline#right_alt_sep = '╱'
 g:airline_experimental = 1
+g:supraicons_airline_enable = true
 # ----------------- FuzzBox ------------------
 g:fuzzbox_enable_mappings = 0
 g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
