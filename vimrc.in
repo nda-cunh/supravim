@@ -486,7 +486,7 @@ set novisualbell
 set ballooneval
 set balloonevalterm
 set balloonexpr=g:BalloonPopup()
-set balloondelay=220
+set balloondelay=750
 
 #--------------- Supravim Options ---------------"
 def g:SettingsSupravim()
