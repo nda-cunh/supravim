@@ -32,6 +32,7 @@ import autoload 'SupraPopup.vim' as Popup
 import autoload 'SupraUtils.vim' as Utils
 import autoload 'supravim/Welcome.vim' as WelcomeModule
 import autoload 'supravim/SupraOptions.vim' as Options
+import autoload 'supravim/Roundvisual.vim' as RoundVisual
 
 if !has('patch-9.1.1100')
 	def NotifiSupport()
@@ -47,6 +48,9 @@ if !has('patch-9.1.1100')
 	enddef
 	autocmd VimEnter * ++once NotifiSupport()
 endif
+
+RoundVisual.EnableAutoRound("'", "'")
+RoundVisual.EnableAutoRound('"', '"')
 
 SupraConfig.RegisterGroup('autopairs', 'Options related to the Auto Pairs plugin')
 SupraConfig.RegisterGroup('fuzzbox', 'Options related to the Fuzzbox plugin')
@@ -213,21 +217,29 @@ SupraConfig.RegisterMany([
 
     # --- ROUNDVISUAL (AUTO CLOSING) ---
     {
-        id: 'roundvisual/quotes',
+        id: 'roundvisual/brackets',
         type: 'bool',
         default: true,
-        lore: 'Auto-close quotes " and' .. " \' and `'",
+        lore: 'Auto-close parenthesis ()',
         handler: (v) => {
-			g:roundvisual_quotes = v 
+			if v == true
+				RoundVisual.EnableAutoRound('(', ')')
+			else
+				RoundVisual.DisableAutoRound('(')
+			endif
 		}
     },
     {
         id: 'roundvisual/brackets',
         type: 'bool',
         default: true,
-        lore: 'Auto-close parenthesis () and brackets []',
+        lore: 'Auto-close brackets []',
         handler: (v) => {
-			g:roundvisual_brackets = v 
+			if v == true
+				RoundVisual.EnableAutoRound('[', ']')
+			else
+				RoundVisual.DisableAutoRound('[')
+			endif
 		}
     },
     {
@@ -236,16 +248,24 @@ SupraConfig.RegisterMany([
         default: false,
         lore: 'Auto-close braces {}',
         handler: (v) => {
-			g:roundvisual_braces = v
+			if v == true
+				RoundVisual.EnableAutoRound('{', '}')
+			else
+				RoundVisual.DisableAutoRound('{')
+			endif
 		}
     },
     {
         id: 'roundvisual/angle',
         type: 'bool',
-        default: false,
+        default: true,
         lore: 'Auto-close angle brackets <>',
         handler: (v) => {
-			g:roundvisual_angle = v
+			if v == true
+				RoundVisual.EnableAutoRound('<', '>')
+			else
+				RoundVisual.DisableAutoRound('<')
+			endif
 		}
     },
 

@@ -66,7 +66,7 @@ export def AutoSaveActivate(activate: bool)
 		augroup AutoSave
 			autocmd!
 			autocmd BufLeave,FocusLost,VimLeavePre * {
-				if &modifiable == true && &buflisted == true &&  filereadable(expand('%'))
+				if &modifiable == true && &buflisted == true && filereadable(expand('%'))
 					silent! write
 				endif
 			}
