@@ -32,7 +32,7 @@ import autoload 'SupraPopup.vim' as Popup
 import autoload 'SupraUtils.vim' as Utils
 import autoload 'supravim/Welcome.vim' as WelcomeModule
 import autoload 'supravim/SupraOptions.vim' as Options
-import autoload 'supravim/Roundvisual.vim' as RoundVisual
+import autoload 'supravim/RoundVisual.vim' as RoundVisual
 
 if !has('patch-9.1.1100')
 	def NotifiSupport()
