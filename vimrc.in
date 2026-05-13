@@ -387,7 +387,7 @@ vnoremap <S-Tab>	<<<esc>gv
 vnoremap <Tab>		>><esc>gv
 inoremap <c-a>		<esc>gg<s-v>G
 nnoremap <silent><c-@>		<scriptcmd>g:LspHover()<cr>
-nnoremap <silent><c-space>		<scriptcmd>g:LspHover()<cr>
+nnoremap <silent><c-space>	<scriptcmd>g:LspHover()<cr>
 silent! unmap <c-t>
 nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
 # Terminal shortcuts

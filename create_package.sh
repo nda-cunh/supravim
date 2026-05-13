@@ -35,6 +35,9 @@ fi
 
 
 cd $(mktemp -d)
+echo "####################################################################"
+echo "Created temporary directory: $PWD"
+echo "####################################################################"
 
 create_package() {
 	echo "Creating package for $1"
