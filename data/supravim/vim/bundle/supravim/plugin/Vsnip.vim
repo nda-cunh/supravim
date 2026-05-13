@@ -9,4 +9,4 @@ imap <expr> <S-Tab> g:vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S
 imap <c-y>	<scriptcmd>VSnip.CtrlYFunc()<cr>
 
 const HOME = expand('~')
-g:vsnip_snippet_dirs = [HOME .. '/.cache/supravim/snippets', HOME .. '/.local/share/supravim/data/snippets']
+g:vsnip_snippet_dirs = [HOME .. '/.config/supravim/snippets', HOME .. '/.local/share/supravim/data/snippets']
