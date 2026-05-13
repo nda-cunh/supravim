@@ -31,7 +31,7 @@ namespace Theme {
 
 		while ((name = dir.read_name ()) != null) {
 			if (name.has_suffix (".vim")) {
-				print ("%s ", name[:-4]);
+				print ("%s\n", name[:-4]);
 			}
 		}
 		return true;

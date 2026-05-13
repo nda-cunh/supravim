@@ -150,7 +150,7 @@ namespace Plugin {
 
 		foreach (unowned var item in plugins) {
 			name = item.offset (item.last_index_of_char (' ') + 1);
-			print ("%s ", name);
+			print ("%s\n", name);
 		}
 		return true;
 	}

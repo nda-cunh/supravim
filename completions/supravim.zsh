@@ -14,6 +14,11 @@ _supravim() {
                 _describe 'themes' themes
                 ;;
             -e|--enable|-d|--disable)
+                local -a configs_switch
+                configs_switch=(${(f)"$(supravim --print-options-switchable)"})
+				_describe 'config options' configs_switch
+                ;;
+            -S|--set)
                 local -a configs
                 configs=(${(f)"$(supravim --print-options)"})
                 _describe 'config options' configs

@@ -30,6 +30,7 @@ public class Main {
 	private static bool is_version = false;
 	private static bool is_status = false;
 	private static bool print_opts = false;
+	private static bool print_opts_switchable = false;
 	private static bool print_themes = false;
 	private static bool print_plugins = false;
 	private static bool print_supramenu_plugin = false;
@@ -63,6 +64,7 @@ public class Main {
 		{ "reset", 'r',			NONE, 		STRING_ARRAY,	ref reset,			"Reset options to their default values.",	"optA[,optB]"},
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
 		{ "print-options", 0,	HIDDEN, 	NONE,			ref print_opts,		"Print available options.",					null },
+		{ "print-options-switchable", 0,	HIDDEN, 	NONE,			ref print_opts_switchable,		"Print switchable available options.",					null },
 		{ "print-themes", 0,	HIDDEN, 	NONE,			ref print_themes,	"Print available themes.",					null },
 		{ "print-plugins", 0,	HIDDEN, 	NONE,			ref print_plugins,	"",				null },
 		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"",				null },
@@ -155,6 +157,10 @@ public class Main {
 		}
 		if (print_plugins)
 			return Plugin.print_all_installed_plugins ();
+		if (print_opts_switchable) {
+			Options.print_options_switchable ();
+			return true;
+		}
 		if (print_opts) {
 			Options.print_options ();
 			return true;

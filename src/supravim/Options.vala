@@ -91,7 +91,22 @@ namespace Options {
 		foreach (unowned var opt in lst) {
 			if (opt == null)
 				continue;
-			print ("%s\n", opt.id);
+			print ("%s:%s\n", opt.id, opt.lore);
+		}
+	}
+	public void print_options_switchable() throws Error {
+		var lst = SupraParser.get_from_vim();
+		const string enabled = "\033[92m";
+		const string disabled = "\033[91m";
+		foreach (unowned var opt in lst) {
+			if (opt == null || (opt.type != "bool"))
+				continue;
+			unowned string color;
+			if (opt.value == "true")
+				color = enabled;
+			else
+				color = disabled;
+			print ("%s:%s%s\033[0m\n", opt.id, color, opt.lore);
 		}
 	}
 
