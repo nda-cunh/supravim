@@ -154,7 +154,7 @@ SupraConfig.RegisterMany([
 	{
 		id: 'lsp/diagnostics/signs/delay',
 		type: 'number',
-		default: 30,
+		default: 320,
 		lore: 'Delay in ms before showing signs',
 		handler: (v) => {
 			g:lsp_diagnostics_signs_delay = v
@@ -164,7 +164,7 @@ SupraConfig.RegisterMany([
 	{
 		id: 'lsp/diagnostics/signs/action_delay',
 		type: 'number',
-		default: 200,
+		default: 500,
 		lore: 'Delay in ms before showing code action signs',
 		handler: (v) => {
 			g:lsp_document_code_action_signs_delay = v
@@ -207,7 +207,7 @@ SupraConfig.RegisterMany([
     {
         id: 'lsp/diagnostics/virtual_text/delay',
         type: 'number',
-        default: 50,
+        default: 550,
         lore: 'Delay in ms before showing virtual text diagnostics',
         handler: (v) => {
 			g:lsp_diagnostics_virtual_text_delay = v
@@ -248,7 +248,7 @@ SupraConfig.RegisterMany([
     {
         id: 'lsp/diagnostics/float/delay',
         type: 'number',
-        default: 50,
+        default: 550,
         lore: 'Delay in ms before showing floating diagnostics',
         handler: (v) => {
             g:lsp_diagnostics_float_delay = v
@@ -279,7 +279,7 @@ SupraConfig.RegisterMany([
     {
         id: 'lsp/diagnostics/echo/delay',
         type: 'number',
-        default: 50,
+        default: 250,
         lore: 'Delay in ms before showing echo diagnostics',
         handler: (v) => {
             g:lsp_diagnostics_echo_delay = v
@@ -301,7 +301,7 @@ SupraConfig.RegisterMany([
     {
         id: 'lsp/semantic/delay',
         type: 'number',
-        default: 0,
+        default: 250,
         lore: 'Delay in ms before applying semantic token highlights',
         handler: (v) => {
 			g:lsp_semantic_delay = v
@@ -323,7 +323,7 @@ SupraConfig.RegisterMany([
     {
         id: 'lsp/inlay_hints/delay',
 		type: 'number',
-		default: 50,
+		default: 300,
 		lore: 'Delay in ms before showing inlay hints',
 		handler: (v) => {
 			g:lsp_inlay_hints_delay = v
@@ -332,8 +332,9 @@ SupraConfig.RegisterMany([
 	},
 ])
 
-is_load = true
+g:lsp_fold_enabled = 0
 
+is_load = true
 
 au User SupraMenuLoaded InitMenuActionLsp()
 
