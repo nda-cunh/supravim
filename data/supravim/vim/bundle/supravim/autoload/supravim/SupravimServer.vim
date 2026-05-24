@@ -10,7 +10,8 @@ export def RunServer(project_root: string)
 		supravim_server = job_start(["supravim-server", project_root], {
 			out_cb: GotOutputSupravimServer,
 			in_mode: 'raw',
-			in_io: 'pipe'
+			in_io: 'pipe',
+			close_cb: CloseServer,
 		})
 
 		augroup SupravimServer
@@ -19,6 +20,13 @@ export def RunServer(project_root: string)
 			au User LspIsReady call ReadySupravimServer()
 		augroup END
 	endif
+enddef
+
+def CloseServer(ch: channel)
+	echom "Supravim-Server closed"
+	augroup SupravimServer
+		autocmd!
+	augroup END
 enddef
 
 def OpenNewFile()
