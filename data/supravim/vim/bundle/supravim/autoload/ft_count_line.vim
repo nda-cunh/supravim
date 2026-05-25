@@ -7,13 +7,13 @@ export def Ft_count_line()
 	const end_view_line = line('w$')
 	const begin_view_line = line('w0')
 
-	if end_view_line - begin_view_line < 3
-		return
-	endif
 	var lst = prop_list(begin_view_line, {types: ['ft_count_line'], end_lnum: end_view_line})
 	for item in lst
 		call prop_remove(item)
 	endfor
+	if end_view_line - begin_view_line < 3
+		return
+	endif
 	cursor(begin_view_line, 1)
 
 	while true
