@@ -22,7 +22,7 @@ def ResizePopup(winid: number)
 enddef
 
 export def SupraTerm(command: string = null_string)
-	hi link Terminal Search
+	hi link Terminal Normal
 	var buf = term_start([expand("$SHELL")], {
 		hidden: 1,
 		term_finish: 'close',

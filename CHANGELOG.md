@@ -1,3 +1,14 @@
+# 6.68.4
+- Theme: adjust terminal highlight
+- Airline: optimize with vim9script
+- SupraWater: normalize the path when use '../'
+- SupraWater: Fix SupraIcons-palette not applied
+
+# 6.68.3
+- fix a bug with ft-count-line
+- Add nim language-server
+- fix when supravim-server is exited
+
 # 6.67.0
 - New Tree
 - New Options
