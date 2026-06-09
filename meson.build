@@ -14,6 +14,9 @@ project('supravim', ['c', 'vala'], version : '6.68.4',
 add_global_arguments('--target-glib=auto', language : ['vala'])
 add_global_arguments('-w', language : ['c', 'cpp'])
 
+vapi_dir = meson.current_source_dir() / 'vapi'
+add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
+
 description = 'un supraediteur sur vim'
 
 
