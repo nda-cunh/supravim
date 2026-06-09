@@ -12,11 +12,12 @@ vala_dependencies = [
   dependency('glib-2.0'),
   dependency('gobject-2.0'),
   dependency('gio-2.0'),
-  dependency('gio-unix-2.0')
+  dependency('gio-unix-2.0'),
+  dependency('yyjson', static: true),
 ]
 
 vala_args = [
-  
+  '--pkg=yyjson', 
 ]
 
 # Add Discord presence support on non-Windows platforms, or if the user has explicitly enabled it on Windows
