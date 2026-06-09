@@ -1,6 +1,6 @@
 namespace Plugin {
 
-	internal class PluginEntry {
+	public class PluginEntry {
 		public string  name;
 		public string  url;
 		public bool    enabled          = true; // if false, the plugin is ignored by vim 
@@ -68,7 +68,7 @@ namespace Plugin {
 		// Properties
 		////////////////
 
-		public unowned PluginEntry get (int index) { return array.data[index]; }
+		public PluginEntry get (int index) { return array.data[index]; }
 		public uint size { get { return array.length; } }
 
 		////////////////

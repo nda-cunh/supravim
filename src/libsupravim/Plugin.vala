@@ -92,7 +92,7 @@ namespace Plugin {
 	public bool update_all () throws Error {
 		var plugins = new PluginsLst ();
 		for (int i = 0; i < (int) plugins.size; i++) {
-			unowned var item = plugins.get (i);
+			var item = plugins.get (i);
 			if (item.pinned != null) {
 				stdout.printf (BOLD + "Skipping " + GREEN + "%s" + DEFAULT + BOLD + " (pinned at %s)\n" + DEFAULT, item.name, item.pinned);
 				continue;
@@ -206,7 +206,7 @@ namespace Plugin {
 		var plugins = new PluginsLst ();
 		int count = 0;
 		for (int i = 0; i < (int) plugins.size; i++) {
-			unowned var item = plugins.get (i);
+			var item = plugins.get (i);
 			if (item.groups != null && group in item.groups.split (",")) {
 				item.enabled = true;
 				count++;
@@ -224,7 +224,7 @@ namespace Plugin {
 		var plugins = new PluginsLst ();
 		int count = 0;
 		for (int i = 0; i < (int) plugins.size; i++) {
-			unowned var item = plugins.get (i);
+			var item = plugins.get (i);
 			if (item.groups != null && group in item.groups.split (",")) {
 				item.enabled = false;
 				count++;
@@ -246,7 +246,7 @@ namespace Plugin {
 		}
 		bool any = false;
 		for (int i = 0; i < (int) plugins.size; i++) {
-			unowned var item = plugins.get (i);
+			var item = plugins.get (i);
 
 			if (only_pinned   && item.pinned == null)  continue;
 			if (only_disabled && item.enabled)          continue;
@@ -269,6 +269,14 @@ namespace Plugin {
 		return any;
 	}
 
+	public List<PluginEntry> get_all () throws Error {
+		var lst = new PluginsLst ();
+		var result = new List<PluginEntry> ();
+		for (int i = 0; i < (int) lst.size; i++)
+			result.append (lst.get (i));
+		return result;
+	}
+
 	public bool print_all_installed_plugins () throws Error {
 		var plugins = new PluginsLst ();
 		for (int i = 0; i < (int) plugins.size; i++)
@@ -280,7 +288,7 @@ namespace Plugin {
 		var plugins = new PluginsLst ();
 		var seen = new HashTable<string, bool> (str_hash, str_equal);
 		for (int i = 0; i < (int) plugins.size; i++) {
-			unowned var item = plugins.get (i);
+			var item = plugins.get (i);
 			if (item.groups == null) continue;
 			foreach (string g in item.groups.split (",")) {
 				if (!seen.contains (g)) {
