@@ -33,16 +33,26 @@ public class Main {
 	private static bool print_opts_switchable = false;
 	private static bool print_themes = false;
 	private static bool print_plugins = false;
+	private static bool print_groups  = false;
 	private static bool print_supramenu_plugin = false;
-	private static bool list_plugin = false;
+	private static bool    list_plugin        = false;
+	private static string? list_group         = null;
+	private static bool    list_only_pinned   = false;
+	private static bool    list_only_disabled = false;
 	private static string? theme = null;
 	private static string? add_plugin = null;
 	private static string? remove_plugin = null;
 	private static string? enable_plugin = null;
 	private static string? disable_plugin = null;
 	private static string? update_plugin = null;
-	private static bool update_plugin_all = false;
-	
+	private static bool update_plugin_all   = false;
+	private static string? pin_plugin          = null;
+	private static string? unpin_plugin        = null;
+	private static string? add_group_plugin    = null;
+	private static string? remove_group_plugin = null;
+	private static string? enable_group_plugin = null;
+	private static string? disable_group_plugin = null;
+
 	private static bool save_config = false;
 	private static bool apply_config = false;
 
@@ -51,7 +61,10 @@ public class Main {
 	private const GLib.OptionEntry[] options = {
 		{ "status", 's',		NONE, 		NONE,			ref is_status,		"Display status of your supravim config.",	null },
 		{ "version", 'v',		NONE, 		NONE,			ref is_version,		"Give your supravim version",				null },
-		{ "list-plugin", '\0',	NONE, 		NONE,			ref list_plugin,	"List plugin.",								null },
+		{ "list-plugin",      '\0', NONE, NONE,   ref list_plugin,        "List plugins.",                           null },
+		{ "group",            '\0', NONE, STRING, ref list_group,         "Filter list by group (use with --list-plugin).", null },
+		{ "only-pinned",      '\0', NONE, NONE,   ref list_only_pinned,   "Show only pinned plugins.",               null },
+		{ "only-disabled",    '\0', NONE, NONE,   ref list_only_disabled, "Show only disabled plugins.",             null },
 		{ "theme", 't',			NONE, 		STRING,			ref theme,			"Set theme.",								null },
 		{ "add-plugin", '\0',	NONE, 		STRING,			ref add_plugin,		"Add plugin.",								null },
 		{ "remove-plugin", '\0',NONE, 		STRING,			ref remove_plugin,	"Remove plugin.",							null },
@@ -59,6 +72,12 @@ public class Main {
 		{ "disable-plugin", '\0',NONE, 		STRING,			ref disable_plugin,	"Disable plugin.",							null },
 		{ "update-plugin", '\0',NONE, 		STRING,			ref update_plugin,	"Update plugin.",							null },
 		{ "update-plugin-all", '\0',NONE, 	NONE,			ref update_plugin_all,	"Update all plugins.",						null },
+		{ "pin-plugin",   '\0', NONE, STRING, ref pin_plugin,          "Pin plugin to its current commit.",        null },
+		{ "unpin-plugin", '\0', NONE, STRING, ref unpin_plugin,        "Unpin plugin (allow updates again).",      null },
+		{ "add-group",    '\0', NONE, STRING, ref add_group_plugin,    "Add plugin to group (<plugin>:<group>).",  null },
+		{ "remove-group", '\0', NONE, STRING, ref remove_group_plugin, "Remove plugin from group (<plugin>:<group>).", null },
+		{ "enable-group", '\0', NONE, STRING, ref enable_group_plugin, "Enable all plugins in a group.",          null },
+		{ "disable-group",'\0', NONE, STRING, ref disable_group_plugin,"Disable all plugins in a group.",         null },
 		{ "disable", 'd',		NONE, 		STRING_ARRAY,	ref disable,		"Disable options.",							"optA[,optB]"},
 		{ "enable", 'e',		NONE, 		STRING_ARRAY,	ref enable,			"Enable options.",							"optA[,optB]"},
 		{ "reset", 'r',			NONE, 		STRING_ARRAY,	ref reset,			"Reset options to their default values.",	"optA[,optB]"},
@@ -67,6 +86,7 @@ public class Main {
 		{ "print-options-switchable", 0,	HIDDEN, 	NONE,			ref print_opts_switchable,		"Print switchable available options.",					null },
 		{ "print-themes", 0,	HIDDEN, 	NONE,			ref print_themes,	"Print available themes.",					null },
 		{ "print-plugins", 0,	HIDDEN, 	NONE,			ref print_plugins,	"",				null },
+		{ "print-groups",  0,	HIDDEN, 	NONE,			ref print_groups,	"",				null },
 		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"",				null },
 		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"",				null },
 		{ "supramenu_pl", 0,	HIDDEN, 	NONE,			ref print_supramenu_plugin,	"",		null },
@@ -157,6 +177,8 @@ public class Main {
 		}
 		if (print_plugins)
 			return Plugin.print_all_installed_plugins ();
+		if (print_groups)
+			return Plugin.print_all_groups ();
 		if (print_opts_switchable) {
 			Options.print_options_switchable ();
 			return true;
@@ -230,7 +252,19 @@ public class Main {
 			return Plugin.update (update_plugin);
 		// List
 		if (list_plugin)
-			return Plugin.list ();
+			return Plugin.list (list_group, list_only_pinned, list_only_disabled);
+		if (pin_plugin != null)
+			return Plugin.pin (pin_plugin);
+		if (unpin_plugin != null)
+			return Plugin.unpin (unpin_plugin);
+		if (add_group_plugin != null)
+			return Plugin.add_group (add_group_plugin);
+		if (remove_group_plugin != null)
+			return Plugin.remove_group (remove_group_plugin);
+		if (enable_group_plugin != null)
+			return Plugin.enable_group (enable_group_plugin);
+		if (disable_group_plugin != null)
+			return Plugin.disable_group (disable_group_plugin);
 		return null;
 	}
 

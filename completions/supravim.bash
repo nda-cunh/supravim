@@ -11,22 +11,35 @@ _supravim_completions() {
             return 0
             ;;
         -e|--enable|-d|--disable)
+            opts=$(supravim --print-options-switchable)
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        -S|--set)
             opts=$(supravim --print-options)
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        --remove-plugin|--enable-plugin|--disable-plugin)
+        --remove-plugin|--enable-plugin|--disable-plugin|\
+        --update-plugin|--pin-plugin|--unpin-plugin)
             opts=$(supravim --print-plugins)
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        --add-group|--remove-group)
+            opts=$(supravim --print-plugins)
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        --enable-group|--disable-group|--group)
+            opts=$(supravim --print-groups)
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
     esac
 
     opts=$(supravim --_list-options=bash)
-    
-    if [[ ${COMP_CWORD} -eq 1 ]]; then
-        COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
-    fi
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
 }
 
 complete -F _supravim_completions supravim
