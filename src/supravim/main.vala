@@ -1,20 +1,3 @@
-public const string GREEN = "\033[32m";
-public const string RED = "\033[31m";
-public const string DEFAULT = "\033[;0m";
-public const string BOLD = "\033[;1m";
-public string HOME;
-public string cfg_dir;
-public string cfg_fpath;
-public string rc_path;
-
-public errordomain SupravimError {
-	BAD_VALUE,
-	VIM_CALL,
-	NOT_FOUND,
-	ALREADY_EXISTS,
-	UNKNOWN_ERROR
-}
-
 public class Main {
 	// Array of strings to hold the options passed from the command line. 
 	[CCode (array_length = false, array_null_terminated = true)]
@@ -278,10 +261,7 @@ public class Main {
 	 */
 	public static int main (string[] args) {
 		Intl.setlocale ();
-		HOME = Environment.get_home_dir ();
-		cfg_dir = @"$(HOME)/.local/share/supravim";
-		cfg_fpath = @"$(cfg_dir)/supravim.cfg";
-		rc_path = @"$(HOME)/.vimrc";
+		SupravimLib.init ();
 		try {
 			// Init options Entry 
 			var opt_context = new OptionContext ("Program to personalize your supravim");
