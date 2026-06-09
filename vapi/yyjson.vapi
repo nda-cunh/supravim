@@ -108,6 +108,18 @@ namespace YYJson {
 		public bool arr_add_val(MutValue val);
 	}
 
+    [CCode (cname = "yyjson_obj_iter", has_type_id = false)]
+    public struct ObjIter {
+        [CCode (cname = "yyjson_obj_iter_init")]
+        public static bool init (Value obj, out ObjIter iter);
+
+        [CCode (cname = "yyjson_obj_iter_next")]
+        public unowned Value? next ();
+
+        [CCode (cname = "yyjson_obj_iter_get_val")]
+        public static unowned Value? get_val (Value key);
+    }
+
     /* Supprimer les '= 1' car ce sont des constantes externes */
     [CCode (cname = "YYJSON_WRITE_PRETTY")]
     public const uint WRITE_PRETTY;
