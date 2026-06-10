@@ -18,7 +18,7 @@ export def UpdateYankRegisters()
 	# if has_key(v:event, 'operator') != 0 && v:event.operator != 'y'
 		# return
 	# endif
-	var value = getreg('0')
+	var value = getreg('"')
 	if IsSpace(value)
 		return
 	endif
@@ -69,8 +69,8 @@ export def LoadRegisterFromExtern(copy_os: list<string>)
 			if result == last
 				return
 			endif
-			UpdateYankRegisters()
 			setreg('"', result)
+			UpdateYankRegisters()
 		},
 	})
 enddef

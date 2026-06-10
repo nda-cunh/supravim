@@ -440,7 +440,7 @@ nnoremap <c-leftmouse>	<leftmouse><scriptcmd>g:LspDefinition()<cr>
 #---------------      Command        ---------------"
 cmap <c-q>	q!<cr>
 cmap <c-s>	w!<cr>
-cmap <c-v>	<c-r>0<del>
+cmap <c-v>	<c-r>"
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> exit<CR>
