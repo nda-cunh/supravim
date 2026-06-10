@@ -1,0 +1,7 @@
+{
+  "name": "toml-lsp",
+  "command": "taplo,lsp,stdio",
+  "allowed": "toml",
+  "test_command": "taplo --version",
+  "command_help": "suprapack add taplo --yes"
+}

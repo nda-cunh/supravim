@@ -1,0 +1,7 @@
+{
+  "name": "cmake",
+  "command": "cmake-language-server",
+  "allowed": "cmake",
+  "test_command": "cmake-language-server --version",
+  "command_help": "pip install cmake-language-server"
+}

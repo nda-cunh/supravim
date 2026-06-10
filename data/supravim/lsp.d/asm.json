@@ -1,0 +1,6 @@
+{
+  "name": "asm",
+  "command": "asm-lsp",
+  "allowed": "s,asm,nasm",
+  "command_help": "suprapack add asm-lsp --yes"
+}

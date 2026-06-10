@@ -1,0 +1,7 @@
+{
+  "name": "tailwind-lsp",
+  "command": "tailwindcss-language-server,--stdio",
+  "allowed": "html,css,js,ts,vue",
+  "test_command": "tailwindcss-language-server --version",
+  "command_help": "npm install -g @tailwindcss/language-server"
+}

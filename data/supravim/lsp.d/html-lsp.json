@@ -1,0 +1,6 @@
+{
+  "name": "html-lsp",
+  "command": "html-languageserver,--stdio",
+  "allowed": "html",
+  "command_help": "npm install -g vscode-html-languageserver-bin"
+}

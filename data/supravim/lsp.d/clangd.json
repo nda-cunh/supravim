@@ -1,0 +1,8 @@
+{
+  "name": "clangd",
+  "command": "clangd",
+  "allowed": "c,cpp,tpp",
+  "test_command": "clangd --version",
+  "command_help": "suprapack add clangd16 --yes",
+  "priority": 1
+}

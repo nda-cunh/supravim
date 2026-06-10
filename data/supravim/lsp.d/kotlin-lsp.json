@@ -1,0 +1,5 @@
+{
+  "name": "kotlin-lsp",
+  "command": "kotlin-language-server",
+  "allowed": "kt,kts,kotlin"
+}

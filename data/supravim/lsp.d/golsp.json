@@ -1,0 +1,7 @@
+{
+  "name": "golsp",
+  "command": "gopls",
+  "allowed": "go",
+  "test_command": "gopls version",
+  "command_help": "suprapack add gopls --yes"
+}

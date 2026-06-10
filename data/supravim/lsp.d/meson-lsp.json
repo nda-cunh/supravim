@@ -1,0 +1,7 @@
+{
+  "name": "meson-lsp",
+  "command": "meson-lsp,--lsp",
+  "allowed": "meson,build",
+  "test_command": "meson-lsp --help",
+  "command_help": "suprapack add meson-lsp --yes"
+}

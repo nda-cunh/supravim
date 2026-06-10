@@ -1,4 +1,4 @@
-namespace Plugin {
+namespace Supravim.Plugin {
 
 	private string resolve_url (string input) {
 		if (input.contains ("://") || input.has_prefix ("/"))
@@ -19,7 +19,7 @@ namespace Plugin {
 		return out_str._strip ();
 	}
 
-	public bool add (string raw_url) throws Error {
+	public void add (string raw_url) throws Error {
 		string url = resolve_url (raw_url);
 		var plugins = new PluginsLst ();
 		int wait;
@@ -27,15 +27,12 @@ namespace Plugin {
 		string name = url[idx + 1:];
 		name._delimit (".", '\0');
 
-		if (!plugins.add_from_url (url, name)) {
-			printerr (BOLD + RED + "Plugin %s already exists\n" + DEFAULT, name);
-			return false;
-		}
+		if (!plugins.add_from_url (url, name))
+			throw new SupravimError.ALREADY_EXISTS ("Plugin %s already exists".printf (name));
 		Process.spawn_command_line_sync (@"git clone --depth=1 $url $HOME/.vim/bundle/$name", null, null, out wait);
 		if (wait != 0) {
 			plugins.remove_from_name (name);
-			printerr (BOLD + RED + "Failed to clone plugin %s\n" + DEFAULT, name);
-			throw new SpawnError.FAILED ("git return %d", wait);
+			throw new SpawnError.FAILED ("git clone returned %d for %s".printf (wait, name));
 		}
 		var entry = plugins.get_from_name (name);
 		if (entry != null) {
@@ -43,166 +40,110 @@ namespace Plugin {
 			if (commit != "")
 				entry.installed_commit = commit;
 		}
-		return true;
 	}
 
-	public bool remove (string name) throws Error {
+	public void remove (string name) throws Error {
 		var plugins = new PluginsLst ();
-		if (!plugins.remove_from_name (name)) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
-			return false;
-		}
+		if (!plugins.remove_from_name (name))
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
 		Process.spawn_command_line_sync (@"rm -rf $HOME/.vim/bundle/$name");
-		print (BOLD + GREEN + "Plugin %s removed successfully\n" + DEFAULT, name);
-		return true;
 	}
 
-	public bool disable (string name) throws Error {
+	public void disable (string name) throws Error {
 		var plugins = new PluginsLst ();
 		var entry = plugins.get_from_name (name);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
-			return false;
-		}
-		if (!entry.enabled) {
-			printerr (BOLD + RED + "Plugin %s already disabled\n" + DEFAULT, name);
-			return false;
-		}
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
+		if (!entry.enabled)
+			throw new SupravimError.BAD_VALUE ("Plugin %s is already disabled".printf (name));
 		entry.enabled = false;
-		print (BOLD + GREEN + "Plugin %s disabled successfully\n" + DEFAULT, name);
-		return true;
 	}
 
-	public bool enable (string name) throws Error {
+	public void enable (string name) throws Error {
 		var plugins = new PluginsLst ();
 		var entry = plugins.get_from_name (name);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
-			return false;
-		}
-		if (entry.enabled) {
-			printerr (BOLD + RED + "Plugin %s already enabled\n" + DEFAULT, name);
-			return false;
-		}
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
+		if (entry.enabled)
+			throw new SupravimError.BAD_VALUE ("Plugin %s is already enabled".printf (name));
 		entry.enabled = true;
-		print (BOLD + GREEN + "Plugin %s enabled successfully\n" + DEFAULT, name);
-		return true;
 	}
 
-	public bool update_all () throws Error {
+	public void update_all () throws Error {
 		var plugins = new PluginsLst ();
 		for (int i = 0; i < (int) plugins.size; i++) {
 			var item = plugins.get (i);
-			if (item.pinned != null) {
-				stdout.printf (BOLD + "Skipping " + GREEN + "%s" + DEFAULT + BOLD + " (pinned at %s)\n" + DEFAULT, item.name, item.pinned);
+			if (item.pinned != null)
 				continue;
-			}
-			stdout.printf (BOLD + GREEN + "Updating plugin %s...\n" + DEFAULT, item.name);
 			Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$(item.name) pull");
 			string commit = get_head_commit (item.name);
 			if (commit != "")
 				item.installed_commit = commit;
-			stdout.printf (BOLD + GREEN + "Plugin %s updated successfully\n" + DEFAULT, item.name);
 		}
-		return true;
 	}
 
-	public bool update (string name) throws Error {
+	public void update (string name) throws Error {
 		var plugins = new PluginsLst ();
 		var entry = plugins.get_from_name (name);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
-			return false;
-		}
-		if (entry.pinned != null) {
-			printerr (BOLD + RED + "Plugin %s is pinned at %s — use --unpin-plugin first\n" + DEFAULT, name, entry.pinned);
-			return false;
-		}
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
+		if (entry.pinned != null)
+			throw new SupravimError.BAD_VALUE ("Plugin %s is pinned at %s — use --unpin-plugin first".printf (name, entry.pinned));
 		Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$name pull");
 		string commit = get_head_commit (name);
 		if (commit != "")
 			entry.installed_commit = commit;
-		return true;
 	}
 
-	public bool pin (string name) throws Error {
+	// Returns the commit hash the plugin was pinned at.
+	public string pin (string name) throws Error {
 		var plugins = new PluginsLst ();
 		var entry = plugins.get_from_name (name);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
-			return false;
-		}
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
 		string commit = entry.installed_commit ?? get_head_commit (name);
-		if (commit == "") {
-			printerr (BOLD + RED + "Cannot get commit hash for %s\n" + DEFAULT, name);
-			return false;
-		}
+		if (commit == "")
+			throw new SupravimError.UNKNOWN_ERROR ("Cannot get commit hash for %s".printf (name));
 		entry.pinned = commit;
-		print (BOLD + GREEN + "Plugin %s pinned at %s\n" + DEFAULT, name, commit);
-		return true;
+		return commit;
 	}
 
-	public bool unpin (string name) throws Error {
+	public void unpin (string name) throws Error {
 		var plugins = new PluginsLst ();
 		var entry = plugins.get_from_name (name);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, name);
-			return false;
-		}
-		if (entry.pinned == null) {
-			printerr (BOLD + RED + "Plugin %s is not pinned\n" + DEFAULT, name);
-			return false;
-		}
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
+		if (entry.pinned == null)
+			throw new SupravimError.BAD_VALUE ("Plugin %s is not pinned".printf (name));
 		entry.pinned = null;
-		print (BOLD + GREEN + "Plugin %s unpinned\n" + DEFAULT, name);
-		return true;
 	}
 
-	public bool add_group (string arg) throws Error {
-		var parts = arg.split (":", 2);
-		if (parts.length != 2) {
-			printerr (BOLD + RED + "Expected format: <plugin>:<group>\n" + DEFAULT);
-			return false;
-		}
+	public void add_group (string plugin, string group) throws Error {
 		var plugins = new PluginsLst ();
-		var entry = plugins.get_from_name (parts[0]);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, parts[0]);
-			return false;
-		}
-		string group = parts[1].strip ();
+		var entry = plugins.get_from_name (plugin);
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (plugin));
 		if (entry.groups == null || entry.groups == "")
 			entry.groups = group;
 		else if (!(group in entry.groups.split (",")))
 			entry.groups += "," + group;
-		print (BOLD + GREEN + "Plugin %s added to group '%s'\n" + DEFAULT, parts[0], group);
-		return true;
 	}
 
-	public bool remove_group (string arg) throws Error {
-		var parts = arg.split (":", 2);
-		if (parts.length != 2) {
-			printerr (BOLD + RED + "Expected format: <plugin>:<group>\n" + DEFAULT);
-			return false;
-		}
+	public void remove_group (string plugin, string group) throws Error {
 		var plugins = new PluginsLst ();
-		var entry = plugins.get_from_name (parts[0]);
-		if (entry == null) {
-			printerr (BOLD + RED + "Plugin %s not found\n" + DEFAULT, parts[0]);
-			return false;
-		}
-		string group = parts[1].strip ();
-		if (entry.groups == null) return true;
+		var entry = plugins.get_from_name (plugin);
+		if (entry == null)
+			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (plugin));
+		if (entry.groups == null) return;
 		string[] remaining = {};
 		foreach (string g in entry.groups.split (","))
 			if (g.strip () != group)
 				remaining += g;
 		entry.groups = remaining.length > 0 ? string.joinv (",", remaining) : null;
-		print (BOLD + GREEN + "Plugin %s removed from group '%s'\n" + DEFAULT, parts[0], group);
-		return true;
 	}
 
-	public bool enable_group (string group) throws Error {
+	// Returns the number of plugins affected.
+	public int enable_group (string group) throws Error {
 		var plugins = new PluginsLst ();
 		int count = 0;
 		for (int i = 0; i < (int) plugins.size; i++) {
@@ -212,15 +153,13 @@ namespace Plugin {
 				count++;
 			}
 		}
-		if (count == 0) {
-			printerr (BOLD + RED + "No plugins found in group '%s'\n" + DEFAULT, group);
-			return false;
-		}
-		print (BOLD + GREEN + "%d plugin(s) in group '%s' enabled\n" + DEFAULT, count, group);
-		return true;
+		if (count == 0)
+			throw new SupravimError.NOT_FOUND ("No plugins found in group '%s'".printf (group));
+		return count;
 	}
 
-	public bool disable_group (string group) throws Error {
+	// Returns the number of plugins affected.
+	public int disable_group (string group) throws Error {
 		var plugins = new PluginsLst ();
 		int count = 0;
 		for (int i = 0; i < (int) plugins.size; i++) {
@@ -230,43 +169,9 @@ namespace Plugin {
 				count++;
 			}
 		}
-		if (count == 0) {
-			printerr (BOLD + RED + "No plugins found in group '%s'\n" + DEFAULT, group);
-			return false;
-		}
-		print (BOLD + GREEN + "%d plugin(s) in group '%s' disabled\n" + DEFAULT, count, group);
-		return true;
-	}
-
-	public bool list (string? group_filter = null, bool only_pinned = false, bool only_disabled = false) throws Error {
-		var plugins = new PluginsLst ();
-		if (plugins.size == 0) {
-			printerr (BOLD + RED + "No plugins found\n" + DEFAULT);
-			return false;
-		}
-		bool any = false;
-		for (int i = 0; i < (int) plugins.size; i++) {
-			var item = plugins.get (i);
-
-			if (only_pinned   && item.pinned == null)  continue;
-			if (only_disabled && item.enabled)          continue;
-			if (group_filter  != null) {
-				if (item.groups == null || !(group_filter in item.groups.split (",")))
-					continue;
-			}
-
-			string status = item.enabled ? GREEN + "Enable" : RED + "Disable";
-			string extra  = "";
-			if (item.pinned != null)
-				extra += " [pinned: " + item.pinned + "]";
-			if (item.groups != null && item.groups != "")
-				extra += " [groups: " + item.groups + "]";
-			print (BOLD + "%-15s " + status + DEFAULT + extra + "\n", item.name);
-			any = true;
-		}
-		if (!any)
-			printerr (BOLD + RED + "No plugins match the given filters\n" + DEFAULT);
-		return any;
+		if (count == 0)
+			throw new SupravimError.NOT_FOUND ("No plugins found in group '%s'".printf (group));
+		return count;
 	}
 
 	public List<PluginEntry> get_all () throws Error {
@@ -277,26 +182,20 @@ namespace Plugin {
 		return result;
 	}
 
-	public bool print_all_installed_plugins () throws Error {
-		var plugins = new PluginsLst ();
-		for (int i = 0; i < (int) plugins.size; i++)
-			print ("%s\n", plugins.get (i).name);
-		return true;
-	}
-
-	public bool print_all_groups () throws Error {
-		var plugins = new PluginsLst ();
+	public List<string> get_all_groups () throws Error {
+		var lst = new PluginsLst ();
 		var seen = new HashTable<string, bool> (str_hash, str_equal);
-		for (int i = 0; i < (int) plugins.size; i++) {
-			var item = plugins.get (i);
+		var result = new List<string> ();
+		for (int i = 0; i < (int) lst.size; i++) {
+			var item = lst.get (i);
 			if (item.groups == null) continue;
 			foreach (string g in item.groups.split (",")) {
 				if (!seen.contains (g)) {
 					seen[g] = true;
-					print ("%s\n", g);
+					result.append (g);
 				}
 			}
 		}
-		return true;
+		return result;
 	}
 }

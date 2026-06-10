@@ -1,0 +1,7 @@
+{
+  "name": "jdtls",
+  "command": "jdtls",
+  "allowed": "java",
+  "test_command": "jdtls --help",
+  "command_help": "suprapack add jdtls --yes"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "jinja-lsp",
+  "command": "jinja-lsp",
+  "allowed": "jinja,jinja2,html.jinja",
+  "test_command": "jinja-lsp --version",
+  "command_help": "suprapack add jinja-lsp --yes"
+}

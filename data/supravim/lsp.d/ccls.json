@@ -1,0 +1,7 @@
+{
+  "name": "ccls",
+  "command": "ccls,--init={\"cache\": {\"directory\": \"/tmp/ccls-cache_$USER\"}}",
+  "allowed": "c,cpp,tpp",
+  "test_command": "ccls --version",
+  "command_help": "suprapack add ccls --yes"
+}

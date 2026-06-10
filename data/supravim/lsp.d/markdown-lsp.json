@@ -1,0 +1,7 @@
+{
+  "name": "markdown-lsp",
+  "command": "marksman,server",
+  "allowed": "md,markdown",
+  "test_command": "marksman --version",
+  "command_help": "suprapack add marksman --yes"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "c3lsp",
+  "command": "c3lsp",
+  "allowed": "c3,c3i",
+  "test_command": "c3lsp --version",
+  "command_help": "suprapack add c3lsp --yes"
+}

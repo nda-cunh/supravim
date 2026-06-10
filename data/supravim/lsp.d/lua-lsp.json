@@ -1,0 +1,7 @@
+{
+  "name": "lua-lsp",
+  "command": "lua-language-server",
+  "allowed": "lua",
+  "test_command": "lua-language-server --version",
+  "command_help": "suprapack add lua-language-server --yes"
+}

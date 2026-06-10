@@ -1,0 +1,6 @@
+{
+  "name": "nimlangserver",
+  "command": "nimlangserver,--stdio",
+  "allowed": "nim",
+  "command_help": "suprapack add nimlangserver --yes"
+}

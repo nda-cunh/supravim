@@ -1,0 +1,7 @@
+{
+  "name": "vue3",
+  "command": "vue-language-server",
+  "allowed": "vue,js,ts",
+  "test_command": "vue-language-server --version",
+  "command_help": "npm install -g @vue/language-server"
+}

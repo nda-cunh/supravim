@@ -1,0 +1,7 @@
+{
+  "name": "bash-lsp",
+  "command": "bash-language-server,start",
+  "allowed": "sh,bash",
+  "test_command": "bash-language-server --version",
+  "command_help": "npm install -g bash-language-server"
+}

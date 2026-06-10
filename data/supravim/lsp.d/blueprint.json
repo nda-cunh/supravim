@@ -1,0 +1,7 @@
+{
+  "name": "blueprint",
+  "command": "blueprint-compiler,lsp",
+  "allowed": "blp,bp,blueprint",
+  "test_command": "blueprint-compiler --version",
+  "command_help": "suprapack add blueprint-compiler --yes"
+}

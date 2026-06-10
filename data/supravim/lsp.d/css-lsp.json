@@ -1,0 +1,6 @@
+{
+  "name": "css-lsp",
+  "command": "css-languageserver,--stdio",
+  "allowed": "css",
+  "command_help": "npm install -g vscode-css-languageserver-bin"
+}

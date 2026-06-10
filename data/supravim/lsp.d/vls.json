@@ -1,0 +1,7 @@
+{
+  "name": "vls",
+  "command": "vala-language-server",
+  "allowed": "vala,vapi",
+  "test_command": "vala-language-server --help",
+  "command_help": "suprapack add vala-language-server --yes"
+}

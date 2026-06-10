@@ -1,0 +1,7 @@
+{
+  "name": "rust-analyzer",
+  "command": "rust-analyzer",
+  "allowed": "rust,rs",
+  "test_command": "rust-analyzer --version",
+  "command_help": "suprapack add rust-analyzer --yes"
+}

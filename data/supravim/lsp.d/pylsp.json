@@ -1,0 +1,7 @@
+{
+  "name": "pylsp",
+  "command": "pylsp",
+  "allowed": "py,python",
+  "test_command": "pylsp -h",
+  "command_help": "pip install python-lsp-server[all]"
+}

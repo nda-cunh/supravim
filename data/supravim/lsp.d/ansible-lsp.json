@@ -1,0 +1,7 @@
+{
+  "name": "ansible-lsp",
+  "command": "ansible-language-server,--stdio",
+  "allowed": "yaml.ansible,ansible",
+  "test_command": "ansible-language-server --version",
+  "command_help": "npm install -g @ansible/ansible-language-server"
+}

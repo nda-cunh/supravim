@@ -1,0 +1,7 @@
+{
+  "name": "Pylance",
+  "command": "pyright-langserver,--stdio",
+  "allowed": "py,python",
+  "command_help": "pip install pyright",
+  "priority": 1
+}

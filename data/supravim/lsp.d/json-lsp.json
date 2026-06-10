@@ -1,0 +1,6 @@
+{
+  "name": "json-lsp",
+  "command": "vscode-json-languageserver,--stdio",
+  "allowed": "json",
+  "command_help": "npm install -g vscode-json-languageserver"
+}

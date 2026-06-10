@@ -1,0 +1,7 @@
+{
+  "name": "sql-lsp",
+  "command": "sql-language-server,up,--method,stdio",
+  "allowed": "sql",
+  "test_command": "sql-language-server --version",
+  "command_help": "npm install -g sql-language-server"
+}

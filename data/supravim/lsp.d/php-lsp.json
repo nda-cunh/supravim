@@ -1,0 +1,6 @@
+{
+  "name": "php-lsp",
+  "command": "intelephense,--stdio",
+  "allowed": "php",
+  "command_help": "suprapack add php-language-server --yes"
+}

@@ -1,5 +1,14 @@
+using Supravim;
+
+private const string R  = "\033[0m";
+private const string B  = "\033[1m";
+private const string GR = "\033[32m";
+private const string RE = "\033[31m";
+private const string BL = "\033[34m";
+private const string YE = "\033[33m";
+private const string CY = "\033[96m";
+
 public class Main {
-	// Array of strings to hold the options passed from the command line. 
 	[CCode (array_length = false, array_null_terminated = true)]
 	private static string[]? disable = null;
 	[CCode (array_length = false, array_null_terminated = true)]
@@ -9,7 +18,6 @@ public class Main {
 	[CCode (array_length = false, array_null_terminated = true)]
 	private static string[]? reset = null;
 
-	// Boolean Options
 	private static bool is_version = false;
 	private static bool is_status = false;
 	private static bool print_opts = false;
@@ -54,7 +62,7 @@ public class Main {
 		{ "enable-plugin", '\0',NONE, 		STRING,			ref enable_plugin,	"Enable plugin.",							null },
 		{ "disable-plugin", '\0',NONE, 		STRING,			ref disable_plugin,	"Disable plugin.",							null },
 		{ "update-plugin", '\0',NONE, 		STRING,			ref update_plugin,	"Update plugin.",							null },
-		{ "update-plugin-all", '\0',NONE, 	NONE,			ref update_plugin_all,	"Update all plugins.",						null },
+		{ "update-plugin-all", '\0',NONE, 	NONE,			ref update_plugin_all,	"Update all plugins.",					null },
 		{ "pin-plugin",   '\0', NONE, STRING, ref pin_plugin,          "Pin plugin to its current commit.",        null },
 		{ "unpin-plugin", '\0', NONE, STRING, ref unpin_plugin,        "Unpin plugin (allow updates again).",      null },
 		{ "add-group",    '\0', NONE, STRING, ref add_group_plugin,    "Add plugin to group (<plugin>:<group>).",  null },
@@ -66,7 +74,7 @@ public class Main {
 		{ "reset", 'r',			NONE, 		STRING_ARRAY,	ref reset,			"Reset options to their default values.",	"optA[,optB]"},
 		{ "set", 'S',			NONE, 		STRING_ARRAY,	ref variable_set,	"Set plugin variables.",					"optA[,optB]"},
 		{ "print-options", 0,	HIDDEN, 	NONE,			ref print_opts,		"Print available options.",					null },
-		{ "print-options-switchable", 0,	HIDDEN, 	NONE,			ref print_opts_switchable,		"Print switchable available options.",					null },
+		{ "print-options-switchable", 0,	HIDDEN, 	NONE,			ref print_opts_switchable,		"Print switchable available options.",		null },
 		{ "print-themes", 0,	HIDDEN, 	NONE,			ref print_themes,	"Print available themes.",					null },
 		{ "print-plugins", 0,	HIDDEN, 	NONE,			ref print_plugins,	"",				null },
 		{ "print-groups",  0,	HIDDEN, 	NONE,			ref print_groups,	"",				null },
@@ -90,7 +98,6 @@ public class Main {
 		bool installed;
 	}
 
-	// [installed] plugin-autobear 1.3 [auto generate a compile_commands.json for your project]
 	public static void ft_print_supramenu_plugin () throws Error {
 		var regex = new Regex (""" (?<name>\S+) \s+ (?<version>\S+) \s+ \[(?<Comment>[^\]]+)   """, RegexCompileFlags.EXTENDED);
 		print ("-- Supramenu Plugins --\n\n");
@@ -120,37 +127,29 @@ public class Main {
 			if (plugin.version.length > max_version_len)
 				max_version_len = plugin.version.length;
 		}
-		max_name_len += 2; // for padding
-		max_version_len += 2; // for padding
-		// print all plugins
-
+		max_name_len += 2;
+		max_version_len += 2;
 		foreach (unowned var plugin in plugins) {
-				print ("• %-*s %*s   %s %s \n", 
-				max_name_len, plugin.name, 
-				max_version_len, plugin.version, 
+				print ("• %-*s %*s   %s %s \n",
+				max_name_len, plugin.name,
+				max_version_len, plugin.version,
 				plugin.installed ? "➕": "❌",
 				plugin.comment);
 		}
 	}
-	
-	/**
-	 * Run arguments based on the options set.
-	 */
+
 	public static bool? run () throws Error {
 		if (_list_options == "zsh") {
 			foreach (unowned var entry in options) {
-				if (entry.long_name != null && entry.long_name != "list-options" && entry.flags != OptionFlags.HIDDEN) {
-					unowned string desc = entry.description;
-					stdout.printf("--%s:%s\n", entry.long_name, desc ?? "");
-				}
+				if (entry.long_name != null && entry.long_name != "list-options" && entry.flags != OptionFlags.HIDDEN)
+					stdout.printf("--%s:%s\n", entry.long_name, entry.description ?? "");
 			}
 			return true;
 		}
 		else if (_list_options != null) {
 			foreach (unowned var entry in options) {
-				if (entry.long_name != null && entry.long_name != "list-options" && entry.flags != OptionFlags.HIDDEN) {
+				if (entry.long_name != null && entry.long_name != "list-options" && entry.flags != OptionFlags.HIDDEN)
 					print ("--%s\n", entry.long_name);
-				}
 			}
 			return true;
 		}
@@ -158,118 +157,154 @@ public class Main {
 			print ("Supravim version %s\n", Config.VERSION);
 			return true;
 		}
-		if (print_plugins)
-			return Plugin.print_all_installed_plugins ();
-		if (print_groups)
-			return Plugin.print_all_groups ();
+		if (print_plugins) {
+			foreach (var entry in Plugin.get_all ())
+				print ("%s\n", entry.name);
+			return true;
+		}
+		if (print_groups) {
+			foreach (var g in Plugin.get_all_groups ())
+				print ("%s\n", g);
+			return true;
+		}
 		if (print_opts_switchable) {
-			Options.print_options_switchable ();
+			Command.print_options_switchable ();
 			return true;
 		}
 		if (print_opts) {
-			Options.print_options ();
+			Command.print_options ();
 			return true;
 		}
-		if (print_themes)
-			return Theme.print_all_themes ();
+		if (print_themes) {
+			foreach (var t in Theme.get_all ())
+				print ("%s\n", t);
+			return true;
+		}
 		if (print_supramenu_plugin) {
 			ft_print_supramenu_plugin ();
 			return true;
 		}
-		else if (save_config) {
+		if (save_config) {
 			Cfg.save_config ();
 			return true;
 		}
-		else if (apply_config) {
+		if (apply_config) {
 			Cfg.apply_config ();
 			return true;
 		}
-		else if (is_status) {
-			Options.print_status ();
+		if (is_status) {
+			Command.print_status ();
 			return true;
 		}
-		
-		foreach (unowned string str in disable) {
+
+		foreach (unowned string str in disable)
 			Options.disable (str);
-		}
-
-		foreach (unowned string str in reset) {
+		foreach (unowned string str in reset)
 			Options.reset (str);
-		}
-
-		foreach (unowned string str in enable) {
+		foreach (unowned string str in enable)
 			Options.enable (str);
-		}
 
 		foreach (unowned string str in variable_set) {
 			try {
-				// Str format is: opt=value
 				if (!("=" in str))
-					throw new SupravimError.BAD_VALUE("Invalid format for variable set. Expected format: opt=value");
+					throw new SupravimError.BAD_VALUE("Invalid format. Expected: opt=value");
 				string key = str[0:str.index_of_char('=')];
 				string v = str[str.index_of_char('=') + 1:];
 				Options.update_value(key, v);
-			}
-			catch (Error e) {
+			} catch (Error e) {
 				warning (e.message);
 			}
 		}
 
-		if (variable_set.length > 0 || enable.length > 0 || disable.length > 0) {
+		if (variable_set.length > 0 || enable.length > 0 || disable.length > 0)
+			return true;
+
+		if (theme != null) {
+			Theme.change (theme);
 			return true;
 		}
-		if (theme != null)
-			return Theme.change (theme);
-		if (add_plugin != null)
-			return Plugin.add (add_plugin);
-		if (remove_plugin != null)
-			return Plugin.remove (remove_plugin);
-		if (enable_plugin != null)
-			return Plugin.enable(enable_plugin);
-		if (disable_plugin != null)
-			return Plugin.disable (disable_plugin);
-		// Update
-		if (update_plugin_all == true)
-			return Plugin.update_all ();
-		else if (update_plugin != null)
-			return Plugin.update (update_plugin);
-		// List
+		if (add_plugin != null) {
+			Plugin.add (add_plugin);
+			print (B + GR + "Plugin %s added successfully\n" + R, add_plugin);
+			return true;
+		}
+		if (remove_plugin != null) {
+			Plugin.remove (remove_plugin);
+			print (B + GR + "Plugin %s removed successfully\n" + R, remove_plugin);
+			return true;
+		}
+		if (enable_plugin != null) {
+			Plugin.enable (enable_plugin);
+			print (B + GR + "Plugin %s enabled\n" + R, enable_plugin);
+			return true;
+		}
+		if (disable_plugin != null) {
+			Plugin.disable (disable_plugin);
+			print (B + GR + "Plugin %s disabled\n" + R, disable_plugin);
+			return true;
+		}
+		if (update_plugin_all) {
+			print (B + "Updating all plugins...\n" + R);
+			Plugin.update_all ();
+			print (B + GR + "All plugins updated\n" + R);
+			return true;
+		}
+		if (update_plugin != null) {
+			Plugin.update (update_plugin);
+			print (B + GR + "Plugin %s updated\n" + R, update_plugin);
+			return true;
+		}
 		if (list_plugin)
-			return Plugin.list (list_group, list_only_pinned, list_only_disabled);
-		if (pin_plugin != null)
-			return Plugin.pin (pin_plugin);
-		if (unpin_plugin != null)
-			return Plugin.unpin (unpin_plugin);
-		if (add_group_plugin != null)
-			return Plugin.add_group (add_group_plugin);
-		if (remove_group_plugin != null)
-			return Plugin.remove_group (remove_group_plugin);
-		if (enable_group_plugin != null)
-			return Plugin.enable_group (enable_group_plugin);
-		if (disable_group_plugin != null)
-			return Plugin.disable_group (disable_group_plugin);
+			return Command.list (list_group, list_only_pinned, list_only_disabled);
+		if (pin_plugin != null) {
+			string commit = Plugin.pin (pin_plugin);
+			print (B + GR + "Plugin %s pinned at %s\n" + R, pin_plugin, commit);
+			return true;
+		}
+		if (unpin_plugin != null) {
+			Plugin.unpin (unpin_plugin);
+			print (B + GR + "Plugin %s unpinned\n" + R, unpin_plugin);
+			return true;
+		}
+		if (add_group_plugin != null) {
+			var parts = add_group_plugin.split (":", 2);
+			if (parts.length != 2)
+				throw new SupravimError.BAD_VALUE ("Expected format: <plugin>:<group>");
+			Plugin.add_group (parts[0], parts[1].strip ());
+			print (B + GR + "Plugin %s added to group '%s'\n" + R, parts[0], parts[1].strip ());
+			return true;
+		}
+		if (remove_group_plugin != null) {
+			var parts = remove_group_plugin.split (":", 2);
+			if (parts.length != 2)
+				throw new SupravimError.BAD_VALUE ("Expected format: <plugin>:<group>");
+			Plugin.remove_group (parts[0], parts[1].strip ());
+			print (B + GR + "Plugin %s removed from group '%s'\n" + R, parts[0], parts[1].strip ());
+			return true;
+		}
+		if (enable_group_plugin != null) {
+			int n = Plugin.enable_group (enable_group_plugin);
+			print (B + GR + "%d plugin(s) in group '%s' enabled\n" + R, n, enable_group_plugin);
+			return true;
+		}
+		if (disable_group_plugin != null) {
+			int n = Plugin.disable_group (disable_group_plugin);
+			print (B + GR + "%d plugin(s) in group '%s' disabled\n" + R, n, disable_group_plugin);
+			return true;
+		}
 		return null;
 	}
 
-
-	/**
-	 * Main function to run the supravim application.
-	 * Parses command line options and executes the appropriate actions.
-	 *
-	 * @param args Command line arguments.
-	 * @return Exit status code.
-	 */
 	public static int main (string[] args) {
 		Intl.setlocale ();
-		SupravimLib.init ();
+		Supravim.init ();
 		try {
-			// Init options Entry 
 			var opt_context = new OptionContext ("Program to personalize your supravim");
 			opt_context.set_help_enabled (true);
 			opt_context.add_main_entries (options, null);
 			opt_context.parse (ref args);
 
-			var? result = run();	
+			var? result = run ();
 			if (result == null) {
 				var sb = new StrvBuilder ();
 				sb.add ("vim");
@@ -277,18 +312,10 @@ public class Main {
 				Process.spawn_sync (null, sb.end(), Environ.get(), SpawnFlags.SEARCH_PATH + SpawnFlags.CHILD_INHERITS_STDIN, null);
 				return 0;
 			}
-			else {
-				if (result == true) {
-					return 0;
-				}
-				else {
-					return 1;
-				}
-			}
-		}
-		catch (Error e) {
-			printerr ("%s\n", e.message);
-			return -1;
+			return result == true ? 0 : 1;
+		} catch (Error e) {
+			printerr (B + RE + "%s\n" + R, e.message);
+			return 1;
 		}
 	}
 }

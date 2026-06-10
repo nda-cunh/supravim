@@ -1,0 +1,7 @@
+{
+  "name": "omnisharp",
+  "command": "omnisharp,-lsp",
+  "allowed": "cs",
+  "test_command": "omnisharp -h",
+  "command_help": "suprapack add omnisharp dotnet --yes"
+}

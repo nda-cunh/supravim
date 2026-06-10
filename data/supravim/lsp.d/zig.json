@@ -1,0 +1,7 @@
+{
+  "name": "zig",
+  "command": "zls",
+  "allowed": "zig",
+  "test_command": "zls --version",
+  "command_help": "suprapack add zls --yes"
+}

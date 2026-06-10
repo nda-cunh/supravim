@@ -1,0 +1,6 @@
+{
+  "name": "vim-lsp",
+  "command": "vim-language-server,--stdio",
+  "allowed": "vim,vi",
+  "command_help": "npm install -g vim-language-server"
+}

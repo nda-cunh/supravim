@@ -1,0 +1,7 @@
+{
+  "name": "terraform-lsp",
+  "command": "terraform-ls,serve",
+  "allowed": "tf,terraform,hcl",
+  "test_command": "terraform-ls --version",
+  "command_help": "suprapack add terraform-ls --yes"
+}

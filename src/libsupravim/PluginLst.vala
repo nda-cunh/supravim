@@ -1,4 +1,4 @@
-namespace Plugin {
+namespace Supravim.Plugin {
 
 	public class PluginEntry {
 		public string  name;
@@ -165,4 +165,5 @@ namespace Plugin {
 			FileUtils.remove (old_filename);
 		}
 	}
+
 }

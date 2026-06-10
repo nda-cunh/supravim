@@ -1,0 +1,6 @@
+{
+  "name": "yaml-lsp",
+  "command": "yaml-language-server,--stdio",
+  "allowed": "yaml,yml",
+  "command_help": "npm install -g yaml-language-server"
+}

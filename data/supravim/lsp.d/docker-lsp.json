@@ -1,0 +1,6 @@
+{
+  "name": "docker-lsp",
+  "command": "docker-langserver,--stdio",
+  "allowed": "dockerfile",
+  "command_help": "npm install -g dockerfile-language-server-nodejs"
+}

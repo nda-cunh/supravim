@@ -1,4 +1,4 @@
-namespace Cfg {
+namespace Supravim.Cfg {
 	/**
 	 * save_config create a file with the current configuration to cfg_fpath 
 	 **/

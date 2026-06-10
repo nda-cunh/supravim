@@ -1,0 +1,6 @@
+{
+  "name": "dart-lsp",
+  "command": "dart,language-server",
+  "allowed": "dart",
+  "test_command": "dart --version"
+}

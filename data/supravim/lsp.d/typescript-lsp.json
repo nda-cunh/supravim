@@ -1,0 +1,7 @@
+{
+  "name": "typescript-lsp",
+  "command": "typescript-language-server,--stdio",
+  "allowed": "ts,js,jsx,tsx,typescript,javascript,javascriptreact,typescriptreact",
+  "test_command": "typescript-language-server --version",
+  "command_help": "npm install -g typescript-language-server typescript"
+}
