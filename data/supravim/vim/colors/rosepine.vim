@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#1a1724 include=#c4a7e7 stdio=#f6c177 typedef=#9ccfd8 struct=#9ccfd8 type_s=#9ccfd8 scope=#ffffff float=#9ccfd8 function=#ffffff format=#ebbcba text=#f6c177 integer=#9ccfd8
 # Name:				 Rosé Pine
 # Description:	All natural pine, faux fur and a bit of soho vibes for the classy minimalist
 # Author:			 Prateek Tade <prateek.tade@gmail.com>

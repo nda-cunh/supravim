@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#1c1c1c include=#db6bab stdio=#f0fa8a typedef=#db6bab struct=#db6bab type_s=#ffffff scope=#ffffff float=#80d6e8 function=#ffffff format=#db6bab text=#f0fa8a integer=#ba91f7
 
 scriptencoding utf8
 

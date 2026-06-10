@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: is_light=true background=#eff1f5 include=#dc8a78 stdio=#ea76cb typedef=#8839ef struct=#1e66f5 type_s=#209fb5 scope=#4c4f69 float=#04a5e5 function=#7287fd format=#df8e1d text=#5c5f77 integer=#40a02b
 # Name: catppuccin_latte.vim
 
 set background=dark

@@ -1,4 +1,5 @@
 " Copyright (C) 2022-present Wojciech M. Wnuk <laniusone@pm.me>
+" supra-gui: background=#1a1a24 include=#6bb0d9 stdio=#73d9c9 typedef=#b896f0 struct=#b896f0 type_s=#63b8ad scope=#474a52 float=#ff9e63 function=#474a52 format=#cca161 text=#9ecc69 integer=#ff9e63
 
 " Project: Kyoto Night Vim
 " Repository: https://github.com/shrikecode/kyotonight.vim

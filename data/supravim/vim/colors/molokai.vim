@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#1a1c1f include=#a6e02e stdio=#e6d973 typedef=#66d9ed struct=#66d9ed type_s=#ffffff scope=#ffffff float=#66d9ed function=#ffffff format=#f72470 text=#e6d973 integer=#ad80ff
 # Vim color file
 #
 # Author: Tomas Restrepo <tomas@winterdom.com>

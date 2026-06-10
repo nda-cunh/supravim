@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#303446 include=#f2d5cf stdio=#f4b8e4 typedef=#ca9ee6 struct=#8caaee type_s=#81c8be scope=#949cbb float=#99d1db function=#babbf1 format=#e5c890 text=#c6d0f5 integer=#a6d189
 # Name: catppuccin_frappe.vim
 
 set background=dark

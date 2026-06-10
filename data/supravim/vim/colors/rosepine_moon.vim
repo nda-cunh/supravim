@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#211f36 include=#b89cd9 stdio=#f5bf8f typedef=#9ccfd6 struct=#9ccfd6 type_s=#9ccfd6 scope=#ffffff float=#9ccfd6 function=#ffffff format=#e89996 text=#f5bf8f integer=#9ccfd6
 # Name:				 Rosé Pine Moon
 # Description:	All natural pine, faux fur and a bit of soho vibes for the classy minimalist
 # Author:			 Prateek Tade <prateek.tade@gmail.com>

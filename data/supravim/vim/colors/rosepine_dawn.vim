@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: is_light=true background=#faf4ed include=#907aa9 stdio=#ea9d34 typedef=#56949f struct=#56949f type_s=#56949f scope=#575279 float=#56949f function=#797593 format=#b4637a text=#ea9d34 integer=#56949f
 # Name:				 Rosé Pine Dawn
 # Description:	All natural pine, faux fur and a bit of soho vibes for the classy minimalist
 # Author:			 Prateek Tade <prateek.tade@gmail.com>

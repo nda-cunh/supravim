@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#1c1f21 include=#d9cf85 stdio=#a6ff5e typedef=#66d1ed struct=#66d1ed type_s=#ffffff scope=#ffffff float=#66d1ed function=#ffffff format=#91c4f5 text=#a6ff5e integer=#99cc99
 
 hi clear
 if exists("syntax_on")

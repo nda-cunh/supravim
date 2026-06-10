@@ -1,14 +1,15 @@
 vim9script
+# supra-gui: background=#14171f include=#829ec4 stdio=#7da6ad typedef=#829ec4 struct=#829ec4 type_s=#cccccc scope=#cccccc float=#80d6e8 function=#ffffff format=#a3ab78 text=#7da6ad integer=#736b8c
+
 # _________________________________________
 # \_ _/ ____| ____| ___ \ ____| ___ \  ___/
 #  | | |____| ____| ___ < ____| __  / |__ \
 # /___\_____|_____|_____/_____|_| \_\_____/
-#
+
 # File:       iceberg.vim
 # Maintainer: cocopon <cocopon@me.com>
 # Modified:   2022-04-26 21:56+0900
 # License:    MIT
-
 
 if !has('gui_running') && str2nr(&t_Co) < 256
 	finish

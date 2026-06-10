@@ -1,4 +1,5 @@
 " -----------------------------------------------------------------------------
+" supra-gui: background=#262626 include=#8cbf7a stdio=#b8ba24 typedef=#fc8017 struct=#db6bab type_s=#ebd9b3 scope=#ebd9b3 float=#80d6e8 function=#ebd9b3 format=#fc8017 text=#b8ba24 integer=#d18599
 " File: gruvbox.vim
 " Description: Retro groove color scheme for Vim
 " Author: morhetz <morhetz@gmail.com>

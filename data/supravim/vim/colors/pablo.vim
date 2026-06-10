@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#000000 include=#00bd00 stdio=#00f0f0 typedef=#007000 struct=#007000 type_s=#ffffff scope=#ffffff float=#007000 function=#ffffff format=#0000e6 text=#00f0f0 integer=#00f0f0
 # Name:         pablo
 # Author:       Ron Aaron <ron@ronware.org>
 # Maintainer:   Original maintainerRon Aaron <ron@ronware.org>

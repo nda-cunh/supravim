@@ -1,4 +1,5 @@
 " -----------------------------------------------------------------------------
+" supra-gui: background=#24263b include=#e36e85 stdio=#dead66 typedef=#78a1f5 struct=#789ef5 type_s=#7096e6 scope=#a8b0d4 float=#ab8ce6 function=#a8b0d4 format=#ab8ce6 text=#dead66 integer=#ab8ce6
 " Name:         Tokyo Night
 " Description:  A clean, dark Vim theme that celebrates the lights of downtown Tokyo at night (Based on the VS Code version of the theme)
 " Author:       Ghifari Taqiuddin <mghifarit53@gmail.com>

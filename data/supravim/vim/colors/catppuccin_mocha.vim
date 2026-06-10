@@ -1,4 +1,5 @@
 vim9script
+# supra-gui: background=#1e1e2e include=#f5e0dc stdio=#f5c2e7 typedef=#cba6f7 struct=#f38ba8 type_s=#bac2de scope=#cdd6f4 float=#9399b2 function=#7f849c format=#6c7086 text=#bac2de integer=#a6da95
 
 set background=dark
 hi clear
