@@ -1,129 +1,31 @@
 public struct Lsp {
-	string name; // the name of the language
-	string command;// command separated by ','
-	string allowed; // filetype like vala, c, cpp, py, js, ts, lua
-	string? test_command; // command to test if the lsp is working
-	string? command_help; // help message
+	string name;
+	string command;    // args séparés par ','
+	string allowed;    // filetypes séparés par ','
+	string? test_command;
+	string? command_help;
+	int priority;      // plus élevé = testé en premier (défaut 0)
 }
 
 /**
- * LspServer - A class to manage the Language Server Protocol (LSP) servers
+ * LspServer - gestion des serveurs LSP
  *
- * This class provides a way to manage and interact with various LSP servers.
- * It includes methods to check if a server is loaded, retrieve server information,
- * and install servers if necessary.
+ * Les serveurs sont chargés depuis des fichiers JSON dans :
+ *   {XDG_DATA_DIRS}/supravim/lsp.d/   (système, ex. /usr/share/supravim/lsp.d/)
+ *   {XDG_DATA_HOME}/supravim/lsp.d/   (utilisateur, ex. ~/.local/share/supravim/lsp.d/)
+ *
+ * Le répertoire utilisateur est chargé en premier (priorité sur le système).
+ * Si deux fichiers ont le même champ "name", le premier chargé gagne.
+ * Le champ optionnel "priority" (int) contrôle l'ordre de tentative pour
+ * les langages ayant plusieurs serveurs (ex. clangd > ccls).
  */
 namespace LspServer {
-	public const Lsp[] all_servers = {
-		{ "asm", "asm-lsp", "s,asm,nasm",
-			null,
-			"suprapack add asm-lsp --yes"},
-		{ "blueprint", "blueprint-compiler,lsp", "blp,bp,blueprint",
-			"blueprint-compiler --version",
-			"suprapack add blueprint-compiler --yes"},
-		{ "Pylance", "pyright-langserver,--stdio", "py,python",
-			null,
-			"pip install pyright"},
-		{ "pylsp", "pylsp", "py,python",
-			"pylsp -h",
-			"pip install python-lsp-server[all]"},
-		{ "cmake", "cmake-language-server", "cmake",
-			"cmake-language-server --version",
-			"pip install cmake-language-server"},
-		{"kotlin-lsp", "kotlin-language-server", "kt,kts,kotlin",
-			null,
-			null},
-		{ "vls", "vala-language-server", "vala,vapi",
-			"vala-language-server --help",
-			"suprapack add vala-language-server --yes"},
-		{ "bash-lsp", "bash-language-server,start", "sh,bash",
-			"bash-language-server --version",
-			"npm install -g bash-language-server"},
-		{ "dart-lsp", "dart,language-server", "dart",
-			"dart --version",
-			null},
-		{ "meson-lsp", "meson-lsp,--lsp", "meson,build",
-			"meson-lsp --help",
-			"suprapack add meson-lsp --yes"},
-		{ "clangd", "clangd", "c,cpp,tpp",
-			"clangd --version",
-			"suprapack add clangd16 --yes"},
-		{ "ccls", """ccls,--init={"cache": {"directory": "/tmp/ccls-cache_$USER"}}""", "c,cpp,tpp",
-			"ccls --version",
-			"suprapack add ccls --yes"},
-		{"jdtls", "jdtls", "java",
-			"jdtls --help",
-			"suprapack add jdtls --yes"},
-		{ "c3lsp", "c3lsp", "c3,c3i",
-			"c3lsp --version",
-			"suprapack add c3lsp --yes"},
-		{ "golsp", "gopls", "go",
-			"gopls version",
-			"suprapack add gopls --yes"},
-		{ "omnisharp", "omnisharp,-lsp", "cs",
-			"omnisharp -h",
-			"suprapack add omnisharp dotnet --yes"},
-		{"vim-lsp", "vim-language-server,--stdio", "vim,vi",
-			null,
-			"npm install -g vim-language-server"},
-		{ "rust-analyzer", "rust-analyzer", "rust,rs",
-			"rust-analyzer --version",
-			"suprapack add rust-analyzer --yes"},
-		{ "nimlangserver", "nimlangserver,--stdio", "nim",
-			null,
-			"suprapack add nimlangserver --yes"},
-		{ "lua-lsp", "lua-language-server", "lua",
-			"lua-language-server --version",
-			"suprapack add lua-language-server --yes"},
-		{ "typescript-lsp", "typescript-language-server,--stdio", "ts,js,jsx,tsx,typescript,javascript,javascriptreact,typescriptreact",
-			"typescript-language-server --version",
-			"npm install -g typescript-language-server typescript"},
-		{"yaml-lsp", "yaml-language-server,--stdio", "yaml,yml",
-			null,
-			"npm install -g yaml-language-server"},
-		{ "json-lsp", "vscode-json-languageserver,--stdio", "json",
-			null,
-			"npm install -g vscode-json-languageserver"},
-		{ "html-lsp", "html-languageserver,--stdio", "html",
-			null,
-			"npm install -g vscode-html-languageserver-bin"},
-		{"css-lsp", "css-languageserver,--stdio", "css",
-			null,
-			"npm install -g vscode-css-languageserver-bin"},
-		{ "php-lsp", "intelephense,--stdio", "php",
-			null,
-			"suprapack add php-language-server --yes"}, // TODO
-		{ "vue3", "vue-language-server", "vue,js,ts",
-			"vue-language-server --version",
-			"npm install -g @vue/language-server"},
-		{ "ansible-lsp", "ansible-language-server,--stdio", "yaml.ansible,ansible",
-			"ansible-language-server --version",
-			"npm install -g @ansible/ansible-language-server" },
-		{ "jinja-lsp", "jinja-lsp", "jinja,jinja2,html.jinja",
-			"jinja-lsp --version",
-			"suprapack add jinja-lsp --yes" },
-		{ "docker-lsp", "docker-langserver,--stdio", "dockerfile",
-			null,
-			"npm install -g dockerfile-language-server-nodejs" },
-		{ "tailwind-lsp", "tailwindcss-language-server,--stdio", "html,css,js,ts,vue",
-			"tailwindcss-language-server --version",
-			"npm install -g @tailwindcss/language-server" },
-		{ "markdown-lsp", "marksman,server", "md,markdown",
-			"marksman --version",
-			"suprapack add marksman --yes" },
-		{ "sql-lsp", "sql-language-server,up,--method,stdio", "sql",
-			"sql-language-server --version",
-			"npm install -g sql-language-server" },
-		{ "terraform-lsp", "terraform-ls,serve", "tf,terraform,hcl",
-			"terraform-ls --version",
-			"suprapack add terraform-ls --yes" },
-		{ "toml-lsp", "taplo,lsp,stdio", "toml",
-			"taplo --version",
-			"suprapack add taplo --yes" },
-		{ "zig", "zls", "zig",
-			"zls --version",
-			"suprapack add zls --yes" }
-		};
+
+	public unowned Lsp[] get_all_servers () {
+		if (_all_servers == null)
+			_all_servers = load_servers ();
+		return _all_servers;
+	}
 
 	private string get_command (string command) {
 		string cmd;
@@ -143,15 +45,15 @@ namespace LspServer {
 		return false;
 	}
 
-	private bool lsp_is_load(string name) {
-		if (get_is_loaded()[name] != null)
+	private bool lsp_is_load (string name) {
+		if (get_is_loaded ()[name] != null)
 			return true;
 		return false;
 	}
 
 	private Lsp[] get_lsp_possible (string name) {
-		Lsp []servers = {};
-		foreach (Lsp server in all_servers) {
+		Lsp[] servers = {};
+		foreach (Lsp server in get_all_servers ()) {
 			if (name in server.allowed.split (",")) {
 				servers += server;
 			}
@@ -162,14 +64,14 @@ namespace LspServer {
 	public unowned string get_from_lsp (Lsp server) {
 		unowned var bs = get_bs ();
 		bs.len = 0;
-		bs.printf("%s@#@%s@#@%s", server.name, server.command, server.allowed);
-		foreach (var n in server.allowed.split(","))
-			get_is_loaded()[n] = server;
+		bs.printf ("%s@#@%s@#@%s", server.name, server.command, server.allowed);
+		foreach (var n in server.allowed.split (","))
+			get_is_loaded ()[n] = server;
 		bs.replace ("$USER", Environment.get_user_name ());
 		return bs.str;
 	}
 
-	public int run_command(string command) {
+	public int run_command (string command) {
 		int wait_status;
 		string dev_null;
 		Process.spawn_command_line_sync (command, out dev_null, out dev_null, out wait_status);
@@ -181,12 +83,12 @@ namespace LspServer {
 		if (npm == null) {
 			throw new ErrorLsp.INSTALL_ERROR ("Npm is not installed");
 		}
-		
-		int wait_status = run_command(lsp.command_help);
+
+		int wait_status = run_command (lsp.command_help);
 		if (wait_status != 0) {
 			if (Environment.get_variable ("FT_HOOK_NAME") != null) {
 				run_command ("suprapack add nodejs --yes");
-				wait_status = run_command(lsp.command_help);
+				wait_status = run_command (lsp.command_help);
 				if (wait_status != 0) {
 					throw new ErrorLsp.INSTALL_ERROR ("Error can't install with npm\r~~\r(%s)\r~~\rinstall nodejs with suprapack ?", lsp.command_help);
 				}
@@ -199,7 +101,7 @@ namespace LspServer {
 	}
 
 	public void suprapack_install (Lsp lsp) throws Error {
-		int wait_status = run_command(lsp.command_help);
+		int wait_status = run_command (lsp.command_help);
 		if (wait_status != 0) {
 			throw new ErrorLsp.INSTALL_ERROR ("Error running suprapack command\r(%s)", lsp.command_help);
 		}
@@ -210,7 +112,7 @@ namespace LspServer {
 	}
 
 	public void other_install (Lsp lsp) throws Error {
-		int wait_status = run_command(lsp.command_help);
+		int wait_status = run_command (lsp.command_help);
 		if (wait_status != 0) {
 			throw new ErrorLsp.INSTALL_ERROR ("Error running install command\r(%s)", lsp.command_help);
 		}
@@ -221,16 +123,16 @@ namespace LspServer {
 	}
 
 	public void install_lsp (string name) throws Error {
-		foreach (unowned var lsp in LspServer.all_servers) {
+		foreach (Lsp lsp in get_all_servers ()) {
 			if (lsp.name == name) {
-				if (lsp.command_help.has_prefix ("npm "))  {
+				if (lsp.command_help.has_prefix ("npm ")) {
 					npm_install (lsp);
 				}
 				else if (lsp.command_help.has_prefix ("suprapack ")) {
 					suprapack_install (lsp);
 				}
 				else {
-					other_install(lsp);
+					other_install (lsp);
 				}
 				return;
 			}
@@ -238,17 +140,114 @@ namespace LspServer {
 		throw new ErrorLsp.NOT_FOUND ("LSP '%s' not found", name);
 	}
 
+	// -------------------------------------------------------------------------
+	// Chargement depuis lsp.d/
+	// -------------------------------------------------------------------------
 
+	private Lsp[] load_servers () {
+		Lsp[] servers = {};
+		var seen = new HashTable<string, bool> (str_hash, str_equal);
 
-	public HashTable<string, Lsp?> get_is_loaded() {
+		// Répertoire utilisateur en premier (priorité sur le système)
+		foreach (Lsp s in load_from_dir (
+				Path.build_filename (Environment.get_user_data_dir (), "supravim", "lsp.d"), seen))
+			servers += s;
+
+		// Répertoires système (ex. /usr/share, /usr/local/share)
+		foreach (unowned string sys in Environment.get_system_data_dirs ()) {
+			foreach (Lsp s in load_from_dir (
+					Path.build_filename (sys, "supravim", "lsp.d"), seen))
+				servers += s;
+		}
+
+		sort_by_priority (ref servers);
+		return servers;
+	}
+
+	private Lsp[] load_from_dir (string dir_path, HashTable<string, bool> seen) {
+		Lsp[] servers = {};
+		try {
+			var dir = Dir.open (dir_path);
+			string? entry;
+			while ((entry = dir.read_name ()) != null) {
+				if (!entry.has_suffix (".json"))
+					continue;
+				try {
+					Lsp lsp = parse_lsp_file (Path.build_filename (dir_path, entry));
+					if (!seen.contains (lsp.name)) {
+						seen[lsp.name] = true;
+						servers += lsp;
+					}
+				} catch (Error e) { }
+			}
+		} catch (FileError e) { }
+		return servers;
+	}
+
+	private Lsp parse_lsp_file (string path) throws Error {
+		string data;
+		FileUtils.get_contents (path, out data);
+
+		var doc = YYJson.Doc.read (data, data.length);
+		if (doc == null)
+			throw new ErrorLsp.INVALID_LSP ("Cannot parse JSON: %s", path);
+
+		unowned var root = doc.get_root ();
+		unowned var name_v    = root.obj_get ("name");
+		unowned var command_v = root.obj_get ("command");
+		unowned var allowed_v = root.obj_get ("allowed");
+
+		if (name_v == null || command_v == null || allowed_v == null)
+			throw new ErrorLsp.INVALID_LSP ("Missing required field in %s", path);
+
+		Lsp lsp = {};
+		lsp.name    = name_v.get_str ();
+		lsp.command = command_v.get_str ();
+		lsp.allowed = allowed_v.get_str ();
+
+		unowned var test_v = root.obj_get ("test_command");
+		if (test_v != null)
+			lsp.test_command = test_v.get_str ();
+
+		unowned var help_v = root.obj_get ("command_help");
+		if (help_v != null)
+			lsp.command_help = help_v.get_str ();
+
+		unowned var prio_v = root.obj_get ("priority");
+		if (prio_v != null)
+			lsp.priority = prio_v.get_int ();
+
+		return lsp;
+	}
+
+	// Tri par priority décroissant (insertion sort, ~36 éléments max)
+	private void sort_by_priority (ref Lsp[] arr) {
+		for (int i = 1; i < arr.length; i++) {
+			Lsp key = arr[i];
+			int j = i - 1;
+			while (j >= 0 && arr[j].priority < key.priority) {
+				arr[j + 1] = arr[j];
+				j--;
+			}
+			arr[j + 1] = key;
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	// État interne
+	// -------------------------------------------------------------------------
+
+	private Lsp[]? _all_servers = null;
+
+	public HashTable<string, Lsp?> get_is_loaded () {
 		if (_is_loaded == null) {
 			_is_loaded = new HashTable<string, Lsp?> (str_hash, str_equal);
 		}
 		return _is_loaded;
 	}
 	private HashTable<string, Lsp?>? _is_loaded = null;
-	private StringBuilder _bs;
-	private unowned StringBuilder get_bs() {
+	private StringBuilder? _bs = null;
+	private unowned StringBuilder get_bs () {
 		if (_bs == null) {
 			_bs = new StringBuilder ();
 		}
@@ -257,9 +256,9 @@ namespace LspServer {
 }
 
 public errordomain ErrorLsp {
-	NOT_FOUND, // LSP not found
-	INSTALL_ERROR, // Error during installation
-	COMMAND_ERROR, // Error running command
-	INVALID_LSP, // Invalid LSP configuration
-	UNKNOWN_ERROR // Unknown error
+	NOT_FOUND,
+	INSTALL_ERROR,
+	COMMAND_ERROR,
+	INVALID_LSP,
+	UNKNOWN_ERROR
 }
