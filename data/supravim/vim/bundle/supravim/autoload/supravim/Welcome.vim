@@ -82,6 +82,12 @@ def WelcomeChangeLog(version: string)
 	endfor
 	log_to_display += [" __Click here to see full changelog__"]
 
+	if version == '6.69'
+		Notify.Notification(['Test Cedric', 'test 🎂🎂🎂'], {
+			icon: '🥚',
+		})
+	endif
+
 	Notify.Notification(log_to_display, {
 		icon: '󰪷',
 		left_click: (wid) => {
