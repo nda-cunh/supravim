@@ -31,9 +31,11 @@ namespace Command {
 	}
 
 	private const string RESET       = "\033[0m";
+	private const string DIM         = "\033[2m";
 	private const string GROUP_COLOR = "\033[1;93m";
 	private const string NAME_COLOR  = "\033[96m";
-	private const string LORE_COLOR  = "\033[98;2m";
+	private const string LORE_COLOR  = "\033[90m";
+	private const int    LORE_COLUMN = 32;
 	private const string VAL_TRUE    = "\033[92m";
 	private const string VAL_FALSE   = "\033[91m";
 	private const string VAL_NUMBER  = "\033[94m";
@@ -70,8 +72,16 @@ namespace Command {
 			if (opt.value == "true") v_color = VAL_TRUE;
 			else if (opt.value == "false") v_color = VAL_FALSE;
 			else if (opt.type == "number") v_color = VAL_NUMBER;
-			print (opt_indent + NAME_COLOR + short_name + RESET + ": " +
-				v_color + opt.value + RESET + "\033[31j" + LORE_COLOR + opt.lore + RESET + "\n");
+
+			// Build the "name: value" part and align lore in a fixed column.
+			string left_plain = opt_indent + short_name + ": " + opt.value;
+			string left = opt_indent + NAME_COLOR + short_name + RESET + ": " + v_color + opt.value + RESET;
+			int pad = LORE_COLUMN - left_plain.char_count ();
+			if (pad < 1) pad = 1;
+			string lore_part = (opt.lore != "")
+				? string.nfill (pad, ' ') + DIM + "│ " + RESET + LORE_COLOR + opt.lore + RESET
+				: "";
+			print (left + lore_part + "\n");
 			last_parts = current_parts;
 		}
 	}

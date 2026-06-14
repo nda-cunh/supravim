@@ -9,7 +9,7 @@ namespace Supravim.Options {
 	}
 
 	public void reset_value (string key) throws Error {
-		var lst = SupraParser.get_from_vim ();
+		var lst = SupraParser.get_from_vim();
 		foreach (unowned var opt in lst) {
 			if (opt == null) continue;
 			if (opt.id == key) {
@@ -19,6 +19,8 @@ namespace Supravim.Options {
 		}
 		warning ("Option '%s' not found for reset.", key);
 	}
+
+
 
 	public void reset (string key) throws Error {
 		reset_value (key);

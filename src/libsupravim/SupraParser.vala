@@ -36,6 +36,21 @@ namespace Supravim {
 			return parse_full_package (output);
 		}
 
+		// Convert any JSON scalar (bool/number/string) to its normalized string form.
+		private static string value_to_string (YYJson.Value? v) {
+			if (v == null) return "";
+			switch (v.get_type ()) {
+				case YYJson.Type.BOOL:
+					return v.get_bool () ? "true" : "false";
+				case YYJson.Type.NUM:
+					return v.get_int ().to_string ();
+				case YYJson.Type.STR:
+					return v.get_str () ?? "";
+				default:
+					return "";
+			}
+		}
+
 		public static List<SupravimOption?> parse_full_package (string json) {
 			group_lores = new HashTable<string, SupravimGroup?> (str_hash, str_equal);
 			var options_list = new List<SupravimOption?> ();
@@ -80,9 +95,9 @@ namespace Supravim {
 
 						opt.id            = (id_v      != null ? id_v.get_str ()      : null) ?? "";
 						opt.lore          = (lore_v    != null ? lore_v.get_str ()    : null) ?? "";
-						opt.value         = (current_v != null ? current_v.get_str () : null) ?? "";
+						opt.value         = value_to_string (current_v);
 						opt.type          = (type_v    != null ? type_v.get_str ()    : null) ?? "";
-						opt.default_value = (default_v != null ? default_v.get_str () : null) ?? "";
+						opt.default_value = value_to_string (default_v);
 
 						options_list.append (opt);
 					}

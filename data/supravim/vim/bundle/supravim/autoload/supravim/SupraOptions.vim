@@ -3,7 +3,7 @@ vim9script
 import autoload 'SupraUtils.vim' as Utils
 
 export def OpenWindow()
-	job_start(["supravim-gui"], {
+	job_start(["supravim-gui", "--from-supravim"], {
 		out_cb: GotOutput,
 	})
 enddef
