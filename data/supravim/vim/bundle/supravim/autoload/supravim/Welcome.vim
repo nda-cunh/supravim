@@ -82,7 +82,7 @@ def WelcomeChangeLog(version: string)
 	endfor
 	log_to_display += [" __Click here to see full changelog__"]
 
-	if version == '6.69'
+	if version == '6.69.1'
 		Notify.Notification(['Test Cedric', 'test 🎂🎂🎂'], {
 			icon: '🥚',
 		})
