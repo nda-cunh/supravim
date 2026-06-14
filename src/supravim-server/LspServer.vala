@@ -1,23 +1,25 @@
 public struct Lsp {
 	string name;
-	string command;    // args séparés par ','
-	string allowed;    // filetypes séparés par ','
+	string command;
+	string allowed;
 	string? test_command;
 	string? command_help;
-	int priority;      // plus élevé = testé en premier (défaut 0)
+	int priority;
 }
 
 /**
- * LspServer - gestion des serveurs LSP
+ * LspServer - LSP server management
  *
- * Les serveurs sont chargés depuis des fichiers JSON dans :
- *   {XDG_DATA_DIRS}/supravim/lsp.d/   (système, ex. /usr/share/supravim/lsp.d/)
- *   {XDG_DATA_HOME}/supravim/lsp.d/   (utilisateur, ex. ~/.local/share/supravim/lsp.d/)
+ * Servers are loaded from JSON files in:
+ * {XDG_CONFIG_HOME}/supravim/lsp.d/ (user config, e.g. ~/.config/supravim/lsp.d/)
+ * {XDG_DATA_HOME}/supravim/lsp.d/   (user data, e.g. ~/.local/share/supravim/lsp.d/)
+ * {XDG_DATA_DIRS}/supravim/lsp.d/   (system, e.g. /usr/share/supravim/lsp.d/)
  *
- * Le répertoire utilisateur est chargé en premier (priorité sur le système).
- * Si deux fichiers ont le même champ "name", le premier chargé gagne.
- * Le champ optionnel "priority" (int) contrôle l'ordre de tentative pour
- * les langages ayant plusieurs serveurs (ex. clangd > ccls).
+ * The user configuration directory is loaded first, followed by user data,
+ * then system directories. If two files have the same "name" field, the first
+ * one loaded wins.
+ * The optional "priority" field (int) controls the preference order for
+ * languages with multiple servers available (e.g., clangd > ccls).
  */
 namespace LspServer {
 
@@ -141,22 +143,23 @@ namespace LspServer {
 	}
 
 	// -------------------------------------------------------------------------
-	// Chargement depuis lsp.d/
+	// load from lsp.d/
 	// -------------------------------------------------------------------------
 
 	private Lsp[] load_servers () {
 		Lsp[] servers = {};
 		var seen = new HashTable<string, bool> (str_hash, str_equal);
 
-		// Répertoire utilisateur en premier (priorité sur le système)
+		// From ~/.config/supravim/lsp.d/
+
+		// From ~/.local/share/supravim/lsp.d/
 		foreach (Lsp s in load_from_dir (
 				Path.build_filename (Environment.get_user_data_dir (), "supravim", "lsp.d"), seen))
 			servers += s;
 
-		// Répertoires système (ex. /usr/share, /usr/local/share)
+		// From /usr/share/supravim/lsp.d/
 		foreach (unowned string sys in Environment.get_system_data_dirs ()) {
-			foreach (Lsp s in load_from_dir (
-					Path.build_filename (sys, "supravim", "lsp.d"), seen))
+			foreach (Lsp s in load_from_dir (Path.build_filename (sys, "supravim", "lsp.d"), seen))
 				servers += s;
 		}
 
@@ -220,7 +223,6 @@ namespace LspServer {
 		return lsp;
 	}
 
-	// Tri par priority décroissant (insertion sort, ~36 éléments max)
 	private void sort_by_priority (ref Lsp[] arr) {
 		for (int i = 1; i < arr.length; i++) {
 			Lsp key = arr[i];
@@ -234,7 +236,7 @@ namespace LspServer {
 	}
 
 	// -------------------------------------------------------------------------
-	// État interne
+	// internal 
 	// -------------------------------------------------------------------------
 
 	private Lsp[]? _all_servers = null;

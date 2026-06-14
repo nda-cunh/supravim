@@ -1,3 +1,7 @@
+# 6.69
+- Rewrite supravim-settings and add supravim-api
+- Fix copy/paste bug
+
 # 6.68.4
 - Theme: adjust terminal highlight
 - Airline: optimize with vim9script
