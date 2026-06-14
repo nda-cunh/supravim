@@ -415,6 +415,10 @@ vnoremap <silent> <A-Down>	:<scriptcmd>Utils.MoveLineDown("v")<CR><cr>
 vnoremap <silent> <A-Up>	:<scriptcmd>Utils.MoveLineUp("v")<CR><cr>
 nnoremap <silent> <A-Down>	<scriptcmd>Utils.MoveLineDown("n")<CR>
 nnoremap <silent> <A-Up>	<scriptcmd>Utils.MoveLineUp("n")<CR>
+nnoremap <silent> <A-Right> <ScriptCmd>Utils.MoveCharRight('n')<CR>
+nnoremap <silent> <A-Left>  <ScriptCmd>Utils.MoveCharLeft('n')<CR>
+vnoremap <silent> <A-Right> :<C-u><ScriptCmd>Utils.MoveCharRight('v')<CR><cr>
+vnoremap <silent> <A-Left>  :<C-u><ScriptCmd>Utils.MoveCharLeft('v')<CR><cr>
 
 # Fuzzy Finder
 nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>

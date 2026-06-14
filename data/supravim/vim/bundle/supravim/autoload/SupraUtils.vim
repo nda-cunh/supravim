@@ -61,6 +61,74 @@ export def MoveLineUp(mode: string)
 	normal! gv=gv
 enddef
 
+export def MoveCharRight(mode: string)
+	if mode == 'n'
+		const lnum = line('.')
+		var chars = split(getline(lnum), '\zs')
+		const n = len(chars)
+		const c = charcol('.')
+		if c >= n
+			return
+		endif
+		const tmp = chars[c - 1]
+		chars[c - 1] = chars[c]
+		chars[c] = tmp
+		setline(lnum, join(chars, ''))
+		setcursorcharpos(lnum, c + 1)
+	else
+		if line("'<") != line("'>")
+			return
+		endif
+		const lnum = line("'<")
+		var chars = split(getline(lnum), '\zs')
+		const n = len(chars)
+		const s = charcol("'<")
+		const e = charcol("'>")
+		if e >= n
+			return
+		endif
+		const moved = remove(chars, e)
+		insert(chars, moved, s - 1)
+		setline(lnum, join(chars, ''))
+		setcharpos("'<", [0, lnum, s + 1, 0])
+		setcharpos("'>", [0, lnum, e + 1, 0])
+		normal! gv
+	endif
+enddef
+
+export def MoveCharLeft(mode: string)
+	if mode == 'n'
+		const lnum = line('.')
+		var chars = split(getline(lnum), '\zs')
+		const c = charcol('.')
+		if c <= 1
+			return
+		endif
+		const tmp = chars[c - 1]
+		chars[c - 1] = chars[c - 2]
+		chars[c - 2] = tmp
+		setline(lnum, join(chars, ''))
+		setcursorcharpos(lnum, c - 1)
+	else
+		if line("'<") != line("'>")
+			return
+		endif
+		const lnum = line("'<")
+		var chars = split(getline(lnum), '\zs')
+		const s = charcol("'<")
+		const e = charcol("'>")
+		if s <= 1
+			return
+		endif
+		const moved = remove(chars, s - 2)
+		insert(chars, moved, e - 1)
+		setline(lnum, join(chars, ''))
+		setcharpos("'<", [0, lnum, s - 1, 0])
+		setcharpos("'>", [0, lnum, e - 1, 0])
+		normal! gv
+	endif
+enddef
+
 export def AutoSaveActivate(activate: bool)
 	if activate == true 
 		augroup AutoSave
