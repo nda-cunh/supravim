@@ -6,7 +6,7 @@ import autoload 'SupraPop/Input.vim'        as Input
 import autoload 'SupraPop/ToggleButton.vim' as ToggleButton
 
 var first_buffer = []
-#
+
 ########### MENU Part ############
 export def InitMenu()
 	call SupraMenu#Register(MenuSearch)
@@ -36,6 +36,28 @@ enddef
 
 ############ END of MENU Part ############
 
+def GetCompletion(input: string): string
+	if len(input) < 2
+		return ''
+	endif
+	var esc = escape(input, '\^$.*[]~')
+	var save_pos = getpos('.')
+	var result = ''
+	try
+		call cursor(1, 1)
+		var pos = searchpos('\<' .. esc .. '\w\+', 'nW')
+		if pos[0] != 0
+			var m = matchstr(getline(pos[0]), '\<' .. esc .. '\w*')
+			if len(m) > len(input)
+				result = m[len(input) :]
+			endif
+		endif
+	catch
+	endtry
+	call setpos('.', save_pos)
+	return result
+enddef
+
 export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	const r1 = getreg('1')
 	const r2 = getreg('2')
@@ -49,6 +71,8 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	var mid_cursor: number = 0
 	var mid_occurence: number = 0
 	var mid_search: number = 0
+	var ghost_text: string = ''
+	var ghost_mid: number = 0
 	var visualmode = _visualmode
 	var pre_text = _pre_text
 	var history_search_idx = 0
@@ -181,6 +205,35 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		endtry
 	}
 
+	var ClearGhost = () => {
+		if ghost_mid != 0
+			try
+				matchdelete(ghost_mid, pop1.GetWid())
+			catch
+			endtry
+			ghost_mid = 0
+		endif
+		ghost_text = ''
+	}
+
+	var UpdateGhost = (input: string) => {
+		ClearGhost()
+		if input == '' || !pop1.IsAtEnd()
+			return
+		endif
+		ghost_text = GetCompletion(input)
+		if ghost_text == ''
+			return
+		endif
+		pop1.SetText([c .. input .. ghost_text])
+		var ghost_col = len(c) + len(input) + 1
+		try
+			ghost_mid = matchaddpos('Comment', [[1, ghost_col, len(ghost_text)]], 5, -1, {window: pop1.GetWid()})
+		catch
+			ghost_mid = 0
+		endtry
+	}
+
 	var CloseAll = () => {
 		silent! pop1.Close()
 		silent! pop2.Close()
@@ -256,6 +309,17 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 
 	#### Move the Find Cursor with Up and Down
 	pop1.AddEventKeyPressedFocus((_, key) => {
+		#### Accept ghost suggestion with Right, only when cursor is already at end
+		if key == "\<Right>" && ghost_text != '' && pop1.IsAtEnd()
+			try
+				matchdelete(ghost_mid, pop1.GetWid())
+			catch
+			endtry
+			ghost_mid = 0
+			pop1.SetInput(pop1.GetInput() .. ghost_text)
+			ghost_text = ''
+			return Base.BLOCK
+		endif
 		if key == "\<C-Up>"
 			if history_search_idx <= 0
 				history_search_idx -= 1
@@ -352,6 +416,8 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		RemoveMidCursor()
 		RemoveSupramid()
 		RemoveMidSearch()
+		ghost_text = ''
+		ghost_mid = 0
 		if find == false
 			call winrestview(view)
 		endif
@@ -415,8 +481,11 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		call setpos('.', save_pos)
 	})
 
-	# When typing in the Find Popup (jump to the first match)
+	# When typing in the Find Popup (jump to first match)
 	pop1.AddEventInputChanged((_, _, line) => EventWhenFindInput(line))
+
+	# After every redraw (typing OR cursor movement), re-apply ghost
+	pop1.AddEventRedraw((_) => UpdateGhost(pop1.GetInput()))
 
 	#### Re-run search when any toggle changes
 	var OnToggle = (_, _) => EventWhenFindInput(pop1.GetInput())
