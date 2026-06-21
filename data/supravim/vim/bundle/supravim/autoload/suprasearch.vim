@@ -1,6 +1,8 @@
 vim9script
 
-import autoload 'SupraPopup.vim' as Popup
+import autoload 'SupraPop/Base.vim'   as Base
+import autoload 'SupraPop/Simple.vim' as Simple
+import autoload 'SupraPop/Input.vim'  as Input
 
 var first_buffer = []
 #
@@ -76,7 +78,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		max = line('$')
 	endif
 
-	var background = Popup.Simple({
+	var background = Simple.Simple.new({
 		# prompt: 'SupraSearch',
 		line: 2,
 		col: &columns - 34,
@@ -85,7 +87,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	})
 
 	const c = '➜ '
-	var pop1 = Popup.Input({
+	var pop1 = Input.Input.new({
 		prompt: c,
 		title: ' Find',
 		title_pos: 'left',
@@ -95,7 +97,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		maxwidth: 27,
 	})
 
-	var pop2 = Popup.Input({
+	var pop2 = Input.Input.new({
 		prompt: c,
 		title: ' Replace',
 		title_pos: 'left',
@@ -105,7 +107,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		width: 27,
 	})
 	
-	Popup.SetFocus(pop1)
+	pop1.SetFocus()
 	
 	var RemoveMidCursor = () => {
 		if mid_cursor > 0
@@ -129,12 +131,12 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	}
 
 
-	var EventWhenFindInput = (_, line) => {
+	var EventWhenFindInput = (line) => {
 		const count = CountOccurences(line)
 		if count == 0 
-			Popup.SetTitle(pop1, ' Find')
+			pop1.SetTitle(' Find')
 		else
-			Popup.SetTitle(pop1, ' Find ' .. CountOccurences(line))
+			pop1.SetTitle(' Find ' .. CountOccurences(line))
 		endif
 		RemoveSupramid()
 		var jump_line: number = 0
@@ -175,56 +177,56 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	}
 
 	if pre_text != ''
-		Popup.SetInput(pop1, pre_text)
-		EventWhenFindInput('', pre_text)
+		pop1.SetInput(pre_text)
+		EventWhenFindInput(pre_text)
 	endif
 
 	#### Set Focus
-	Popup.SetEventFocus(pop1, (_) => {
+	pop1.SetEventFocus((_) => {
 		return {next: pop2, prev: pop2}
 	})
 
-	Popup.SetEventFocus(pop2, (_) => {
+	pop2.SetEventFocus((_) => {
 		return {next: pop1, prev: pop1}
 	})
 
 	#### Move the Find Cursor with Up and Down
-	Popup.AddEventKeyPressedFocus(pop1, (_, key) => {
+	pop1.AddEventKeyPressedFocus((_, key) => {
 		if key == "\<C-Up>"
 			if history_search_idx <= 0
 				history_search_idx -= 1
 				var history = histget('search', history_search_idx)
 				echo history .. ' ' .. history_search_idx
 				if history != ''
-					Popup.SetInput(pop1, history)
+					pop1.SetInput(history)
 				else
 					history_search_idx += 1
 				endif
 			endif
-			return Popup.BLOCK
+			return Base.BLOCK
 		elseif key == "\<C-Down>"
 			if history_search_idx != 0 
 				history_search_idx += 1
 				var history = histget('search', history_search_idx)
 				echo history .. ' ' .. history_search_idx
 				if history_search_idx == 0
-					Popup.SetInput(pop1, '')
+					pop1.SetInput('')
 				elseif history != ''
-					Popup.SetInput(pop1, history)
+					pop1.SetInput(history)
 				else
 					history_search_idx -= 1
 				endif
 			endif
-			return Popup.BLOCK
+			return Base.BLOCK
 		endif
 		var jump_line: number = 0
 		var event = false
-		const input_search = Popup.GetInput(pop1)
+		const input_search = pop1.GetInput()
 		const len = len(input_search)
 		if visualmode == true
 			if key == "\<Up>"
 				if input_search == ''
-					return Popup.BLOCK
+					return Base.BLOCK
 				endif
 				jump_line = search(input_search, 'b', min)
 				if jump_line == 0
@@ -234,7 +236,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 				event = true
 			elseif key == "\<Down>"
 				if input_search == ''
-					return Popup.BLOCK
+					return Base.BLOCK
 				endif
 				jump_line = search(input_search, '', max)
 				if jump_line == 0
@@ -246,13 +248,13 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 		else
 			if key == "\<Up>"
 				if input_search == ''
-					return Popup.BLOCK
+					return Base.BLOCK
 				endif
 				jump_line = search(input_search, 'b')
 				event = true
 			elseif key == "\<Down>"
 				if input_search == ''
-					return Popup.BLOCK
+					return Base.BLOCK
 				endif
 				jump_line = search(input_search)
 				event = true
@@ -264,14 +266,14 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 			mid_search = matchadd('Search', '\%#' .. input_search, 42)
 		endif
 		if event == true
-			return Popup.BLOCK
+			return Base.BLOCK
 		endif
-		return Popup.CONTINUE
+		return Base.CONTINUE
 	})
 
 
 	#### Remove the Find Cursor if the find is terminated
-	Popup.AddEventClose(pop1, (pop) => {
+	pop1.AddEventClose((pop) => {
 		if first_buffer != []
 			noautocmd call setline(1, first_buffer)
 			first_buffer = []
@@ -295,44 +297,45 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	})
 
 	#### When Find Popup is Entered, Go to the first match
-	Popup.AddEventInputEnter(pop1, (line) => {
+	pop1.AddEventInputEnter((p) => {
+		var line = p.GetInput()
 		setreg('/', line)
 		histadd('search', line)
 		find = true
-		silent! Popup.Close(pop1)
-		silent! Popup.Close(pop2)
-		silent! Popup.Close(background)
+		silent! pop1.Close()
+		silent! pop2.Close()
+		silent! background.Close()
 		RemoveMidCursor()
 		RemoveMidSearch()
 		RemoveMidSearch()
 	})
 
 	#### When Replace Popup is Entered, replace the with the substitution
-	Popup.AddEventInputEnter(pop2, (line) => {
+	pop2.AddEventInputEnter((_) => {
 		first_buffer = getline(1, '$')
 		noautocmd w!
-		Popup.Close(pop1)
-		Popup.Close(pop2)
-		Popup.Close(background)
+		pop1.Close()
+		pop2.Close()
+		background.Close()
 		RemoveMidCursor()
 		RemoveMidSearch()
 		RemoveMidSearch()
 	})
 
 	#### When pop2 is focused, save the first buffer
-	Popup.AddEventGetFocus(pop2, (_) => {
+	pop2.AddEventGetFocus((_) => {
 		echo 'popup2 focused'
 		first_buffer = getline(1, '$')
-		var line = Popup.GetInput(pop2)
+		var line = pop2.GetInput()
 		var save_pos = getpos('.')
 		call cursor(1, 1)
 		noautocmd normal! "0dG"
 		noautocmd call setline(1, first_buffer)
-		noautocmd silent! execute ':' .. min .. ',' .. max .. 's/' .. Popup.GetInput(pop1) .. '/' .. line .. '/g'
+		noautocmd silent! execute ':' .. min .. ',' .. max .. 's/' .. pop1.GetInput() .. '/' .. line .. '/g'
 		call setpos('.', save_pos)
 	})
 
-	Popup.AddEventGetFocus(pop1, (_) => {
+	pop1.AddEventGetFocus((_) => {
 		echo 'popup1 focused'
 		var save_pos = getpos('.')
 		call cursor(1, 1)
@@ -342,11 +345,11 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	})
 
 
-	Popup.AddEventInputChanged(pop2, (key, line) => {
+	pop2.AddEventInputChanged((_, key, line) => {
 		silent! undojoin
-		var input_pop1 = Popup.GetInput(pop1)
+		var input_pop1 = pop1.GetInput()
 		if input_pop1 == ''
-			Popup.ClearInput(pop2)
+			pop2.ClearInput()
 			return
 		endif
 		var save_pos = getpos('.')
@@ -358,7 +361,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 	})
 
 	# When typing in the Find Popup (jump to the first match)
-	Popup.AddEventInputChanged(pop1, EventWhenFindInput)
+	pop1.AddEventInputChanged((_, _, line) => EventWhenFindInput(line))
 enddef
 
 def CountOccurences(search_term: string): number

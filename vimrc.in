@@ -28,7 +28,6 @@ filetype plugin indent on
 
 import autoload 'SupraMake.vim' as Make
 import autoload 'SupraNotification.vim' as Notify
-import autoload 'SupraPopup.vim' as Popup 
 import autoload 'SupraUtils.vim' as Utils
 import autoload 'supravim/Welcome.vim' as WelcomeModule
 import autoload 'supravim/SupraOptions.vim' as Options

@@ -1,6 +1,5 @@
 vim9script
 
-import autoload 'SupraPopup.vim' as Popup
 import autoload 'YankHigh.vim' as Yank
 
 augroup HighlightYanked

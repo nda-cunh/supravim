@@ -1,3 +1,9 @@
+# 6.70
+- Add a new supravim's Options to manage the supravim's options
+- migrate to suprapop base api
+- use unnamed register for yank and paste
+- rewrite lsp server docs and loading order
+
 # 6.69
 - Rewrite supravim-settings and add supravim-api
 - Fix copy/paste bug
