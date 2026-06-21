@@ -1,6 +1,6 @@
 vim9script
 
-import autoload 'SupraPopup.vim' as Popup
+import autoload 'SupraPop/Input.vim' as PopupInput
 
 export def AddLspServer(name: string, cmd: list<string>, filetypes: list<string>)
 	silent! lsp#register_server({
@@ -31,20 +31,22 @@ export def RenameSymbol()
 		endif
 	endfor
 
-	var popup = Popup.Input({width: 16, prompt: '➜ ', title_pos: 'left', title: '󰑕 Rename', line: "cursor-3", col: "cursor+1", moved: 'WORD'})
+	var popup = PopupInput.Input.new({width: 16, prompt: '➜ ', title_pos: 'left', title: '󰑕 Rename', line: "cursor-3", col: "cursor+1", moved: 'WORD'})
 	var cword = expand('<cword>')
-	popup->Popup.SetInput(cword)
+	popup.SetInput(cword)
 
 	if can_rename_lsp == false
-		popup->Popup.AddEventInputEnter((line: string) => {
-			Popup.Close(popup)
+		popup.AddEventInputEnter((p) => {
+			var line = p.GetInput()
+			popup.Close()
 			silent! execute ':%s/' .. cword .. '/' .. line .. '/g'
 			w!
 		})
 		return
 	else
-		popup->Popup.AddEventInputEnter((line: string) => {
-			Popup.Close(popup)
+		popup.AddEventInputEnter((p) => {
+			var line = p.GetInput()
+			popup.Close()
 			feedkeys("\<esc>:LspRename\<cr>", "n")
 			timer_start(100, (_) => {
 				var i = strcharlen(expand('<cword>'))

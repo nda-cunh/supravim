@@ -1,5 +1,5 @@
 pkgname=plugin-prabirshrestha-vim-lsp
-pkgver=2.0.7
+pkgver=2.0.8
 arch=('any')
 depends=('supravim')
 pkgdesc='LSP client for Supravim'
