@@ -1,6 +1,7 @@
 lib_sources = files(
   'Globals.vala',
   'Cfg.vala',
+  'Export.vala',
   'Options.vala',
   'Plugin.vala',
   'PluginLst.vala',

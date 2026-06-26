@@ -47,6 +47,9 @@ public class Main {
 	private static bool save_config = false;
 	private static bool apply_config = false;
 
+	private static string? save_path = null;
+	private static string? load_path = null;
+
 	private static string? _list_options = null;
 
 	private const GLib.OptionEntry[] options = {
@@ -80,6 +83,8 @@ public class Main {
 		{ "print-groups",  0,	HIDDEN, 	NONE,			ref print_groups,	"",				null },
 		{ "save-config", 0,		HIDDEN, 	NONE,			ref save_config,	"",				null },
 		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"",				null },
+		{ "save", '\0',			NONE, 		STRING,			ref save_path,		"Export your whole config into a .supravim archive.",	"FILE" },
+		{ "load", '\0',			NONE, 		STRING,			ref load_path,		"Restore a config from a .supravim archive.",			"FILE" },
 		{ "supramenu_pl", 0,	HIDDEN, 	NONE,			ref print_supramenu_plugin,	"",		null },
 		{ "_list-options", '\0', OptionFlags.HIDDEN, OptionArg.STRING, ref _list_options, null, null },
 		{ null }
@@ -190,6 +195,17 @@ public class Main {
 		}
 		if (apply_config) {
 			Cfg.apply_config ();
+			return true;
+		}
+		if (save_path != null) {
+			Cfg.export_config (save_path);
+			print (B + GR + "Config exported to %s\n" + R, save_path.has_suffix (".supravim") ? save_path : save_path + ".supravim");
+			return true;
+		}
+		if (load_path != null) {
+			print (B + "Restoring config from %s...\n" + R, load_path);
+			Cfg.import_config (load_path);
+			print (B + GR + "Config restored successfully\n" + R);
 			return true;
 		}
 		if (is_status) {
