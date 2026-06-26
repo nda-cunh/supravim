@@ -18,11 +18,15 @@ namespace Supravim.Plugin {
 
 	internal class PluginsLst {
 
-		private string filename     = Environment.get_user_config_dir () + "/supravim.json";
+		private string filename     = Environment.get_user_config_dir () + "/supravim/supravim.json";
 		private string old_filename = Environment.get_user_config_dir () + "/supravim.cfg";
 		private GenericArray<PluginEntry> array = new GenericArray<PluginEntry> ();
 
 		public PluginsLst () throws Error {
+			DirUtils.create_with_parents (Path.get_dirname (filename), 0755);
+			string legacy_json = Environment.get_user_config_dir () + "/supravim.json";
+			if (FileUtils.test (legacy_json, FileTest.EXISTS) && !FileUtils.test (filename, FileTest.EXISTS))
+				FileUtils.rename (legacy_json, filename);
 			if (FileUtils.test (old_filename, FileTest.EXISTS))
 				migrate_from_cfg ();
 			else if (FileUtils.test (filename, FileTest.EXISTS))
