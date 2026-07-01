@@ -452,6 +452,9 @@ tnoremap <F5> supramake run<CR>
 tnoremap <F6> supramake run2<CR>
 tnoremap <F7> supramake run3<CR>
 tnoremap <esc>	<c-\><c-n>
+tnoremap <ScrollWheelUp> <C-\><C-n><ScrollWheelUp>
+tnoremap <ScrollWheelDown> <C-\><C-n><ScrollWheelDown>
+
 # Window navigation
 tnoremap <S-Right>		<C-W>N<C-w><Right>
 tnoremap <S-Left>		<C-W>N<C-w><Left>
