@@ -1,5 +1,5 @@
 pkgname=plugin-github-copilot
-pkgver=1.59
+pkgver=1.59.1
 pkgdesc='Supravim plugin for GitHub Copilot'
 depends=('supravim')
 arch=('any')
@@ -27,5 +27,5 @@ package() {
 	cp -rf "$srcdir/github-copilot"	"$pkgdir/usr/share/supravim/vim/bundle/"
 
 	# Plugin directory
-	cp -rf "$srcdir/supravim_copilot.vim"		"$pkgdir/usr/share/supravim/vim/plugin/"
+	cp -rf "$srcdir/supravim_copilot.vim"		"$pkgdir/usr/share/supravim/vim/bundle/github-copilot/plugin/-options.vim"
 }

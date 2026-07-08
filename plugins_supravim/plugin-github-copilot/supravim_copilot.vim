@@ -1,21 +1,21 @@
 vim9script
 
-g:sp_copilot = true # Enable github-copilot completion
+import autoload 'supraconfig.vim' as SupraConfig
 
-if g:sp_copilot == false
-	autocmd VimEnter * exec ":Copilot disable"
-endif
+SupraConfig.RegisterGroup('copilot', 'Plugin: GitHub Copilot')
 
-def SimpleSupravimChangeOption()
-	if g:supravim_option_changed == 'copilot'
-		if g:supravim_option_value == 'true'
-			g:sp_copilot = true
-			Copilot enable
-		else
-			g:sp_copilot = false
-			Copilot disable
-		endif
-	endif
-enddef
-
-autocmd User SupravimChangeOption call SimpleSupravimChangeOption()
+SupraConfig.RegisterMany([
+    {
+        id: 'copilot/enable',
+        type: 'bool',
+        default: true,
+        lore: 'GitHub Copilot completion on startup',
+        handler: (v) => {
+			if v == true
+				autocmd VimEnter * exec ":Copilot enable"
+			else
+				autocmd VimEnter * exec ":Copilot disable"
+			endif
+		}
+    }
+])
