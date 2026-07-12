@@ -157,7 +157,7 @@ export def SupraSearch(_visualmode: bool = false, _pre_text: string = '')
 
 	# Build the flags prefix (\c/\C + optional \V for literal mode)
 	var GetFlags = (): string => {
-		return (btn_case.IsToggled() ? '\C' : '\c') .. (btn_regex.IsToggled() ? '' : '\V')
+		return (btn_case.IsToggled() ? '\c' : '\C') .. (btn_regex.IsToggled() ? '' : '\V')
 	}
 
 	# Wrap pattern with word boundaries if btn_word is on
