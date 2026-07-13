@@ -2,7 +2,7 @@
 # SupraVim 
 #########################
 
-project('supravim', ['c', 'vala'], version : '6.71', 
+project('supravim', ['c', 'vala'], version : '6.72',
   meson_version : '>=1.1',
   default_options : [
     'warning_level=0',

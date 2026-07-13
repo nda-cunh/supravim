@@ -1,3 +1,20 @@
+# 6.72
+- SupraMake: run builds asynchronously in a terminal popup instead of a blocking `:!`
+- SupraMake: parse the build output into the quickfix list (gcc/clang/vala)
+- SupraMake: add a full SupraPop panel on `<leader><F5>` — fuzzy rule search (focused on open),
+  live command preview, per-rule arguments, `--run`/valgrind toggles and a `make -n` dry-run preview
+- SupraMake: remember each rule's arguments and options per project
+- SupraMake: `<F5>` now replays the last launched rule with its saved arguments
+- SupraMake: move the `<F5>`/`<F6>`/`<F7>` mappings to the vimrc
+- Add export/import of the SupraVim config as a .supravim archive
+- Migrate the supravim json config to a nested directory
+- SupraSearch: add ghost completion and search toggles in the popup
+- SupraSearch: fix inverted case flag in search patterns
+- Add ScrollBar and crumble.vim plugins
+- Add scroll wheel focus remapping
+- Register the copilot enable option through supraconfig
+- Add yaml filetype detection for nested extensions
+
 # 6.70
 - Add new SupraSearch
 - migrate to suprapop base api
