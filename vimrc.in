@@ -66,8 +66,9 @@ SupraConfig.RegisterMany([
         lore: 'Sets the main color scheme',
         handler: (v) => {
 			# a theme can be have the format 'theme[-<light|dark>]'
+			# sans suffixe, on laisse le colorscheme choisir son 'background'
 			var name = matchstr(v, '^[^-]*')
-			var typemode = matchstr(v, '-\zs.*') == 'light' ? 'light' : 'dark'
+			var typemode = matchstr(v, '-\zs.*')
 			Options.ChangeSupravimTheme(name, typemode)
 		}
     },
