@@ -54,7 +54,12 @@ enddef
 
 export def ChangeSupravimTheme(theme: string, typemode: string)
 	exec 'colorscheme ' .. theme
-	exec 'set background=' .. typemode
+	# sans suffixe -light/-dark, on laisse le colorscheme garder son 'background'.
+	# 'background' vide est un etat invalide : les themes qui testent
+	# (&background == 'dark') basculent alors en clair.
+	if typemode == 'light' || typemode == 'dark'
+		exec 'set background=' .. typemode
+	endif
 	normal_bg = synIDattr(synIDtrans(hlID('Normal')), 'bg#')
 	endofbuffer_bg = synIDattr(synIDtrans(hlID('EndOfBuffer')), 'bg#')
 	nontext_bg = synIDattr(synIDtrans(hlID('NonText')), 'bg#')
