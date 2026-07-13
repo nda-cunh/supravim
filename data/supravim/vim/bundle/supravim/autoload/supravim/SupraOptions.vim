@@ -15,6 +15,23 @@ def GotOutput(channel: channel, msg: string)
 		var value = matchstr(msg, '<\zs.*\ze>')
 		supraconfig#UpdateWithString(changed, value)
 		echom 'Option ' .. changed .. ' changed to ' .. value
+	# onEasterEgg: [snake] -> sent by the Magic Mode popup of the GUI
+	elseif matchstr(msg, '^onEasterEgg: ') != ''
+		PlayEasterEgg(matchstr(msg, '\[\zs.*\ze\]'))
+	endif
+enddef
+
+# Each troll of the Magic Mode popup is an existing SupraVim command
+const EASTER_EGGS = {
+	snake:    'Snake',
+	pacman:   'Pacman',
+	rain:     'Crumble make_it_rain',
+	scramble: 'Crumble scramble',
+}
+
+export def PlayEasterEgg(effect: string)
+	if EASTER_EGGS->has_key(effect)
+		exec EASTER_EGGS[effect]
 	endif
 enddef
 
