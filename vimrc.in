@@ -554,6 +554,7 @@ g:fuzzbox_enable_mappings = 0
 g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
 g:fuzzbox_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
 g:fuzzbox_devicons_color_func = 'SupraIcons#Palette#Apply'
+g:fuzzbox_scrollbar = 0
 
 # ----------------- POPUP ------------------
 autocmd VimEnter * CreatePopit()
