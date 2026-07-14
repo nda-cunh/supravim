@@ -14,6 +14,7 @@
 - Add scroll wheel focus remapping
 - Register the copilot enable option through supraconfig
 - Add yaml filetype detection for nested extensions
+- Add :ChangeLog command to view the changelog
 
 # 6.70
 - Add new SupraSearch
