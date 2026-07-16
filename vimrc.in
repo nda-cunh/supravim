@@ -295,7 +295,7 @@ SupraConfig.RegisterMany([
     {
         id: 'theme/style/function',
         type: 'string',
-        default: 'bold',
+        default: 'none',
         lore: 'Style for functions none, bold, italic, underline', 
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Function', v)
@@ -331,7 +331,7 @@ SupraConfig.RegisterMany([
     {
         id: 'theme/style/comment',
         type: 'string',
-        default: 'none',
+        default: 'italic',
         lore: 'Style for comments none, bold, italic, underline',
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Comment', v)
