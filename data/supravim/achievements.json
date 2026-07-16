@@ -1,7 +1,6 @@
 {
 	"achievements": [
 		{ "id": "hello_world",        "cat": "onboarding",  "icon": "🐣", "title": "Hello World",           "desc": "Écrire ses 100 premiers caractères",                       "metric": "chars",             "target": 100 },
-		{ "id": "premier_pas",        "cat": "onboarding",  "icon": "💾", "title": "Premier pas",            "desc": "Premier **:w**",                                           "metric": "write",             "target": 1 },
 		{ "id": "la_sortie_existe",   "cat": "onboarding",  "icon": "🚪", "title": "La sortie existe",       "desc": "Quitter Vim avec **:q** (la blague obligatoire)",          "metric": "quit",              "target": 1 },
 		{ "id": "alcatraz",           "cat": "onboarding",  "icon": "🏃", "title": "Évadé d'Alcatraz",       "desc": "Quitter Vim moins de 10 secondes après l'avoir ouvert",    "special": "alcatraz", "hidden": true },
 		{ "id": "ctrl_veteran",       "cat": "onboarding",  "icon": "📋", "title": "Ctrl+Vétéran",           "desc": "Utiliser Ctrl+C/Ctrl+V 100 fois",                          "metric": "ctrl_cv",           "target": 100 },
@@ -42,7 +41,7 @@
 		{ "id": "boulimie_plugins",   "cat": "humour",      "icon": "🍽️", "title": "Boulimie de plugins",    "desc": "10 plugins installés en une journée",                      "metric": "plugin_install", "daily": true, "target": 10 },
 		{ "id": "indecis_chromatique","cat": "humour",      "icon": "🌈", "title": "Indécis chromatique",    "desc": "Changer de thème 5 fois en une session",                   "special": "theme_session", "count": 5, "hidden": true },
 		{ "id": "www",                "cat": "humour",      "icon": "💾", "title": ":w:w:w",                 "desc": "Sauvegarder un fichier déjà sauvegardé 3 fois de suite",   "special": "event", "hidden": true },
-		{ "id": "vendredi_13",        "cat": "humour",      "icon": "👻", "title": "Le fantôme du vendredi 13", "desc": "Coder un **vendredi 13**",                              "special": "friday_13", "hidden": true },
+		{ "id": "vendredi_13",        "cat": "humour",      "icon": "👻", "title": "Jason", "desc": "Coder un **vendredi 13**",                              "special": "friday_13", "hidden": true },
 		{ "id": "retour_futur",       "cat": "humour",      "icon": "🚗", "title": "Retour vers le futur",   "desc": "Modifier un fichier dont la date système est dans le futur", "special": "event", "hidden": true },
 		{ "id": "konami",             "cat": "humour",      "icon": "🎮", "title": "Konami",                 "desc": "↑↑↓↓←→←→BA dans supravim-gui",                              "metric": "konami",            "target": 1, "hidden": true },
 
@@ -65,6 +64,8 @@
 
 		{ "id": "cent_mille_mots",    "cat": "prestige",    "icon": "🏆", "title": "100 000 mots",           "desc": "All-time",                                                 "metric": "words",             "target": 100000 },
 		{ "id": "le_million",         "cat": "prestige",    "icon": "💎", "title": "Le Million",             "desc": "1 000 000 de caractères écrits all-time",                  "metric": "chars",             "target": 1000000 },
+		{ "id": "le_milliard",        "cat": "prestige",    "icon": "💰", "title": "Le Milliard",            "desc": "1 000 000 000 de caractères écrits all-time",               "metric": "chars",             "target": 1000000000 },
+		{ "id": "le_trillion",        "cat": "prestige",    "icon": "🤑", "title": "Le Trillion",            "desc": "1 000 000 000 000 de caractères écrits all-time",           "metric": "chars",             "target": 1000000000000 },
 		{ "id": "fidele",             "cat": "prestige",    "icon": "❤️", "title": "Fidèle",                 "desc": "Utiliser SupraVim 100 jours différents",                   "special": "distinct_days", "days": 100 },
 		{ "id": "omniglotte",         "cat": "prestige",    "icon": "🌍", "title": "Omniglotte",             "desc": "Écrire dans 10 langages différents",                       "special": "distinct_langs", "langs": 10 },
 		{ "id": "supra_legend",       "cat": "prestige",    "icon": "👑", "title": "Supra Legend",           "desc": "Débloquer tous les autres achievements",                   "special": "legend" }
