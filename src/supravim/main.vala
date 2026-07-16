@@ -50,6 +50,9 @@ public class Main {
 	private static string? save_path = null;
 	private static string? load_path = null;
 
+	private static string? emit_metric = null;
+	private static string? emit_achievement = null;
+
 	private static string? _list_options = null;
 
 	private const GLib.OptionEntry[] options = {
@@ -85,6 +88,8 @@ public class Main {
 		{ "apply-config", 0,	HIDDEN, 	NONE,			ref apply_config,	"",				null },
 		{ "save", '\0',			NONE, 		STRING,			ref save_path,		"Export your whole config into a .supravim archive.",	"FILE" },
 		{ "load", '\0',			NONE, 		STRING,			ref load_path,		"Restore a config from a .supravim archive.",			"FILE" },
+		{ "metric", '\0',		NONE, 		STRING,			ref emit_metric,	"Send an achievement metric (NAME[=COUNT]).",	"NAME[=N]" },
+		{ "achievement", '\0',	NONE, 		STRING,			ref emit_achievement,	"Unlock an achievement event by id.",		"ID" },
 		{ "supramenu_pl", 0,	HIDDEN, 	NONE,			ref print_supramenu_plugin,	"",		null },
 		{ "_list-options", '\0', OptionFlags.HIDDEN, OptionArg.STRING, ref _list_options, null, null },
 		{ null }
@@ -199,6 +204,7 @@ public class Main {
 		}
 		if (save_path != null) {
 			Cfg.export_config (save_path);
+			Command.emit_metric ("export_config");
 			print (B + GR + "Config exported to %s\n" + R, save_path.has_suffix (".supravim") ? save_path : save_path + ".supravim");
 			return true;
 		}
@@ -210,6 +216,14 @@ public class Main {
 		}
 		if (is_status) {
 			Command.print_status ();
+			return true;
+		}
+		if (emit_metric != null) {
+			Command.emit_metric (emit_metric);
+			return true;
+		}
+		if (emit_achievement != null) {
+			Command.emit_event (emit_achievement);
 			return true;
 		}
 

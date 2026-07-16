@@ -41,6 +41,14 @@ def ReadySupravimServer()
 	ch_sendraw(supravim_server, "LspReady\n")
 enddef
 
+export def Send(msg: string): bool
+	if supravim_server->job_status() == 'run'
+		ch_sendraw(supravim_server, msg .. "\n")
+		return true
+	endif
+	return false
+enddef
+
 
 
 
@@ -99,6 +107,12 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 			endif
 			Notify.Close(wid)
 		}})
+	elseif (stridx(msg, 'AchievementUnlocked: ') == 0)
+		var payload = trim(msg[21 : ], "\r\n")
+		var parts = split(payload, '|')
+		if len(parts) >= 4
+			call Notify.Notification(['🏆 ' .. parts[2], parts[3]], {icon: parts[1]})
+		endif
 	elseif (stridx(msg, 'FinishInstall') == 0)
 		call FinishInstall(true)
 	elseif (stridx(msg, 'InstallError') == 0)

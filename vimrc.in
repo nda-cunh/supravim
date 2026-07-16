@@ -525,6 +525,10 @@ import autoload 'supravim/SupravimServer.vim' as SupraVimServer
 
 SupraVimServer.RunServer(project_root)
 
+import autoload 'supravim/SupraAchievements.vim' as SupraAchievements
+
+SupraAchievements.Setup()
+
 # ---------------  GDB  ---------------"
 import autoload 'supravim/Gdb.vim' as Gdb 
 

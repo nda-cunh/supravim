@@ -112,6 +112,9 @@ enddef
 
 
 export def Open()
+	if exists('*g:SupraAchMetric')
+		call g:SupraAchMetric('rightclick', 1)
+	endif
 	const pos = getmousepos()
 	const cursor_pos = getpos('.')
 	call setpos('.', [0, pos.line, pos.column, 0])

@@ -2,7 +2,7 @@
 # SupraVim 
 #########################
 
-project('supravim', ['c', 'vala'], version : '6.72',
+project('supravim', ['c', 'vala'], version : '6.73',
   meson_version : '>=1.1',
   default_options : [
     'warning_level=0',
@@ -43,6 +43,7 @@ subdir('src')
 install_data(vimrc, install_dir : 'share/supravim')
 install_subdir('data/supravim', install_dir : 'share')
 install_data('data/lsp_c', install_dir : 'bin')
+install_headers('data/supravim_achievements.h')
 install_data('data/post_install', install_dir : '.')
 install_data('data/pre_install', install_dir : '.')
 install_data('data/uninstall', install_dir : '.')

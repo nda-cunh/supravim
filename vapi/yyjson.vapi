@@ -90,6 +90,10 @@ namespace YYJson {
         [CCode (cname = "yyjson_mut_obj_put", instance_pos = -1)]
         public bool obj_put(string key, MutValue val);
 
+        // Adds an existing value (object/array/...) under a string key
+        [CCode (cname = "yyjson_mut_obj_add_val", instance_pos = 1.1)]
+        public bool obj_add_val(MutDoc doc, string key, MutValue val);
+
         [CCode (cname = "yyjson_mut_obj_add_bool", instance_pos = 1.1)]
         public bool obj_add_bool(MutDoc doc, string key, bool val);
 

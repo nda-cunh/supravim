@@ -7,10 +7,10 @@ if !exists('g:SUPRA_CLIP')
 	g:SUPRA_CLIP = []
 endif
 
-inoremap <c-v>	<C-R>+
+inoremap <c-v>	<Cmd>call g:SupraAchMetric('ctrl_cv', 1)<CR><C-R>+
 nnoremap <del>  "_x
 vnoremap <del> "_d
-vnoremap <c-c>	y
+vnoremap <c-c>	<Cmd>call g:SupraAchMetric('ctrl_cv', 1)<CR>y
 
 augroup UpdateYankRegistersGroup
     autocmd!

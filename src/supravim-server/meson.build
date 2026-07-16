@@ -1,4 +1,5 @@
 sources = files(
+  'Achievements.vala',
   'Command.vala',
   'LspServer.vala',
   'Monitor.vala',

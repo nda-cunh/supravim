@@ -1,13 +1,32 @@
 public class Command {
 	private HashTable<string, bool> lspServerEverLoad = new HashTable<string, bool> (str_hash, str_equal);
 	private SList<string> LspReady = new SList<string> ();
+	public Achievements ach = new Achievements ();
 
 	////////////////////////////////////////////
 	// Commands
 	////////////////////////////////////////////
 
 	public void OnQuit () {
+		ach.on_quit ();
 		Idle.add(SupraVim.main_loop);
+	}
+
+	public void OnMetric (string message) {
+		uint8 buffer[128];
+		int64 delta = 0;
+		message.scanf ("Metric: %s %lld", buffer, out delta);
+		unowned string name = (string) buffer;
+		if (name != "")
+			ach.add_metric (name, delta);
+	}
+
+	public void OnAch (string message) {
+		uint8 buffer[128];
+		message.scanf ("Ach: %s", buffer);
+		unowned string id = (string) buffer;
+		if (id != "")
+			ach.force_unlock (id);
 	}
 
 	public void OnLspReady () {
@@ -24,6 +43,8 @@ public class Command {
 			if (filetype == "")
 				return;
 
+			ach.add_lang (filetype);
+
 #if DISCORD_PRESENCE
 			SupraVim.discord?.open_file (filetype, filename);
 #endif
@@ -36,6 +57,7 @@ public class Command {
 
 			// The Lsp is ever loaded or not exist
 			if (LspServer.lsp_is_load (filetype) == true) {
+				ach.mark_lsp (filetype);
 				if (possible_package != null) {
 					print ("LspInstall: Suprapack Found a vim-package for color (%s)@#@%s\n", possible_package.package_name, filetype);
 				}
@@ -73,6 +95,7 @@ public class Command {
 					if (bs_error.len != 0)
 						print ("LspServerError:%s\rbut launch %s instead\n", bs_error.str, lsp.name);
 					// Send the LSP to the client
+					ach.mark_lsp (filetype);
 					send_lsp_to_server(lsp_str);
 					// print ("LspGetServer@#@%s\n", lsp_str);
 					if (possible_package != null) {

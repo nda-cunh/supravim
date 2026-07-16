@@ -1,3 +1,11 @@
+# 6.73
+- Add an achievements engine: the server tracks metrics and unlocks 50+ succès, persisted in `~/.config/supravim/achievements.json`
+- Achievements are declared in `achievements.json` and pop a notification when unlocked
+- Track typing, motions (dd/ciw/f/./macros/marks), :w/:q, undo/redo, themes, ratio insert/normal, streaks, session length and time of day
+- Record per-day stats (chars, words, lines, saves, active coding time) in a `history` map, WakaTime-style, for the GUI to display
+- Add an external API so third-party plugins can send metrics without depending on SupraVim: append a line to `~/.config/supravim/achievements.inbox` (drained by the server), or use `supravim --metric NAME[=N]` / `supravim --achievement ID`
+- Add SupraPacman achievements (level clear, strawberry, pacifist, glutton, full game) and date easter-eggs (Friday 13th, future-dated file, same-hour streak, session LSP count)
+
 # 6.72
 - SupraMake: run builds asynchronously in a terminal popup instead of a blocking `:!`
 - SupraMake: parse the build output into the quickfix list (gcc/clang/vala)

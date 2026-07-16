@@ -80,5 +80,11 @@ public class SupraVim {
 		else if (message.has_prefix("Install: ")) {
 			command.OnInstall (message);
 		}
+		else if (message.has_prefix ("Metric: ")) {
+			command.OnMetric (message);
+		}
+		else if (message.has_prefix ("Ach: ")) {
+			command.OnAch (message);
+		}
 	}
 }

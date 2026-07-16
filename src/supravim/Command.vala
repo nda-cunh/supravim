@@ -94,6 +94,33 @@ namespace Command {
 		}
 	}
 
+	private void inbox_append (string line) throws Error {
+		string dir = Path.build_filename (Environment.get_user_config_dir (), "supravim");
+		DirUtils.create_with_parents (dir, 0755);
+		string path = Path.build_filename (dir, "achievements.inbox");
+		var file = File.new_for_path (path);
+		var stream = file.append_to (FileCreateFlags.NONE);
+		stream.write (line.data);
+		stream.close ();
+	}
+
+	public void emit_metric (string spec) throws Error {
+		string name = spec;
+		int64 n = 1;
+		if ("=" in spec) {
+			int i = spec.index_of_char ('=');
+			name = spec[0:i];
+			n = int64.parse (spec[i + 1:]);
+		}
+		if (name.strip () == "") return;
+		inbox_append ("M %s %lld\n".printf (name.strip (), n));
+	}
+
+	public void emit_event (string id) throws Error {
+		if (id.strip () == "") return;
+		inbox_append ("E %s\n".printf (id.strip ()));
+	}
+
 	public void print_options_switchable () throws Error {
 		var lst = SupraParser.get_from_vim ();
 		foreach (unowned var opt in lst) {
