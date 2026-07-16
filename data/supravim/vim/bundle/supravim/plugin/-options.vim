@@ -18,6 +18,15 @@ supraconfig#RegisterMany([
 		}
 	},
 	{
+		id: 'achievement_notify',
+		type: 'bool',
+		default: true,
+		lore: 'Show a notification when an achievement is unlocked',
+		handler: (v) => {
+			g:supravim_achievement_notify = v
+		}
+	},
+	{
 		id: 'autobear',
 		type: 'bool',
 		default: true,

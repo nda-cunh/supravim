@@ -110,7 +110,7 @@ def GotOutputSupravimServer(channel: channel, msg: string)
 	elseif (stridx(msg, 'AchievementUnlocked: ') == 0)
 		var payload = trim(msg[21 : ], "\r\n")
 		var parts = split(payload, '|')
-		if len(parts) >= 4
+		if len(parts) >= 4 && get(g:, 'supravim_achievement_notify', true)
 			call Notify.Notification(['🏆 ' .. parts[2], parts[3]], {icon: parts[1]})
 		endif
 	elseif (stridx(msg, 'FinishInstall') == 0)
