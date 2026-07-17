@@ -43,7 +43,7 @@ namespace Supravim {
 				case YYJson.Type.BOOL:
 					return v.get_bool () ? "true" : "false";
 				case YYJson.Type.NUM:
-					return v.get_int ().to_string ();
+					return v.get_sint ().to_string ();
 				case YYJson.Type.STR:
 					return v.get_str () ?? "";
 				default:

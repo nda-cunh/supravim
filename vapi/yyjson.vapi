@@ -39,6 +39,9 @@ namespace YYJson {
         [CCode (cname = "yyjson_get_int")]
         public int get_int();
 
+        [CCode (cname = "yyjson_get_sint")]
+        public int64 get_sint();
+
         [CCode (cname = "yyjson_get_uint")]
         public uint64 get_uint();
 

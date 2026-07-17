@@ -8,8 +8,9 @@ public class AchDef {
 	public bool    daily   = false;
 	public bool    is_max  = false;
 	public int64   target  = 0;
-	public string? special = null;
-	public int64   arg     = 0;
+	public string? special   = null;
+	public int64   arg       = 0;
+	public int64   min_words = 0;
 }
 
 public class Achievements {
@@ -207,7 +208,7 @@ public class Achievements {
 				if (write_rate_count (d.arg) >= 50) award (d);
 				break;
 			case "ratio":
-				if (ratio_ok (d.arg)) award (d);
+				if (ratio_ok (d.arg, d.min_words)) award (d);
 				break;
 			case "legend":
 				if (all_others_unlocked (d.id)) award (d);
@@ -217,7 +218,8 @@ public class Achievements {
 		}
 	}
 
-	private bool ratio_ok (int64 threshold) {
+	private bool ratio_ok (int64 threshold, int64 min_words) {
+		if (get_counter ("words") < min_words) return false;
 		int64 ins = get_counter ("insert_ms");
 		int64 nor = get_counter ("normal_ms");
 		int64 total = ins + nor;
@@ -368,7 +370,7 @@ public class Achievements {
 
 			if (metric_v != null) {
 				d.metric = metric_v.get_str ();
-				if (target_v != null) d.target = target_v.get_int ();
+				if (target_v != null) d.target = target_v.get_sint ();
 				if (daily_v != null)  d.daily  = daily_v.get_bool ();
 				if (mode_v != null && mode_v.get_str () == "max") {
 					d.is_max = true;
@@ -379,6 +381,8 @@ public class Achievements {
 				d.special = special_v.get_str ();
 				d.arg = special_arg (e, d.special);
 			}
+			unowned var min_words_v = e.obj_get ("min_words");
+			if (min_words_v != null) d.min_words = min_words_v.get_sint ();
 			defs.add (d);
 		}
 	}
@@ -399,7 +403,7 @@ public class Achievements {
 		default:               return 0;
 		}
 		unowned var v = e.obj_get (key);
-		return v != null ? v.get_int () : 0;
+		return v != null ? v.get_sint () : 0;
 	}
 
 	private string str_field (YYJson.Value e, string key) {
@@ -463,9 +467,9 @@ public class Achievements {
 			unowned var best_v   = meta.obj_get ("best_streak");
 			unowned var days_v   = meta.obj_get ("distinct_days");
 			if (last_v   != null) last_day      = last_v.get_str ();
-			if (streak_v != null) streak        = streak_v.get_int ();
-			if (best_v   != null) best_streak   = best_v.get_int ();
-			if (days_v   != null) distinct_days = days_v.get_int ();
+			if (streak_v != null) streak        = streak_v.get_sint ();
+			if (best_v   != null) best_streak   = best_v.get_sint ();
+			if (days_v   != null) distinct_days = days_v.get_sint ();
 		}
 	}
 
@@ -476,7 +480,7 @@ public class Achievements {
 		unowned YYJson.Value? key;
 		while ((key = iter.next ()) != null) {
 			unowned var val = YYJson.ObjIter.get_val (key);
-			if (val != null) dest[key.get_str ()] = (int64) val.get_int ();
+			if (val != null) dest[key.get_str ()] = val.get_sint ();
 		}
 	}
 
