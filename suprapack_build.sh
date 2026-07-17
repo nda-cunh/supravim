@@ -16,6 +16,7 @@ git clone https://github.com/nda-cunh/SupraPopup --depth 1
 git clone https://github.com/nda-cunh/SupraPacman --depth 1
 git clone https://github.com/nda-cunh/PropColor --depth 1
 git clone https://github.com/nda-cunh/Crumble.vim --depth 1
+git clone https://github.com/nda-cunh/dvd.vim --depth 1
 # External plugins
 git clone https://github.com/Donaldttt/fuzzyy --depth 1
 git clone https://github.com/vim-airline/vim-airline --depth 1
