@@ -186,6 +186,7 @@ namespace Supravim.Ach {
 	public class State : Object {
 
 		private string path;
+		private string history_path;
 
 		private HashTable<string, int64?> counters = new HashTable<string, int64?> (str_hash, str_equal);
 		private HashTable<string, HashTable<string, int64?>> history =
@@ -194,14 +195,18 @@ namespace Supravim.Ach {
 		private HashTable<string, bool>   langs     = new HashTable<string, bool> (str_hash, str_equal);
 		private HashTable<string, bool>   lsp_ready = new HashTable<string, bool> (str_hash, str_equal);
 
-		private unowned HashTable<string, int64?> daily;
-		private string daily_date = "";
+		private HashTable<string, int64?> today_bucket = new HashTable<string, int64?> (str_hash, str_equal);
+		private string today_date = "";
 
 		public string last_day      { get; set; default = ""; }
 		public int64  streak        { get; set; default = 0; }
 		public int64  best_streak   { get; set; default = 0; }
-		public int64  distinct_days { get; set; default = 0; }
 		public bool   dirty         { get; set; default = false; }
+		public bool   history_dirty { get; set; default = false; }
+
+		public int64 distinct_days {
+			get { return (int64) history.size () + (today_bucket.size () > 0 ? 1 : 0); }
+		}
 
 		public uint langs_count     { get { return langs.size (); } }
 		public uint lsp_ready_count { get { return lsp_ready.size (); } }
@@ -214,6 +219,8 @@ namespace Supravim.Ach {
 
 		public State (string? state_path = null) {
 			path = state_path ?? default_path ();
+			history_path = Path.build_filename (
+				Path.get_dirname (path), "achievements_history.json");
 			load ();
 		}
 
@@ -230,59 +237,61 @@ namespace Supravim.Ach {
 		}
 
 		public int64 today_value (string key) {
-			return day_value (today (), key);
+			return today_bucket[key] ?? 0;
+		}
+
+		private unowned HashTable<string, int64?>? bucket_of (string date) {
+			if (date == today_date)
+				return today_bucket;
+			return history[date];
 		}
 
 		public int64 day_value (string date, string key) {
-			unowned var bucket = history[date];
+			unowned var bucket = bucket_of (date);
 			if (bucket == null)
 				return 0;
 			return bucket[key] ?? 0;
 		}
 
 		public bool has_day (string date, string key) {
-			unowned var bucket = history[date];
+			unowned var bucket = bucket_of (date);
 			return bucket != null && bucket[key] != null;
 		}
 
 		public int64 total_of (string key) {
-			int64 sum = 0;
+			int64 sum = today_bucket[key] ?? 0;
 			history.foreach ((date, bucket) => {
 				sum += bucket[key] ?? 0;
 			});
 			return sum;
 		}
 
-		public List<weak string> days () {
-			return history.get_keys ();
-		}
-
 		public void add (string key, int64 delta, bool is_max = false) {
 			ensure_today ();
 			if (is_max) {
-				counters[key] = int64.max (counter (key), delta);
-				daily[key]    = int64.max (today_value (key), delta);
+				counters[key]      = int64.max (counter (key), delta);
+				today_bucket[key]  = int64.max (today_value (key), delta);
 			} else {
-				counters[key] = counter (key) + delta;
-				daily[key]    = today_value (key) + delta;
+				counters[key]      = counter (key) + delta;
+				today_bucket[key]  = today_value (key) + delta;
 			}
 			dirty = true;
 		}
 
 		public void add_today (string key, int64 delta) {
 			ensure_today ();
-			daily[key] = today_value (key) + delta;
+			today_bucket[key] = today_value (key) + delta;
 			dirty = true;
 		}
 
 		public void set_today (string key, int64 value) {
 			ensure_today ();
-			daily[key] = value;
+			today_bucket[key] = value;
 			dirty = true;
 		}
 
 		public bool has_today (string key) {
-			return has_day (today (), key);
+			return today_bucket[key] != null;
 		}
 
 		public bool is_unlocked (string id) {
@@ -318,16 +327,20 @@ namespace Supravim.Ach {
 
 		public void ensure_today () {
 			string t = today ();
-			if (daily_date == t && daily != null)
+			if (today_date == t)
 				return;
-			daily_date = t;
-			daily = bucket_for (t);
-			distinct_days = (int64) history.size ();
+			if (today_date != "" && today_bucket.size () > 0) {
+				history[today_date] = (owned) today_bucket;
+				today_bucket = new HashTable<string, int64?> (str_hash, str_equal);
+				history_dirty = true;
+			}
+			today_date = t;
+			dirty = true;
 		}
 
 		public void roll_day () {
 			ensure_today ();
-			if (last_day == daily_date)
+			if (last_day == today_date)
 				return;
 			if (last_day == "")
 				streak = 1;
@@ -335,65 +348,84 @@ namespace Supravim.Ach {
 				streak += 1;
 			else
 				streak = 1;
-			last_day = daily_date;
+			last_day = today_date;
 			if (streak > best_streak)
 				best_streak = streak;
 			dirty = true;
 		}
 
-		private unowned HashTable<string, int64?> bucket_for (string date) {
-			unowned HashTable<string, int64?> bucket = history[date];
-			if (bucket == null) {
-				var created = new HashTable<string, int64?> (str_hash, str_equal);
-				bucket = created;
-				history[date] = (owned) created;
-			}
-			return bucket;
-		}
-
 		public void load () {
-			if (!FileUtils.test (path, FileTest.EXISTS))
-				return;
-			string data;
-			try { FileUtils.get_contents (path, out data); }
-			catch (Error e) { return; }
+			today_date = today ();
 
-			var doc = YYJson.Doc.read (data, data.length);
-			if (doc == null)
-				return;
-			unowned var root = doc.get_root ();
-			if (root == null)
-				return;
+			if (FileUtils.test (path, FileTest.EXISTS)) {
+				string data;
+				try { FileUtils.get_contents (path, out data); }
+				catch (Error e) { warning ("achievements: read '%s' failed: %s", path, e.message); data = ""; }
 
-			read_int_map (root.obj_get ("counters"), counters);
-			read_str_map (root.obj_get ("unlocked"), unlocked);
-			read_str_set (root.obj_get ("langs"), langs);
-			read_str_set (root.obj_get ("lsp_ready"), lsp_ready);
+				var doc = YYJson.Doc.read (data, data.length);
+				unowned var root = doc != null ? doc.get_root () : null;
+				if (root != null) {
+					read_int_map (root.obj_get ("counters"), counters);
+					read_str_map (root.obj_get ("unlocked"), unlocked);
+					read_str_set (root.obj_get ("langs"), langs);
+					read_str_set (root.obj_get ("lsp_ready"), lsp_ready);
+					read_meta (root.obj_get ("meta"));
 
-			unowned var hist = root.obj_get ("history");
-			if (hist != null) {
-				YYJson.ObjIter it;
-				if (YYJson.ObjIter.init (hist, out it)) {
-					unowned YYJson.Value? key;
-					while ((key = it.next ()) != null) {
-						var bucket = new HashTable<string, int64?> (str_hash, str_equal);
-						read_int_map (YYJson.ObjIter.get_val (key), bucket);
-						history[key.get_str ()] = (owned) bucket;
+					unowned var daily = root.obj_get ("daily");
+					if (daily != null) {
+						unowned var date_v = daily.obj_get ("date");
+						if (date_v != null)
+							today_date = date_v.get_str ();
+						read_int_map (daily.obj_get ("values"), today_bucket);
+					}
+
+					unowned var old_hist = root.obj_get ("history");
+					if (old_hist != null) {
+						read_history (old_hist);
+						dirty = true;
+						history_dirty = true;
 					}
 				}
 			}
 
-			unowned var meta = root.obj_get ("meta");
-			if (meta != null) {
-				unowned var last_v   = meta.obj_get ("last_day");
-				unowned var streak_v = meta.obj_get ("streak");
-				unowned var best_v   = meta.obj_get ("best_streak");
-				unowned var days_v   = meta.obj_get ("distinct_days");
-				if (last_v   != null) last_day      = last_v.get_str ();
-				if (streak_v != null) streak        = streak_v.get_sint ();
-				if (best_v   != null) best_streak   = best_v.get_sint ();
-				if (days_v   != null) distinct_days = days_v.get_sint ();
+			if (FileUtils.test (history_path, FileTest.EXISTS)) {
+				string hdata;
+				try { FileUtils.get_contents (history_path, out hdata); }
+				catch (Error e) { warning ("achievements: read '%s' failed: %s", history_path, e.message); hdata = ""; }
+				var hdoc = YYJson.Doc.read (hdata, hdata.length);
+				if (hdoc != null && hdoc.get_root () != null)
+					read_history (hdoc.get_root ());
 			}
+
+			unowned var dup = history[today_date];
+			if (dup != null) {
+				if (today_bucket.size () == 0)
+					dup.foreach ((k, v) => today_bucket[k] = v);
+				history.remove (today_date);
+			}
+		}
+
+		private void read_history (YYJson.Value obj) {
+			YYJson.ObjIter it;
+			if (!YYJson.ObjIter.init (obj, out it))
+				return;
+			unowned YYJson.Value? key;
+			while ((key = it.next ()) != null) {
+				var bucket = new HashTable<string, int64?> (str_hash, str_equal);
+				read_int_map (YYJson.ObjIter.get_val (key), bucket);
+				history[key.get_str ()] = (owned) bucket;
+			}
+		}
+
+		private void read_meta (YYJson.Value? meta) {
+			if (meta == null)
+				return;
+			unowned var last_v   = meta.obj_get ("last_day");
+			unowned var streak_v = meta.obj_get ("streak");
+			unowned var best_v   = meta.obj_get ("best_streak");
+			if (last_v   != null) last_day    = last_v.get_str ();
+			if (streak_v != null) streak      = streak_v.get_sint ();
+			if (best_v   != null) best_streak = best_v.get_sint ();
 		}
 
 		public void save () {
@@ -409,11 +441,10 @@ namespace Supravim.Ach {
 			root.obj_add_val (doc, "langs",     str_set_arr (doc, langs));
 			root.obj_add_val (doc, "lsp_ready", str_set_arr (doc, lsp_ready));
 
-			unowned var hist = doc.obj ();
-			history.foreach ((date, bucket) => {
-				hist.obj_add_val (doc, date, int_map_obj (doc, bucket));
-			});
-			root.obj_add_val (doc, "history", hist);
+			unowned var daily = doc.obj ();
+			daily.obj_add_str (doc, "date", today_date);
+			daily.obj_add_val (doc, "values", int_map_obj (doc, today_bucket));
+			root.obj_add_val (doc, "daily", daily);
 
 			unowned var meta = doc.obj ();
 			meta.obj_add_str (doc, "last_day", last_day);
@@ -423,10 +454,29 @@ namespace Supravim.Ach {
 			root.obj_add_val (doc, "meta", meta);
 
 			string? json = doc.write (YYJson.WRITE_PRETTY);
+			if (json != null) {
+				try { FileUtils.set_contents (path, json); }
+				catch (Error e) { warning ("achievements: save '%s' failed: %s", path, e.message); }
+			}
+
+			if (history_dirty)
+				save_history ();
+		}
+
+		private void save_history () {
+			var doc = new YYJson.MutDoc ();
+			unowned var root = doc.obj ();
+			doc.set_root (root);
+			history.foreach ((date, bucket) => {
+				root.obj_add_val (doc, date, int_map_obj (doc, bucket));
+			});
+			string? json = doc.write (YYJson.WRITE_PRETTY);
 			if (json == null)
 				return;
-			try { FileUtils.set_contents (path, json); }
-			catch (Error e) { warning ("achievements: save failed: %s", e.message); }
+			try {
+				FileUtils.set_contents (history_path, json);
+				history_dirty = false;
+			} catch (Error e) { warning ("achievements: save '%s' failed: %s", history_path, e.message); }
 		}
 
 		private static void read_int_map (YYJson.Value? obj, HashTable<string, int64?> dest) {

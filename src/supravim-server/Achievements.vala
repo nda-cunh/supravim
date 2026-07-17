@@ -79,7 +79,7 @@ public class Achievements {
 	}
 
 	private void save_if_dirty () {
-		if (state.dirty)
+		if (state.dirty || state.history_dirty)
 			state.save ();
 	}
 
