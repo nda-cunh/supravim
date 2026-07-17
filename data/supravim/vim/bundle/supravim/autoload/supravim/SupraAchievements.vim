@@ -11,6 +11,9 @@ def Inbox(line: string)
 enddef
 
 def SendMetric(name: string, n: number)
+	if &buftype != '' || expand('%') == ''
+		return
+	endif
 	if !Server.Send('Metric: ' .. name .. ' ' .. n)
 		Inbox('M ' .. name .. ' ' .. n)
 	endif
@@ -176,6 +179,9 @@ enddef
 var last_beat: list<any> = []
 
 def OnBeat()
+	if &buftype != '' || expand('%') == ''
+		return
+	endif
 	if !empty(last_beat) && reltimefloat(reltime(last_beat)) < 15.0
 		return
 	endif

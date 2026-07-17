@@ -30,6 +30,9 @@ def CloseServer(ch: channel)
 enddef
 
 def OpenNewFile()
+	if &buftype != '' || expand('%') == ''
+		return
+	endif
 	var filetype = &filetype
 	if filetype == ''
 		filetype = expand('%:e')
