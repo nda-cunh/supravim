@@ -421,17 +421,9 @@ vnoremap <silent> <A-Right> :<C-u><ScriptCmd>Utils.MoveCharRight('v')<CR><cr>
 vnoremap <silent> <A-Left>  :<C-u><ScriptCmd>Utils.MoveCharLeft('v')<CR><cr>
 
 # Fuzzy Finder
-nnoremap <silent> <leader>g			<scriptcmd>FuzzyGrep<CR>
-nnoremap <silent> <leader>m			<scriptcmd>FuzzyMarks<CR>
-nnoremap <silent> <leader>f			<scriptcmd>FuzzyFiles<CR>
-nnoremap <silent> <leader>d			<scriptcmd>FuzzyLspDiag<CR>
-nnoremap <silent> <leader>b			<scriptcmd>FuzzyBuffers<CR>
-nnoremap <silent> <leader>h			<scriptcmd>FuzzyHighlights<CR>
-nnoremap <silent> <leader>c			<scriptcmd>FuzzyClip<cr>
-nnoremap <silent> <leader>p			<scriptcmd>FuzzyPrevious<cr>
-nnoremap <silent> <leader><f5>		<scriptcmd>FuzzyMake<cr>
+nnoremap <silent> <leader>fc			<scriptcmd>FuzzyClip<cr>
+nnoremap <silent> <leader>f<f5>		<scriptcmd>FuzzyMake<cr>
 # nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
-nnoremap <silent> <leader><leader>	<scriptcmd>FuzzyBuffers<CR>
 
 # SupraVim Settings
 inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
@@ -481,7 +473,6 @@ set autoindent
 set backspace=indent,eol,start
 set breakindent
 set encoding=utf-8
-set notimeout
 set pumheight=50
 set shiftround
 set shiftwidth=4
@@ -500,7 +491,6 @@ endif
 set display=lastline
 set splitright
 set tabstop=4
-set timeoutlen=100
 set title
 set ttimeout
 set wildmenu
@@ -514,6 +504,24 @@ set ballooneval
 set balloonevalterm
 set balloonexpr=g:BalloonPopup()
 set balloondelay=750
+
+set timeout
+set timeoutlen=500
+set ttimeoutlen=100
+
+g:whisper_desc = {
+	'<Space>c':  'Claude',
+	'<Space>f':  'fuzzy',
+	'<Space>t':  'terminal',
+	'<Space>u':  'unicode',
+	'<Space>e':  'File tree',
+	'<Space>r':  'Search word',
+	'<Space>v':  'Split vertical',
+	'<Space>s':  'Split horizontal',
+	'<Space>tf': 'Float terminal',
+	'<Space>th': 'Horizontal terminal',
+	'<Space>tv': 'Vertical terminal',
+}
 
 #--------------- Supravim Options ---------------"
 def g:SettingsSupravim()
@@ -555,7 +563,6 @@ g:airline#extensions#tabline#right_alt_sep = '╱'
 g:airline_experimental = 1
 g:supraicons_airline_enable = true
 # ----------------- FuzzBox ------------------
-g:fuzzbox_enable_mappings = 0
 g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
 g:fuzzbox_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
 g:fuzzbox_devicons_color_func = 'SupraIcons#Palette#Apply'
