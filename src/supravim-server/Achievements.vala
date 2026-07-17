@@ -14,7 +14,11 @@ public class Achievements {
 	private int   session_ctrl_cv = 0;
 	private Queue<int64?> write_times = new Queue<int64?> ();
 
-	public Achievements () {
+	private string project_name = "";
+	private string current_lang = "";
+
+	public Achievements (string project = "") {
+		project_name = basename_of (project);
 		session_start = now ();
 		state.roll_day ();
 		drain_inbox ();
@@ -54,8 +58,15 @@ public class Achievements {
 	}
 
 	public void add_lang (string ft) {
+		if (ft != "")
+			current_lang = ft;
 		if (state.add_lang (ft))
 			evaluate_all ();
+	}
+
+	public void beat () {
+		touch_activity ();
+		save_if_dirty ();
 	}
 
 	public void mark_lsp (string name) {
@@ -87,14 +98,28 @@ public class Achievements {
 		int64 n = now ();
 		if (last_activity > 0) {
 			int64 gap = n - last_activity;
-			if (gap > 0 && gap <= 120)
+			if (gap > 0 && gap <= 120) {
 				state.add_today ("active_sec", gap);
+				if (current_lang != "")
+					state.add_today ("lang:" + current_lang, gap);
+				if (project_name != "")
+					state.add_today ("proj:" + project_name, gap);
+			}
 		}
 		last_activity = n;
 		if (!state.has_today ("first_min")) {
 			var dt = new DateTime.now_local ();
 			state.set_today ("first_min", dt.get_hour () * 60 + dt.get_minute ());
 		}
+	}
+
+	private static string basename_of (string path) {
+		if (path == "" || path == ".")
+			return "";
+		string p = path;
+		if (p.has_suffix (Path.DIR_SEPARATOR_S) && p.length > 1)
+			p = p.substring (0, p.length - 1);
+		return Path.get_basename (p);
 	}
 
 	private void drain_inbox () {

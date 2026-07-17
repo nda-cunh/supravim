@@ -1,7 +1,11 @@
 public class Command {
 	private HashTable<string, bool> lspServerEverLoad = new HashTable<string, bool> (str_hash, str_equal);
 	private SList<string> LspReady = new SList<string> ();
-	public Achievements ach = new Achievements ();
+	public Achievements ach;
+
+	public Command (string project = "") {
+		ach = new Achievements (project);
+	}
 
 	////////////////////////////////////////////
 	// Commands
@@ -27,6 +31,10 @@ public class Command {
 		unowned string id = (string) buffer;
 		if (id != "")
 			ach.force_unlock (id);
+	}
+
+	public void OnBeat () {
+		ach.beat ();
 	}
 
 	public void OnLspReady () {

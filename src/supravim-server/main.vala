@@ -21,7 +21,7 @@ public class SupraVim {
 	private SupraVim (string [] args) throws Error {
 		monitor = new MyMonitor (args[1]);
 		stdin = new StdinStream ();
-		command = new Command ();
+		command = new Command (args.length > 1 ? args[1] : "");
 
 #if DISCORD_PRESENCE
 		// Discord Rich Presence
@@ -85,6 +85,9 @@ public class SupraVim {
 		}
 		else if (message.has_prefix ("Ach: ")) {
 			command.OnAch (message);
+		}
+		else if (message.has_prefix ("Beat")) {
+			command.OnBeat ();
 		}
 	}
 }

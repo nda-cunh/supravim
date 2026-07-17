@@ -173,6 +173,16 @@ def SafeNmap(lhs: string, rhs: string)
 	endif
 enddef
 
+var last_beat: list<any> = []
+
+def OnBeat()
+	if !empty(last_beat) && reltimefloat(reltime(last_beat)) < 15.0
+		return
+	endif
+	last_beat = reltime()
+	Server.Send('Beat')
+enddef
+
 export def Setup()
 	SafeNmap('dd', 'Bump("dd", "dd")')
 	SafeNmap('ciw', 'Bump("ciw", "ciw")')
@@ -187,6 +197,7 @@ export def Setup()
 	augroup SupraAchievements
 		autocmd!
 		autocmd TextChanged,TextChangedI * OnTextChanged()
+		autocmd CursorMoved,CursorMovedI * OnBeat()
 		autocmd BufEnter * InitCount()
 		autocmd InsertEnter * OnInsertEnter()
 		autocmd InsertLeave * OnInsertLeave()

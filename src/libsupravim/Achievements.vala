@@ -266,6 +266,35 @@ namespace Supravim.Ach {
 			return sum;
 		}
 
+		public HashTable<string, int64?> breakdown (string prefix) {
+			var res = new HashTable<string, int64?> (str_hash, str_equal);
+			accumulate_prefix (today_bucket, prefix, res);
+			history.foreach ((date, bucket) => accumulate_prefix (bucket, prefix, res));
+			return res;
+		}
+
+		public HashTable<string, int64?> breakdown_days (string prefix, int days) {
+			var res = new HashTable<string, int64?> (str_hash, str_equal);
+			var d = new DateTime.now_local ();
+			for (int i = 0; i < days; i++) {
+				string ds = d.add_days (-i).format ("%Y-%m-%d");
+				unowned var bucket = bucket_of (ds);
+				if (bucket != null)
+					accumulate_prefix (bucket, prefix, res);
+			}
+			return res;
+		}
+
+		private static void accumulate_prefix (HashTable<string, int64?> bucket,
+			string prefix, HashTable<string, int64?> res) {
+			bucket.foreach ((k, v) => {
+				if (k.has_prefix (prefix)) {
+					string name = k.substring (prefix.length);
+					res[name] = (res[name] ?? 0) + v;
+				}
+			});
+		}
+
 		public void add (string key, int64 delta, bool is_max = false) {
 			ensure_today ();
 			if (is_max) {
