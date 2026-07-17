@@ -391,10 +391,10 @@ nnoremap <silent><c-space>	<scriptcmd>g:LspHover()<cr>
 silent! unmap <c-t>
 nnoremap <C-t>		<scriptcmd>term ++rows=15<CR>
 # Terminal shortcuts
-map <leader>tt	<scriptcmd>call SupraTerm()<cr>
-map <leader>tf	<scriptcmd>call SupraTerm()<cr>
-map <leader>th	:horizontal term<CR>
-map <leader>tv	:vertical term<CR>
+nnoremap <leader>tt	<scriptcmd>call SupraTerm()<cr>
+nnoremap <leader>tf	<scriptcmd>call SupraTerm()<cr>
+nnoremap <leader>th	:horizontal term<CR>
+nnoremap <leader>tv	:vertical term<CR>
 # Lsp shortcuts 
 nnoremap <silent> gd		<scriptcmd>g:LspDefinition()<cr>
 nnoremap <silent> gr		<scriptcmd>g:LspReferences()<cr>
