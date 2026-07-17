@@ -1,24 +1,6 @@
 vim9script
 
-if exists('g:loaded_whisper') || &compatible
-	finish
-endif
-g:loaded_whisper = 1
-
-g:whisper_desc = get(g:, 'whisper_desc', {})
-g:whisper_delay = get(g:, 'whisper_delay', 300)
-g:whisper_ignore = get(g:, 'whisper_ignore', [])
-g:whisper_width = get(g:, 'whisper_width', 60)
-g:whisper_hint = get(g:, 'whisper_hint', true)
-
-if empty(prop_type_get('WhisperKey'))
-	prop_type_add('WhisperKey', {highlight: 'Special'})
-	prop_type_add('WhisperGroup', {highlight: 'Directory'})
-	prop_type_add('WhisperDesc', {highlight: 'Comment'})
-	prop_type_add('WhisperHint', {highlight: 'NonText'})
-endif
-
-def Leader(): string
+export def Leader(): string
 	return get(g:, 'mapleader', '\')
 enddef
 
@@ -176,7 +158,7 @@ def WaitKey(ms: number): string
 	return ''
 enddef
 
-def Whisper()
+export def Whisper()
 	var cnt = v:count > 0 ? string(v:count) : ''
 	var flux = Leader()
 	var winid = 0
@@ -241,11 +223,3 @@ def Whisper()
 		feedkeys(cnt .. replay, 'm')
 	endif
 enddef
-
-def Install()
-	if empty(maparg(Leader(), 'n'))
-		execute printf('nnoremap <silent> %s <scriptcmd>Whisper()<cr>', keytrans(Leader()))
-	endif
-enddef
-
-autocmd VimEnter * ++once Install()
