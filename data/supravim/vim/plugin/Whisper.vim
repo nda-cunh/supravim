@@ -152,6 +152,7 @@ def WaitKey(ms: number): string
 enddef
 
 def Whisper()
+	var cnt = v:count > 0 ? string(v:count) : ''
 	var flux = Leader()
 	var winid = 0
 	var replay = ''
@@ -193,7 +194,7 @@ def Whisper()
 			var deeper = Mappings(flux)
 			if empty(deeper)
 				if empty(maparg(flux, 'n'))
-					feedkeys(flux, 'n')
+					feedkeys(cnt .. flux, 'n')
 				else
 					replay = flux
 				endif
@@ -212,7 +213,7 @@ def Whisper()
 		endif
 	endtry
 	if !empty(replay)
-		feedkeys(replay, 'm')
+		feedkeys(cnt .. replay, 'm')
 	endif
 enddef
 
