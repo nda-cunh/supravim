@@ -10,7 +10,9 @@
 		{ "id": "collectionneur",     "cat": "onboarding",  "icon": "🧩", "title": "Collectionneur",         "desc": "Installer son premier plugin depuis le store",             "metric": "plugin_install",    "target": 1 },
 
 		{ "id": "premier_sang",       "cat": "motions",     "icon": "🩸", "title": "Premier sang",           "desc": "Premier **dd**",                                           "metric": "dd",                "target": 1 },
+		{ "id": "genocide",           "cat": "motions",     "icon": "💀", "title": "Génocide",               "desc": "1000 **dd**",                                                 "metric": "dd",                "target": 1000, "hidden": true },
 		{ "id": "chirurgien",         "cat": "motions",     "icon": "🔪", "title": "Chirurgien",             "desc": "Premier **ciw**",                                          "metric": "ciw",               "target": 1 },
+		{ "id": "chirurgien_expert",   "cat": "motions",     "icon": "🩺", "title": "Chirurgien expert",      "desc": "100 **ciw**",                                                 "metric": "ciw",               "target": 100, "hidden": true },
 		{ "id": "sniper",             "cat": "motions",     "icon": "🎯", "title": "Sniper",                 "desc": "Premier **f** + caractère",                                "metric": "fchar",             "target": 1 },
 		{ "id": "point_sacre",        "cat": "motions",     "icon": "🔁", "title": "Le Point Sacré",         "desc": "Utiliser **.** (repeat) 50 fois",                          "metric": "dot",               "target": 50 },
 		{ "id": "marionnettiste",     "cat": "motions",     "icon": "🎭", "title": "Marionnettiste",         "desc": "Enregistrer et jouer sa première macro",                   "metric": "macro_play",        "target": 1 },
@@ -18,8 +20,8 @@
 		{ "id": "sevrage_reussi",     "cat": "motions",     "icon": "🚭", "title": "Sevrage réussi",         "desc": "Une session complète sans Ctrl+C/Ctrl+V",                  "special": "event" },
 		{ "id": "polyglotte_modal",   "cat": "motions",     "icon": "🧱", "title": "Polyglotte modal",       "desc": "Utiliser le mode visual block (**Ctrl+v**) pour la première fois", "metric": "vblock",     "target": 1 },
 		{ "id": "teleporteur",        "cat": "motions",     "icon": "📍", "title": "Téléporteur",            "desc": "Utiliser une marque (**ma** puis **`a**)",                 "metric": "mark_jump",         "target": 1 },
-		{ "id": "ascension",          "cat": "motions",     "icon": "⛰️", "title": "Ascension",              "desc": "Ratio insert/normal passé sous les 50%",                   "special": "ratio", "ratio": 50 },
-		{ "id": "illumination",       "cat": "motions",     "icon": "🧘", "title": "Illumination",           "desc": "Ratio insert/normal sous les 30%",                         "special": "ratio", "ratio": 30 },
+		{ "id": "ascension",          "cat": "motions",     "icon": "⛰️", "title": "Ascension",              "desc": "Ratio insert/normal passé sous les 50% (après 2 000 mots)", "special": "ratio", "ratio": 50, "min_words": 2000 },
+		{ "id": "illumination",       "cat": "motions",     "icon": "🧘", "title": "Illumination",           "desc": "Ratio insert/normal sous les 30% (après 10 000 mots)",     "special": "ratio", "ratio": 30, "min_words": 10000 },
 
 		{ "id": "ecrivain",           "cat": "volume",      "icon": "📝", "title": "Écrivain du dimanche",   "desc": "1 000 mots en une journée",                                "metric": "words",  "daily": true, "target": 1000 },
 		{ "id": "romancier",          "cat": "volume",      "icon": "📖", "title": "Romancier",              "desc": "5 000 mots en une journée",                                "metric": "words",  "daily": true, "target": 5000 },
@@ -46,6 +48,8 @@
 		{ "id": "konami",             "cat": "humour",      "icon": "🎮", "title": "Konami",                 "desc": "↑↑↓↓←→←→BA dans supravim-gui",                              "metric": "konami",            "target": 1, "hidden": true },
 
 		{ "id": "pause_syndicale",    "cat": "ecosystem",   "icon": "👾", "title": "Pause syndicale",        "desc": "Lancer SupraPacman pour la première fois",                 "metric": "pacman",            "target": 1 },
+		{ "id": "supra_pause", 		"cat": "ecosystem",   "icon": "🕹️", "title": "Supra Pause",            "desc": "Lancer SupraPacman 100 fois",
+			"metric": "pacman",            "target": 100, "hidden": true },
 		{ "id": "game_over_productif","cat": "ecosystem",   "icon": "🎮", "title": "Game over productif",    "desc": "1h cumulée dans les jeux intégrés",                        "metric": "game_seconds",      "target": 3600 },
 		{ "id": "serpentard",         "cat": "ecosystem",   "icon": "🐍", "title": "Serpentard",           "desc": "Battre un score de 20 à SupraSnake",                       "metric": "snake_score", "mode": "max", "target": 20 },
 		{ "id": "serpent_or",         "cat": "ecosystem",   "icon": "🐍", "title": "Serpent d'or",           "desc": "Battre un score de 50 à SupraSnake",                       "metric": "snake_score", "mode": "max", "target": 50 },
@@ -64,8 +68,9 @@
 
 		{ "id": "cent_mille_mots",    "cat": "prestige",    "icon": "🏆", "title": "100 000 mots",           "desc": "All-time",                                                 "metric": "words",             "target": 100000 },
 		{ "id": "le_million",         "cat": "prestige",    "icon": "💎", "title": "Le Million",             "desc": "1 000 000 de caractères écrits all-time",                  "metric": "chars",             "target": 1000000 },
+		{ "id": "expert",              "cat": "prestige",    "icon": "🎓", "title": "Expert",                 "desc": "10 000 000 de caractères écrits all-time",                 "metric": "chars",             "target": 10000000 },
+		{ "id": "maitre",              "cat": "prestige",    "icon": "🏅", "title": "Maître",                 "desc": "100 000 000 de caractères écrits all-time",                "metric": "chars",             "target": 100000000 },
 		{ "id": "le_milliard",        "cat": "prestige",    "icon": "💰", "title": "Le Milliard",            "desc": "1 000 000 000 de caractères écrits all-time",               "metric": "chars",             "target": 1000000000 },
-		{ "id": "le_trillion",        "cat": "prestige",    "icon": "🤑", "title": "Le Trillion",            "desc": "1 000 000 000 000 de caractères écrits all-time",           "metric": "chars",             "target": 1000000000000 },
 		{ "id": "fidele",             "cat": "prestige",    "icon": "❤️", "title": "Fidèle",                 "desc": "Utiliser SupraVim 100 jours différents",                   "special": "distinct_days", "days": 100 },
 		{ "id": "omniglotte",         "cat": "prestige",    "icon": "🌍", "title": "Omniglotte",             "desc": "Écrire dans 10 langages différents",                       "special": "distinct_langs", "langs": 10 },
 		{ "id": "supra_legend",       "cat": "prestige",    "icon": "👑", "title": "Supra Legend",           "desc": "Débloquer tous les autres achievements",                   "special": "legend" }
