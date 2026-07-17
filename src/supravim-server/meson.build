@@ -32,6 +32,6 @@ executable('supravim-server',
   sources,
   c_args: '-w',
   vala_args: vala_args,
-  dependencies : vala_dependencies,
+  dependencies : [vala_dependencies, libsupravim_dep],
   install : true
 )

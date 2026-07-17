@@ -1,4 +1,5 @@
 lib_sources = files(
+  'Achievements.vala',
   'Globals.vala',
   'Cfg.vala',
   'Export.vala',

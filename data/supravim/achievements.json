@@ -1,4 +1,13 @@
 {
+	"categories": [
+		{ "id": "onboarding", "icon": "🐣", "label": "Débutant" },
+		{ "id": "motions",    "icon": "⚔️", "label": "Motions & voie du Vim" },
+		{ "id": "volume",     "icon": "✍️", "label": "Volume & endurance" },
+		{ "id": "humour",     "icon": "😅", "label": "Auto-dérision" },
+		{ "id": "ecosystem",  "icon": "🎮", "label": "Écosystème SupraVim" },
+		{ "id": "prestige",   "icon": "🏆", "label": "Prestige" }
+	],
+
 	"achievements": [
 		{ "id": "hello_world",        "cat": "onboarding",  "icon": "🐣", "title": "Hello World",           "desc": "Écrire ses 100 premiers caractères",                       "metric": "chars",             "target": 100 },
 		{ "id": "la_sortie_existe",   "cat": "onboarding",  "icon": "🚪", "title": "La sortie existe",       "desc": "Quitter Vim avec **:q** (la blague obligatoire)",          "metric": "quit",              "target": 1 },
