@@ -9,11 +9,13 @@ g:whisper_desc = get(g:, 'whisper_desc', {})
 g:whisper_delay = get(g:, 'whisper_delay', 300)
 g:whisper_ignore = get(g:, 'whisper_ignore', [])
 g:whisper_width = get(g:, 'whisper_width', 60)
+g:whisper_hint = get(g:, 'whisper_hint', true)
 
 if empty(prop_type_get('WhisperKey'))
 	prop_type_add('WhisperKey', {highlight: 'Special'})
 	prop_type_add('WhisperGroup', {highlight: 'Directory'})
 	prop_type_add('WhisperDesc', {highlight: 'Comment'})
+	prop_type_add('WhisperHint', {highlight: 'NonText'})
 endif
 
 def Leader(): string
@@ -121,12 +123,35 @@ def Render(entries: list<dict<any>>): list<dict<any>>
 	return lines
 enddef
 
+def HintLine(flux: string): dict<any>
+	var pairs = [['<Esc>', 'close']]
+	if flux != Leader()
+		add(pairs, ['<BS>', 'go up a level'])
+	endif
+	var text = ''
+	var props: list<dict<any>> = []
+	for pair in pairs
+		if !empty(text)
+			text ..= '   '
+		endif
+		add(props, {col: strlen(text) + 1, length: strlen(pair[0]), type: 'WhisperKey'})
+		add(props, {col: strlen(text) + strlen(pair[0]) + 2, length: strlen(pair[1]), type: 'WhisperHint'})
+		text ..= pair[0] .. ' ' .. pair[1]
+	endfor
+	return {text: text, props: props}
+enddef
+
 def ShowMenu(flux: string): number
 	var entries = Entries(flux)
 	if empty(entries)
 		return 0
 	endif
-	return popup_create(Render(entries), {
+	var lines = Render(entries)
+	if g:whisper_hint
+		add(lines, {text: '', props: []})
+		add(lines, HintLine(flux))
+	endif
+	return popup_create(lines, {
 		pos: 'center',
 		maxheight: &lines - 6,
 		padding: [0, 1, 0, 1],
