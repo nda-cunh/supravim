@@ -71,6 +71,15 @@ def Entries(flux: string): list<dict<any>>
 			desc: leaf ? Describe(m) : GroupDesc(flux .. key, key),
 		}
 	endfor
+	var self = flux == Leader() ? {} : maparg(flux, 'n', false, true)
+	if !empty(self)
+		seen["\<CR>"] = {
+			key: "\<CR>",
+			label: '⏎',
+			leaf: true,
+			desc: Describe(self),
+		}
+	endif
 	return seen->keys()->sort()->mapnew((_, k) => seen[k])
 enddef
 
@@ -163,6 +172,11 @@ def Whisper()
 				key = getcharstr()
 			endif
 			if key == "\<Esc>" || key == "\<C-c>"
+				break
+			endif
+			if key == "\<CR>" && flux != Leader() && !empty(maparg(flux, 'n'))
+					&& empty(maparg(flux .. key, 'n')) && empty(Mappings(flux .. key))
+				replay = flux
 				break
 			endif
 			if key == "\<BS>" && flux != Leader()
