@@ -509,6 +509,7 @@ set timeout
 set timeoutlen=500
 set ttimeoutlen=100
 
+g:whisper_roots = ['g']
 g:whisper_desc = {
 	'<Space>c':  'Claude',
 	'<Space>f':  'fuzzy',

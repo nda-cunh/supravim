@@ -50,7 +50,7 @@ def FirstKey(s: string): string
 	return strcharpart(s, 0, 1)
 enddef
 
-def Entries(flux: string): list<dict<any>>
+def Entries(flux: string, origin: string): list<dict<any>>
 	var seen: dict<dict<any>> = {}
 	for m in Mappings(flux)
 		var rest = strpart(m.lhsraw, strlen(flux))
@@ -66,7 +66,7 @@ def Entries(flux: string): list<dict<any>>
 			desc: leaf ? Describe(m) : GroupDesc(flux .. key, key),
 		}
 	endfor
-	var self = flux == Leader() ? {} : maparg(flux, 'n', false, true)
+	var self = flux == origin ? {} : maparg(flux, 'n', false, true)
 	if !empty(self)
 		seen["\<CR>"] = {
 			key: "\<CR>",
@@ -116,9 +116,9 @@ def Render(entries: list<dict<any>>): list<dict<any>>
 	return lines
 enddef
 
-def HintLine(flux: string): dict<any>
+def HintLine(flux: string, origin: string): dict<any>
 	var pairs = [['<Esc>', 'close']]
-	if flux != Leader()
+	if flux != origin
 		add(pairs, ['<BS>', 'go up a level'])
 	endif
 	var text = ''
@@ -134,15 +134,15 @@ def HintLine(flux: string): dict<any>
 	return {text: text, props: props}
 enddef
 
-def ShowMenu(flux: string): number
-	var entries = Entries(flux)
+def ShowMenu(flux: string, origin: string): number
+	var entries = Entries(flux, origin)
 	if empty(entries)
 		return 0
 	endif
 	var lines = Render(entries)
 	if g:whisper_hint
 		add(lines, {text: '', props: []})
-		add(lines, HintLine(flux))
+		add(lines, HintLine(flux, origin))
 	endif
 	return popup_create(lines, {
 		pos: 'center',
@@ -169,9 +169,10 @@ def WaitKey(ms: number): string
 	return ''
 enddef
 
-export def Whisper()
+export def Whisper(root: string = '')
 	var cnt = v:count > 0 ? string(v:count) : ''
-	var flux = Leader()
+	var origin = empty(root) ? Leader() : root
+	var flux = origin
 	var winid = 0
 	var replay = ''
 	try
@@ -182,8 +183,9 @@ export def Whisper()
 			endif
 			if empty(key)
 				if winid == 0
-					winid = ShowMenu(flux)
+					winid = ShowMenu(flux, origin)
 					if winid == 0
+						feedkeys(cnt .. flux, 'n')
 						break
 					endif
 					redraw
@@ -193,18 +195,18 @@ export def Whisper()
 			if key == "\<Esc>" || key == "\<C-c>"
 				break
 			endif
-			if key == "\<CR>" && flux != Leader() && !empty(maparg(flux, 'n'))
+			if key == "\<CR>" && flux != origin && !empty(maparg(flux, 'n'))
 					&& empty(maparg(flux .. key, 'n')) && empty(Mappings(flux .. key))
 				replay = flux
 				break
 			endif
-			if key == "\<BS>" && flux != Leader()
+			if key == "\<BS>" && flux != origin
 					&& empty(maparg(flux .. key, 'n')) && empty(Mappings(flux .. key))
 				flux = flux[: -2]
 				if winid != 0
 					popup_close(winid)
 				endif
-				winid = ShowMenu(flux)
+				winid = ShowMenu(flux, origin)
 				redraw
 				continue
 			endif
@@ -220,7 +222,7 @@ export def Whisper()
 			endif
 			if winid != 0
 				popup_close(winid)
-				winid = ShowMenu(flux)
+				winid = ShowMenu(flux, origin)
 				redraw
 			endif
 		endwhile
