@@ -18,7 +18,7 @@ public class Achievements {
 	private string current_lang = "";
 
 	public Achievements (string project = "") {
-		project_name = basename_of (project);
+		project_name = is_transient_dir (project) ? "" : basename_of (project);
 		session_start = now ();
 		state.roll_day ();
 		drain_inbox ();
@@ -120,6 +120,23 @@ public class Achievements {
 		if (p.has_suffix (Path.DIR_SEPARATOR_S) && p.length > 1)
 			p = p.substring (0, p.length - 1);
 		return Path.get_basename (p);
+	}
+
+	private static string strip_slash (string path) {
+		string p = path;
+		if (p.has_suffix (Path.DIR_SEPARATOR_S) && p.length > 1)
+			p = p.substring (0, p.length - 1);
+		return p;
+	}
+
+	private static bool is_transient_dir (string path) {
+		if (path == "" || path == ".")
+			return false;
+		string p = strip_slash (path);
+		if (p == strip_slash (Environment.get_home_dir ()))
+			return true;
+		string tmp = strip_slash (Environment.get_tmp_dir ());
+		return p == tmp || p.has_prefix (tmp + Path.DIR_SEPARATOR_S);
 	}
 
 	private void drain_inbox () {
