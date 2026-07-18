@@ -3,7 +3,7 @@
 #########################
 
 project('supravim', ['c', 'vala'], version : '6.74',
-  meson_version : '>=1.1',
+  meson_version : '>=1.11.0',
   default_options : [
     'warning_level=0',
     'buildtype=release',
