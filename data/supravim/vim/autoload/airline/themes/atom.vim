@@ -1,41 +1,41 @@
 vim9script
 
-# Palette Atom
+# thème airline pour le colorscheme atom
 
-final base = '#1a1b26'
-final surface = '#2a2e3e'
-final overlay = '#1d2f3f'
-final muted = '#6b7089'
-final subtle = '#4f5666'
-final text = '#d9e2e9'
-final red = '#e27878'
-final green = '#98f379'
-final gold = '#c67832'
-final rose = '#c678dd'
-
-final warning = gold
-final error = '#df444e'
-final background = base 
-final foreground = text 
-final background_alt = overlay 
-final background_grey = surface 
+# --- Palette ---
+final bg0     = '#1b1e26'
+final panel_b = '#2c2f36'
+final panel_c = '#1b1e26'
+final fg      = '#c8d0dd'
+final grey    = '#565d6b'
+final blue    = '#6aa9f0'
+final green   = '#8fd08a'
+final yellow  = '#e0c986'
+final orange  = '#e0a066'
+final red     = '#e5717b'
+final cyan    = '#5fc9d6'
+final purple  = '#b48ef0'
+final magenta = '#b48ef0'
+final accent_fg = '#1b1e26'
+final warning = '#e0c986'
+final error   = '#e5717b'
 
 # --- Airline ---
 g:airline#themes#atom#palette = {}
 
-final airline_info = [foreground, background_grey, 1, 2]
-final airline_statusline = [foreground, background_alt, 1, 2]
+final airline_info       = [fg, panel_b, 1, 2]
+final airline_statusline = [fg, panel_c, 1, 2]
 
-def Rosepine_moon_color(bg: string, txt: string): any
-	var av1 = airline#themes#generate_color_map([txt, bg, 1, 2], airline_info, airline_statusline)
-	return extend(av1, {airline_warning: [surface, warning, 1, 2], airline_error: [surface, error, 1, 2]})
+def Atom_color(accent: string): any
+	var m = airline#themes#generate_color_map([accent_fg, accent, 1, 2], airline_info, airline_statusline)
+	return extend(m, {airline_warning: [bg0, warning, 1, 2], airline_error: [bg0, error, 1, 2]})
 enddef
 
 g:airline#themes#atom#palette = {
-	normal: Rosepine_moon_color(green, surface),
-	insert: Rosepine_moon_color(gold, surface),
-	replace: Rosepine_moon_color(rose, surface),
-	inactive: Rosepine_moon_color(green, surface),
-	visual: Rosepine_moon_color(green, surface),
-	terminal: Rosepine_moon_color(gold, surface),
+	normal:   Atom_color(blue),
+	insert:   Atom_color(green),
+	replace:  Atom_color(red),
+	visual:   Atom_color(yellow),
+	terminal: Atom_color(purple),
+	inactive: Atom_color(grey),
 }

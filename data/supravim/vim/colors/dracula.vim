@@ -3,11 +3,9 @@ vim9script
 
 scriptencoding utf8
 
-if v:version > 580
-	highlight clear
-	if exists('syntax_on')
-		syntax reset
-	endif
+highlight clear
+if exists('syntax_on')
+	syntax reset
 endif
 
 g:colors_name = 'dracula'
@@ -43,17 +41,17 @@ set background=dark
 hi Cursor guibg=#FFB86C
 hi Normal guibg=#282A36 guifg=#F8F8F2
 hi Variable guifg=#F8F8F2
-hi Comment guifg=#6272A4 gui=italic
+hi Comment guifg=#6272A4 gui=NONE
 hi Constant guifg=#FF79C6
 hi Special guifg=#FF79C6
 hi Identifier guifg=#FFB86C
 hi Statement guifg=#FF79C6
 hi PreProc guifg=#FFB86C
 hi Type guifg=#8BE9FD
-hi Underlined guifg=#50FA7B gui=underline
+hi Underlined guifg=#50FA7B gui=NONE
 hi Ignore guifg=#44475A
-hi Error guifg=#FF5555 guibg=#282A36 gui=bold
-hi Todo guifg=#F1FA8C guibg=#44475A gui=bold
+hi Error guifg=#FF5555 guibg=#282A36 gui=NONE
+hi Todo guifg=#F1FA8C guibg=#44475A gui=NONE
 hi String guifg=#F1FA8C
 hi Character guifg=#F1FA8C
 hi Number guifg=#BD93F9
@@ -77,14 +75,14 @@ hi Typedef guifg=#8BE9FD
 hi Tag guifg=#8BE9FD
 hi SpecialChar guifg=#F1FA8C
 hi Delimiter guifg=#F8F8F2
-hi SpecialComment guifg=#6272A4 gui=italic
+hi SpecialComment guifg=#6272A4 gui=NONE
 hi Debug guifg=#FF5555
 
 
-hi CursorLine guibg=#44475A gui=none cterm=none
-hi ColorColumn guibg=#44475A gui=none cterm=none
-hi CursorColumn guibg=#44475A gui=none cterm=none
-hi CursorLineNr guifg=#F8F8F2 guibg=#44475A gui=bold cterm=bold
+hi CursorLine guibg=#44475A gui=NONE cterm=NONE
+hi ColorColumn guibg=#44475A gui=NONE cterm=NONE
+hi CursorColumn guibg=#44475A gui=NONE cterm=NONE
+hi CursorLineNr guifg=#F8F8F2 guibg=#44475A gui=NONE cterm=NONE
 hi DiffAdd guibg=#50FA7B guifg=#282A36
 hi DiffAdded guibg=#50FA7B guifg=#282A36
 hi DiffChange guibg=#BD93F9 guifg=#282A36
@@ -92,29 +90,29 @@ hi DiffDelete guibg=#FF5555 guifg=#282A36
 hi DiffRemoved guibg=#FF5555 guifg=#282A36
 hi DiffText guibg=#FFB86C guifg=#282A36
 hi Directory guifg=#FF79C6
-hi ErrorMsg guifg=#FF5555 guibg=#282A36 gui=bold
+hi ErrorMsg guifg=#FF5555 guibg=#282A36 gui=NONE
 hi FoldColumn guifg=#F8F8F2 guibg=#282A36
-hi Folded guifg=#6272A4 guibg=#282A36 gui=italic
+hi Folded guifg=#6272A4 guibg=#282A36 gui=NONE
 hi IncSearch guibg=#FFB86C guifg=#282A36
 hi LineNr guifg=#6272A4 guibg=#282A36
-hi MoreMsg guifg=#50FA7B guibg=#282A36 gui=bold
+hi MoreMsg guifg=#50FA7B guibg=#282A36 gui=NONE
 hi NonText guifg=#44475A
 hi Pmenu guifg=#F8F8F2 guibg=#282A36
 hi PmenuSbar guibg=#44475A
 hi PmenuSel guibg=#44475A guifg=#F8F8F2
 hi PmenuThumb guibg=#6272A4
-hi PmenuMatch guifg=#FFB86C gui=bold
-hi PmenuMatchSel guifg=#FFB86C guibg=#44475A gui=bold
+hi PmenuMatch guifg=#FFB86C gui=NONE
+hi PmenuMatchSel guifg=#FFB86C guibg=#44475A gui=NONE
 hi PmenuKind guifg=#8BE9FD
-hi Question guifg=#FFB86C guibg=#282A36 gui=bold
+hi Question guifg=#FFB86C guibg=#282A36 gui=NONE
 hi Search guibg=#FFB86C guifg=#282A36
 hi SignColumn guibg=#282A36 guifg=#FF79C6
 hi TabLine  guibg=#44475A guifg=#F8F8F2
 hi TabLineFill guibg=#282A36 guifg=#44475A
-hi TabLineSel guibg=#50FA7B guifg=#282A36 gui=bold
-hi Title guifg=#FF79C6 gui=bold
-hi VertSplit guifg=#44475A cterm=none
-hi Visual guibg=#44475A gui=none cterm=none guifg=NONE
-hi VisualNOS guibg=#44475A gui=none cterm=none guifg=NONE
+hi TabLineSel guibg=#50FA7B guifg=#282A36 gui=NONE
+hi Title guifg=#FF79C6 gui=NONE
+hi VertSplit guifg=#44475A cterm=NONE
+hi Visual guibg=#44475A gui=NONE cterm=NONE guifg=NONE
+hi VisualNOS guibg=#44475A gui=NONE cterm=NONE guifg=NONE
 hi Terminal guibg=#282A36 guifg=#F8F8F2
-hi WarningMsg guifg=#FF5555 guibg=#282A36 gui=bold
+hi WarningMsg guifg=#FF5555 guibg=#282A36 gui=NONE

@@ -1,88 +1,41 @@
-let s:save_cpo = &cpo
-set cpo&vim
+vim9script
 
+# thème airline pour le colorscheme iceberg
 
-function! s:build_palette() abort
-  if &background == 'light'
-    let col_base     = ['#8b98b6', '#cad0de', 244, 251]
-    let col_edge     = ['#e8e9ec', '#757ca3', 252, 243]
-    let col_error    = ['#e8e9ec', '#cc517a', 254, 125]
-    let col_gradient = ['#e8e9ec', '#9fa6c0', 252, 247]
-    let col_nc       = ['#8b98b6', '#cad0de', 244, 251]
-    let col_warning  = ['#e8e9ec', '#c57339', 254, 130]
-    let col_insert   = ['#e8e9ec', '#2d539e', 254, 25]
-    let col_replace  = ['#e8e9ec', '#c57339', 254, 130]
-    let col_visual   = ['#e8e9ec', '#668e3d', 254, 64]
-    let col_red      = ['#cc517a', '#e8e9ec', 125, 254]
-  else
-    let col_base     = ['#3e445e', '#0f1117', 238, 233]
-    let col_edge     = ['#17171b', '#818596', 234, 245]
-    let col_error    = ['#161821', '#e27878', 234, 203]
-    let col_gradient = ['#6b7089', '#2e313f', 242, 236]
-    let col_nc       = ['#3e445e', '#0f1117', 238, 233]
-    let col_warning  = ['#161821', '#e2a478', 234, 216]
-    let col_insert   = ['#161821', '#84a0c6', 234, 110]
-    let col_replace  = ['#161821', '#e2a478', 234, 216]
-    let col_visual   = ['#161821', '#b4be82', 234, 150]
-    let col_red      = ['#e27878', '#161821', 203, 234]
-  endif
+# --- Palette ---
+final bg0     = '#161821'
+final panel_b = '#3d425b'
+final panel_c = '#14171f'
+final fg      = '#c6c8d1'
+final grey    = '#6b7089'
+final blue    = '#80d6e8'
+final green   = '#b4be82'
+final yellow  = '#e2a478'
+final orange  = '#eac6ad'
+final red     = '#e27878'
+final cyan    = '#89b8c2'
+final purple  = '#7759b4'
+final magenta = '#cc517a'
+final accent_fg = '#161821'
+final warning = '#e2a478'
+final error   = '#e27878'
 
-  let p = {}
-  let p.inactive = airline#themes#generate_color_map(
-        \ col_nc,
-        \ col_nc,
-        \ col_nc)
-  let p.normal = airline#themes#generate_color_map(
-        \ col_edge,
-        \ col_gradient,
-        \ col_base)
-  let p.insert = airline#themes#generate_color_map(
-        \ col_insert,
-        \ col_gradient,
-        \ col_base)
-  let p.replace = airline#themes#generate_color_map(
-        \ col_replace,
-        \ col_gradient,
-        \ col_base)
-  let p.visual = airline#themes#generate_color_map(
-        \ col_visual,
-        \ col_gradient,
-        \ col_base)
-  let p.terminal = airline#themes#generate_color_map(
-        \ col_insert,
-        \ col_gradient,
-        \ col_base)
+# --- Airline ---
+g:airline#themes#iceberg#palette = {}
 
-  " Accents
-  let p.accents = {
-        \   'red': col_red,
-        \ }
+final airline_info       = [fg, panel_b, 1, 2]
+final airline_statusline = [fg, panel_c, 1, 2]
 
-  " Error
-  let p.inactive.airline_error = col_error
-  let p.insert.airline_error = col_error
-  let p.normal.airline_error = col_error
-  let p.replace.airline_error = col_error
-  let p.visual.airline_error = col_error
+def Iceberg_color(accent: string): any
+	var m = airline#themes#generate_color_map([accent_fg, accent, 1, 2], airline_info, airline_statusline)
+	return extend(m, {airline_warning: [bg0, warning, 1, 2], airline_error: [bg0, error, 1, 2]})
+enddef
 
-  " Warning
-  let p.inactive.airline_warning = col_warning
-  let p.insert.airline_warning = col_warning
-  let p.normal.airline_warning = col_warning
-  let p.replace.airline_warning = col_warning
-  let p.visual.airline_warning = col_warning
-
-  " Terminal
-  let p.normal.airline_term = col_base
-  let p.terminal.airline_term = col_base
-  let p.visual.airline_term = col_base
-
-  return p
-endfunction
-
-
-let g:airline#themes#iceberg#palette = s:build_palette()
-
-
-let &cpo = s:save_cpo
-unlet s:save_cpo
+g:airline#themes#iceberg#palette = {
+	normal:   Iceberg_color(blue),
+	insert:   Iceberg_color(green),
+	replace:  Iceberg_color(red),
+	visual:   Iceberg_color(yellow),
+	terminal: Iceberg_color(purple),
+	inactive: Iceberg_color(grey),
+}

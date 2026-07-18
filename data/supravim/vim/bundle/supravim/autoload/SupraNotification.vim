@@ -144,7 +144,7 @@ def OpenNotification(msg: list<string>, opts: dict<any> = {}): number
 			pos: 'topright',
 			time: 90000,
 			tabpage: -1,
-			zindex: 300,
+			zindex: 700,
 			drag: 1,
 			wrap: 0,
 			border: [1],

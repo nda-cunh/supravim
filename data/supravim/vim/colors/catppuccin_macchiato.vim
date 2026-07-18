@@ -42,7 +42,7 @@ const mantle = "#1E2030"
 const crust = "#181926"
 
 hi Normal guisp=NONE guifg=#CAD3F5 guibg=#24273A gui=NONE cterm=NONE
-hi Visual guisp=NONE guifg=NONE guibg=#494D64 gui=bold cterm=bold
+hi Visual guisp=NONE guifg=NONE guibg=#494D64 gui=NONE cterm=NONE
 hi Conceal guisp=NONE guifg=#8087A2 guibg=NONE gui=NONE cterm=NONE
 hi ColorColumn guisp=NONE guifg=NONE guibg=#363A4F gui=NONE cterm=NONE
 hi Cursor guisp=NONE guifg=#24273A guibg=#F4DBD6 gui=NONE cterm=NONE
@@ -56,7 +56,7 @@ hi DiffChange guisp=NONE guifg=#24273A guibg=#EED49F gui=NONE cterm=NONE
 hi DiffDelete guisp=NONE guifg=#24273A guibg=#ED8796 gui=NONE cterm=NONE
 hi DiffText guisp=NONE guifg=#24273A guibg=#8AADF4 gui=NONE cterm=NONE
 hi EndOfBuffer guisp=NONE guifg=NONE guibg=NONE gui=NONE cterm=NONE
-hi ErrorMsg guisp=NONE guifg=#ED8796 guibg=NONE gui=bolditalic cterm=bold,italic
+hi ErrorMsg guisp=NONE guifg=#ED8796 guibg=NONE gui=NONE cterm=NONE
 hi VertSplit guisp=NONE guifg=#181926 guibg=NONE gui=NONE cterm=NONE
 hi Folded guisp=NONE guifg=#8AADF4 guibg=#494D64 gui=NONE cterm=NONE
 hi FoldColumn guisp=NONE guifg=#6E738D guibg=#24273A gui=NONE cterm=NONE
@@ -64,17 +64,17 @@ hi SignColumn guisp=NONE guifg=#494D64 guibg=#24273A gui=NONE cterm=NONE
 hi IncSearch guisp=NONE guifg=#494D64 guibg=#F5BDE6 gui=NONE cterm=NONE
 hi CursorLineNR guisp=NONE guifg=#B7BDF8 guibg=NONE gui=NONE cterm=NONE
 hi LineNr guisp=NONE guifg=#494D64 guibg=NONE gui=NONE cterm=NONE
-hi MatchParen guisp=NONE guifg=#F5A97F guibg=NONE gui=bold cterm=bold
-hi ModeMsg guisp=NONE guifg=#CAD3F5 guibg=NONE gui=bold cterm=bold
+hi MatchParen guisp=NONE guifg=#F5A97F guibg=NONE gui=NONE cterm=NONE
+hi ModeMsg guisp=NONE guifg=#CAD3F5 guibg=NONE gui=NONE cterm=NONE
 hi MoreMsg guisp=NONE guifg=#8AADF4 guibg=NONE gui=NONE cterm=NONE
 hi NonText guisp=NONE guifg=#6E738D guibg=NONE gui=NONE cterm=NONE
 hi Pmenu guisp=NONE guifg=#939AB7 guibg=#363A4F gui=NONE cterm=NONE
-hi PmenuSel guisp=NONE guifg=#CAD3F5 guibg=#494D64 gui=bold cterm=bold
+hi PmenuSel guisp=NONE guifg=#CAD3F5 guibg=#494D64 gui=NONE cterm=NONE
 hi PmenuSbar guisp=NONE guifg=NONE guibg=#494D64 gui=NONE cterm=NONE
 hi PmenuThumb guisp=NONE guifg=NONE guibg=#6E738D gui=NONE cterm=NONE
 hi Question guisp=NONE guifg=#8AADF4 guibg=NONE gui=NONE cterm=NONE
-hi QuickFixLine guisp=NONE guifg=NONE guibg=#494D64 gui=bold cterm=bold
-hi Search guisp=NONE guifg=#F5BDE6 guibg=#494D64 gui=bold cterm=bold
+hi QuickFixLine guisp=NONE guifg=NONE guibg=#494D64 gui=NONE cterm=NONE
+hi Search guisp=NONE guifg=#F5BDE6 guibg=#494D64 gui=NONE cterm=NONE
 hi SpecialKey guisp=NONE guifg=#A5ADCB guibg=NONE gui=NONE cterm=NONE
 hi SpellBad guisp=NONE guifg=#24273A guibg=#ED8796 gui=NONE cterm=NONE
 hi SpellCap guisp=NONE guifg=#24273A guibg=#EED49F gui=NONE cterm=NONE
@@ -87,8 +87,8 @@ hi StatusLineTermNC guisp=NONE guifg=#494D64 guibg=#1E2030 gui=NONE cterm=NONE
 hi TabLine guisp=NONE guifg=#494D64 guibg=#1E2030 gui=NONE cterm=NONE
 hi TabLineFill guisp=NONE guifg=NONE guibg=#1E2030 gui=NONE cterm=NONE
 hi TabLineSel guisp=NONE guifg=#A6DA95 guibg=#494D64 gui=NONE cterm=NONE
-hi Title guisp=NONE guifg=#8AADF4 guibg=NONE gui=bold cterm=bold
-hi VisualNOS guisp=NONE guifg=NONE guibg=#494D64 gui=bold cterm=bold
+hi Title guisp=NONE guifg=#8AADF4 guibg=NONE gui=NONE cterm=NONE
+hi VisualNOS guisp=NONE guifg=NONE guibg=#494D64 gui=NONE cterm=NONE
 hi WarningMsg guisp=NONE guifg=#EED49F guibg=NONE gui=NONE cterm=NONE
 hi WildMenu guisp=NONE guifg=NONE guibg=#6E738D gui=NONE cterm=NONE
 hi Comment guisp=NONE guifg=#6E738D guibg=NONE gui=NONE cterm=NONE
@@ -98,9 +98,9 @@ hi Statement guisp=NONE guifg=#C6A0F6 guibg=NONE gui=NONE cterm=NONE
 hi PreProc guisp=NONE guifg=#F5BDE6 guibg=NONE gui=NONE cterm=NONE
 hi Type guisp=NONE guifg=#8AADF4 guibg=NONE gui=NONE cterm=NONE
 hi Special guisp=NONE guifg=#F5BDE6 guibg=NONE gui=NONE cterm=NONE
-hi Underlined guisp=NONE guifg=#CAD3F5 guibg=#24273A gui=underline cterm=underline
+hi Underlined guisp=NONE guifg=#CAD3F5 guibg=#24273A gui=NONE cterm=NONE
 hi Error guisp=NONE guifg=#ED8796 guibg=NONE gui=NONE cterm=NONE
-hi Todo guisp=NONE guifg=#24273A guibg=#F0C6C6 gui=bold cterm=bold
+hi Todo guisp=NONE guifg=#24273A guibg=#F0C6C6 gui=NONE cterm=NONE
 hi String guisp=NONE guifg=#A6DA95 guibg=NONE gui=NONE cterm=NONE
 hi Character guisp=NONE guifg=#8BD5CA guibg=NONE gui=NONE cterm=NONE
 hi Number guisp=NONE guifg=#F5A97F guibg=NONE gui=NONE cterm=NONE
@@ -118,7 +118,7 @@ hi Structure guisp=NONE guifg=#EED49F guibg=NONE gui=NONE cterm=NONE
 hi Typedef guisp=NONE guifg=#EED49F guibg=NONE gui=NONE cterm=NONE
 hi debugPC guisp=NONE guifg=NONE guibg=#181926 gui=NONE cterm=NONE
 hi debugBreakpoint guisp=NONE guifg=#6E738D guibg=#24273A gui=NONE cterm=NONE
-hi PmenuMatch guisp=NONE guifg=#EED49F guibg=NONE gui=bold cterm=bold
+hi PmenuMatch guisp=NONE guifg=#EED49F guibg=NONE gui=NONE cterm=NONE
 hi PmenuKind guisp=NONE guifg=#8AADF4 guibg=NONE gui=NONE cterm=NONE
 
 
