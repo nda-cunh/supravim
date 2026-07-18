@@ -49,6 +49,12 @@ def OnTextChanged()
 	var c = get(wc, 'chars', 0)
 	var w = get(wc, 'words', 0)
 	var l = line('$')
+	if c - b:sa_chars > 80
+		b:sa_chars = c
+		b:sa_words = w
+		b:sa_lines = l
+		return
+	endif
 	if c - b:sa_chars > 0
 		SendMetric('chars', c - b:sa_chars)
 	endif
