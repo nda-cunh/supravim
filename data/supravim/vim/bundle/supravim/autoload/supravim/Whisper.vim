@@ -39,12 +39,23 @@ def GroupDesc(seq: string, key: string): string
 	return '+' .. get(g:whisper_desc, keytrans(seq), keytrans(key))
 enddef
 
+def FirstKey(s: string): string
+	var head = matchstr(keytrans(s), '^\%(<[^<>]\+>\|.\)')
+	for i in range(1, strlen(s))
+		var cand = strpart(s, 0, i)
+		if keytrans(cand) == head
+			return cand
+		endif
+	endfor
+	return strcharpart(s, 0, 1)
+enddef
+
 def Entries(flux: string): list<dict<any>>
 	var seen: dict<dict<any>> = {}
 	for m in Mappings(flux)
 		var rest = strpart(m.lhsraw, strlen(flux))
-		var key = strcharpart(rest, 0, 1)
-		var leaf = strcharlen(rest) == 1
+		var key = FirstKey(rest)
+		var leaf = strlen(rest) == strlen(key)
 		if seen->has_key(key) && !leaf
 			continue
 		endif
