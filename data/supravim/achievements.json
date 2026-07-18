@@ -61,7 +61,7 @@
 		{ "id": "je_te_connais",      "cat": "ecosystem",   "icon": "🎩", "title": "Je te connais toi",      "desc": "Installer un plugin de **tpope** (rite de passage)",        "metric": "tpope_install",     "target": 1 },
 		{ "id": "tour_babel",         "cat": "ecosystem",   "icon": "🗼", "title": "Tour de Babel",          "desc": "5 LSP actifs dans la même session",                        "special": "session_lsp_count", "count": 5 },
 		{ "id": "pacman_master",      "cat": "ecosystem",   "icon": "🕹️", "title": "Pac-Master",             "desc": "Finir un niveau complet de SupraPacman",                   "special": "event" },
-		{ "id": "pacman_strawberry",  "cat": "ecosystem",   "icon": "🍓", "title": "Fruit défendu",          "desc": "Manger la **fraise**",                                     "special": "event" },
+		{ "id": "pacman_apple",  "cat": "ecosystem",   "icon": "🍎", "title": "Fruit défendu",          "desc": "Manger la **pomme**",                                     "special": "event" },
 		{ "id": "pacman_pacifist",    "cat": "ecosystem",   "icon": "🕊️", "title": "Pac-ifiste",             "desc": "Finir un niveau sans manger un seul fantôme",              "special": "event" },
 		{ "id": "pacman_glutton",     "cat": "ecosystem",   "icon": "😈", "title": "Glouton",                "desc": "Manger les 4 fantômes sur une seule power pill",           "special": "event" },
 		{ "id": "pacman_complete",    "cat": "ecosystem",   "icon": "🏁", "title": "Pac-royable",            "desc": "Terminer complètement le jeu",                             "special": "event", "hidden": true },
