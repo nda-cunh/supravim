@@ -618,6 +618,8 @@ autocmd BufEnter * {
 g:loaded_netrw = 1
 g:loaded_netrwPlugin = 1
 
+command Version :echo "Supravim version: " .. g:supravim_version
+
 # Force directory creation on save
 autocmd BufWritePre * {
 if filereadable(expand('%')) == 0

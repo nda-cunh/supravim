@@ -1,3 +1,8 @@
+# 6.76
+- Add tranlation with i18n
+- Add stats per language and per day
+- Add :Version command to show the version
+
 # 6.73
 - Add an achievements engine: the server tracks metrics and unlocks 50+ succès, persisted in `~/.config/supravim/achievements.json`
 - Achievements are declared in `achievements.json` and pop a notification when unlocked
