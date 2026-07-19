@@ -6,7 +6,6 @@ endif
 
 b:filetype_in_cpp_family = 1
 
-# Read the C syntax to start with
 runtime! syntax/c.vim
 
 syntax keyword cppStatement	new delete this friend using
@@ -23,7 +22,6 @@ syntax keyword cppStructure	class typename template namespace
 syntax keyword cppBoolean		true false
 syntax keyword cppConstant		__cplusplus
 
-# C++ 11 extensions
 if !exists("cpp_no_cpp11")
 	syntax keyword cppModifier	override final
 	syntax keyword cppType		nullptr_t auto
@@ -41,7 +39,6 @@ if !exists("cpp_no_cpp11")
 	syntax match cppCast		"\<\(const\|static\|dynamic\)_pointer_cast\s*$"
 endif
 
-# C++ 14 extensions
 if !exists("cpp_no_cpp14")
 	syntax match cppNumbers		display transparent "\<\d\|\.\d" contains=cppNumber,cppFloat
 	syntax match cppNumber		display contained "\<0\([Uu]\=\([Ll]\|LL\|ll\)\|\([Ll]\|LL\|ll\)\=[Uu]\|i[fl]\=\|h\|min\|s\|ms\|us\|ns\|_\i*\)\=\>"
@@ -55,7 +52,6 @@ if !exists("cpp_no_cpp14")
 	syntax region cppString		start=+\(L\|u\|u8\|U\)\="+ skip=+\\\\\|\\"\|\\$+ excludenl end=+"\(sv\|s\|_\i*\)\=+ end='$' contains=cSpecial,cFormat,@Spell
 endif
 
-# C++ 17 extensions
 if !exists("cpp_no_cpp17")
 	syntax match cppCast		"\<reinterpret_pointer_cast\s*<"me=e-1
 	syntax match cppCast		"\<reinterpret_pointer_cast\s*$"
@@ -77,7 +73,6 @@ if !exists("cpp_no_cpp17")
 
 endif
 
-# C++ 20 extensions
 if !exists("cpp_no_cpp20")
 	syntax match cppNumber		display contained "\<0\(y\|d\)\>"
 	syntax match cppNumber		display contained "\<[1-9]\('\=\d\+\)*\(y\|d\)\>"
@@ -91,15 +86,12 @@ if !exists("cpp_no_cpp20")
 	syntax keyword cppModule		import module export
 endif
 
-# The minimum and maximum operators in GNU C++
 syntax match cppMinMax "[<>]?"
 
-# Supravim
 syntax match cppFunction "\<\h\w*\>\s*<[^>]*>\ze\s*(" contains=cppTemplateType
 syntax match cppTemplateType "\h\w*\zs<[^>]*>"
 syntax match cppScope "\<\h\w*\ze::" display
 
-# Default highlighting
 hi def link cppAccess		cppStatement
 hi def link cppCast		cppStatement
 hi def link cppExceptions		Exception
@@ -120,7 +112,6 @@ hi def link cppString		String
 hi def link cppNumber		Number
 hi def link cppFloat		Number
 hi def link cppModule		Include
-# Supravim
 hi link cppScope 		Identifier
 hi link cppFunction Function
 hi link cppTemplateType Type

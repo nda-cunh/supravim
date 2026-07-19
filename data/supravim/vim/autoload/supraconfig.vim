@@ -41,7 +41,7 @@ export def Register(option: dict<any>)
 			Apply(option.id, val_to_apply)
 		endif
 	catch
-		echom "Error applying option '" .. v:exception .. "'"
+		echom printf(gettext("Error applying option '%s'", "supravim"), v:exception)
 	endtry
 enddef
 

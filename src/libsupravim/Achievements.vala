@@ -51,6 +51,10 @@ namespace Supravim.Ach {
 			load_categories (root.obj_get ("categories"));
 		}
 
+		private static string tr (string s) {
+			return s == "" ? s : _(s);
+		}
+
 		public bool is_max_metric (string name) {
 			return name in max_metrics;
 		}
@@ -88,8 +92,8 @@ namespace Supravim.Ach {
 				d.id     = id_v.get_str ();
 				d.cat    = str_field (e, "cat");
 				d.icon   = str_field (e, "icon");
-				d.title  = str_field (e, "title");
-				d.desc   = str_field (e, "desc");
+				d.title  = tr (str_field (e, "title"));
+				d.desc   = tr (str_field (e, "desc"));
 				d.hidden = bool_field (e, "hidden");
 
 				unowned var metric_v = e.obj_get ("metric");
@@ -126,7 +130,7 @@ namespace Supravim.Ach {
 					var c = new Category ();
 					c.id    = id_v.get_str ();
 					c.icon  = str_field (e, "icon");
-					c.label = str_field (e, "label");
+					c.label = tr (str_field (e, "label"));
 					if (c.label == "")
 						c.label = c.id;
 					cats.add (c);

@@ -46,6 +46,8 @@ public class SupraVim {
 	}
 
 	public static async int main (string[] args) {
+		Intl.setlocale ();
+		Supravim.init ();
 		try {
 			var supravim = new SupraVim (args);
 			yield supravim.run ();

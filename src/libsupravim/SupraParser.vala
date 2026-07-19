@@ -22,6 +22,10 @@ namespace Supravim {
 	public class SupraParser {
 		public static HashTable<string, SupravimGroup?> group_lores;
 
+		private static string tr (string s) {
+			return s == "" ? s : _(s);
+		}
+
 		public static List<SupravimOption?> get_from_vim () throws Error {
 			string output;
 			string errput;
@@ -70,7 +74,7 @@ namespace Supravim {
 						string? k = key.get_str ();
 						unowned var v_node = YYJson.ObjIter.get_val (key);
 						if (k == null || v_node == null) continue;
-						string lore = v_node.get_str () ?? "";
+						string lore = tr (v_node.get_str () ?? "");
 						group_lores.insert (k, SupravimGroup () { id = k, lore = lore });
 					}
 				}
@@ -94,7 +98,7 @@ namespace Supravim {
 						unowned var default_v = entry.obj_get ("default");
 
 						opt.id            = (id_v      != null ? id_v.get_str ()      : null) ?? "";
-						opt.lore          = (lore_v    != null ? lore_v.get_str ()    : null) ?? "";
+						opt.lore          = tr ((lore_v    != null ? lore_v.get_str ()    : null) ?? "");
 						opt.value         = value_to_string (current_v);
 						opt.type          = (type_v    != null ? type_v.get_str ()    : null) ?? "";
 						opt.default_value = value_to_string (default_v);

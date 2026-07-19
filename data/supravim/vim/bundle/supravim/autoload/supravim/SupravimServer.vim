@@ -23,7 +23,7 @@ export def RunServer(project_root: string)
 enddef
 
 def CloseServer(ch: channel)
-	echom "Supravim-Server closed"
+	echom gettext("Supravim-Server closed", "supravim")
 	augroup SupravimServer
 		autocmd!
 	augroup END

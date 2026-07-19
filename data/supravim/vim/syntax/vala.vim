@@ -1,23 +1,4 @@
 vim9script
-# Vim syntax file
-# Language:	Vala
-# Maintainers:	Emmanuele Bassi <ebassi@gnome.org>
-# 		Hans Vercammen <hveso3@gmail.com>
-# 		pancake <pancake@nopcode.org>
-# 		Sebastian Reichel <sre@ring0.de>
-# 		Adrià Arrufat <adria.arrufat@protonmail.ch>
-# Filenames: 	*.vala *.vapi *.valadoc
-#
-# REFERENCES:
-# [1] http://live.gnome.org/Vala
-#
-# TODO: Possibly when reaching vala 1.0 release
-# 	- validate code attributes
-# 	- better error checking for known errors
-# 	- full support for valadoc
-#
-# 	add vala in /usr/share/vim/vim80/scripts.vim below ruby
-# 	to have shebang support
 
 if exists("b:current_syntax")
   finish
@@ -26,46 +7,30 @@ endif
 var vala_cpo_save = &cpo
 set cpo&vim
 
-# Types
 syn keyword valaType			bool char double float size_t ssize_t string unichar void
 syn keyword valaType 			int int8 int16 int32 int64 long short
 syn keyword valaType 			uchar uint uint8 uint16 uint32 uint64 ulong ushort
-# Storage keywords
 syn keyword valaStorage			class delegate enum errordomain interface namespace struct global
-# repeat / condition / label
 syn keyword valaRepeat			break continue do for foreach return while with
 syn keyword valaConditional		else if switch assert
-# User Labels
 syn keyword valaLabel			case default
 
-# Modifiers
 syn keyword valaModifier		abstract const dynamic ensures extern inline internal override 
 syn keyword valaModifier 		private protected public requires signal static virtual volatile weak partial
 syn keyword valaModifier 		async owned unowned
-# Constants
 syn keyword valaConstant		false null true
-# Exceptions
 syn keyword valaException		try catch finally throw
-# Unspecified Statements
 syn keyword valaUnspecifiedStatement	as base construct delete get in is lock new out params ref sizeof set this throws typeof value var yield
-# Includes
 syn match valaInclude			"^\s*\zs\<using\>\ze\s\w"
-# Arrays and Lists
 syn match   valaArray			"\(\w\(\w\)*\(\s\+\)\?<\)\+\(\(\s\+\)\?\w\(\w\)*\(?\|\*\)\?\(\,\)\?\)\+>\+"
-# Methods
 syn match   valaMethod			"\(@\)\?\w\(\w\)*\(\s\+\)\?("he=e-1,me=e-1
-# Operators
 syn match   valaOperator		display "\%(+\|-\|/\|*\|=\|\^\|&\||\|!\|>\|<\|%\|?\|::\)=\?"
-# Delimiters
 syn match   valaDelimiter		display "(\|)\|\[\|\]\|,\|;\|:\|{\|}\|\k\@<!_\k\@!\|[[:punct:]]\@<!@[[:punct:]]\@!"
-# Enum Fields
 syn match   valaEnumField		"\.\([A-Z_]\)\+\([A-Z_0-9]\)\+"hs=s+1 # ensure there are at least 2 CAPS or 1 CAP and 1 number
 
-# Comments
 syn cluster valaCommentGroup 		contains=valaTodo
 syn keyword valaTodo 			contained TODO FIXME XXX NOTE
 
-# valadoc Comments (ported from javadoc comments in java.vim)
 if !exists("vala_ignore_valadoc")
   syn cluster valaDocCommentGroup	contains=valaDocTags,valaDocSeeTag
   syn region  valaDocTags 		contained start="{@\(link\|inherit[Dd]oc\)" end="}"
@@ -76,7 +41,6 @@ if !exists("vala_ignore_valadoc")
   syn match   valaDocSeeTagParam	contained @"\_[^"]\+"\|<a\s\+\_.\{-}</a>\|\(\k\|\.\)*\(#\k\+\((\_[^)]\+)\)\=\)\=@ extend
 endif
 
-# Comment Strings (ported from c.vim)
 if exists("vala_comment_strings")
   syn match  	valaCommentSkip		contained "^\s*\*\($\|\s\+\)"
   syn region 	valaCommentString	contained start=+L\=\\\@<!"+ skip=+\\\\\|\\"+ end=+"+ end=+\*/+me=s-1 contains=valaSpecialChar,valaCommentSkip
@@ -99,30 +63,23 @@ endif
 syn region	valaPreCondit		start="^\s*\(%:\|#\)\s*\(if\|ifdef\|ifndef\|elif\)\>" skip="\\$" end="$" end="//"me=s-1
 syn match	valaPreCondit		display "^\s*\(%:\|#\)\s*\(else\|endif\)\>"
 
-# Comment if 0 blocks (ported from c.vim)
 if !exists("vala_no_if0")
   syn region	valaCppOut		start="^\s*\(%:\|#\)\s*if\s\+0\+\>" end=".\@=\|$" contains=valaCppOut2 fold
   syn region	valaCppOut2		contained start="0" end="^\s*\(%:\|#\)\s*\(endif\>\|else\>\|elif\>\)" contains=valaSpaceError,valaCppSkip
   syn region	valaCppSkip		contained start="^\s*\(%:\|#\)\s*\(if\>\|ifdef\>\|ifndef\>\)" skip="\\$" end="^\s*\(%:\|#\)\s*endif\>" contains=valaSpaceError,valaCppSkip
 endif
 
-# match comment errors
 syntax match valaCommentError 		display "\*/"
 syntax match valaCommentStartError 	display "/\*"me=e-1 contained
-# match the special comment /**/
 syn match   valaComment		 	"/\*\*/"
 
-# comment script lines
 syn region   valaScript			start="^#!" end="$"
 
-# Vala Code Attributes
 syn region  valaAttribute 		start="^\s*\[" end="\]" contains=valaComment,valaString keepend
 syn region  valaAttribute 		start="\[CCode" end="\]" contains=valaComment,valaString
 
-# Avoid escaped keyword matching
 syn match   valaUserContent 		display "@\I*"
 
-# Strings and constants
 syn match   valaSpecialError		contained "\\."
 syn match   valaSpecialCharError	contained "[^']"
 syn match   valaSpecialChar		contained +\\["\\'0abfnrtvx]+
@@ -142,11 +99,8 @@ syn match   valaNumber			display "\(\<\d\+\.\d*\|\.\d\+\)\([eE][-+]\=\d\+\)\=[fF
 syn match   valaNumber			display "\<\d\+[eE][-+]\=\d\+[fFdD]\=\>"
 syn match   valaNumber			display "\<\d\+\([eE][-+]\=\d\+\)\=[fFdD]\>"
 
-# Lambda definitions (ported from java.vim)
-# needs to be defined after the parenthesis error catcher to work
 syn match valaLambdaDef "([a-zA-Z0-9_<>\[\], \t]*)\s*=>"
 
-# when wanted, highlight trailing white space
 if exists("vala_space_errors")
   if !exists("vala_no_trail_space_error")
     syn match valaSpaceError		display excludenl "\s\+$"
@@ -156,7 +110,6 @@ if exists("vala_space_errors")
   endif
 endif
 
-# when wanted, set minimum lines for comment syntax syncing
 if exists("vala_minlines")
   b:vala_minlines = vala_minlines
 else
@@ -165,10 +118,8 @@ endif
 
 exec "syn sync ccomment valaComment minlines=" .. b:vala_minlines
 
-# code folding
 syn region valaBlock			start="{" end="}" transparent fold
 
-# The default highlighting.
 hi def link valaType			Type
 hi def link valaStorage			StorageClass
 hi def link valaRepeat			Repeat

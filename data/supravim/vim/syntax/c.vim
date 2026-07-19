@@ -1,6 +1,5 @@
 vim9script
 
-# Quit when a (custom) syntax file was already loaded
 if exists("b:current_syntax")
 	finish
 endif
@@ -10,39 +9,26 @@ set cpo&vim
 
 var ft = matchstr(&ft, '^\%([^.]\)\+')
 
-# check if this was included from cpp.vim
 var in_cpp_family = exists("b:filetype_in_cpp_family")
 
-# Optional embedded Autodoc parsing
-# To enable it add: let g:c_autodoc = 1
-# to your .vimrc
 if exists("c_autodoc")
 	syn include @cAutodoc <sfile>:p:h/autodoc.vim
 	unlet b:current_syntax
 endif
 
-# A bunch of useful C keywords
 syn keyword	cStatement	goto break return continue asm
 syn keyword	cLabel		case default
 syn keyword	cConditional	if else switch
 syn keyword	cRepeat		while for do
 
-# It's easy to accidentally add a space after a backslash that was intended
-# for line continuation.  Some compilers allow it, which makes it
-# unpredictable and should be avoided.
 syn match	cBadContinuation contained "\\\s\+$"
 
-# cCommentGroup allows adding matches for special things in comments
 
-# String and Character constants
-# Highlight special characters (those which have a backslash) differently
 syn match	cSpecial	display contained "\\\%(x\x\+\|\o\{1,3}\|.\|$\)"
 if !exists("c_no_utf")
 	syn match	cSpecial	display contained "\\\%(u\x\{4}\|U\x\{8}\)"
 endif
 
-# SupraVim
-# type var = value; // color 'type'
 syntax match cType display "\zs\w\+\ze\*\?\s\+[*_a-zA-Z0-9]\+\s*[;|=]"
 syntax match Type display "^\s*\zs\w\+\ze\(\s*\*\|\s\)\+[a-zA-Z0-9_:]\+\s*("
 syntax match cFunction display "\<\h\w*\>[=+*/%&|^!<>\[\]]*\ze\s*(.*)" 
@@ -51,7 +37,6 @@ syntax match cConstant  display "\<\u[A-Z0-9_]*\>"
 syntax match cOperator display /\%(>>>=\|<<=\|>>=\|\.\.\.\|++\|--\|<=\|>=\|==\|!=\|&&\|||\|<<\|>>\|+=\|-=\|*=\|\/=\|%=\|&=\||=\|^=\|-\%(\d\)\@!\|[^-]>\|=\|[+*/%&|^!<=]\)/
 syntax match cOperator display "->\w*" contains=cMember
 syntax match cMember display "\(\.\|->\)\zs\h\w*\ze" contained
-# hi FunctionRegion gui=bold cterm=bold
 
 
 if !exists("c_no_cformat")
@@ -64,7 +49,6 @@ if !exists("c_no_cformat")
 	syn match	cFormat		display "%%" contained
 endif
 
-# cCppString: same as cString, but ends at end of line
 if in_cpp_family && !exists("cpp_no_cpp11") && !exists("c_no_cformat")
 	# ISO C++11
 	syn region	cString		start=+\%(L\|u\|u8\|U\|R\|LR\|u8R\|uR\|UR\)\="+ skip=+\\\\\|\\"+ end=+"+ contains=cSpecial,cFormat,@Spell extend
@@ -117,7 +101,6 @@ if (ft ==# "c" && !exists("c_no_c11")) || (in_cpp_family && !exists("cpp_no_cpp1
 	syn match	cSpecialCharacter display "[Uu]'\\x\x\+'"
 endif
 
-#when wanted, highlight trailing white space
 if exists("c_space_errors")
 	if !exists("c_no_trail_space_error")
 		syn match	cSpaceError	display excludenl "\s\+$"
@@ -127,7 +110,6 @@ if exists("c_space_errors")
 	endif
 endif
 
-# This should be before cErrInParen to avoid problems with #define ({ xxx })
 if exists("c_curly_error")
 	syn match cCurlyError "}"
 	syn region	cBlock		start="{" end="}" contains=ALLBUT,cBadBlock,cCurlyError,@cParenGroup,cErrInParen,cCppParen,cErrInBracket,cCppBracket,@cStringGroup,@Spell fold
@@ -135,9 +117,6 @@ else
 	syn region	cBlock		start="{" end="}" transparent fold
 endif
 
-# Catch errors caused by wrong parenthesis and brackets.
-# Also accept <% for {, %> for }, <: for [ and :> for ] (C99)
-# But avoid matching <::.
 syn cluster	cParenGroup	contains=cParenError,cIncluded,cSpecial,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cCommentStartError,cUserLabel,cBitField,cOctalZero,@cCppOutInGroup,cFormat,cNumber,cFloat,cOctal,cOctalError,cNumbersCom
 if exists("c_no_curly_error")
 	if in_cpp_family && !exists("cpp_no_cpp11")
@@ -192,22 +171,15 @@ if ft ==# 'c' || exists("cpp_no_cpp11")
 	syn region	cBadBlock	keepend start="{" end="}" contained containedin=cParen,cBracket,cBadBlock transparent fold
 endif
 
-#integer number, or floating point number without a dot and with "f".
 syn case ignore
 syn match	cNumbers	display transparent "\<\d\|\.\d" contains=cNumber,cFloat,cOctalError,cOctal
-# Same, but without octal error (for comments)
 syn match	cNumbersCom	display contained transparent "\<\d\|\.\d" contains=cNumber,cFloat,cOctal
 syn match	cNumber		display contained "\d\+\%(u\=l\{0,2}\|ll\=u\)\>"
-#hex number
 syn match	cNumber		display contained "0x\x\+\%(u\=l\{0,2}\|ll\=u\)\>"
-# Flag the first zero of an octal number as something special
 syn match	cOctal		display contained "0\o\+\%(u\=l\{0,2}\|ll\=u\)\>" contains=cOctalZero
 syn match	cOctalZero	display contained "\<0"
-#floating point number, with dot, optional exponent
 syn match	cFloat		display contained "\d\+\.\d*\%(e[-+]\=\d\+\)\=[fl]\="
-#floating point number, starting with a dot, optional exponent
 syn match	cFloat		display contained "\.\d\+\%(e[-+]\=\d\+\)\=[fl]\=\>"
-#floating point number, without dot, with exponent
 syn match	cFloat		display contained "\d\+e[-+]\=\d\+[fl]\=\>"
 if !exists("c_no_c99")
 	#hexadecimal floating point number, optional leading digits, with dot, with exponent
@@ -216,7 +188,6 @@ if !exists("c_no_c99")
 	syn match	cFloat		display contained "0x\x\+\.\=p[-+]\=\d\+[fl]\=\>"
 endif
 
-# flag an octal number with wrong digits
 syn match	cOctalError	display contained "0\o*[89]\d*"
 syn case match
 
@@ -245,7 +216,6 @@ else
 		syn region	cComment	matchgroup=cCommentStart start="/\*" end="\*/" contains=@cCommentGroup,cCommentStartError,cSpaceError,@Spell fold extend
 	endif
 endif
-# keep a // comment separately, it terminates a preproc. conditional
 syn match	cCommentError	display "\*/"
 syn match	cCommentStartError display "/\*"me=e-1 contained
 syn match	cWrongComTail	display "\*/"
@@ -380,7 +350,6 @@ if !exists("c_no_c99")
 	syn keyword cBoolean	true false TRUE FALSE
 endif
 
-# Accept %: for # (C99)
 syn region	cPreCondit	start="^\s*\zs\%(%:\|#\)\s*\%(if\|ifdef\|ifndef\|elif\)\>" skip="\\$" end="$" keepend contains=cComment,cCommentL,cCppString,cCharacter,cCppParen,cParenError,cNumbers,cCommentError,cSpaceError
 syn match	cPreConditMatch	display "^\s*\zs\%(%:\|#\)\s*\%(else\|endif\)\>"
 if !exists("c_no_if0")
@@ -407,27 +376,22 @@ endif
 syn region	cIncluded	display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
 syn match	cIncluded	display contained "<[^>]*>"
 syn match	cInclude	display "^\s*\zs\%(%:\|#\)\s*include\>\s*["<]" contains=cIncluded
-#syn match cLineSkip	"\\$"
 syn cluster	cPreProcGroup	contains=cPreCondit,cIncluded,cInclude,cDefine,cErrInParen,cErrInBracket,cUserLabel,cSpecial,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cNumber,cFloat,cOctal,cOctalError,cNumbersCom,cString,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cCommentStartError,cParen,cBracket,cMulti,cBadBlock
 syn region	cDefine		start="^\s*\zs\%(%:\|#\)\s*\%(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup,@Spell
 syn region	cPreProc	start="^\s*\zs\%(%:\|#\)\s*\%(pragma\>\|line\>\|warning\>\|warn\>\|error\>\)" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup,@Spell
 
-# Optional embedded Autodoc parsing
 if exists("c_autodoc")
 	syn match cAutodocReal display contained "\%(//\|[/ \t\v]\*\|^\*\)\@2<=!.*" contains=@cAutodoc containedin=cComment,cCommentL
 	syn cluster cCommentGroup add=cAutodocReal
 	syn cluster cPreProcGroup add=cAutodocReal
 endif
 
-# be able to fold #pragma regions
 syn region	cPragma		start="^\s*#pragma\s\+region\>" end="^\s*#pragma\s\+endregion\>" transparent keepend extend fold
 
-# Highlight User Labels
 syn cluster	cMultiGroup	contains=cIncluded,cSpecial,cCommentSkip,cCommentString,cComment2String,@cCommentGroup,cCommentStartError,cUserCont,cUserLabel,cBitField,cOctalZero,cCppOutWrapper,cCppInWrapper,@cCppOutInGroup,cFormat,cNumber,cFloat,cOctal,cOctalError,cNumbersCom,cCppParen,cCppBracket,cCppString
 if ft ==# 'c' || exists("cpp_no_cpp11")
 	syn region	cMulti		transparent start='?' skip='::' end=':' contains=ALLBUT,@cMultiGroup,@Spell,@cStringGroup
 endif
-# Avoid matching foo::bar() in C++ by requiring that the next char is not ':'
 syn cluster	cLabelGroup	contains=cUserLabel
 syn match	cUserCont	display "^\s*\zs\I\i*\s*:$" contains=@cLabelGroup
 syn match	cUserCont	display ";\s*\zs\I\i*\s*:$" contains=@cLabelGroup
@@ -441,7 +405,6 @@ endif
 
 syn match	cUserLabel	display "\I\i*" contained
 
-# Avoid recognizing most bitfields as labels
 syn match	cBitField	display "^\s*\zs\I\i*\s*:\s*[1-9]"me=e-1 contains=cType
 syn match	cBitField	display ";\s*\zs\I\i*\s*:\s*[1-9]"me=e-1 contains=cType
 
@@ -460,14 +423,11 @@ else
 	exec "syn sync ccomment cComment minlines=" .. b:c_minlines
 endif
 
-# Supravim
 syntax match cDoxygenTag contained "\([@\\]\)\%(param\|return\|brief\|note\|details\|see\|author\|version\|bug\|warning\|date\|since\|deprecated\|todo\|defgroup\|addtogroup\|ingroup\|copyright\|file\|fn\|hideinitializer\|internal\|link\|endlink\|name\|namespace\|package\|page\|ref\|section\|subsection\|subsubsection\|test\)\>"
 syntax match cDoxygenParam contained "\([@\\]param\s\+\)\@<=\w\+"
 
 syntax cluster cCommentGroup add=cDoxygenTag,cDoxygenParam,cBadContinuation
 
-# Define the default highlighting.
-# Only used when an item doesn't have highlighting yet
 hi def link cFunction		Function
 hi def link cFormat		cSpecial
 hi def link cCppString		cString
@@ -520,7 +480,6 @@ hi def link cCppOutSkip		cCppOutIf2
 hi def link cCppInElse2		cCppOutIf2
 hi def link cCppOutIf2		cCppOut
 hi def link cCppOut		Comment
-# Supravim
 hi def link cFunction Function
 hi def link cMember Identifier
 hi def link cCustomType Type

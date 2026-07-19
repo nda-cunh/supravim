@@ -14,7 +14,7 @@ def GotOutput(channel: channel, msg: string)
 		var changed = matchstr(msg, '\[\zs.*\ze\]')
 		var value = matchstr(msg, '<\zs.*\ze>')
 		supraconfig#UpdateWithString(changed, value)
-		echom 'Option ' .. changed .. ' changed to ' .. value
+		echom printf(gettext("Option %s changed to %s", "supravim"), changed, value)
 	# onEasterEgg: [snake] -> sent by the Magic Mode popup of the GUI
 	elseif matchstr(msg, '^onEasterEgg: ') != ''
 		PlayEasterEgg(matchstr(msg, '\[\zs.*\ze\]'))

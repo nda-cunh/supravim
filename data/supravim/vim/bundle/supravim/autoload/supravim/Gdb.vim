@@ -12,7 +12,7 @@ export def Gdbf()
     set nosplitright
 
 	if &filetype != 'c' && &filetype != 'cpp' && &filetype != 'vala' && &filetype != 'hpp'
-		echo "Tu veux debugger quoi là ?"
+		echo gettext("What exactly do you want to debug?", "supravim")
 	else
 		set splitbelow nosplitbelow
 		set splitright nosplitright

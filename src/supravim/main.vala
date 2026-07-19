@@ -164,7 +164,7 @@ public class Main {
 			return true;
 		}
 		if (is_version) {
-			print ("Supravim version %s\n", Config.VERSION);
+			print (_("Supravim version %s\n"), Config.VERSION);
 			return true;
 		}
 		if (print_plugins) {
@@ -205,13 +205,13 @@ public class Main {
 		if (save_path != null) {
 			Cfg.export_config (save_path);
 			Command.emit_metric ("export_config");
-			print (B + GR + "Config exported to %s\n" + R, save_path.has_suffix (".supravim") ? save_path : save_path + ".supravim");
+			print (B + GR + _("Config exported to %s\n") + R, save_path.has_suffix (".supravim") ? save_path : save_path + ".supravim");
 			return true;
 		}
 		if (load_path != null) {
-			print (B + "Restoring config from %s...\n" + R, load_path);
+			print (B + _("Restoring config from %s...\n") + R, load_path);
 			Cfg.import_config (load_path);
-			print (B + GR + "Config restored successfully\n" + R);
+			print (B + GR + _("Config restored successfully\n") + R);
 			return true;
 		}
 		if (is_status) {
@@ -237,7 +237,7 @@ public class Main {
 		foreach (unowned string str in variable_set) {
 			try {
 				if (!("=" in str))
-					throw new SupravimError.BAD_VALUE("Invalid format. Expected: opt=value");
+					throw new SupravimError.BAD_VALUE(_("Invalid format. Expected: opt=value"));
 				string key = str[0:str.index_of_char('=')];
 				string v = str[str.index_of_char('=') + 1:];
 				Options.update_value(key, v);
@@ -255,71 +255,71 @@ public class Main {
 		}
 		if (add_plugin != null) {
 			Plugin.add (add_plugin);
-			print (B + GR + "Plugin %s added successfully\n" + R, add_plugin);
+			print (B + GR + _("Plugin %s added successfully\n") + R, add_plugin);
 			return true;
 		}
 		if (remove_plugin != null) {
 			Plugin.remove (remove_plugin);
-			print (B + GR + "Plugin %s removed successfully\n" + R, remove_plugin);
+			print (B + GR + _("Plugin %s removed successfully\n") + R, remove_plugin);
 			return true;
 		}
 		if (enable_plugin != null) {
 			Plugin.enable (enable_plugin);
-			print (B + GR + "Plugin %s enabled\n" + R, enable_plugin);
+			print (B + GR + _("Plugin %s enabled\n") + R, enable_plugin);
 			return true;
 		}
 		if (disable_plugin != null) {
 			Plugin.disable (disable_plugin);
-			print (B + GR + "Plugin %s disabled\n" + R, disable_plugin);
+			print (B + GR + _("Plugin %s disabled\n") + R, disable_plugin);
 			return true;
 		}
 		if (update_plugin_all) {
-			print (B + "Updating all plugins...\n" + R);
+			print (B + _("Updating all plugins...\n") + R);
 			Plugin.update_all ();
-			print (B + GR + "All plugins updated\n" + R);
+			print (B + GR + _("All plugins updated\n") + R);
 			return true;
 		}
 		if (update_plugin != null) {
 			Plugin.update (update_plugin);
-			print (B + GR + "Plugin %s updated\n" + R, update_plugin);
+			print (B + GR + _("Plugin %s updated\n") + R, update_plugin);
 			return true;
 		}
 		if (list_plugin)
 			return Command.list (list_group, list_only_pinned, list_only_disabled);
 		if (pin_plugin != null) {
 			string commit = Plugin.pin (pin_plugin);
-			print (B + GR + "Plugin %s pinned at %s\n" + R, pin_plugin, commit);
+			print (B + GR + _("Plugin %s pinned at %s\n") + R, pin_plugin, commit);
 			return true;
 		}
 		if (unpin_plugin != null) {
 			Plugin.unpin (unpin_plugin);
-			print (B + GR + "Plugin %s unpinned\n" + R, unpin_plugin);
+			print (B + GR + _("Plugin %s unpinned\n") + R, unpin_plugin);
 			return true;
 		}
 		if (add_group_plugin != null) {
 			var parts = add_group_plugin.split (":", 2);
 			if (parts.length != 2)
-				throw new SupravimError.BAD_VALUE ("Expected format: <plugin>:<group>");
+				throw new SupravimError.BAD_VALUE (_("Expected format: <plugin>:<group>"));
 			Plugin.add_group (parts[0], parts[1].strip ());
-			print (B + GR + "Plugin %s added to group '%s'\n" + R, parts[0], parts[1].strip ());
+			print (B + GR + _("Plugin %s added to group '%s'\n") + R, parts[0], parts[1].strip ());
 			return true;
 		}
 		if (remove_group_plugin != null) {
 			var parts = remove_group_plugin.split (":", 2);
 			if (parts.length != 2)
-				throw new SupravimError.BAD_VALUE ("Expected format: <plugin>:<group>");
+				throw new SupravimError.BAD_VALUE (_("Expected format: <plugin>:<group>"));
 			Plugin.remove_group (parts[0], parts[1].strip ());
-			print (B + GR + "Plugin %s removed from group '%s'\n" + R, parts[0], parts[1].strip ());
+			print (B + GR + _("Plugin %s removed from group '%s'\n") + R, parts[0], parts[1].strip ());
 			return true;
 		}
 		if (enable_group_plugin != null) {
 			int n = Plugin.enable_group (enable_group_plugin);
-			print (B + GR + "%d plugin(s) in group '%s' enabled\n" + R, n, enable_group_plugin);
+			print (B + GR + _("%d plugin(s) in group '%s' enabled\n") + R, n, enable_group_plugin);
 			return true;
 		}
 		if (disable_group_plugin != null) {
 			int n = Plugin.disable_group (disable_group_plugin);
-			print (B + GR + "%d plugin(s) in group '%s' disabled\n" + R, n, disable_group_plugin);
+			print (B + GR + _("%d plugin(s) in group '%s' disabled\n") + R, n, disable_group_plugin);
 			return true;
 		}
 		return null;
@@ -329,7 +329,8 @@ public class Main {
 		Intl.setlocale ();
 		Supravim.init ();
 		try {
-			var opt_context = new OptionContext ("Program to personalize your supravim");
+			var opt_context = new OptionContext (_("Program to personalize your supravim"));
+			opt_context.set_translation_domain (GETTEXT_PACKAGE);
 			opt_context.set_help_enabled (true);
 			opt_context.add_main_entries (options, null);
 			opt_context.parse (ref args);

@@ -1,0 +1,6 @@
+tools/translatable-strings.c
+src/libsupravim/Achievements.vala
+src/supravim-server/Achievements.vala
+src/supravim-server/Stdin.vala
+src/supravim/Command.vala
+src/supravim/main.vala

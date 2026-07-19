@@ -40,7 +40,7 @@ export def SupraTerm(command: string = null_string)
 		dragall: 1,
 		resize: 1,
 		callback: (_, _) => {
-			echom "Closing SupraTerm"
+			echom gettext("Closing SupraTerm", "supravim")
 		},
 	})
 

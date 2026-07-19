@@ -1,3 +1,9 @@
+build_config_vala = configure_file(
+  input : 'BuildConfig.vala.in',
+  output : 'BuildConfig.vala',
+  configuration : conf_data,
+)
+
 lib_sources = files(
   'Achievements.vala',
   'Globals.vala',
@@ -23,6 +29,7 @@ lib_deps = [
 
 libsupravim = library('supravim',
   lib_sources,
+  build_config_vala,
   vala_header: 'supravim.h',
   vala_vapi: 'supravim.vapi',
   dependencies: lib_deps,

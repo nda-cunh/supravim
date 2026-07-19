@@ -13,6 +13,7 @@ project('supravim', ['c', 'vala'], version : '6.75',
 
 add_global_arguments('--target-glib=auto', language : ['vala'])
 add_global_arguments('-w', language : ['c', 'cpp'])
+add_project_arguments('-DGETTEXT_PACKAGE="' + meson.project_name() + '"', language : 'c')
 
 vapi_dir = meson.current_source_dir() / 'vapi'
 add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
@@ -28,12 +29,14 @@ conf_data = configuration_data()
 conf_data.set('description', description)
 conf_data.set('name', meson.project_name())
 conf_data.set('version', meson.project_version())
+conf_data.set('localedir', get_option('prefix') / get_option('localedir'))
 vimrc = configure_file(input : 'vimrc.in', output : 'vimrc', configuration : conf_data)
 
 ####################################
 # Create the supravim executable
 ####################################
 
+subdir('po')
 subdir('src')
 
 ###################################

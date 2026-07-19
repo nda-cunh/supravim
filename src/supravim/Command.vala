@@ -5,7 +5,7 @@ namespace Command {
 	public bool list (string? group_filter = null, bool only_pinned = false, bool only_disabled = false) throws Error {
 		var plugins = Plugin.get_all ();
 		if (plugins.is_empty ()) {
-			printerr (B + "\033[31mNo plugins found\033[0m\n");
+			printerr (B + "\033[31m" + _("No plugins found") + "\033[0m\n");
 			return false;
 		}
 		bool any = false;
@@ -26,7 +26,7 @@ namespace Command {
 			any = true;
 		}
 		if (!any)
-			printerr ("\033[1m\033[31mNo plugins match the given filters\033[0m\n");
+			printerr ("\033[1m\033[31m" + _("No plugins match the given filters") + "\033[0m\n");
 		return any;
 	}
 

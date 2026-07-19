@@ -1,0 +1,4 @@
+namespace Supravim {
+	public const string GETTEXT_PACKAGE = "@name@";
+	public const string LOCALEDIR = "@localedir@";
+}

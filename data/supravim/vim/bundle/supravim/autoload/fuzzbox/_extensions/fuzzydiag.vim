@@ -72,7 +72,7 @@ export def Start()
 
 	const len_of_lst = len(t:fuzzydiag_lst) 
 	if len_of_lst == 0
-		echo 'No diagnostics found.'
+		echo gettext("No diagnostics found.", "supravim")
 		return
 	endif
 	var index = 0

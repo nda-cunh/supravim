@@ -8,7 +8,7 @@ export def Welcome()
 	highlight SupraVimYellow guifg=#e4bf7d ctermfg=Yellow
 	var timer = timer_start(50, (_) => {
 		echohl SupraVimYellow
-		echo 'Welcome to SupraVim ! Press <F12> for help or curstomize your settings.'
+		echo gettext("Welcome to SupraVim ! Press <F12> for help or customize your settings.", "supravim")
 		echohl None
 	})
 enddef
@@ -62,7 +62,7 @@ def WelcomeChangeLog(version: string)
 	var txt = (last_version == '' ? '' : last_version .. ' → ')
 
 	var changelog_path = expand('$HOME/.local/share/supravim/CHANGELOG.md')
-	if !filereadable(changelog_path) | return | endif # Sécurité si le fichier n'existe pas
+	if !filereadable(changelog_path) | return | endif
 
 	var changelog = readfile(changelog_path)
 	var log_to_display: list<string> = ["Welcome to SupraVim " .. txt .. version]

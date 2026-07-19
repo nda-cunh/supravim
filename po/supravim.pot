@@ -1,0 +1,1379 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR SupraVim
+# This file is distributed under the same license as the supravim package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: supravim 6.75\n"
+"Report-Msgid-Bugs-To: nathan.dacunha.nd@gmail.com\n"
+"POT-Creation-Date: 2026-07-19 03:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. data/supravim/achievements.json
+#. onboarding.label
+#: tools/translatable-strings.c:8
+msgid "Beginner"
+msgstr ""
+
+#. motions.label
+#: tools/translatable-strings.c:10
+msgid "Motions & the Way of Vim"
+msgstr ""
+
+#. volume.label
+#: tools/translatable-strings.c:12
+msgid "Volume & Endurance"
+msgstr ""
+
+#. humour.label
+#: tools/translatable-strings.c:14
+msgid "Self-Deprecation"
+msgstr ""
+
+#. ecosystem.label
+#: tools/translatable-strings.c:16
+msgid "SupraVim Ecosystem"
+msgstr ""
+
+#. prestige.label
+#: tools/translatable-strings.c:18
+msgid "Prestige"
+msgstr ""
+
+#. hello_world.title
+#: tools/translatable-strings.c:20
+msgid "Hello World"
+msgstr ""
+
+#. hello_world.desc
+#: tools/translatable-strings.c:22
+msgid "Type your first 100 characters"
+msgstr ""
+
+#. la_sortie_existe.title
+#: tools/translatable-strings.c:24
+msgid "There Is a Way Out"
+msgstr ""
+
+#. la_sortie_existe.desc
+#: tools/translatable-strings.c:26
+msgid "Quit Vim with **:q**"
+msgstr ""
+
+#. alcatraz.title
+#: tools/translatable-strings.c:28
+msgid "Escaped from Alcatraz"
+msgstr ""
+
+#. alcatraz.desc
+#: tools/translatable-strings.c:30
+msgid "Quit Vim less than 10 seconds after opening it"
+msgstr ""
+
+#. ctrl_veteran.title
+#: tools/translatable-strings.c:32
+msgid "Ctrl+Veteran"
+msgstr ""
+
+#. ctrl_veteran.desc
+#: tools/translatable-strings.c:34
+msgid "Use Ctrl+C/Ctrl+V 100 times"
+msgstr ""
+
+#. souris_apprivoisee.title
+#: tools/translatable-strings.c:36
+msgid "Mouse Tamer"
+msgstr ""
+
+#. souris_apprivoisee.desc
+#: tools/translatable-strings.c:38
+msgid "Use the right-click menu for the first time"
+msgstr ""
+
+#. rtfm.title
+#: tools/translatable-strings.c:40
+msgid "RTFM"
+msgstr ""
+
+#. rtfm.desc
+#: tools/translatable-strings.c:42
+msgid "Open the **Wiki** tab in supravim-gui"
+msgstr ""
+
+#. decorateur.title
+#: tools/translatable-strings.c:44
+msgid "Interior Decorator"
+msgstr ""
+
+#. decorateur.desc
+#: tools/translatable-strings.c:46
+msgid "Change your theme for the first time"
+msgstr ""
+
+#. collectionneur.title
+#: tools/translatable-strings.c:48
+msgid "Collector"
+msgstr ""
+
+#. collectionneur.desc
+#: tools/translatable-strings.c:50
+msgid "Install your first plugin from the store"
+msgstr ""
+
+#. premier_sang.title
+#: tools/translatable-strings.c:52
+msgid "First Blood"
+msgstr ""
+
+#. premier_sang.desc
+#: tools/translatable-strings.c:54
+msgid "First **dd**"
+msgstr ""
+
+#. genocide.title
+#: tools/translatable-strings.c:56
+msgid "Line Reaper"
+msgstr ""
+
+#. genocide.desc
+#: tools/translatable-strings.c:58
+msgid "1000 **dd**"
+msgstr ""
+
+#. chirurgien.title
+#: tools/translatable-strings.c:60
+msgid "Surgeon"
+msgstr ""
+
+#. chirurgien.desc
+#: tools/translatable-strings.c:62
+msgid "First **ciw**"
+msgstr ""
+
+#. chirurgien_expert.title
+#: tools/translatable-strings.c:64
+msgid "Expert Surgeon"
+msgstr ""
+
+#. chirurgien_expert.desc
+#: tools/translatable-strings.c:66
+msgid "100 **ciw**"
+msgstr ""
+
+#. sniper.title
+#: tools/translatable-strings.c:68
+msgid "Sniper"
+msgstr ""
+
+#. sniper.desc
+#: tools/translatable-strings.c:70
+msgid "First **f** + character"
+msgstr ""
+
+#. point_sacre.title
+#: tools/translatable-strings.c:72
+msgid "The Sacred Dot"
+msgstr ""
+
+#. point_sacre.desc
+#: tools/translatable-strings.c:74
+msgid "Use **.** (repeat) 50 times"
+msgstr ""
+
+#. marionnettiste.title
+#: tools/translatable-strings.c:76
+msgid "Puppeteer"
+msgstr ""
+
+#. marionnettiste.desc
+#: tools/translatable-strings.c:78
+msgid "Record and play your first macro"
+msgstr ""
+
+#. multiplicateur.title
+#: tools/translatable-strings.c:80
+msgid "Multiplier"
+msgstr ""
+
+#. multiplicateur.desc
+#: tools/translatable-strings.c:82
+msgid "Play a macro with a count (**10@q**)"
+msgstr ""
+
+#. sevrage_reussi.title
+#: tools/translatable-strings.c:84
+msgid "Successfully Weaned"
+msgstr ""
+
+#. sevrage_reussi.desc
+#: tools/translatable-strings.c:86
+msgid "A full session without Ctrl+C/Ctrl+V"
+msgstr ""
+
+#. polyglotte_modal.title
+#: tools/translatable-strings.c:88
+msgid "Modal Polyglot"
+msgstr ""
+
+#. polyglotte_modal.desc
+#: tools/translatable-strings.c:90
+msgid "Use visual block mode (**Ctrl+v**) for the first time"
+msgstr ""
+
+#. teleporteur.title
+#: tools/translatable-strings.c:92
+msgid "Teleporter"
+msgstr ""
+
+#. teleporteur.desc
+#: tools/translatable-strings.c:94
+msgid "Use a mark (**ma** then **`a**)"
+msgstr ""
+
+#. ascension.title
+#: tools/translatable-strings.c:96
+msgid "Ascension"
+msgstr ""
+
+#. ascension.desc
+#: tools/translatable-strings.c:98
+msgid "Insert/normal ratio dropped below 50% (after 2,000 words)"
+msgstr ""
+
+#. illumination.title
+#: tools/translatable-strings.c:100
+msgid "Enlightenment"
+msgstr ""
+
+#. illumination.desc
+#: tools/translatable-strings.c:102
+msgid "Insert/normal ratio below 30% (after 10,000 words)"
+msgstr ""
+
+#. ecrivain.title
+#: tools/translatable-strings.c:104
+msgid "Sunday Writer"
+msgstr ""
+
+#. ecrivain.desc
+#: tools/translatable-strings.c:106
+msgid "1,000 words in a single day"
+msgstr ""
+
+#. romancier.title
+#: tools/translatable-strings.c:108
+msgid "Novelist"
+msgstr ""
+
+#. romancier.desc
+#: tools/translatable-strings.c:110
+msgid "5,000 words in a single day"
+msgstr ""
+
+#. machine_a_ecrire.title
+#: tools/translatable-strings.c:112
+msgid "Typewriter"
+msgstr ""
+
+#. machine_a_ecrire.desc
+#: tools/translatable-strings.c:114
+msgid "10,000 words in a single day"
+msgstr ""
+
+#. marathon.title
+#: tools/translatable-strings.c:116
+msgid "Marathon"
+msgstr ""
+
+#. marathon.desc
+#: tools/translatable-strings.c:118
+msgid "A 3h+ session without closing Vim"
+msgstr ""
+
+#. ultra_trail.title
+#: tools/translatable-strings.c:120
+msgid "Ultra-Trail"
+msgstr ""
+
+#. ultra_trail.desc
+#: tools/translatable-strings.c:122
+msgid "An 8h+ session (**go drink some water**)"
+msgstr ""
+
+#. insomniaque.title
+#: tools/translatable-strings.c:124
+msgid "Insomniac"
+msgstr ""
+
+#. insomniaque.desc
+#: tools/translatable-strings.c:126
+msgid "Code between 2 AM and 5 AM"
+msgstr ""
+
+#. leve_tot.title
+#: tools/translatable-strings.c:128
+msgid "Early Bird"
+msgstr ""
+
+#. leve_tot.desc
+#: tools/translatable-strings.c:130
+msgid "Code before 7 AM"
+msgstr ""
+
+#. metronome.title
+#: tools/translatable-strings.c:132
+msgid "Metronome"
+msgstr ""
+
+#. metronome.desc
+#: tools/translatable-strings.c:134
+msgid "7-day streak"
+msgstr ""
+
+#. inarretable.title
+#: tools/translatable-strings.c:136
+msgid "Unstoppable"
+msgstr ""
+
+#. inarretable.desc
+#: tools/translatable-strings.c:138
+msgid "30-day streak"
+msgstr ""
+
+#. annee_supra.title
+#: tools/translatable-strings.c:140
+msgid "A Supra Year"
+msgstr ""
+
+#. annee_supra.desc
+#: tools/translatable-strings.c:142
+msgid "365-day streak"
+msgstr ""
+
+#. pendulaire.title
+#: tools/translatable-strings.c:144
+msgid "Clockwork"
+msgstr ""
+
+#. pendulaire.desc
+#: tools/translatable-strings.c:146
+msgid "Code 5 days in a row at the same hour (±30 min)"
+msgstr ""
+
+#. ctrl_anxieux.title
+#: tools/translatable-strings.c:148
+msgid "Ctrl+Anxious"
+msgstr ""
+
+#. ctrl_anxieux.desc
+#: tools/translatable-strings.c:150
+msgid "50 **:w** in under an hour"
+msgstr ""
+
+#. confiance_regne.title
+#: tools/translatable-strings.c:152
+msgid "Trust Issues"
+msgstr ""
+
+#. confiance_regne.desc
+#: tools/translatable-strings.c:154
+msgid "500 undos in a single day"
+msgstr ""
+
+#. ctrl_z_philo.title
+#: tools/translatable-strings.c:156
+msgid "Philosophical Ctrl+Z"
+msgstr ""
+
+#. ctrl_z_philo.desc
+#: tools/translatable-strings.c:158
+msgid "Undo, redo, then undo the same change"
+msgstr ""
+
+#. page_blanche.title
+#: tools/translatable-strings.c:160
+msgid "Writer's Block"
+msgstr ""
+
+#. page_blanche.desc
+#: tools/translatable-strings.c:162
+msgid "Open a file, write nothing, close it"
+msgstr ""
+
+#. archeologue.title
+#: tools/translatable-strings.c:164
+msgid "Archaeologist"
+msgstr ""
+
+#. archeologue.desc
+#: tools/translatable-strings.c:166
+msgid "Reopen a file untouched for 6 months"
+msgstr ""
+
+#. boulimie_plugins.title
+#: tools/translatable-strings.c:168
+msgid "Plugin Binge"
+msgstr ""
+
+#. boulimie_plugins.desc
+#: tools/translatable-strings.c:170
+msgid "10 plugins installed in a single day"
+msgstr ""
+
+#. indecis_chromatique.title
+#: tools/translatable-strings.c:172
+msgid "Chromatically Indecisive"
+msgstr ""
+
+#. indecis_chromatique.desc
+#: tools/translatable-strings.c:174
+msgid "Change theme 5 times in one session"
+msgstr ""
+
+#. www.title
+#: tools/translatable-strings.c:176
+msgid ":w:w:w"
+msgstr ""
+
+#. www.desc
+#: tools/translatable-strings.c:178
+msgid "Save an already-saved file 3 times in a row"
+msgstr ""
+
+#. vendredi_13.title
+#: tools/translatable-strings.c:180
+msgid "Jason"
+msgstr ""
+
+#. vendredi_13.desc
+#: tools/translatable-strings.c:182
+msgid "Code on a **Friday the 13th**"
+msgstr ""
+
+#. retour_futur.title
+#: tools/translatable-strings.c:184
+msgid "Back to the Future"
+msgstr ""
+
+#. retour_futur.desc
+#: tools/translatable-strings.c:186
+msgid "Edit a file whose timestamp is in the future"
+msgstr ""
+
+#. konami.title
+#: tools/translatable-strings.c:188
+msgid "Konami Code"
+msgstr ""
+
+#. konami.desc
+#: tools/translatable-strings.c:190
+msgid "↑ ↑ ↓ ↓ ← → ← → B A"
+msgstr ""
+
+#. pause_syndicale.title
+#: tools/translatable-strings.c:192
+msgid "Coffee Break"
+msgstr ""
+
+#. pause_syndicale.desc
+#: tools/translatable-strings.c:194
+msgid "Launch SupraPacman for the first time"
+msgstr ""
+
+#. supra_pause.title
+#: tools/translatable-strings.c:196
+msgid "Supra Break"
+msgstr ""
+
+#. supra_pause.desc
+#: tools/translatable-strings.c:198
+msgid "Launch SupraPacman 100 times"
+msgstr ""
+
+#. game_over_productif.title
+#: tools/translatable-strings.c:200
+msgid "Productive Game Over"
+msgstr ""
+
+#. game_over_productif.desc
+#: tools/translatable-strings.c:202
+msgid "1 hour total spent in the built-in games"
+msgstr ""
+
+#. serpentard.title
+#: tools/translatable-strings.c:204
+msgid "Slytherin"
+msgstr ""
+
+#. serpentard.desc
+#: tools/translatable-strings.c:206
+msgid "Reach a score of 20 in SupraSnake"
+msgstr ""
+
+#. serpent_or.title
+#: tools/translatable-strings.c:208
+msgid "Golden Snake"
+msgstr ""
+
+#. serpent_or.desc
+#: tools/translatable-strings.c:210
+msgid "Reach a score of 50 in SupraSnake"
+msgstr ""
+
+#. jardinier.title
+#: tools/translatable-strings.c:212
+msgid "File Gardener"
+msgstr ""
+
+#. jardinier.desc
+#: tools/translatable-strings.c:214
+msgid "Create 10 files via SupraTree in edit mode"
+msgstr ""
+
+#. plombier.title
+#: tools/translatable-strings.c:216
+msgid "Plumber"
+msgstr ""
+
+#. plombier.desc
+#: tools/translatable-strings.c:218
+msgid "Rename 20 files via SupraWater"
+msgstr ""
+
+#. lsp_master.title
+#: tools/translatable-strings.c:220
+msgid "LSP Master"
+msgstr ""
+
+#. lsp_master.desc
+#: tools/translatable-strings.c:222
+msgid "Have 5 LSPs installed and working"
+msgstr ""
+
+#. snippeteur.title
+#: tools/translatable-strings.c:224
+msgid "Snippeteer"
+msgstr ""
+
+#. snippeteur.desc
+#: tools/translatable-strings.c:226
+msgid "Create your first custom snippet"
+msgstr ""
+
+#. exportateur.title
+#: tools/translatable-strings.c:228
+msgid "Exporter"
+msgstr ""
+
+#. exportateur.desc
+#: tools/translatable-strings.c:230
+msgid "Export your **.supravim** config for the first time"
+msgstr ""
+
+#. je_te_connais.title
+#: tools/translatable-strings.c:232
+msgid "I Know You"
+msgstr ""
+
+#. je_te_connais.desc
+#: tools/translatable-strings.c:234
+msgid "Install a **tpope** plugin (rite of passage)"
+msgstr ""
+
+#. tour_babel.title
+#: tools/translatable-strings.c:236
+msgid "Tower of Babel"
+msgstr ""
+
+#. tour_babel.desc
+#: tools/translatable-strings.c:238
+msgid "5 LSPs active in the same session"
+msgstr ""
+
+#. pacman_master.title
+#: tools/translatable-strings.c:240
+msgid "Pac-Master"
+msgstr ""
+
+#. pacman_master.desc
+#: tools/translatable-strings.c:242
+msgid "Complete a full level of SupraPacman"
+msgstr ""
+
+#. pacman_apple.title
+#: tools/translatable-strings.c:244
+msgid "Forbidden Fruit"
+msgstr ""
+
+#. pacman_apple.desc
+#: tools/translatable-strings.c:246
+msgid "Eat the **apple**"
+msgstr ""
+
+#. pacman_pacifist.title
+#: tools/translatable-strings.c:248
+msgid "Pac-ifist"
+msgstr ""
+
+#. pacman_pacifist.desc
+#: tools/translatable-strings.c:250
+msgid "Complete a level without eating a single ghost"
+msgstr ""
+
+#. pacman_glutton.title
+#: tools/translatable-strings.c:252
+msgid "Glutton"
+msgstr ""
+
+#. pacman_glutton.desc
+#: tools/translatable-strings.c:254
+msgid "Eat all 4 ghosts on a single power pill"
+msgstr ""
+
+#. pacman_complete.title
+#: tools/translatable-strings.c:256
+msgid "Pac-credible"
+msgstr ""
+
+#. pacman_complete.desc
+#: tools/translatable-strings.c:258
+msgid "Fully complete the game"
+msgstr ""
+
+#. cent_mille_mots.title
+#: tools/translatable-strings.c:260
+msgid "100,000 Words"
+msgstr ""
+
+#. cent_mille_mots.desc
+#: tools/translatable-strings.c:262
+msgid "All-time"
+msgstr ""
+
+#. le_million.title
+#: tools/translatable-strings.c:264
+msgid "The Million"
+msgstr ""
+
+#. le_million.desc
+#: tools/translatable-strings.c:266
+msgid "1,000,000 characters typed all-time"
+msgstr ""
+
+#. expert.title
+#: tools/translatable-strings.c:268
+msgid "Expert"
+msgstr ""
+
+#. expert.desc
+#: tools/translatable-strings.c:270
+msgid "10,000,000 characters typed all-time"
+msgstr ""
+
+#. maitre.title
+#: tools/translatable-strings.c:272
+msgid "Master"
+msgstr ""
+
+#. maitre.desc
+#: tools/translatable-strings.c:274
+msgid "100,000,000 characters typed all-time"
+msgstr ""
+
+#. le_milliard.title
+#: tools/translatable-strings.c:276
+msgid "The Billion"
+msgstr ""
+
+#. le_milliard.desc
+#: tools/translatable-strings.c:278
+msgid "1,000,000,000 characters typed all-time"
+msgstr ""
+
+#. fidele.title
+#: tools/translatable-strings.c:280
+msgid "Faithful"
+msgstr ""
+
+#. fidele.desc
+#: tools/translatable-strings.c:282
+msgid "Use SupraVim on 100 distinct days"
+msgstr ""
+
+#. omniglotte.title
+#: tools/translatable-strings.c:284
+msgid "Omniglot"
+msgstr ""
+
+#. omniglotte.desc
+#: tools/translatable-strings.c:286
+msgid "Write in 10 different languages"
+msgstr ""
+
+#. supra_legend.title
+#: tools/translatable-strings.c:288
+msgid "Supra Legend"
+msgstr ""
+
+#. supra_legend.desc
+#: tools/translatable-strings.c:290
+msgid "Unlock every other achievement"
+msgstr ""
+
+#. src/supravim/main.vala
+#. --status
+#: tools/translatable-strings.c:293
+msgid "Display status of your supravim config."
+msgstr ""
+
+#. --version
+#: tools/translatable-strings.c:295
+msgid "Give your supravim version"
+msgstr ""
+
+#. --list-plugin
+#: tools/translatable-strings.c:297
+msgid "List plugins."
+msgstr ""
+
+#. --group
+#: tools/translatable-strings.c:299
+msgid "Filter list by group (use with --list-plugin)."
+msgstr ""
+
+#. --only-pinned
+#: tools/translatable-strings.c:301
+msgid "Show only pinned plugins."
+msgstr ""
+
+#. --only-disabled
+#: tools/translatable-strings.c:303
+msgid "Show only disabled plugins."
+msgstr ""
+
+#. --theme
+#: tools/translatable-strings.c:305
+msgid "Set theme."
+msgstr ""
+
+#. --add-plugin
+#: tools/translatable-strings.c:307
+msgid "Add plugin."
+msgstr ""
+
+#. --remove-plugin
+#: tools/translatable-strings.c:309
+msgid "Remove plugin."
+msgstr ""
+
+#. --enable-plugin
+#: tools/translatable-strings.c:311
+msgid "Enable plugin."
+msgstr ""
+
+#. --disable-plugin
+#: tools/translatable-strings.c:313
+msgid "Disable plugin."
+msgstr ""
+
+#. --update-plugin
+#: tools/translatable-strings.c:315
+msgid "Update plugin."
+msgstr ""
+
+#. --update-plugin-all
+#: tools/translatable-strings.c:317
+msgid "Update all plugins."
+msgstr ""
+
+#. --pin-plugin
+#: tools/translatable-strings.c:319
+msgid "Pin plugin to its current commit."
+msgstr ""
+
+#. --unpin-plugin
+#: tools/translatable-strings.c:321
+msgid "Unpin plugin (allow updates again)."
+msgstr ""
+
+#. --add-group
+#: tools/translatable-strings.c:323
+msgid "Add plugin to group (<plugin>:<group>)."
+msgstr ""
+
+#. --remove-group
+#: tools/translatable-strings.c:325
+msgid "Remove plugin from group (<plugin>:<group>)."
+msgstr ""
+
+#. --enable-group
+#: tools/translatable-strings.c:327
+msgid "Enable all plugins in a group."
+msgstr ""
+
+#. --disable-group
+#: tools/translatable-strings.c:329
+msgid "Disable all plugins in a group."
+msgstr ""
+
+#. --disable
+#: tools/translatable-strings.c:331
+msgid "Disable options."
+msgstr ""
+
+#. --disable
+#: tools/translatable-strings.c:333
+msgid "optA[,optB]"
+msgstr ""
+
+#. --enable
+#: tools/translatable-strings.c:335
+msgid "Enable options."
+msgstr ""
+
+#. --reset
+#: tools/translatable-strings.c:337
+msgid "Reset options to their default values."
+msgstr ""
+
+#. --set
+#: tools/translatable-strings.c:339
+msgid "Set plugin variables."
+msgstr ""
+
+#. --print-options
+#: tools/translatable-strings.c:341
+msgid "Print available options."
+msgstr ""
+
+#. --print-options-switchable
+#: tools/translatable-strings.c:343
+msgid "Print switchable available options."
+msgstr ""
+
+#. --print-themes
+#: tools/translatable-strings.c:345
+msgid "Print available themes."
+msgstr ""
+
+#. --save
+#: tools/translatable-strings.c:347
+msgid "Export your whole config into a .supravim archive."
+msgstr ""
+
+#. --save
+#: tools/translatable-strings.c:349
+msgid "FILE"
+msgstr ""
+
+#. --load
+#: tools/translatable-strings.c:351
+msgid "Restore a config from a .supravim archive."
+msgstr ""
+
+#. --metric
+#: tools/translatable-strings.c:353
+msgid "Send an achievement metric (NAME[=COUNT])."
+msgstr ""
+
+#. --metric
+#: tools/translatable-strings.c:355
+msgid "NAME[=N]"
+msgstr ""
+
+#. --achievement
+#: tools/translatable-strings.c:357
+msgid "Unlock an achievement event by id."
+msgstr ""
+
+#. --achievement
+#: tools/translatable-strings.c:359
+msgid "ID"
+msgstr ""
+
+#. vimrc.in
+#: tools/translatable-strings.c:361
+msgid "Sets the main color scheme"
+msgstr ""
+
+#: tools/translatable-strings.c:362
+msgid "Enable the creation of swap files (.swp)"
+msgstr ""
+
+#: tools/translatable-strings.c:363
+msgid "Enable automatic line wrapping"
+msgstr ""
+
+#: tools/translatable-strings.c:364
+msgid "Automatically save files on changes"
+msgstr ""
+
+#: tools/translatable-strings.c:365
+msgid "Remove background color to use terminal transparency"
+msgstr ""
+
+#: tools/translatable-strings.c:366
+msgid "Enable automatic closing of brackets and quotes"
+msgstr ""
+
+#: tools/translatable-strings.c:367
+msgid "Enable Fly Mode for Auto Pairs (experimental)"
+msgstr ""
+
+#: tools/translatable-strings.c:368
+msgid "Show file icons in Fuzzbox search results"
+msgstr ""
+
+#: tools/translatable-strings.c:369
+msgid "Display the search prompt at the top instead of the bottom"
+msgstr ""
+
+#: tools/translatable-strings.c:370
+msgid "Show the number of matches in Fuzzbox"
+msgstr ""
+
+#: tools/translatable-strings.c:371
+msgid "Show a scrollbar when results exceed window size"
+msgstr ""
+
+#: tools/translatable-strings.c:372
+msgid "Prefix character for the Fuzzbox input prompt"
+msgstr ""
+
+#: tools/translatable-strings.c:373
+msgid "Prefix character for the selected item in Fuzzbox results"
+msgstr ""
+
+#: tools/translatable-strings.c:374
+msgid "Wrap long lines in the Fuzzbox menu"
+msgstr ""
+
+#: tools/translatable-strings.c:375
+msgid "Wrap long lines in the Fuzzbox preview window"
+msgstr ""
+
+#: tools/translatable-strings.c:376
+msgid "Auto-close parenthesis ()"
+msgstr ""
+
+#: tools/translatable-strings.c:377
+msgid "Auto-close brackets []"
+msgstr ""
+
+#: tools/translatable-strings.c:378
+msgid "Auto-close braces {}"
+msgstr ""
+
+#: tools/translatable-strings.c:379
+msgid "Auto-close angle brackets <>"
+msgstr ""
+
+#: tools/translatable-strings.c:380
+msgid "Vertical symbol used for sidebar signs (e.g. Git markers)"
+msgstr ""
+
+#: tools/translatable-strings.c:381
+msgid "The leader key used for Supravim shortcuts"
+msgstr ""
+
+#: tools/translatable-strings.c:382
+msgid "Style for functions none, bold, italic, underline"
+msgstr ""
+
+#: tools/translatable-strings.c:383
+msgid "Style for types none, bold, italic, underline"
+msgstr ""
+
+#: tools/translatable-strings.c:384
+msgid "Style for variables none, bold, italic, underline"
+msgstr ""
+
+#: tools/translatable-strings.c:385
+msgid "Style for keywords none, bold, italic, underline"
+msgstr ""
+
+#: tools/translatable-strings.c:386
+msgid "Style for comments none, bold, italic, underline"
+msgstr ""
+
+#: tools/translatable-strings.c:387
+msgid "Style for strings none, bold, italic, underline"
+msgstr ""
+
+#: tools/translatable-strings.c:388
+msgid "Options related to the Auto Pairs plugin"
+msgstr ""
+
+#: tools/translatable-strings.c:389
+msgid "Options related to the Fuzzbox plugin"
+msgstr ""
+
+#: tools/translatable-strings.c:390
+msgid "Options related to the RoundVisual plugin for auto closing"
+msgstr ""
+
+#: tools/translatable-strings.c:391
+msgid "Options related to the styling of the current theme"
+msgstr ""
+
+#: tools/translatable-strings.c:392
+msgid "General options related to the theme and colorscheme"
+msgstr ""
+
+#. data/supravim/vim/autoload/CheckVersion.vim
+#: tools/translatable-strings.c:394
+msgid "Error: Unsupported Vim Version Detected!"
+msgstr ""
+
+#: tools/translatable-strings.c:395
+msgid "SupraVim needs Vim version 9.0 or higher to function properly."
+msgstr ""
+
+#: tools/translatable-strings.c:396
+msgid "Do you want to update Vim now? with suprapack"
+msgstr ""
+
+#: tools/translatable-strings.c:397
+msgid "&Yes"
+msgstr ""
+
+#: tools/translatable-strings.c:398
+msgid "&No"
+msgstr ""
+
+#: tools/translatable-strings.c:399
+msgid "Installation complete. Please restart Vim."
+msgstr ""
+
+#: tools/translatable-strings.c:400
+msgid "SupraVim will not be loaded. Falling back to minimal mode."
+msgstr ""
+
+#. data/supravim/vim/autoload/supraconfig.vim
+#: tools/translatable-strings.c:402
+#, c-format
+msgid "Error applying option '%s'"
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/autoload/fuzzbox/_extensions/fuzzydiag.vim
+#: tools/translatable-strings.c:404
+msgid "No diagnostics found."
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/autoload/supravim/Gdb.vim
+#: tools/translatable-strings.c:406
+msgid "What exactly do you want to debug?"
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/autoload/supravim/SupraOptions.vim
+#: tools/translatable-strings.c:408
+#, c-format
+msgid "Option %s changed to %s"
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/autoload/supravim/SupraTerm.vim
+#: tools/translatable-strings.c:410
+msgid "Closing SupraTerm"
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/autoload/supravim/SupravimServer.vim
+#: tools/translatable-strings.c:412
+msgid "Supravim-Server closed"
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/autoload/supravim/Welcome.vim
+#: tools/translatable-strings.c:414
+msgid "Welcome to SupraVim ! Press <F12> for help or customize your settings."
+msgstr ""
+
+#. data/supravim/vim/bundle/supravim/plugin/-options.vim
+#: tools/translatable-strings.c:416
+msgid "Enable the count line feature"
+msgstr ""
+
+#: tools/translatable-strings.c:417
+msgid "Show a notification when an achievement is unlocked"
+msgstr ""
+
+#: tools/translatable-strings.c:418
+msgid ""
+"Automatically generate the compile_commands.json file for Makefile projects"
+msgstr ""
+
+#. plugins_supravim/plugin-github-copilot/supravim_copilot.vim
+#: tools/translatable-strings.c:420
+msgid "GitHub Copilot completion on startup"
+msgstr ""
+
+#: tools/translatable-strings.c:421
+msgid "Plugin: GitHub Copilot"
+msgstr ""
+
+#. plugins_supravim/plugin-norminette/pkg/usr/share/supravim/vim/bundle/SupraNorminette/plugin/-options.vim
+#: tools/translatable-strings.c:423
+msgid "Enable norminette"
+msgstr ""
+
+#. plugins_supravim/plugin-prabirshrestha-vim-lsp/vim-lsp.vim
+#: tools/translatable-strings.c:425
+msgid "Enable or disable the Language Server Protocol interface"
+msgstr ""
+
+#: tools/translatable-strings.c:426
+msgid "Enable verbose logging for LSP (~/.cache/supravim_lsp.log)"
+msgstr ""
+
+#: tools/translatable-strings.c:427
+msgid "Highlight lines containing errors or warnings"
+msgstr ""
+
+#: tools/translatable-strings.c:428
+msgid "Keep diagnostic highlights while in insert mode"
+msgstr ""
+
+#: tools/translatable-strings.c:429
+msgid "Show error/warning signs in the gutter (SignColumn)"
+msgstr ""
+
+#: tools/translatable-strings.c:430
+msgid "Keep diagnostic signs visible while in insert mode"
+msgstr ""
+
+#: tools/translatable-strings.c:431
+msgid "Icon for error diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:432
+msgid "Icon for warning diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:433
+msgid "Icon for information diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:434
+msgid "Icon for hint and suggestion diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:435
+msgid "Icon for available code actions"
+msgstr ""
+
+#: tools/translatable-strings.c:436
+msgid "Delay in ms before showing signs"
+msgstr ""
+
+#: tools/translatable-strings.c:437
+msgid "Delay in ms before showing code action signs"
+msgstr ""
+
+#: tools/translatable-strings.c:438
+msgid "Show signs for available code actions"
+msgstr ""
+
+#: tools/translatable-strings.c:439
+msgid "Show diagnostic text at the end of the line"
+msgstr ""
+
+#: tools/translatable-strings.c:440
+msgid "Alignment of virtual text: after, right, below, above"
+msgstr ""
+
+#: tools/translatable-strings.c:441
+msgid "Delay in ms before showing virtual text diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:442
+msgid "Wrap virtual text if it exceeds line length"
+msgstr ""
+
+#: tools/translatable-strings.c:443
+msgid "Prefix icon for virtual text diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:444
+msgid "Show diagnostics in a floating window under cursor"
+msgstr ""
+
+#: tools/translatable-strings.c:445
+msgid "Delay in ms before showing floating diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:446
+msgid "Keep floating diagnostics visible while in insert mode"
+msgstr ""
+
+#: tools/translatable-strings.c:447
+msgid "Show in the command line when cursor is on a line with diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:448
+msgid "Delay in ms before showing echo diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:449
+msgid "Enable semantic token highlighting (modern syntax coloring)"
+msgstr ""
+
+#: tools/translatable-strings.c:450
+msgid "Delay in ms before applying semantic token highlights"
+msgstr ""
+
+#: tools/translatable-strings.c:451
+msgid "Show inline hints for types and parameters"
+msgstr ""
+
+#: tools/translatable-strings.c:452
+msgid "Delay in ms before showing inlay hints"
+msgstr ""
+
+#: tools/translatable-strings.c:453
+msgid "Language Server Protocol: completion, diagnostics and code intelligence"
+msgstr ""
+
+#: tools/translatable-strings.c:454
+msgid "Options for diagnostic messages and errors"
+msgstr ""
+
+#: tools/translatable-strings.c:455
+msgid "Diagnostic messages shown in the command line"
+msgstr ""
+
+#: tools/translatable-strings.c:456
+msgid "SignColumn icons for errors, warnings, and hints"
+msgstr ""
+
+#: tools/translatable-strings.c:457
+msgid "Diagnostic text displayed next to the code"
+msgstr ""
+
+#: tools/translatable-strings.c:458
+msgid "Diagnostic messages shown in floating windows"
+msgstr ""
+
+#: tools/translatable-strings.c:459
+msgid "Highlight lines with diagnostics"
+msgstr ""
+
+#: tools/translatable-strings.c:460
+msgid "Color the code with LSP"
+msgstr ""
+
+#: tools/translatable-strings.c:461
+msgid "Inline hints like (string: ), for types and parameters"
+msgstr ""
+
+#: src/supravim-server/Stdin.vala:24
+#, c-format
+msgid "Read error: %s\n"
+msgstr ""
+
+#: src/supravim/Command.vala:8
+msgid "No plugins found"
+msgstr ""
+
+#: src/supravim/Command.vala:29
+msgid "No plugins match the given filters"
+msgstr ""
+
+#: src/supravim/main.vala:167
+#, c-format
+msgid "Supravim version %s\n"
+msgstr ""
+
+#: src/supravim/main.vala:208
+#, c-format
+msgid "Config exported to %s\n"
+msgstr ""
+
+#: src/supravim/main.vala:212
+#, c-format
+msgid "Restoring config from %s...\n"
+msgstr ""
+
+#: src/supravim/main.vala:214
+msgid "Config restored successfully\n"
+msgstr ""
+
+#: src/supravim/main.vala:240
+msgid "Invalid format. Expected: opt=value"
+msgstr ""
+
+#: src/supravim/main.vala:258
+#, c-format
+msgid "Plugin %s added successfully\n"
+msgstr ""
+
+#: src/supravim/main.vala:263
+#, c-format
+msgid "Plugin %s removed successfully\n"
+msgstr ""
+
+#: src/supravim/main.vala:268
+#, c-format
+msgid "Plugin %s enabled\n"
+msgstr ""
+
+#: src/supravim/main.vala:273
+#, c-format
+msgid "Plugin %s disabled\n"
+msgstr ""
+
+#: src/supravim/main.vala:277
+msgid "Updating all plugins...\n"
+msgstr ""
+
+#: src/supravim/main.vala:279
+msgid "All plugins updated\n"
+msgstr ""
+
+#: src/supravim/main.vala:284
+#, c-format
+msgid "Plugin %s updated\n"
+msgstr ""
+
+#: src/supravim/main.vala:291
+#, c-format
+msgid "Plugin %s pinned at %s\n"
+msgstr ""
+
+#: src/supravim/main.vala:296
+#, c-format
+msgid "Plugin %s unpinned\n"
+msgstr ""
+
+#: src/supravim/main.vala:302 src/supravim/main.vala:310
+msgid "Expected format: <plugin>:<group>"
+msgstr ""
+
+#: src/supravim/main.vala:304
+#, c-format
+msgid "Plugin %s added to group '%s'\n"
+msgstr ""
+
+#: src/supravim/main.vala:312
+#, c-format
+msgid "Plugin %s removed from group '%s'\n"
+msgstr ""
+
+#: src/supravim/main.vala:317
+#, c-format
+msgid "%d plugin(s) in group '%s' enabled\n"
+msgstr ""
+
+#: src/supravim/main.vala:322
+#, c-format
+msgid "%d plugin(s) in group '%s' disabled\n"
+msgstr ""
+
+#: src/supravim/main.vala:332
+msgid "Program to personalize your supravim"
+msgstr ""

@@ -13,10 +13,10 @@ noremap <RightMouse>			<scriptcmd>SupraMenu.Open()<cr>
 ##########
 # Format of the row
 # {
-#     label: string ->  Le texte affiché 
-#     cmd: string -> La commande à exécuter 
-#     icon: string -> L'icône à afficher
-#     priority: number -> La priorité d'affichage (plus grand = plus haut)
+#     label: string ->  The label to display
+#     cmd: string -> The command to execute when the row is selected
+#     icon: string -> The icon to display (can be empty)
+#     priority: number -> The priority of the row (higher number means higher priority)
 #     type: char -> 'n' = normal, 'v' = visual, 'i' = insert, 'c' = command 'a' = all modes
 # }
 ##########

@@ -4,6 +4,13 @@ vim9script
 set nocompatible
 filetype off
 
+{
+	var b = bindtextdomain('supravim', expand("$HOME/.local/share/locale"))
+	if b == false
+		bindtextdomain('supravim', '/usr/share/locale')
+	endif
+}
+
 #--------------- Colors Theme ---------------"
 syntax on
 

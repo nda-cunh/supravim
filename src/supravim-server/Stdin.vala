@@ -21,7 +21,7 @@ class StdinStream  {
             try {
                 channel.read_line (out data, out length, out terminaison);
             } catch (Error e) {
-                stderr.printf("Erreur de lecture : %s\n", e.message);
+                stderr.printf(_("Read error: %s\n"), e.message);
                 return false;
             }
 			onStdin (data);
