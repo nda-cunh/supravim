@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#create a function to install supravim
-
 install_supravim() {
 	export PATH=$TMPDIR/suprapack:$PWD:$PATH
 	echo -e "\033[93;1mInstalling supravim...\033[0m"
@@ -27,7 +25,6 @@ for cmd in "${required_commands[@]}"; do
 done
 
 if command -v pkg-config &> /dev/null; then
-    # On vérifie glib et gio qui manquent dans ton erreur
     for lib in "glib-2.0" "gio-2.0" "gobject-2.0"; do
         if ! pkg-config --exists "$lib"; then
             missing_libs+=("$lib")
@@ -36,10 +33,10 @@ if command -v pkg-config &> /dev/null; then
 fi
 
 if [ ${#missing_commands[@]} -ne 0 ] || [ ${#missing_libs[@]} -ne 0 ]; then
-    echo -e "\033[31;1m[Error]:\033[0m Des dépendances sont manquantes pour la compilation."
+    echo -e "\033[31;1m[Error]:\033[0m Some dependencies are missing for the build."
     
     if [ ${#missing_libs[@]} -ne 0 ]; then
-        echo -e "Bibliothèques manquantes : ${missing_libs[*]}"
+        echo -e "Missing libraries: ${missing_libs[*]}"
     fi
 
     echo -e ""
@@ -64,11 +61,9 @@ else
 	echo -e "\033[93;1mNot detected 42 School environment.\033[0m"
 fi
 
-# check if suprapack is installed in root directory
 if command -v suprapack &> /dev/null; then
 	echo -e "\033[31;1m[Error]:\033[0m suprapack is already installed in the root directory."
 
-	# tell if the user wants to reinstall suprapack
 	read -p "Do you want to reinstall suprapack? (y/n): " choice
 	if [[ "$choice" != "y" && "$choice" != "Y" ]]; then
 		install_supravim

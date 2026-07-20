@@ -4,7 +4,7 @@
 - Add :Version command to show the version
 
 # 6.73
-- Add an achievements engine: the server tracks metrics and unlocks 50+ succès, persisted in `~/.config/supravim/achievements.json`
+- Add an achievements engine: the server tracks metrics and unlocks 50+ achievements, persisted in `~/.config/supravim/achievements.json`
 - Achievements are declared in `achievements.json` and pop a notification when unlocked
 - Track typing, motions (dd/ciw/f/./macros/marks), :w/:q, undo/redo, themes, ratio insert/normal, streaks, session length and time of day
 - Record per-day stats (chars, words, lines, saves, active coding time) in a `history` map, WakaTime-style, for the GUI to display

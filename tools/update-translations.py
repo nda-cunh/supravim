@@ -58,7 +58,7 @@ def find_array(text):
             depth -= 1
             if depth == 0:
                 return text[start + 1:i]
-    raise SystemExit('tableau options non terminé dans %s' % OPTIONS_VALA)
+    raise SystemExit('unterminated options array in %s' % OPTIONS_VALA)
 
 
 def scan_braces(body):
@@ -206,19 +206,19 @@ def write_generated():
 def run(cmd):
     result = subprocess.run(cmd, cwd=ROOT)
     if result.returncode != 0:
-        raise SystemExit('échec: %s' % ' '.join(cmd))
+        raise SystemExit('failed: %s' % ' '.join(cmd))
 
 
 def main():
     total = write_generated()
-    print('%s : %d chaînes' % (os.path.relpath(GENERATED, ROOT), total))
+    print('%s: %d strings' % (os.path.relpath(GENERATED, ROOT), total))
 
     run(['xgettext', '--from-code=UTF-8', '--keyword=_', '--keyword=N_',
          '--add-comments', '--package-name=' + PACKAGE, '--package-version=' + VERSION,
          '--msgid-bugs-address=' + BUGS_ADDRESS, '--copyright-holder=SupraVim',
          '--files-from=' + os.path.relpath(POTFILES, ROOT),
          '-o', os.path.relpath(POT, ROOT)])
-    print('%s régénéré' % os.path.relpath(POT, ROOT))
+    print('%s regenerated' % os.path.relpath(POT, ROOT))
 
     po_dir = os.path.join(ROOT, 'po')
     for name in sorted(os.listdir(po_dir)):

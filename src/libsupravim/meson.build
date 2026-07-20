@@ -24,9 +24,6 @@ lib_deps = [
   dependency('yyjson', static: true),
 ]
 
-# lib_build_dir = meson.current_build_dir()
-# WARNING a rmeove
-
 libsupravim = library('supravim',
   lib_sources,
   build_config_vala,
@@ -42,11 +39,9 @@ libsupravim = library('supravim',
   install_vala_vapi : true,
 )
 
-# Voici la manière la plus simple et correcte selon la doc :
 libsupravim_dep = declare_dependency(
   link_with: libsupravim,
   dependencies: lib_deps,
-  # Indique à Meson d'inclure le dossier de build de la lib (où se trouvent 'supravim.h' et 'PluginLst.h')
   include_directories: include_directories('.'),
 )
 
@@ -60,14 +55,3 @@ pkg.generate(libsupravim,
 )
 
 meson.override_dependency('supravim', libsupravim_dep)
-
-# meson.add_install_script('sh', '-c',
-  # 'install -Dm644 "@0@/supravim.h" "$DESTDIR@1@/supravim.h"'.format(
-    # meson.current_build_dir(), get_option('prefix') / get_option('includedir')),
-# )
-# 
-# meson.add_install_script('sh', '-c',
-  # 'install -Dm644 "@0@/supravim.vapi" "$DESTDIR@1@/supravim.vapi"'.format(
-    # meson.current_build_dir(),
-    # get_option('prefix') / get_option('datadir') / 'vala' / 'vapi'),
-# )

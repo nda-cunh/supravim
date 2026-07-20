@@ -82,7 +82,6 @@ namespace YYJson {
     [CCode (cname = "yyjson_mut_val")]
     [Compact]
     public class MutValue {
-        /* On force l'ordre C: (doc, val, ...) en mettant 'instance_pos = 2' */
         
         [CCode (cname = "yyjson_mut_obj_add_strcpy", instance_pos = 1.1)]
         public bool obj_add_str(MutDoc doc, string key, string val);
@@ -93,21 +92,18 @@ namespace YYJson {
         [CCode (cname = "yyjson_mut_obj_put", instance_pos = -1)]
         public bool obj_put(string key, MutValue val);
 
-        // Adds an existing value (object/array/...) under a string key
         [CCode (cname = "yyjson_mut_obj_add_val", instance_pos = 1.1)]
         public bool obj_add_val(MutDoc doc, string key, MutValue val);
 
         [CCode (cname = "yyjson_mut_obj_add_bool", instance_pos = 1.1)]
         public bool obj_add_bool(MutDoc doc, string key, bool val);
 
-        // Creates a nested array, adds it to the object, and returns it
         [CCode (cname = "yyjson_mut_obj_add_arr", instance_pos = 1.1)]
         public unowned MutValue? obj_add_arr(MutDoc doc, string key);
 
         [CCode (cname = "yyjson_mut_arr_add_strcpy", instance_pos = 1.1)]
         public bool arr_add_str(MutDoc doc, string val);
 
-        // Creates a nested object, appends it to the array, and returns it
         [CCode (cname = "yyjson_mut_arr_add_obj", instance_pos = 1.1)]
         public unowned MutValue? arr_add_obj(MutDoc doc);
 
@@ -127,7 +123,6 @@ namespace YYJson {
         public static unowned Value? get_val (Value key);
     }
 
-    /* Supprimer les '= 1' car ce sont des constantes externes */
     [CCode (cname = "YYJSON_WRITE_PRETTY")]
     public const uint WRITE_PRETTY;
 }
