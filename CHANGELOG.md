@@ -1,7 +1,8 @@
 # 6.76
 - Add tranlation with i18n
 - Add stats per language and per day
-- Add :Version command to show the version
+- var Add :Version command to show the version
+- Fix bug with SupraWater
 
 # 6.73
 - Add an achievements engine: the server tracks metrics and unlocks 50+ achievements, persisted in `~/.config/supravim/achievements.json`
