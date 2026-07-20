@@ -31,7 +31,7 @@ def g:LspServerActivate()
 	Lsp.LspServerActivate()
 enddef
 
-# --- Navigation avancée ---
+# --- Advanced navigation ---
 
 def g:LspDefinition()
 	Lsp.LspDefinition()
@@ -128,7 +128,7 @@ def g:LspServerActivate()
 	echom LspInterfaceNotFoundMessage
 enddef
 
-# --- Navigation avancée ---
+# --- Advanced navigation ---
 
 def g:LspDefinition()
 	echom LspInterfaceNotFoundMessage

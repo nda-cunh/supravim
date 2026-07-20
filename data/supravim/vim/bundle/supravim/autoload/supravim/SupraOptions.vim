@@ -21,7 +21,6 @@ def GotOutput(channel: channel, msg: string)
 	endif
 enddef
 
-# Each troll of the Magic Mode popup is an existing SupraVim command
 const EASTER_EGGS = {
 	snake:    'Snake',
 	pacman:   'Pacman',
@@ -54,9 +53,6 @@ enddef
 
 export def ChangeSupravimTheme(theme: string, typemode: string)
 	exec 'colorscheme ' .. theme
-	# sans suffixe -light/-dark, on laisse le colorscheme garder son 'background'.
-	# 'background' vide est un etat invalide : les themes qui testent
-	# (&background == 'dark') basculent alors en clair.
 	if typemode == 'light' || typemode == 'dark'
 		exec 'set background=' .. typemode
 	endif

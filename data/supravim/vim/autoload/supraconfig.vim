@@ -2,18 +2,18 @@ vim9script
 
 var registry: dict<any> = {}
 var current_values: dict<any> = {}
-var user_settings: any = null # Initialisé à null pour savoir s'il faut lire le fichier
+var user_settings: any = null # Initialized to null to know whether the file must be read
 var group_registry: dict<string> = {}
 
-# Documentation des options
+# Options documentation
 # -----------------------------------------
 # {
-#   id: string,       # L'identifiant unique (doit matcher la clé du JSON)
-#   type: string,     # 'bool', 'string', 'number', 'choice' (pour ton CLI)
-#   lore: string,     # La description affichée à l'utilisateur
-#   default: any,     # La valeur par défaut si absente du JSON
-#   spawn: func,      # (optionnel) Fonction exécutée une seule fois mais n'appelles pas handler() au demmarage
-#   handler: func,    # La fonction exécutée : (val) => { ... }
+#   id: string,       # The unique identifier (must match the JSON key)
+#   type: string,     # 'bool', 'string', 'number', 'choice' (for your CLI)
+#   lore: string,     # The description shown to the user
+#   default: any,     # The default value when absent from the JSON
+#   spawn: func,      # (optional) Function run only once, but does not call handler() at startup
+#   handler: func,    # The function run: (val) => { ... }
 # }
 
 ####################
@@ -152,7 +152,7 @@ enddef
 ########  Cache  ########
 
 def InitCache()
-    user_settings = {} # On initialise comme un dict vide par défaut
+    user_settings = {} # Initialize as an empty dict by default
     const state_path = expand('~/.config/supravim/state.json')
     
     if filereadable(state_path)
@@ -178,13 +178,13 @@ def Save()
         endif
     endfor
 
-    # On ne crée le dossier/fichier que s'il y a quelque chose à sauver
+    # Only create the directory/file if there is something to save
     if !empty(to_save.options)
         const dir = fnamemodify(state_path, ':h')
         if !isdirectory(dir) | mkdir(dir, 'p') | endif
         writefile([json_encode(to_save)], state_path)
     elseif filereadable(state_path)
-        # Si tout est redevenu par défaut, on peut supprimer le fichier
+        # If everything is back to default, the file can be removed
         delete(state_path)
     endif
 enddef

@@ -37,7 +37,6 @@ def Build()
 	}
 
     var index_sep = 0
-    # On sépare les suivis pour éviter que le contenu 'n' déclenche un sep en 'v'
     var has_n = false
     var has_v = false
     var pending_n = false
@@ -62,17 +61,14 @@ def Build()
             var type = get(action, 'type', 'n')
             var label = get(action, 'label', '')
 
-            # 1. Gestion des séparateurs (internes ou inter-plugins)
             if type == 's' || label == '---'
                 if has_n | pending_n = true | endif
                 if has_v | pending_v = true | endif
                 continue
             endif
 
-            # 2. Logique spécifique par mode
             if type == 'n'
-                # Si c'est un nouveau plugin (pas le premier), on prépare un sep
-                if has_n && label != '' && index_sep == 0 # Simplifié pour l'exemple
+                if has_n && label != '' && index_sep == 0
                     pending_n = true 
                 endif
 
@@ -81,21 +77,16 @@ def Build()
                     index_sep += 1
                     pending_n = false
                 endif
-                # ... execute nmenu ...
                 has_n = true
 
             elseif type == 'v'
-                # On ne met le sep QUE si le mode visuel a déjà eu un item
                 if pending_v
                     execute $'vmenu PopUp.--sep{index_sep}-- <Nop>'
                     index_sep += 1
                     pending_v = false
                 endif
-                # ... execute vmenu ...
                 has_v = true
             endif
-            
-            # (Appliquer le même pattern pour 'i' si nécessaire)
             
             var cmd = get(action, 'cmd', '')
             var icon = get(action, 'icon', '')
@@ -103,7 +94,6 @@ def Build()
             execute $'{type}menu PopUp.{menu_path} {cmd}'
         endfor
         
-        # À la fin de chaque plugin, on prépare le terrain pour le suivant
         if has_n | pending_n = true | endif
         if has_v | pending_v = true | endif
     endfor
