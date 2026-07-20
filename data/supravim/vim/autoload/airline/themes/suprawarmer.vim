@@ -1,8 +1,7 @@
 vim9script
 
-# navarasu/onedark.nvim · warmer — thème airline pour le colorscheme suprawarmer
-
 # --- Palette ---
+
 final bg0     = '#232326'
 final panel_b = '#35363b'
 final panel_c = '#1b1c1e'

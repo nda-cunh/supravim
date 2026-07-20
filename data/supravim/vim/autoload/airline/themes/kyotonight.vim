@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme kyotonight
-
 # --- Palette ---
 final bg0     = '#1a1b26'
 final panel_b = '#24283b'

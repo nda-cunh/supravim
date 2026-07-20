@@ -1,6 +1,7 @@
 vim9script
 
 # Palette
+
 final base = '#faf4ed'
 final surface = '#fffaf3'
 final overlay = '#f2e9e1'

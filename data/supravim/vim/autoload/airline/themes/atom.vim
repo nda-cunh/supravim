@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme atom
-
 # --- Palette ---
 final bg0     = '#1b1e26'
 final panel_b = '#2c2f36'

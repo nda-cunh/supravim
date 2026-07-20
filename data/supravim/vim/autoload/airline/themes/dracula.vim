@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme dracula
-
 # --- Palette ---
 final bg0     = '#282a36'
 final panel_b = '#282a36'

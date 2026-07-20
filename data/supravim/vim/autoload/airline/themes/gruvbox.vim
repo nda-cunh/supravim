@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme gruvbox
-
 # --- Palette ---
 final bg0     = '#282828'
 final panel_b = '#504945'

@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme catppuccin_frappe
-
 # --- Palette ---
 final bg0     = '#303446'
 final panel_b = '#414559'

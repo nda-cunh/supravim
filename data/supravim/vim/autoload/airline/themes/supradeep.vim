@@ -1,8 +1,7 @@
 vim9script
 
-# navarasu/onedark.nvim · deep — thème airline pour le colorscheme supradeep
-
 # --- Palette ---
+
 final bg0     = '#1a212e'
 final panel_b = '#283347'
 final panel_c = '#141b24'

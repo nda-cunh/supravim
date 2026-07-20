@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme iceberg
-
 # --- Palette ---
 final bg0     = '#161821'
 final panel_b = '#3d425b'

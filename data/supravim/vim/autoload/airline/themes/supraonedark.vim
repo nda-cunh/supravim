@@ -1,8 +1,7 @@
 vim9script
 
-# navarasu/onedark.nvim · darker — thème airline pour le colorscheme supraonedark
-
 # --- Palette ---
+
 final bg0     = '#1f2329'
 final panel_b = '#30363f'
 final panel_c = '#181b20'

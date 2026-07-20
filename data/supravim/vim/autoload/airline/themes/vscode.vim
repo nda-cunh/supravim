@@ -1,8 +1,7 @@
 vim9script
 
-# VSCode Dark+ — thème airline pour le colorscheme vscode
-
 # --- Palette ---
+
 final bg0     = '#1e1e1e'
 final panel_b = '#37373d'
 final panel_c = '#252526'

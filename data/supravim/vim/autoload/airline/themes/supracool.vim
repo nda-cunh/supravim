@@ -1,8 +1,7 @@
 vim9script
 
-# navarasu/onedark.nvim · cool — thème airline pour le colorscheme supracool
-
 # --- Palette ---
+
 final bg0     = '#242b38'
 final panel_b = '#343e4f'
 final panel_c = '#1e242e'

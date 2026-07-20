@@ -1,7 +1,5 @@
 vim9script
 
-# thème airline pour le colorscheme catppuccin_macchiato
-
 # --- Palette ---
 final bg0     = '#24273a'
 final panel_b = '#363a4f'

@@ -1,8 +1,7 @@
 vim9script
 
-# navarasu/onedark.nvim · light — thème airline pour le colorscheme supralight
-
 # --- Palette ---
+
 final bg0     = '#fafafa'
 final panel_b = '#e6e6e6'
 final panel_c = '#c9c9c9'
