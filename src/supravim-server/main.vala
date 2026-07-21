@@ -43,7 +43,7 @@ public class SupraVim {
 			discord = new DiscordSupraVim ("1399862365800894584");
 			discord.state = "Opening Supravim";
 			discord.details = "Editing code";
-			discord.large_image = "vala";
+			discord.large_image = "supracorp";
 			yield discord.run();
 			yield discord.send_actvity();
 		}
