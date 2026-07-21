@@ -69,7 +69,7 @@ SupraConfig.RegisterMany([
     {
         id: 'theme',
         type: 'string',
-        default: 'onedark',
+        default: 'supradeep',
         lore: 'Sets the main color scheme',
         handler: (v) => {
 			# a theme can be have the format 'theme[-<light|dark>]'
