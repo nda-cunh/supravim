@@ -15,7 +15,7 @@ public class SupraVim {
 	StdinStream stdin;
 	Command command;
 #if DISCORD_PRESENCE
-	public static DiscordSupraVim discord;
+	public static DiscordSupraVim? discord = null;
 #endif
 
 	private SupraVim (string [] args) throws Error {
@@ -25,16 +25,7 @@ public class SupraVim {
 
 #if DISCORD_PRESENCE
 		// Discord Rich Presence
-		try {
-			discord = new DiscordSupraVim ("1399862365800894584");
-			discord.state = "Opening Supravim";
-			discord.details = "Editing code";
-			discord.large_image = "vala";
-			discord.run.begin ( () => discord.send_actvity.begin());
-		}
-		catch (Error e) {
-			printerr ("Discord Error: %s\n", e.message);
-		}
+		run_discord.begin ();
 #endif
 	}
 
@@ -44,6 +35,27 @@ public class SupraVim {
 
 		yield;
 	}
+
+#if DISCORD_PRESENCE
+
+	private async void run_discord () {
+		try {
+			discord = new DiscordSupraVim ("1399862365800894584");
+			discord.state = "Opening Supravim";
+			discord.details = "Editing code";
+			discord.large_image = "vala";
+			yield discord.run();
+			yield discord.send_actvity();
+		}
+		catch (Error e) {
+			discord = null;
+			Timeout.add (64000, () => {
+				run_discord.begin ();
+				return false;
+			});
+		}
+	}
+#endif
 
 	public static async int main (string[] args) {
 		Intl.setlocale ();
