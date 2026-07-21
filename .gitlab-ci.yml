@@ -1,0 +1,18 @@
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - cp -r site public
+    # short install endpoints — one source of truth, no copy to keep in sync
+    - cp install.sh public/install
+    - cp create_package.sh public/macos
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - site/**/*
+        - install.sh
+        - create_package.sh
+        - .gitlab-ci.yml

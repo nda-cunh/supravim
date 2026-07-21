@@ -1,8 +1,20 @@
 # 6.76
-- Add tranlation with i18n
+- Switch the default theme to supradeep
+- Add a new supraevening theme and normalize the highlight styles
+- Add translations with i18n (gettext) for the user-facing strings
+- Add a `:Version` command to show the current version
+- Track coding time per language and per project
 - Add stats per language and per day
-- var Add :Version command to show the version
+- Whisper: add configurable root mappings for menu navigation
+- Discord presence: initialize asynchronously with retry, and update the logo to supravim
+- Rename the SupraPacman `strawberry` achievement to `apple`
+- Split the immutable stats history into its own file
+- Stats: only track real file buffers, and ignore large text changes and transient project directories
+- Fix multibyte keys in whisper mappings
 - Fix bug with SupraWater
+- Require meson 1.11.0 or later to build
+- Add yyjson as a wrap dependency
+- Add the SupraVim web page and its GitLab Pages deployment
 
 # 6.73
 - Add an achievements engine: the server tracks metrics and unlocks 50+ achievements, persisted in `~/.config/supravim/achievements.json`

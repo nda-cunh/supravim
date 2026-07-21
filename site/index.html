@@ -1,0 +1,895 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SupraVim — Vim, fully equipped</title>
+<meta name="description" content="200+ plugins, coding stats and 35 languages, ready on first launch. A Vim distribution written in Vim9 and Vala.">
+<link rel="icon" href="supravim.svg">
+<link rel="canonical" href="https://supravim.dev/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://supravim.dev/">
+<meta property="og:site_name" content="SupraVim">
+<meta property="og:title" content="SupraVim — Vim, fully equipped">
+<meta property="og:description" content="200+ plugins, coding stats and 35 languages, ready on first launch. A Vim distribution written in Vim9 and Vala.">
+<meta property="og:image" content="https://supravim.dev/img/general.png">
+<meta property="og:image:width" content="1907">
+<meta property="og:image:height" content="880">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+/* palette lifted from the supradeep colorscheme (data/supravim/vim/colors/supradeep.vim) */
+:root {
+  --bg:       #0e131c;
+  --bg-2:     #141b24;
+  --surface:  #1a212e;
+  --surface-2:#21283b;
+  --raised:   #2a324a;
+  --line:     #263049;
+  --line-2:   #313c58;
+
+  --fg:       #93a4c3;
+  --fg-hi:    #dbe3f0;
+  --dim:      #7787a6;
+
+  --blue:     #41a7fc;
+  --cyan:     #34bfd0;
+  --green:    #8bcd5b;
+  --gold:     #efbd5d;
+  --orange:   #dd9046;
+  --violet:   #c75ae8;
+  --red:      #f65866;
+
+  --brand-g:  #98c37b;
+  --brand-y:  #e4bf7c;
+
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --pad: clamp(1.1rem, 4vw, 2rem);
+  --wide: 1200px;
+  --r: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(65,167,252,.20), transparent 60%),
+    radial-gradient(900px 600px at 100% 8%,   rgba(52,191,208,.10), transparent 60%),
+    radial-gradient(800px 600px at 0% 30%,    rgba(199,90,232,.07), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 45%);
+}
+
+/* slow drifting wash layered over the static gradient — deliberately barely perceptible */
+.aurora { position: fixed; inset: -25%; z-index: -1; pointer-events: none; overflow: hidden; }
+.aurora i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .22;
+  will-change: transform;
+}
+.aurora i:nth-child(1) {
+  width: 46vw; height: 46vw; top: 2%; left: 8%;
+  background: radial-gradient(circle, var(--blue), transparent 68%);
+  animation: drift-a 16s ease-in-out infinite alternate;
+}
+.aurora i:nth-child(2) {
+  width: 40vw; height: 40vw; top: 26%; right: 6%;
+  background: radial-gradient(circle, var(--cyan), transparent 68%);
+  animation: drift-b 23s ease-in-out infinite alternate;
+}
+.aurora i:nth-child(3) {
+  width: 34vw; height: 34vw; bottom: 6%; left: 30%;
+  background: radial-gradient(circle, var(--violet), transparent 70%);
+  opacity: .14;
+  animation: drift-c 9s ease-in-out infinite alternate;
+}
+@keyframes drift-a { from { transform: translate3d(-4vw,-3vh,0) scale(1);    } to { transform: translate3d(9vw,7vh,0)   scale(1.22); } }
+@keyframes drift-b { from { transform: translate3d(3vw,2vh,0)   scale(1.18); } to { transform: translate3d(-8vw,9vh,0)  scale(.95); } }
+@keyframes drift-c { from { transform: translate3d(-3vw,3vh,0)  scale(.95);  } to { transform: translate3d(7vw,-8vh,0)  scale(1.25); } }
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ---------------- nav ---------------- */
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(14,19,28,.72);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s, background .25s;
+}
+nav.stuck { border-bottom-color: var(--line); background: rgba(14,19,28,.9); }
+
+.nav-in { display: flex; align-items: center; gap: 1.6rem; height: 62px; }
+.mark { display: flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--fg-hi); letter-spacing: -.02em; }
+.mark svg { width: 26px; height: 26px; display: block; }
+.nav-links { display: flex; gap: 1.5rem; margin-left: auto; font-size: .9rem; }
+.nav-links a { color: var(--dim); transition: color .18s; }
+.nav-links a:hover { color: var(--fg-hi); }
+
+.ver-chip {
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--blue);
+  padding: .2em .55em;
+  border: 1px solid rgba(65,167,252,.3);
+  background: rgba(65,167,252,.1);
+  border-radius: 6px;
+  margin-left: .15rem;
+}
+
+.ghost {
+  font-size: .84rem;
+  font-weight: 600;
+  padding: .5em 1.05em;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  color: var(--fg-hi);
+  transition: background .18s, border-color .18s;
+}
+.ghost:hover { background: var(--surface-2); border-color: var(--dim); }
+
+/* ---------------- shared ---------------- */
+
+section { padding: clamp(4rem, 10vw, 7rem) 0; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  padding: .4em .9em;
+  border: 1px solid rgba(65,167,252,.28);
+  background: rgba(65,167,252,.08);
+  border-radius: 100px;
+}
+
+h1, h2, h3 { color: var(--fg-hi); letter-spacing: -.03em; line-height: 1.08; margin: 0; }
+
+h2 { font-size: clamp(1.9rem, 4.6vw, 3rem); font-weight: 700; }
+
+.lead { color: var(--dim); font-size: clamp(1rem, 2vw, 1.12rem); max-width: 58ch; margin: 1rem 0 0; }
+
+.sec-head { margin-bottom: clamp(2.2rem, 5vw, 3.4rem); }
+.sec-head .eyebrow { margin-bottom: 1.2rem; }
+
+/* editorial variant: statement left, detail right */
+.sec-head.split { display: grid; gap: 1.2rem; }
+@media (min-width: 900px) {
+  .sec-head.split { grid-template-columns: 1.05fr .95fr; align-items: end; gap: 3.5rem; }
+  .sec-head.split .lead { margin: 0 0 .4rem; }
+}
+.sec-head.split h2 { max-width: 14ch; }
+
+code, kbd { font-family: var(--mono); }
+.k { color: var(--fg-hi); background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: .12em .45em; font-size: .86em; }
+
+/* ---------------- hero ---------------- */
+
+.hero { padding: clamp(3.5rem, 9vw, 6rem) 0 0; text-align: center; }
+
+.hero h1 {
+  font-size: clamp(2.6rem, 7.4vw, 5rem);
+  font-weight: 800;
+  margin: 1.5rem 0 0;
+  background: linear-gradient(180deg, #ffffff, #9fb3d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero .lead { margin: 1.3rem auto 0; text-align: center; }
+
+.cta { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; margin-top: 2.2rem; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .92rem;
+  font-weight: 600;
+  padding: .8em 1.5em;
+  border-radius: 10px;
+  border: 1px solid var(--line-2);
+  background: var(--surface-2);
+  color: var(--fg-hi);
+  cursor: pointer;
+  transition: transform .18s, background .18s, border-color .18s, box-shadow .18s;
+}
+.btn:hover { transform: translateY(-2px); background: var(--raised); border-color: var(--dim); }
+.btn.primary {
+  background: linear-gradient(180deg, #58b3ff, var(--blue));
+  border-color: #58b3ff;
+  color: #08101c;
+  box-shadow: 0 8px 30px -8px rgba(65,167,252,.7);
+}
+.btn.primary:hover { box-shadow: 0 12px 38px -8px rgba(65,167,252,.9); }
+
+/* install strip */
+
+.strip {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  max-width: 780px;
+  margin: 2.2rem auto 0;
+  padding: .5rem .5rem .5rem 1.1rem;
+  background: rgba(26,33,46,.8);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-family: var(--mono);
+  font-size: .82rem;
+  text-align: left;
+  transition: border-color .2s, box-shadow .2s;
+}
+.strip:hover { border-color: rgba(65,167,252,.5); box-shadow: 0 0 40px -14px rgba(65,167,252,.6); }
+.strip .prompt { color: var(--green); flex: none; }
+.strip code { color: var(--fg-hi); overflow-x: auto; white-space: nowrap; flex: 1; min-width: 0; scrollbar-width: none; }
+.strip code::-webkit-scrollbar { display: none; }
+.strip button {
+  flex: none;
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  padding: .55em .9em;
+  border: 0;
+  border-radius: 8px;
+  background: var(--raised);
+  color: var(--fg);
+  cursor: pointer;
+  transition: background .18s, color .18s;
+}
+.strip button:hover { background: var(--blue); color: #08101c; }
+
+/* hero shot */
+
+.shot-wrap { position: relative; margin-top: clamp(3rem, 7vw, 5rem); }
+.shot-wrap::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 45%;
+  background: linear-gradient(180deg, transparent, var(--bg) 92%);
+  pointer-events: none;
+}
+.frame {
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,.9), 0 0 90px -40px rgba(65,167,252,.5);
+}
+.chrome { display: flex; align-items: center; gap: .5rem; padding: .6rem .9rem; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.chrome i { width: 11px; height: 11px; border-radius: 50%; background: var(--line-2); display: block; }
+.chrome i:nth-child(1) { background: #f65866; }
+.chrome i:nth-child(2) { background: #efbd5d; }
+.chrome i:nth-child(3) { background: #8bcd5b; }
+.chrome span { margin-left: .6rem; font-family: var(--mono); font-size: .74rem; color: var(--dim); }
+
+/* ---------------- stat band ---------------- */
+
+/* no rules, no panel — the numbers float on the background instead of slicing it */
+.band { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.6rem clamp(2rem, 6vw, 4.5rem); margin-top: clamp(2.5rem, 6vw, 4rem); }
+.band div { text-align: center; }
+.band b {
+  display: block;
+  font-family: var(--mono);
+  font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  background: linear-gradient(180deg, var(--fg-hi), #7f93b5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.band span { font-size: .78rem; color: var(--dim); }
+
+/* ---------------- feature rows ---------------- */
+/* alternating rows so every screenshot is shown whole — nothing is cropped */
+
+.feat-list { display: grid; gap: clamp(3.5rem, 8vw, 6rem); }
+
+.feat { display: grid; gap: clamp(1.6rem, 4vw, 3.2rem); align-items: center; --tint: var(--blue); }
+@media (min-width: 900px) {
+  .feat { grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); }
+  /* mirrored rows keep the wider column for the screenshot, so both sides render at the same scale */
+  .feat:nth-child(even) { grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr); }
+  .feat:nth-child(even) .feat-txt { order: 2; }
+}
+
+.feat-txt .tag {
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--tint);
+}
+.feat-txt h3 { font-size: clamp(1.35rem, 2.8vw, 1.8rem); font-weight: 700; margin: .8rem 0 .7rem; }
+.feat-txt p { margin: 0; color: var(--dim); font-size: 1rem; }
+
+.feat-txt ul { list-style: none; padding: 0; margin: 1.3rem 0 0; display: grid; gap: .55rem; }
+.feat-txt li { position: relative; padding-left: 1.5rem; font-size: .92rem; }
+.feat-txt li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .55em;
+  width: 7px; height: 7px;
+  border-radius: 2px;
+  background: var(--tint);
+}
+
+.feat-shot {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 30px 70px -30px rgba(0,0,0,.9);
+  transition: transform .3s, border-color .3s, box-shadow .3s;
+}
+.feat-shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(75% 60% at 50% 0%, color-mix(in srgb, var(--tint) 12%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.feat-shot:hover { transform: translateY(-4px); border-color: var(--line-2); box-shadow: 0 40px 90px -30px rgba(0,0,0,.95); }
+.feat-shot:hover::after { opacity: 1; }
+/* portrait captures would tower over their row: cap the height, still uncropped */
+.feat-shot { display: flex; justify-content: center; width: fit-content; margin-inline: auto; }
+.feat-shot img { width: 100%; height: auto; max-height: 500px; display: block; }
+@media (min-width: 900px) { .feat-shot img { width: auto; max-width: 100%; } }
+
+
+/* ---------------- built here ---------------- */
+
+.made { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+@media (min-width: 640px)  { .made { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .made { grid-template-columns: repeat(4, 1fr); } }
+
+.made div { background: var(--surface); padding: 1.2rem 1.3rem; transition: background .2s; }
+.made div:hover { background: var(--surface-2); }
+.made b { display: block; font-family: var(--mono); font-size: .88rem; font-weight: 700; color: var(--fg-hi); letter-spacing: -.01em; }
+.made span { display: block; font-size: .84rem; color: var(--dim); margin-top: .3rem; }
+
+.play {
+  margin-top: 2.2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line);
+  font-size: .95rem;
+  color: var(--dim);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem .7rem;
+}
+.play .cmd {
+  font-family: var(--mono);
+  font-size: .84rem;
+  color: var(--gold);
+  border: 1px solid rgba(239,189,93,.28);
+  background: rgba(239,189,93,.08);
+  border-radius: 6px;
+  padding: .2em .6em;
+}
+
+/* ---------------- languages ---------------- */
+
+.langs { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 0; }
+.langs li {
+  list-style: none;
+  font-family: var(--mono);
+  font-size: .82rem;
+  padding: .45em 1em;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  color: var(--fg);
+  transition: color .18s, border-color .18s, background .18s, transform .18s;
+  cursor: default;
+}
+.langs li:hover { color: var(--fg-hi); border-color: var(--blue); background: rgba(65,167,252,.1); transform: translateY(-2px); }
+.langs li.more { border-style: dashed; color: var(--dim); }
+
+/* ---------------- install ---------------- */
+
+/* the command is short now — hug it instead of stretching a half-empty bar */
+.hero .strip { width: fit-content; max-width: 100%; }
+.strip.big { margin: 0; width: fit-content; max-width: 100%; font-size: clamp(.78rem, 1.6vw, .95rem); padding: .8rem .8rem .8rem 1.3rem; }
+.needs { font-size: .88rem; color: var(--dim); margin: 1rem 0 2.4rem; }
+
+.rows { display: grid; gap: .5rem; }
+.row {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr;
+  gap: 1rem;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .8rem 1.1rem;
+  transition: border-color .18s;
+}
+.row:hover { border-color: var(--line-2); }
+.row .lbl { font-family: var(--mono); font-size: .76rem; color: var(--dim); }
+.row code { font-size: .82rem; color: var(--fg-hi); overflow-x: auto; white-space: nowrap; display: block; scrollbar-width: none; }
+.row code::-webkit-scrollbar { display: none; }
+
+/* ---------------- changelog ---------------- */
+
+.log { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 2rem; align-items: start; }
+.log .ver { font-family: var(--mono); font-size: 2.4rem; font-weight: 800; color: var(--gold); letter-spacing: -.04em; line-height: 1; }
+.log .ver small { display: block; font-size: .7rem; font-weight: 600; color: var(--dim); letter-spacing: .1em; text-transform: uppercase; margin-top: .6rem; }
+.log ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .7rem; }
+.log li { padding-left: 1.4rem; position: relative; font-size: .96rem; }
+.log li::before { content: "→"; position: absolute; left: 0; color: var(--blue); font-family: var(--mono); }
+
+/* ---------------- footer ---------------- */
+
+footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
+.foot { display: flex; flex-wrap: wrap; gap: 2rem 3rem; }
+.foot .brand-col { max-width: 30ch; }
+.foot .brand-col p { font-size: .88rem; color: var(--dim); margin: .8rem 0 0; }
+.foot h4 { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: 0 0 .8rem; }
+.foot a { display: block; font-size: .9rem; color: var(--fg); margin-bottom: .45rem; transition: color .18s; }
+.foot a:hover { color: var(--blue); }
+.foot-end { margin-top: 2.6rem; padding-top: 1.4rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; font-family: var(--mono); font-size: .74rem; color: var(--dim); }
+.foot-end span:last-child { margin-left: auto; }
+
+/* ---------------- reveal ---------------- */
+
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .65s cubic-bezier(.2,.7,.3,1), transform .65s cubic-bezier(.2,.7,.3,1); }
+.rv.in { opacity: 1; transform: none; }
+
+@media (max-width: 700px) {
+  .nav-links { display: none; }
+  .log { grid-template-columns: 1fr; gap: 1.2rem; }
+  .row { grid-template-columns: 1fr; gap: .3rem; }
+  .foot-end span:last-child { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  .rv { opacity: 1; transform: none; }
+  .aurora { display: none; }
+}
+</style>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="#top">
+      <svg viewBox="0 0 700 700" aria-hidden="true">
+        <path fill="#282c33" d="m132.25 557.57-.12-136.17 120.2 136.1z"/>
+        <path fill="#3e4351" d="m131.8 557.29 114.37 129.63H458.5l108.05-129.68Z"/>
+        <path fill="#8f713f" d="m133.82 141.73 112.49 73.44v-73.21Z"/>
+        <path fill="#8f713f" d="m457.06 557.65.12-73.2 109.8 73.38z"/>
+        <path fill="#e4bf7c" d="m566.62 557.91-1.64-136.56-431.54-280.02v133.44z"/>
+        <path fill="#1e3829" d="m566.6 141.2.32 124.07-111.1-124.09z"/>
+        <path fill="#98c37b" d="M132.45 141.33 247.15 9.2h202.47l116.96 132Z"/>
+      </svg>
+      SupraVim
+      <span class="ver-chip">6.76</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#languages">Languages</a>
+      <a href="#built">Built here</a>
+      <a href="#install">Install</a>
+      <a href="#changelog">Changelog</a>
+    </div>
+    <a class="ghost" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1>Vim, fully equipped.</h1>
+    <p class="lead">200+ plugins, coding stats and 35 languages, ready on first launch. Written in Vim9 and Vala.</p>
+
+    <div class="strip">
+      <span class="prompt">$</span>
+      <code>curl https://supravim.dev/install | sh</code>
+      <button type="button" data-copy="curl https://supravim.dev/install | sh">COPY</button>
+    </div>
+
+    <div class="cta">
+      <a class="btn primary" href="#install">Install SupraVim</a>
+      <a class="btn" href="https://gitlab.com/nda-cunh/SupraVim/-/wikis/home">Read the wiki</a>
+    </div>
+
+    <div class="shot-wrap">
+      <div class="frame">
+        <div class="chrome"><i></i><i></i><i></i><span>~/SupraVim/src/libsupravim/Plugin.vala</span></div>
+        <img src="img/general.png" alt="SupraVim editing a Vala file: SupraTree sidebar on the left, syntax-highlighted code and the powerline statusline" width="1907" height="880">
+      </div>
+    </div>
+  </div>
+</header>
+
+  <div class="wrap band">
+    <div><b>231</b><span>plugins, one click</span></div>
+    <div><b>20+</b><span>themes</span></div>
+    <div><b>36</b><span>language servers</span></div>
+    <div><b>68</b><span>achievements</span></div>
+  </div>
+
+<!-- ============ FEATURES ============ -->
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head split">
+      <div>
+      <span class="eyebrow">What you get</span>
+      <h2>Batteries, already in.</h2>
+      </div>
+      <p class="lead">No plugin manager to learn, no config to bootstrap. Install it, run <span class="k">vim</span>, start working.</p>
+    </div>
+
+    <div class="feat-list">
+
+      <article class="feat" style="--tint:var(--blue)">
+        <div class="feat-txt">
+          <span class="tag">Plugin store</span>
+          <h3>200+ plugins, installed in one click</h3>
+          <p>Browse or search the store by category, hit the plus, done.</p>
+          <ul>
+            <li>Nothing to clone, pin or update by hand</li>
+            <li>Filter by category, or search across all of them</li>
+            <li>Your installed list travels with your config</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/settings-plugins.png" alt="The SupraVim plugin store listing vim-fugitive, vim-gitgutter, fzf and others with one-click install buttons" loading="lazy"></div>
+      </article>
+
+      <article class="feat" style="--tint:var(--green)">
+        <div class="feat-txt">
+          <span class="tag">Stats</span>
+          <h3>Your coding, measured</h3>
+          <p>Tracked locally by the SupraVim server. No account, no upload, no dashboard to log into.</p>
+          <ul>
+            <li>A year-long activity heatmap</li>
+            <li>Time per language and per project</li>
+            <li>Streaks, active days and lifetime totals</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/stats.png" alt="The stats panel showing an activity heatmap, time per language and time per project" loading="lazy"></div>
+      </article>
+
+      <article class="feat" style="--tint:var(--cyan)">
+        <div class="feat-txt">
+          <span class="tag">Search</span>
+          <h3>Find anything, fast</h3>
+          <p>A fuzzy finder over the whole project, with the file preview right next to the results.</p>
+          <ul>
+            <li>Filter thousands of files as you type</li>
+            <li>Live preview of the highlighted match</li>
+            <li>Find &amp; replace with case, regex and word toggles</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/suprafuzzy.gif" alt="Typing in the fuzzy finder to narrow a project down to a handful of files, with the preview updating alongside" loading="lazy"></div>
+      </article>
+
+      <article class="feat" style="--tint:var(--violet)">
+        <div class="feat-txt">
+          <span class="tag">Themes</span>
+          <h3>Twenty-plus, swapped live</h3>
+          <p>supradeep ships as the default. Pick another in the settings panel and it applies instantly, editor and GUI together.</p>
+          <ul>
+            <li>catppuccin, gruvbox, rose-pine, dracula, iceberg&hellip;</li>
+            <li>Light variants for the ones that have them</li>
+            <li>Export and import your whole config as one archive</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/settings-general.png" alt="The theme picker showing preview swatches for atom, catppuccin, dracula, gruvbox, iceberg and others" loading="lazy"></div>
+      </article>
+
+      <article class="feat" style="--tint:var(--green)">
+        <div class="feat-txt">
+          <span class="tag">SupraTree</span>
+          <h3>Stage your file changes, then commit them</h3>
+          <p>Rename with <span class="k">i</span>, create with <span class="k">o</span>, delete with <span class="k">dd</span>. Nothing touches the disk until you hit <span class="k">:w</span>.</p>
+          <ul>
+            <li>Pending changes are highlighted, so you see them before they happen</li>
+            <li>Asynchronous git and svn status in the gutter</li>
+            <li>Yank and paste files, visual mode included, for bulk moves</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/supratree.gif" alt="Renaming, creating and deleting files in SupraTree, then committing every pending change at once" loading="lazy"></div>
+      </article>
+
+      <article class="feat" style="--tint:var(--gold)">
+        <div class="feat-txt">
+          <span class="tag">SupraWater</span>
+          <h3>The filesystem as a buffer</h3>
+          <p>An oil.nvim-style explorer, native to Vim9. Edit paths directly, then save.</p>
+          <ul>
+            <li>Undo and redo your file operations with <span class="k">u</span> and <span class="k">Ctrl-r</span></li>
+            <li>Preview a file, or open it in a split, vsplit or tab</li>
+            <li>Toggle hidden files, sort order and size/date metadata</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/suprawater.png" alt="SupraWater listing a directory with file sizes and modification dates, editable like a buffer" loading="lazy"></div>
+      </article>
+
+      <article class="feat" style="--tint:var(--orange)">
+        <div class="feat-txt">
+          <span class="tag">Achievements</span>
+          <h3>68 to unlock</h3>
+          <p>Motions, streaks, milestones and a few secrets. Third-party plugins can push their own metrics through the API.</p>
+          <ul>
+            <li>Unlocks pop a notification as you earn them</li>
+            <li>Prestige tier for the long-haul ones</li>
+            <li>A few are hidden until you trip them</li>
+          </ul>
+        </div>
+        <div class="feat-shot"><img src="img/success.png" alt="The achievements list showing unlocked and locked entries with unlock dates" loading="lazy"></div>
+      </article>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ LANGUAGES ============ -->
+<section id="languages">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Languages</span>
+      <h2>Thirty-five, configured.</h2>
+      <p class="lead">36 language servers ship pre-configured, with syntax and indentation to match. Add your own from the settings panel.</p>
+    </div>
+    <ul class="langs">
+      <li>C</li>
+      <li>C++</li>
+      <li>C#</li>
+      <li>Vala</li>
+      <li>Rust</li>
+      <li>Go</li>
+      <li>Zig</li>
+      <li>Python</li>
+      <li>TypeScript</li>
+      <li>Vue</li>
+      <li>HTML</li>
+      <li>CSS</li>
+      <li>Tailwind</li>
+      <li>PHP</li>
+      <li>Java</li>
+      <li>Kotlin</li>
+      <li>Dart</li>
+      <li>Lua</li>
+      <li>Nim</li>
+      <li>C3</li>
+      <li>Bash</li>
+      <li>Assembly</li>
+      <li>SQL</li>
+      <li>JSON</li>
+      <li>YAML</li>
+      <li>TOML</li>
+      <li>Markdown</li>
+      <li>Meson</li>
+      <li>CMake</li>
+      <li>Docker</li>
+      <li>Terraform</li>
+      <li>Ansible</li>
+      <li>Jinja</li>
+      <li>Blueprint</li>
+      <li>Vim script</li>
+      <li class="more">+ add your own</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ BUILT HERE ============ -->
+<section id="built">
+  <div class="wrap">
+    <div class="sec-head split">
+      <div>
+      <span class="eyebrow">Built, not assembled</span>
+      <h2>Written here, in Vim9script.</h2>
+      </div>
+      <p class="lead">SupraVim isn't someone else's plugins with a config on top. The pieces it runs on were written for it — for Vim 9, in Vim9script. No Lua, no Neovim, no rewrite of your editor.</p>
+    </div>
+
+    <div class="made">
+      <div><b>SupraTree</b><span>Staging-first file explorer</span></div>
+      <div><b>SupraWater</b><span>The filesystem as a buffer</span></div>
+      <div><b>SupraSearch</b><span>Fuzzy finder, find &amp; replace</span></div>
+      <div><b>SupraMake</b><span>Async builds into the quickfix list</span></div>
+      <div><b>SupraPopup</b><span>The popup toolkit the rest sits on</span></div>
+      <div><b>SupraIcons</b><span>Filetype icons and palette</span></div>
+      <div><b>SupraNotification</b><span>Themed notifications</span></div>
+      <div><b>SupraAchievements</b><span>The achievements engine</span></div>
+    </div>
+
+    <p class="play">
+      <span>And while the build runs:</span>
+      <span class="cmd">:Snake</span>
+      <span class="cmd">:Pacman</span>
+      <span>Yes, really. They're written in Vim9script too.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ============ INSTALL ============ -->
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Install</span>
+      <h2>One command.</h2>
+      <p class="lead">It installs into your home directory and leaves your system Vim alone.</p>
+    </div>
+
+    <div class="strip big">
+      <span class="prompt">$</span>
+      <code>curl https://supravim.dev/install | sh</code>
+      <button type="button" data-copy="curl https://supravim.dev/install | sh">COPY</button>
+    </div>
+
+    <p class="needs">Needs Vim 9.0+, Suprapack and glib-networking.</p>
+
+    <div class="rows">
+      <div class="row"><span class="lbl">With suprapack</span><code>suprapack install supravim</code></div>
+      <div class="row"><span class="lbl">macOS</span><code>curl https://supravim.dev/macos | sh</code></div>
+      <div class="row"><span class="lbl">Update</span><code>suprapack update supravim</code></div>
+      <div class="row"><span class="lbl">Remove</span><code>suprapack remove supravim</code></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHANGELOG ============ -->
+<section id="changelog">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Latest</span>
+      <h2>What landed last.</h2>
+    </div>
+    <div class="log">
+      <div class="ver">6.76<small>Current release</small></div>
+      <ul>
+        <li>supradeep is now the default theme</li>
+        <li>New supraevening theme, and normalized highlight styles</li>
+        <li>Interface translations through i18n</li>
+        <li>Coding time tracked per language and per project</li>
+        <li>New <span class="k">:Version</span> command</li>
+        <li>Configurable root mappings for Whisper menu navigation</li>
+      </ul>
+    </div>
+    <p style="margin-top:2rem;font-size:.94rem">
+      <a href="https://gitlab.com/nda-cunh/SupraVim/-/blob/master/CHANGELOG.md" style="color:var(--blue)">Read the full changelog →</a>
+      &nbsp;·&nbsp; or run <span class="k">:ChangeLog</span> inside Vim
+    </p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="brand-col">
+        <a class="mark" href="#top">
+          <svg viewBox="0 0 700 700" aria-hidden="true">
+            <path fill="#282c33" d="m132.25 557.57-.12-136.17 120.2 136.1z"/>
+            <path fill="#3e4351" d="m131.8 557.29 114.37 129.63H458.5l108.05-129.68Z"/>
+            <path fill="#8f713f" d="m133.82 141.73 112.49 73.44v-73.21Z"/>
+            <path fill="#8f713f" d="m457.06 557.65.12-73.2 109.8 73.38z"/>
+            <path fill="#e4bf7c" d="m566.62 557.91-1.64-136.56-431.54-280.02v133.44z"/>
+            <path fill="#1e3829" d="m566.6 141.2.32 124.07-111.1-124.09z"/>
+            <path fill="#98c37b" d="M132.45 141.33 247.15 9.2h202.47l116.96 132Z"/>
+          </svg>
+          SupraVim
+        </a>
+        <p>A Vim distribution built with Vim9 and Vala. Ideas and complaints are both welcome.</p>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <a href="https://gitlab.com/nda-cunh/SupraVim">Repository</a>
+        <a href="https://gitlab.com/nda-cunh/SupraVim/-/wikis/home">SupraWiki</a>
+        <a href="https://gitlab.com/nda-cunh/SupraVim/-/blob/master/CHANGELOG.md">Changelog</a>
+        <a href="https://gitlab.com/nda-cunh/SupraVim/-/issues">Issues</a>
+      </div>
+      <div>
+        <h4>Install</h4>
+        <a href="#install">Linux</a>
+        <a href="https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os">macOS</a>
+        <a href="https://www.nerdfonts.com/">Nerd Fonts</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="https://gitlab.com/nda-cunh/SupraVim/-/issues">Open an issue</a>
+        <a>Discord — nda-cunh</a>
+      </div>
+    </div>
+    <div class="foot-end">
+      <span>SupraVim 6.76</span>
+      <span>GPL-3.0</span>
+      <span>Built with Vim9 &amp; Vala</span>
+      <span>nda-cunh</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* nav border once scrolled */
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("stuck", window.scrollY > 8); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  /* copy */
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      navigator.clipboard.writeText(b.dataset.copy).then(function () {
+        var old = b.textContent;
+        b.textContent = "COPIED";
+        setTimeout(function () { b.textContent = old; }, 1400);
+      });
+    });
+  });
+
+  /* reveal */
+  try {
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+      var els = document.querySelectorAll(".sec-head, .feat-txt, .feat-shot, .band div, .langs li, .made div, .play, .strip.big, .row, .log, .foot > *");
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { rootMargin: "0px 0px -6% 0px", threshold: .1 });
+      els.forEach(function (el, i) {
+        el.classList.add("rv");
+        el.style.transitionDelay = (i % 5) * 55 + "ms";
+        io.observe(el);
+      });
+      setTimeout(function () {
+        document.querySelectorAll(".rv:not(.in)").forEach(function (el) {
+          if (el.getBoundingClientRect().top < innerHeight) { el.classList.add("in"); }
+        });
+      }, 1200);
+    }
+  } catch (e) {
+    document.querySelectorAll(".rv").forEach(function (el) { el.classList.add("in"); });
+  }
+})();
+</script>
