@@ -1,12 +1,13 @@
 <div align="center">
-  <img src="data/supravim.svg" width="90" alt="SupraVim">
-
-  # SupraVim
+<a href="https://supravim.dev/">
+  <img src="data/supravim.svg" width="90" alt="SupraVim">  
+</a>
 
   **Vim, fully equipped.**
 
   200+ plugins, coding stats and 35 languages, ready on first launch.
-  A Vim distribution written in Vim9script and Vala — for Vim 9, not Neovim.
+  A Vim distribution written in Vim9script and Vala
+  for Vim 9, not Neovim.
 
   [**supravim.dev**](https://supravim.dev) · [SupraWiki](https://gitlab.com/nda-cunh/SupraVim/-/wikis/home) · [Changelog](CHANGELOG.md)
 </div>
@@ -20,7 +21,7 @@
 ## Install
 
 ```bash
-curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/install.sh | bash
+curl https://supravim.dev/install | sh
 ```
 
 Or through the package manager:
@@ -35,7 +36,7 @@ A [Nerd Font](https://www.nerdfonts.com/) is optional but makes the icons render
 **macOS**: read the [macOS guide](https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os) first, then:
 
 ```bash
-curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/create_package.sh | bash
+curl https://supravim.dev/macos | sh
 ```
 
 ### Update and remove
@@ -58,29 +59,6 @@ suprapack remove supravim
 - **VSCode-style shortcuts** and mouse support, so you can switch over gradually
 - Export and import your whole configuration as a single archive
 
-Screenshots and the full tour: **[supravim.dev](https://supravim.dev)**
-
----
-
-## Built for SupraVim
-
-SupraVim isn't a config on top of other people's plugins. The pieces it runs on were
-written for it, in Vim9script:
-
-| | |
-| --- | --- |
-| [SupraTree](https://github.com/nda-cunh/SupraTree) | Staging-first file explorer — edit the tree, commit with `:w` |
-| [SupraWater](https://github.com/nda-cunh/SupraWater) | The filesystem as an editable buffer |
-| [SupraPopup](https://github.com/nda-cunh/SupraPopup) | The popup toolkit the rest sits on |
-| SupraSearch | Fuzzy finder, find & replace |
-| SupraMake | Async builds into the quickfix list |
-| SupraIcons | Filetype icons and palette |
-| SupraNotification | Themed notifications |
-| SupraAchievements | The achievements engine |
-
-And, because why not — [SupraPacman](https://github.com/nda-cunh/SupraPacman) and
-[SupraSnake](https://github.com/nda-cunh/SupraSnake): `:Pacman`, `:Snake`.
-
 ---
 
 ## Development
@@ -98,11 +76,8 @@ Requires meson 1.11.0 or later.
 To build SupraVim and every module at once:
 
 ```bash
-curl https://gitlab.com/nda-cunh/SupraVim/-/raw/master/create_package.sh | bash
+curl https://supravim.dev/macos | sh
 ```
-
-The website lives in [`site/`](site/) and is deployed to
-[supravim.dev](https://supravim.dev) by the `pages` job in `.gitlab-ci.yml`.
 
 ---
 

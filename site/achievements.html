@@ -1,0 +1,496 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Achievements — SupraVim</title>
+<meta name="description" content="68 achievements tracked locally by SupraVim, across 6 categories. 15 of them are hidden.">
+<link rel="icon" href="supravim.svg">
+<link rel="canonical" href="https://supravim.dev/achievements.html">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://supravim.dev/achievements.html">
+<meta property="og:site_name" content="SupraVim">
+<meta property="og:title" content="SupraVim achievements — 68 to unlock">
+<meta property="og:description" content="68 achievements tracked locally by SupraVim, across 6 categories. 15 of them are hidden.">
+<meta property="og:image" content="https://supravim.dev/img/success.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+/* palette lifted from the supradeep colorscheme (data/supravim/vim/colors/supradeep.vim) */
+:root {
+  --bg:       #0e131c;
+  --bg-2:     #141b24;
+  --surface:  #1a212e;
+  --surface-2:#21283b;
+  --raised:   #2a324a;
+  --line:     #263049;
+  --line-2:   #313c58;
+
+  --fg:       #93a4c3;
+  --fg-hi:    #dbe3f0;
+  --dim:      #7787a6;
+
+  --blue:     #41a7fc;
+  --cyan:     #34bfd0;
+  --green:    #8bcd5b;
+  --gold:     #efbd5d;
+  --violet:   #c75ae8;
+
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --pad: clamp(1.1rem, 4vw, 2rem);
+  --wide: 1200px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 650px at 50% -10%, rgba(239,189,93,.13), transparent 60%),
+    radial-gradient(900px 600px at 100% 10%, rgba(65,167,252,.12), transparent 60%),
+    radial-gradient(800px 600px at 0% 34%,   rgba(199,90,232,.07), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 45%);
+}
+
+.aurora { position: fixed; inset: -25%; z-index: -1; pointer-events: none; overflow: hidden; }
+/* deliberately static. Two versions of a drifting aurora were tried and both
+   cost too much: animating scale() re-blurs all three blobs every frame, and
+   even translate-only motion keeps the nav's backdrop-filter re-blurring its
+   backdrop for the whole life of the page. Do not animate this layer. */
+.aurora i {
+  position: absolute; display: block; border-radius: 50%;
+  filter: blur(70px); opacity: .2;
+}
+.aurora i:nth-child(1) {
+  width: 44vw; height: 44vw; top: 0%; left: 10%;
+  background: radial-gradient(circle, var(--gold), transparent 68%);
+  opacity: .13;
+}
+.aurora i:nth-child(2) {
+  width: 40vw; height: 40vw; top: 28%; right: 6%;
+  background: radial-gradient(circle, var(--blue), transparent 68%);
+}
+.aurora i:nth-child(3) {
+  width: 34vw; height: 34vw; bottom: 6%; left: 28%;
+  background: radial-gradient(circle, var(--violet), transparent 70%);
+  opacity: .12;
+}
+
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ---------------- nav ---------------- */
+
+nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: rgba(14,19,28,.72);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s, background .25s;
+}
+nav.stuck { border-bottom-color: var(--line); background: rgba(14,19,28,.9); }
+
+.nav-in { display: flex; align-items: center; gap: 1rem; height: 62px; }
+.mark { display: flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--fg-hi); letter-spacing: -.02em; }
+.mark svg { width: 26px; height: 26px; display: block; }
+.nav-links { display: flex; gap: 1.05rem; margin-left: auto; font-size: .9rem; }
+.nav-links a { color: var(--dim); transition: color .18s; }
+.nav-links a:hover, .nav-links a.here { color: var(--fg-hi); }
+
+.ver-chip {
+  font-family: var(--mono); font-size: .68rem; font-weight: 600; letter-spacing: .04em;
+  color: var(--blue); padding: .2em .55em;
+  border: 1px solid rgba(65,167,252,.3); background: rgba(65,167,252,.1);
+  border-radius: 6px; margin-left: .15rem;
+}
+
+.ghost {
+  font-size: .84rem; font-weight: 600; padding: .5em 1.05em; border-radius: 8px;
+  border: 1px solid var(--line-2); color: var(--fg-hi);
+  transition: background .18s, border-color .18s;
+}
+.ghost:hover { background: var(--surface-2); border-color: var(--dim); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-family: var(--mono); font-size: .72rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--gold);
+  padding: .4em .9em;
+  border: 1px solid rgba(239,189,93,.3); background: rgba(239,189,93,.09);
+  border-radius: 100px;
+}
+
+h1, h2 { color: var(--fg-hi); letter-spacing: -.03em; line-height: 1.08; margin: 0; }
+h1 { font-size: clamp(2.3rem, 6vw, 3.9rem); font-weight: 800; }
+.lead { color: var(--dim); font-size: clamp(1rem, 2vw, 1.12rem); max-width: 56ch; margin: 1rem 0 0; }
+
+/* ---------------- head ---------------- */
+
+.top { padding: clamp(3rem, 8vw, 5rem) 0 clamp(1.4rem, 4vw, 2rem); }
+.top .eyebrow { margin-bottom: 1.2rem; }
+.top h1 em { font-style: normal; color: var(--gold); }
+
+/* ---------------- toolbar ---------------- */
+
+/* the band spans the page itself: a background on the wrap-constrained row would
+   be a slab floating mid-page with hard side edges */
+.toolbar {
+  position: sticky; top: 62px; z-index: 40;
+  margin-bottom: clamp(1.6rem, 4vw, 2.4rem);
+  /* nearly opaque already, so a backdrop blur here bought almost nothing while
+     repainting a full-width strip on every scroll frame — the nav above still
+     has one, and one layer of glass is enough */
+  background: linear-gradient(rgba(14,19,28,.96), rgba(14,19,28,.9));
+}
+.toolbar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+
+.tools {
+  display: flex; flex-wrap: wrap; gap: .6rem; align-items: center;
+  padding-top: .8rem; padding-bottom: .8rem;
+}
+
+/* the chips wrap inside their own box so the sealed count keeps its place
+   on the first line instead of being pushed onto a half-empty second row */
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; flex: 1 1 0; min-width: 0; }
+.chip {
+  font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer;
+  color: var(--dim); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 100px; padding: .38em .9em;
+  display: inline-flex; align-items: center; gap: .4em;
+  transition: color .16s, border-color .16s, background .16s;
+}
+.chip span { font-size: 1em; line-height: 1; }
+.chip:hover { color: var(--fg-hi); border-color: var(--line-2); }
+.chip[aria-pressed="true"] { color: var(--fg-hi); background: var(--raised); border-color: var(--dim); }
+
+/* a label, not a control: these never open */
+.sealed {
+  margin-left: auto; flex: none;
+  font-family: var(--mono); font-size: .74rem; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--dim);
+  display: inline-flex; align-items: center; gap: .5em;
+  padding: .38em .95em;
+  border: 1px dashed var(--line-2); border-radius: 100px;
+}
+.sealed .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); opacity: .8; }
+
+/* ---------------- categories ---------------- */
+
+.cat { margin-bottom: clamp(2.4rem, 5vw, 3.6rem); scroll-margin-top: 130px; }
+.cat > h2 {
+  font-size: 1.02rem; font-weight: 700;
+  display: flex; align-items: center; gap: .65rem;
+  margin-bottom: 1.1rem; padding-bottom: .8rem;
+  border-bottom: 1px solid var(--line);
+}
+.cat-ico { font-size: 1.15rem; line-height: 1; }
+.cat > h2 em { font-style: normal; color: var(--dim); font-weight: 500; font-size: .82rem; }
+.cat > h2 b { font-family: var(--mono); font-size: .78rem; color: var(--gold); font-weight: 600; margin-left: auto; }
+.cat[hidden] { display: none; }
+
+.ach-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: .8rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* ---------------- achievement ---------------- */
+
+.ach {
+  display: flex; align-items: flex-start; gap: .9rem;
+  padding: .95rem 1.05rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-width: 0;
+  transition: border-color .18s, transform .18s, background .18s;
+}
+.ach:hover { border-color: var(--line-2); transform: translateY(-2px); }
+
+.ach .ico {
+  font-size: 1.5rem; line-height: 1.2; flex: none;
+  width: 2.2rem; text-align: center;
+}
+.ach .txt { min-width: 0; }
+.ach h3 {
+  margin: 0 0 .15rem; font-size: .95rem; font-weight: 650;
+  color: var(--fg-hi); letter-spacing: -.01em; line-height: 1.3;
+}
+.ach p { margin: 0; font-size: .86rem; color: var(--dim); line-height: 1.5; }
+.ach p b { color: var(--fg); font-weight: 600; }
+
+/* the 15 hidden ones: sealed until the reader asks for them */
+.ach.locked {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255,255,255,.014) 0 8px,
+    transparent 8px 16px
+  ), var(--bg-2);
+  border-style: dashed;
+  border-color: var(--line);
+}
+.ach.locked { align-items: center; }
+.ach.locked .ico { color: var(--dim); opacity: .5; font-family: var(--mono); font-weight: 700; }
+.ach.locked h3 { color: var(--dim); font-weight: 500; margin: 0; }
+/* empty while sealed — no repeated teaser line */
+.ach.locked p:empty { display: none; }
+
+/* prestige is the top tier — the only place the gold is allowed to lead */
+#cat-prestige .ach { border-color: rgba(239,189,93,.22); }
+#cat-prestige .ach:hover { border-color: rgba(239,189,93,.45); }
+
+/* ---------------- foot note + footer ---------------- */
+
+.note {
+  display: flex; gap: .8rem; align-items: flex-start;
+  margin: 0 0 clamp(2.4rem, 6vw, 3.4rem);
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--line); border-left: 2px solid var(--green);
+  border-radius: 10px; background: var(--surface);
+  color: var(--dim); font-size: .88rem; max-width: 70ch;
+}
+.note b { color: var(--fg-hi); font-weight: 600; }
+
+footer { border-top: 1px solid var(--line); padding: clamp(2.4rem, 6vw, 3.4rem) 0; }
+.foot-end { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; font-size: .82rem; color: var(--dim); }
+.foot-end a:hover { color: var(--fg-hi); }
+
+/* ---------------- responsive (declared last: order decides at equal specificity) ---------------- */
+
+@media (max-width: 860px) {
+  .nav-in { gap: 1rem; }
+  .nav-links { gap: 1.05rem; font-size: .85rem; }
+}
+@media (max-width: 800px) {
+  .nav-links { display: none; }
+}
+@media (max-width: 760px) {
+  .tools { top: 0; }
+  .sealed { margin-left: 0; }
+}
+@media (max-width: 420px) {
+  .ach-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="index.html">
+      <svg viewBox="0 0 700 700" aria-hidden="true">
+        <path fill="#282c33" d="m132.25 557.57-.12-136.17 120.2 136.1z"/>
+        <path fill="#3e4351" d="m131.8 557.29 114.37 129.63H458.5l108.05-129.68Z"/>
+        <path fill="#8f713f" d="m133.82 141.73 112.49 73.44v-73.21Z"/>
+        <path fill="#8f713f" d="m457.06 557.65.12-73.2 109.8 73.38z"/>
+        <path fill="#e4bf7c" d="m566.62 557.91-1.64-136.56-431.54-280.02v133.44z"/>
+        <path fill="#1e3829" d="m566.6 141.2.32 124.07-111.1-124.09z"/>
+        <path fill="#98c37b" d="M132.45 141.33 247.15 9.2h202.47l116.96 132Z"/>
+      </svg>
+      SupraVim
+      <span class="ver-chip">6.76</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#languages">Languages</a>
+      <a href="themes.html">Themes</a>
+      <a class="here" href="achievements.html">Achievements</a>
+      <a href="index.html#install">Install</a>
+    </div>
+    <a class="ghost" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</nav>
+
+<header class="top">
+  <div class="wrap">
+    <span class="eyebrow">68 achievements</span>
+    <h1>53 to chase.<br><em>15 to stumble into.</em></h1>
+    <p class="lead">SupraVim keeps score while you edit. Most of it is honest work — words written,
+      streaks kept, plugins installed. The rest you are not supposed to see coming.</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap tools">
+    <div class="chips" role="group" aria-label="Jump to a category">
+      <button type="button" class="chip" data-cat="all" aria-pressed="true">All</button>
+      <button type="button" class="chip" data-cat="onboarding"><span>🐣</span>Beginner</button><button type="button" class="chip" data-cat="motions"><span>⚔️</span>Motions &amp; the Way of Vim</button><button type="button" class="chip" data-cat="volume"><span>✍️</span>Volume &amp; Endurance</button><button type="button" class="chip" data-cat="humour"><span>😅</span>Self-Deprecation</button><button type="button" class="chip" data-cat="ecosystem"><span>🎮</span>SupraVim Ecosystem</button><button type="button" class="chip" data-cat="prestige"><span>🏆</span>Prestige</button>
+    </div>
+    <span class="sealed"><span class="dot" aria-hidden="true"></span>15 sealed</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="note">
+    <span aria-hidden="true">🔒</span>
+    <span>Everything is counted <b>on your machine</b> — no account, no server, nothing leaves it.
+    The 15 sealed ones aren't listed here, and they aren't in this page's source either:
+    <b>the only way to read them is to unlock them</b>.</span>
+  </p>
+
+<section class="cat" id="cat-onboarding" data-cat="onboarding">
+  <h2><span class="cat-ico">🐣</span>Beginner<em>1 hidden</em><b>8</b></h2>
+  <ul class="ach-grid">
+    <li class="ach"><span class="ico">🐣</span><div class="txt"><h3>Hello World</h3><p>Type your first 100 characters</p></div></li>
+    <li class="ach"><span class="ico">🚪</span><div class="txt"><h3>There Is a Way Out</h3><p>Quit Vim with <b>:q</b></p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach"><span class="ico">📋</span><div class="txt"><h3>Ctrl+Veteran</h3><p>Use Ctrl+C/Ctrl+V 100 times</p></div></li>
+    <li class="ach"><span class="ico">🖱️</span><div class="txt"><h3>Mouse Tamer</h3><p>Use the right-click menu for the first time</p></div></li>
+    <li class="ach"><span class="ico">📖</span><div class="txt"><h3>RTFM</h3><p>Open the <b>Wiki</b> tab in supravim-gui</p></div></li>
+    <li class="ach"><span class="ico">🎨</span><div class="txt"><h3>Interior Decorator</h3><p>Change your theme for the first time</p></div></li>
+    <li class="ach"><span class="ico">🧩</span><div class="txt"><h3>Collector</h3><p>Install your first plugin from the store</p></div></li>
+  </ul>
+</section>
+
+<section class="cat" id="cat-motions" data-cat="motions">
+  <h2><span class="cat-ico">⚔️</span>Motions &amp; the Way of Vim<em>2 hidden</em><b>13</b></h2>
+  <ul class="ach-grid">
+    <li class="ach"><span class="ico">🩸</span><div class="txt"><h3>First Blood</h3><p>First <b>dd</b></p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach"><span class="ico">🔪</span><div class="txt"><h3>Surgeon</h3><p>First <b>ciw</b></p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach"><span class="ico">🎯</span><div class="txt"><h3>Sniper</h3><p>First <b>f</b> + character</p></div></li>
+    <li class="ach"><span class="ico">🔁</span><div class="txt"><h3>The Sacred Dot</h3><p>Use <b>.</b> (repeat) 50 times</p></div></li>
+    <li class="ach"><span class="ico">🎭</span><div class="txt"><h3>Puppeteer</h3><p>Record and play your first macro</p></div></li>
+    <li class="ach"><span class="ico">✖️</span><div class="txt"><h3>Multiplier</h3><p>Play a macro with a count (<b>10@q</b>)</p></div></li>
+    <li class="ach"><span class="ico">🚭</span><div class="txt"><h3>Successfully Weaned</h3><p>A full session without Ctrl+C/Ctrl+V</p></div></li>
+    <li class="ach"><span class="ico">🧱</span><div class="txt"><h3>Modal Polyglot</h3><p>Use visual block mode (<b>Ctrl+v</b>) for the first time</p></div></li>
+    <li class="ach"><span class="ico">📍</span><div class="txt"><h3>Teleporter</h3><p>Use a mark (<b>ma</b> then <b>`a</b>)</p></div></li>
+    <li class="ach"><span class="ico">⛰️</span><div class="txt"><h3>Ascension</h3><p>Insert/normal ratio dropped below 50% (after 2,000 words)</p></div></li>
+    <li class="ach"><span class="ico">🧘</span><div class="txt"><h3>Enlightenment</h3><p>Insert/normal ratio below 30% (after 10,000 words)</p></div></li>
+  </ul>
+</section>
+
+<section class="cat" id="cat-volume" data-cat="volume">
+  <h2><span class="cat-ico">✍️</span>Volume &amp; Endurance<em>2 hidden</em><b>11</b></h2>
+  <ul class="ach-grid">
+    <li class="ach"><span class="ico">📝</span><div class="txt"><h3>Sunday Writer</h3><p>1,000 words in a single day</p></div></li>
+    <li class="ach"><span class="ico">📖</span><div class="txt"><h3>Novelist</h3><p>5,000 words in a single day</p></div></li>
+    <li class="ach"><span class="ico">⌨️</span><div class="txt"><h3>Typewriter</h3><p>10,000 words in a single day</p></div></li>
+    <li class="ach"><span class="ico">🏅</span><div class="txt"><h3>Marathon</h3><p>A 3h+ session without closing Vim</p></div></li>
+    <li class="ach"><span class="ico">💧</span><div class="txt"><h3>Ultra-Trail</h3><p>An 8h+ session (<b>go drink some water</b>)</p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach"><span class="ico">🌅</span><div class="txt"><h3>Early Bird</h3><p>Code before 7 AM</p></div></li>
+    <li class="ach"><span class="ico">📅</span><div class="txt"><h3>Metronome</h3><p>7-day streak</p></div></li>
+    <li class="ach"><span class="ico">🔥</span><div class="txt"><h3>Unstoppable</h3><p>30-day streak</p></div></li>
+    <li class="ach"><span class="ico">🎂</span><div class="txt"><h3>A Supra Year</h3><p>365-day streak</p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+  </ul>
+</section>
+
+<section class="cat" id="cat-humour" data-cat="humour">
+  <h2><span class="cat-ico">😅</span>Self-Deprecation<em>8 hidden</em><b>11</b></h2>
+  <ul class="ach-grid">
+    <li class="ach"><span class="ico">😰</span><div class="txt"><h3>Ctrl+Anxious</h3><p>50 <b>:w</b> in under an hour</p></div></li>
+    <li class="ach"><span class="ico">↩️</span><div class="txt"><h3>Trust Issues</h3><p>500 undos in a single day</p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach"><span class="ico">🍽️</span><div class="txt"><h3>Plugin Binge</h3><p>10 plugins installed in a single day</p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+  </ul>
+</section>
+
+<section class="cat" id="cat-ecosystem" data-cat="ecosystem">
+  <h2><span class="cat-ico">🎮</span>SupraVim Ecosystem<em>2 hidden</em><b>17</b></h2>
+  <ul class="ach-grid">
+    <li class="ach"><span class="ico">👾</span><div class="txt"><h3>Coffee Break</h3><p>Launch SupraPacman for the first time</p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+    <li class="ach"><span class="ico">🎮</span><div class="txt"><h3>Productive Game Over</h3><p>1 hour total spent in the built-in games</p></div></li>
+    <li class="ach"><span class="ico">🐍</span><div class="txt"><h3>Slytherin</h3><p>Reach a score of 20 in SupraSnake</p></div></li>
+    <li class="ach"><span class="ico">🐍</span><div class="txt"><h3>Golden Snake</h3><p>Reach a score of 50 in SupraSnake</p></div></li>
+    <li class="ach"><span class="ico">🌱</span><div class="txt"><h3>File Gardener</h3><p>Create 10 files via SupraTree in edit mode</p></div></li>
+    <li class="ach"><span class="ico">🔧</span><div class="txt"><h3>Plumber</h3><p>Rename 20 files via SupraWater</p></div></li>
+    <li class="ach"><span class="ico">🛠️</span><div class="txt"><h3>LSP Master</h3><p>Have 5 LSPs installed and working</p></div></li>
+    <li class="ach"><span class="ico">✂️</span><div class="txt"><h3>Snippeteer</h3><p>Create your first custom snippet</p></div></li>
+    <li class="ach"><span class="ico">📤</span><div class="txt"><h3>Exporter</h3><p>Export your <b>.supravim</b> config for the first time</p></div></li>
+    <li class="ach"><span class="ico">🎩</span><div class="txt"><h3>I Know You</h3><p>Install a <b>tpope</b> plugin (rite of passage)</p></div></li>
+    <li class="ach"><span class="ico">🗼</span><div class="txt"><h3>Tower of Babel</h3><p>5 LSPs active in the same session</p></div></li>
+    <li class="ach"><span class="ico">🕹️</span><div class="txt"><h3>Pac-Master</h3><p>Complete a full level of SupraPacman</p></div></li>
+    <li class="ach"><span class="ico">🍎</span><div class="txt"><h3>Forbidden Fruit</h3><p>Eat the <b>apple</b></p></div></li>
+    <li class="ach"><span class="ico">🕊️</span><div class="txt"><h3>Pac-ifist</h3><p>Complete a level without eating a single ghost</p></div></li>
+    <li class="ach"><span class="ico">😈</span><div class="txt"><h3>Glutton</h3><p>Eat all 4 ghosts on a single power pill</p></div></li>
+    <li class="ach locked"><span class="ico" aria-hidden="true">?</span><div class="txt"><h3>Hidden</h3></div></li>
+  </ul>
+</section>
+
+<section class="cat" id="cat-prestige" data-cat="prestige">
+  <h2><span class="cat-ico">🏆</span>Prestige<em>all visible</em><b>8</b></h2>
+  <ul class="ach-grid">
+    <li class="ach"><span class="ico">🏆</span><div class="txt"><h3>100,000 Words</h3><p>All-time</p></div></li>
+    <li class="ach"><span class="ico">💎</span><div class="txt"><h3>The Million</h3><p>1,000,000 characters typed all-time</p></div></li>
+    <li class="ach"><span class="ico">🎓</span><div class="txt"><h3>Expert</h3><p>10,000,000 characters typed all-time</p></div></li>
+    <li class="ach"><span class="ico">🏅</span><div class="txt"><h3>Master</h3><p>100,000,000 characters typed all-time</p></div></li>
+    <li class="ach"><span class="ico">💰</span><div class="txt"><h3>The Billion</h3><p>1,000,000,000 characters typed all-time</p></div></li>
+    <li class="ach"><span class="ico">❤️</span><div class="txt"><h3>Faithful</h3><p>Use SupraVim on 100 distinct days</p></div></li>
+    <li class="ach"><span class="ico">🌍</span><div class="txt"><h3>Omniglot</h3><p>Write in 10 different languages</p></div></li>
+    <li class="ach"><span class="ico">👑</span><div class="txt"><h3>Supra Legend</h3><p>Unlock every other achievement</p></div></li>
+  </ul>
+</section>
+</div>
+
+<footer>
+  <div class="wrap foot-end">
+    <a href="index.html">← Back to SupraVim</a>
+    <a href="themes.html">Themes</a>
+    <span>SupraVim 6.76</span>
+    <span>GPL-3.0</span>
+    <a href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("stuck", window.scrollY > 8); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  /* ---- category filter ---- */
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+  var cats = Array.prototype.slice.call(document.querySelectorAll(".cat"));
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      var want = c.dataset.cat;
+      chips.forEach(function (o) { o.setAttribute("aria-pressed", String(o === c)); });
+      cats.forEach(function (s) { s.hidden = want !== "all" && s.dataset.cat !== want; });
+      if (want !== "all") {
+        var t = document.getElementById("cat-" + want);
+        if (t) { t.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      }
+    });
+  });
+})();
+</script>
+

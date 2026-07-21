@@ -1,0 +1,1142 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Themes — SupraVim</title>
+<meta name="description" content="24 colorschemes shipped with SupraVim, each previewed on the same Vala buffer. 21 dark, 3 light.">
+<link rel="icon" href="supravim.svg">
+<link rel="canonical" href="https://supravim.dev/themes.html">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://supravim.dev/themes.html">
+<meta property="og:site_name" content="SupraVim">
+<meta property="og:title" content="SupraVim themes — 24 colorschemes">
+<meta property="og:description" content="24 colorschemes shipped with SupraVim, each previewed on the same Vala buffer. 21 dark, 3 light.">
+<meta property="og:image" content="https://supravim.dev/img/general.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+/* palette lifted from the supradeep colorscheme (data/supravim/vim/colors/supradeep.vim) */
+:root {
+  --bg:       #0e131c;
+  --bg-2:     #141b24;
+  --surface:  #1a212e;
+  --surface-2:#21283b;
+  --raised:   #2a324a;
+  --line:     #263049;
+  --line-2:   #313c58;
+
+  --fg:       #93a4c3;
+  --fg-hi:    #dbe3f0;
+  --dim:      #7787a6;
+
+  --blue:     #41a7fc;
+  --cyan:     #34bfd0;
+  --green:    #8bcd5b;
+  --gold:     #efbd5d;
+  --violet:   #c75ae8;
+
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --pad: clamp(1.1rem, 4vw, 2rem);
+  --wide: 1200px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(65,167,252,.20), transparent 60%),
+    radial-gradient(900px 600px at 100% 8%,   rgba(52,191,208,.10), transparent 60%),
+    radial-gradient(800px 600px at 0% 30%,    rgba(199,90,232,.07), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 45%);
+}
+
+.aurora { position: fixed; inset: -25%; z-index: -1; pointer-events: none; overflow: hidden; }
+/* deliberately static. Two versions of a drifting aurora were tried and both
+   cost too much: animating scale() re-blurs all three blobs every frame, and
+   even translate-only motion keeps the nav's backdrop-filter re-blurring its
+   backdrop for the whole life of the page. Do not animate this layer. */
+.aurora i {
+  position: absolute; display: block; border-radius: 50%;
+  filter: blur(70px); opacity: .22;
+}
+.aurora i:nth-child(1) {
+  width: 46vw; height: 46vw; top: 2%; left: 8%;
+  background: radial-gradient(circle, var(--blue), transparent 68%);
+}
+.aurora i:nth-child(2) {
+  width: 40vw; height: 40vw; top: 26%; right: 6%;
+  background: radial-gradient(circle, var(--cyan), transparent 68%);
+}
+.aurora i:nth-child(3) {
+  width: 34vw; height: 34vw; bottom: 6%; left: 30%;
+  background: radial-gradient(circle, var(--violet), transparent 70%);
+  opacity: .14;
+}
+
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ---------------- nav ---------------- */
+
+nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: rgba(14,19,28,.72);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s, background .25s;
+}
+nav.stuck { border-bottom-color: var(--line); background: rgba(14,19,28,.9); }
+
+.nav-in { display: flex; align-items: center; gap: 1.6rem; height: 62px; }
+.mark { display: flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--fg-hi); letter-spacing: -.02em; }
+.mark svg { width: 26px; height: 26px; display: block; }
+.nav-links { display: flex; gap: 1.5rem; margin-left: auto; font-size: .9rem; }
+.nav-links a { color: var(--dim); transition: color .18s; }
+.nav-links a:hover, .nav-links a.here { color: var(--fg-hi); }
+
+.ver-chip {
+  font-family: var(--mono); font-size: .68rem; font-weight: 600; letter-spacing: .04em;
+  color: var(--blue); padding: .2em .55em;
+  border: 1px solid rgba(65,167,252,.3); background: rgba(65,167,252,.1);
+  border-radius: 6px; margin-left: .15rem;
+}
+
+.ghost {
+  font-size: .84rem; font-weight: 600; padding: .5em 1.05em; border-radius: 8px;
+  border: 1px solid var(--line-2); color: var(--fg-hi);
+  transition: background .18s, border-color .18s;
+}
+.ghost:hover { background: var(--surface-2); border-color: var(--dim); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-family: var(--mono); font-size: .72rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--blue);
+  padding: .4em .9em;
+  border: 1px solid rgba(65,167,252,.28); background: rgba(65,167,252,.08);
+  border-radius: 100px;
+}
+
+h1, h2 { color: var(--fg-hi); letter-spacing: -.03em; line-height: 1.08; margin: 0; }
+h1 { font-size: clamp(2.3rem, 6vw, 3.9rem); font-weight: 800; }
+.lead { color: var(--dim); font-size: clamp(1rem, 2vw, 1.12rem); max-width: 58ch; margin: 1rem 0 0; }
+code, kbd { font-family: var(--mono); }
+
+kbd {
+  color: var(--fg-hi); background: var(--surface-2); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 5px; padding: .1em .45em; font-size: .82em;
+}
+
+/* ---------------- head ---------------- */
+
+.top { padding: clamp(3rem, 8vw, 5rem) 0 clamp(1.6rem, 4vw, 2.4rem); }
+.top .eyebrow { margin-bottom: 1.2rem; }
+
+/* ---------------- toolbar ---------------- */
+
+/* the band carries the background and spans the page on its own, so it needs no
+   100vw trick — vw counts the scrollbar and overflows by its width */
+.toolbar {
+  position: sticky; top: 62px; z-index: 40;
+  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+  /* nearly opaque already, so a backdrop blur here bought almost nothing while
+     repainting a full-width strip on every scroll frame — the nav above still
+     has one, and one layer of glass is enough */
+  background: linear-gradient(rgba(14,19,28,.96), rgba(14,19,28,.9));
+}
+/* fade the rule out at both ends: a full-width hairline would just be the top
+   edge of another rectangle */
+.toolbar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+
+.tools {
+  display: flex; flex-wrap: wrap; gap: .8rem; align-items: center;
+  padding-top: .85rem; padding-bottom: .85rem;
+}
+
+.seg {
+  position: relative; display: flex; gap: .1rem; padding: .28rem;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 100px;
+}
+/* the pill slides between the three options; JS writes its position and width
+   because the labels have different lengths */
+.seg-thumb {
+  position: absolute; top: .28rem; bottom: .28rem; left: 0;
+  width: var(--w, 0px); transform: translateX(var(--x, 0px));
+  border-radius: 100px; background: var(--raised);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+/* the class lands after the first placement, so the pill does not grow out of
+   nothing on load — it only animates once the user picks a filter */
+.seg-thumb.ready {
+  transition: transform .3s cubic-bezier(.32,.72,.3,1), width .3s cubic-bezier(.32,.72,.3,1);
+}
+.seg button {
+  position: relative; z-index: 1;
+  font: inherit; font-size: .84rem; font-weight: 600;
+  color: var(--dim); background: none; border: 0; cursor: pointer;
+  padding: .42em 1.05em; border-radius: 100px;
+  transition: color .2s;
+}
+.seg button:hover { color: var(--fg-hi); }
+.seg button[aria-pressed="true"] { color: var(--fg-hi); }
+.seg button span { font-family: var(--mono); font-size: .78em; opacity: .55; margin-left: .45em; }
+.seg button[aria-pressed="true"] span { opacity: .75; }
+
+@media (prefers-reduced-motion: reduce) { .seg-thumb.ready { transition: none; } }
+
+.find { position: relative; margin-left: auto; }
+.find input {
+  font: inherit; font-family: var(--mono); font-size: .85rem;
+  color: var(--fg-hi); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 100px; padding: .55em 2.2em .55em 1.05em; width: 15rem; max-width: 42vw;
+  transition: border-color .16s;
+}
+.find input::placeholder { color: var(--dim); }
+.find input:focus { outline: none; border-color: var(--blue); }
+.find kbd { position: absolute; right: .5em; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.find input:not(:placeholder-shown) + kbd { opacity: 0; }
+
+/* ---------------- groups + grid ---------------- */
+
+.group { margin-bottom: clamp(2.6rem, 6vw, 4.2rem); }
+.group > h2 {
+  font-size: 1.02rem; font-weight: 700; letter-spacing: .01em;
+  display: flex; align-items: baseline; gap: .7rem; margin-bottom: 1.2rem;
+  padding-bottom: .8rem; border-bottom: 1px solid var(--line);
+}
+.group > h2 em { font-style: normal; color: var(--dim); font-weight: 500; font-size: .84rem; }
+.group > h2 b { font-family: var(--mono); font-size: .78rem; color: var(--blue); font-weight: 600; margin-left: auto; }
+
+.grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+@media (max-width: 379px) { .grid { grid-template-columns: 1fr; } }
+
+/* ---------------- card ---------------- */
+
+/* grid and flex children default to min-width:auto, which lets the pre-formatted
+   code widen its column instead of being clipped — force them to shrink */
+.grid > .card, .card .win, .card .code, .card .bar { min-width: 0; }
+
+.card {
+  font: inherit; text-align: left; padding: 0; cursor: pointer;
+  background: none; border: 0;
+  display: flex; flex-direction: column; gap: .7rem;
+}
+.card .win {
+  border: 1px solid var(--line);
+  border-radius: 12px; overflow: hidden;
+  background: var(--t-bg);
+  transition: transform .2s ease, border-color .2s, box-shadow .2s;
+}
+.card:hover .win, .card:focus-visible .win {
+  transform: translateY(-4px);
+  border-color: var(--line-2);
+  box-shadow: 0 14px 34px rgba(0,0,0,.42);
+}
+
+.card .bar {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5em .75em;
+  background: color-mix(in srgb, var(--t-bg) 88%, var(--t-fg));
+  border-bottom: 1px solid color-mix(in srgb, var(--t-bg) 76%, var(--t-fg));
+}
+.card .file { font-family: var(--mono); font-size: .68rem; color: var(--t-fg); opacity: .75; }
+.card .sw { display: flex; gap: .28em; margin-left: auto; }
+.card .sw i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+
+.card .code {
+  margin: 0; padding: .85em .9em 1em;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.62;
+  color: var(--t-fg);
+  white-space: pre; overflow: hidden;
+}
+.card .code .ln { color: var(--t-ln); opacity: .8; display: inline-block; width: 2.2em; user-select: none; }
+.card .code .c { color: var(--t-comment); font-style: italic; }
+.card .code .k { color: var(--t-kw); }
+.card .code .t { color: var(--t-type); }
+.card .code .f { color: var(--t-fn); }
+.card .code .s { color: var(--t-str); }
+.card .code .n { color: var(--t-num); }
+.card .code .v { color: var(--t-const); }
+.card .code .x { color: var(--t-fg); }
+
+.card .status {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .32em .8em;
+  font-family: var(--mono); font-size: .62rem; font-weight: 600; letter-spacing: .06em;
+  background: var(--t-sbg); color: var(--t-sfg);
+}
+.card .status span:last-child { opacity: .7; text-transform: none; letter-spacing: 0; }
+
+.card .meta { display: flex; align-items: center; gap: .55rem; padding: 0 .15rem; }
+.card .nm { color: var(--fg-hi); font-weight: 600; font-size: .92rem; }
+.card .cs { margin-left: auto; font-size: .72rem; color: var(--dim); }
+.card:hover .cs { color: var(--fg); }
+
+.tag {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  padding: .22em .5em; border-radius: 5px;
+}
+.tag.default { color: var(--green); background: rgba(139,205,91,.12); border: 1px solid rgba(139,205,91,.3); }
+
+.card[hidden] { display: none; }
+
+/* The widest line needs ~312px at 11.5px. Scale the code to the column itself
+   rather than to the viewport, since the number of columns varies.
+   Declared after the .card rules above: at equal specificity, order decides. */
+.card .win { container-type: inline-size; }
+@container (max-width: 300px) { .card .code { font-size: 10.5px; } }
+@container (max-width: 268px) { .card .code { font-size: 9.5px; } }
+
+.empty { color: var(--dim); font-family: var(--mono); font-size: .9rem; padding: 2rem 0; }
+.empty[hidden] { display: none; }
+
+/* ---------------- modal ---------------- */
+
+.modal {
+  position: fixed; inset: 0; z-index: 80;
+  display: grid; place-items: center;
+  padding: var(--pad);
+  background: rgba(6,9,14,.78);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.modal.open { opacity: 1; pointer-events: auto; }
+.modal-in {
+  width: min(760px, 100%);
+  max-height: 88vh; overflow: auto;
+  background: var(--surface); border: 1px solid var(--line-2);
+  border-radius: 16px; padding: clamp(1.1rem, 3vw, 1.7rem);
+  transform: translateY(8px) scale(.99);
+  transition: transform .2s;
+}
+.modal.open .modal-in { transform: none; }
+
+.modal-head { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.1rem; }
+.modal-head h3 { margin: 0; font-size: 1.25rem; color: var(--fg-hi); letter-spacing: -.02em; }
+.modal-head .x {
+  margin-left: auto; font: inherit; cursor: pointer;
+  background: none; border: 1px solid var(--line-2); color: var(--dim);
+  width: 32px; height: 32px; border-radius: 8px; line-height: 1;
+  transition: color .16s, border-color .16s;
+}
+.modal-head .x:hover { color: var(--fg-hi); border-color: var(--dim); }
+
+#big .win { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--t-bg); }
+#big .bar { display: flex; align-items: center; gap: .6rem; padding: .6em .9em;
+  background: color-mix(in srgb, var(--t-bg) 88%, var(--t-fg));
+  border-bottom: 1px solid color-mix(in srgb, var(--t-bg) 76%, var(--t-fg)); }
+#big .file { font-family: var(--mono); font-size: .76rem; color: var(--t-fg); opacity: .75; }
+#big .sw { display: flex; gap: .34em; margin-left: auto; }
+#big .sw i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+#big .code {
+  margin: 0; padding: 1.1em 1.2em 1.3em;
+  font-family: var(--mono); font-size: 14px; line-height: 1.7;
+  color: var(--t-fg); white-space: pre; overflow-x: auto;
+}
+#big .code .ln { color: var(--t-ln); opacity: .8; display: inline-block; width: 2.4em; user-select: none; }
+#big .code .c { color: var(--t-comment); font-style: italic; }
+#big .code .k { color: var(--t-kw); }
+#big .code .t { color: var(--t-type); }
+#big .code .f { color: var(--t-fn); }
+#big .code .s { color: var(--t-str); }
+#big .code .n { color: var(--t-num); }
+#big .code .v { color: var(--t-const); }
+#big .code .x { color: var(--t-fg); }
+#big .status { display: flex; justify-content: space-between; padding: .4em 1em;
+  font-family: var(--mono); font-size: .7rem; font-weight: 600; letter-spacing: .06em;
+  background: var(--t-sbg); color: var(--t-sfg); }
+
+.apply { margin-top: 1.2rem; }
+.apply p { margin: 0 0 .6rem; color: var(--dim); font-size: .88rem; }
+.strip {
+  display: flex; align-items: center; gap: .7rem;
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 10px; padding: .7em .9em;
+  font-family: var(--mono); font-size: .88rem;
+  width: fit-content; max-width: 100%;
+}
+.strip .prompt { color: var(--green); font-weight: 700; }
+.strip code { color: var(--fg-hi); overflow-x: auto; min-width: 0; }
+.strip button {
+  margin-left: .4rem; font: inherit; font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+  cursor: pointer; color: var(--dim); background: var(--surface-2);
+  border: 1px solid var(--line-2); border-radius: 6px; padding: .35em .7em;
+  transition: color .16s, border-color .16s;
+}
+.strip button:hover { color: var(--fg-hi); border-color: var(--dim); }
+.hint { margin-top: .9rem; color: var(--dim); font-size: .84rem; }
+
+/* ---------------- footer ---------------- */
+
+footer { border-top: 1px solid var(--line); padding: clamp(2.4rem, 6vw, 3.4rem) 0; margin-top: 2rem; }
+.foot-end {
+  display: flex; flex-wrap: wrap; gap: .6rem 1.6rem;
+  font-size: .82rem; color: var(--dim);
+}
+.foot-end a:hover { color: var(--fg-hi); }
+
+@media (max-width: 860px) {
+  .nav-in { gap: 1rem; }
+  .nav-links { gap: 1.05rem; font-size: .85rem; }
+}
+
+@media (max-width: 800px) {
+  .nav-links { display: none; }
+}
+
+@media (max-width: 700px) {
+  .tools { top: 0; }
+  .find { margin-left: 0; }
+  .find input { width: 100%; max-width: none; }
+  .find { flex: 1 1 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="index.html">
+      <svg viewBox="0 0 700 700" aria-hidden="true">
+        <path fill="#282c33" d="m132.25 557.57-.12-136.17 120.2 136.1z"/>
+        <path fill="#3e4351" d="m131.8 557.29 114.37 129.63H458.5l108.05-129.68Z"/>
+        <path fill="#8f713f" d="m133.82 141.73 112.49 73.44v-73.21Z"/>
+        <path fill="#8f713f" d="m457.06 557.65.12-73.2 109.8 73.38z"/>
+        <path fill="#e4bf7c" d="m566.62 557.91-1.64-136.56-431.54-280.02v133.44z"/>
+        <path fill="#1e3829" d="m566.6 141.2.32 124.07-111.1-124.09z"/>
+        <path fill="#98c37b" d="M132.45 141.33 247.15 9.2h202.47l116.96 132Z"/>
+      </svg>
+      SupraVim
+      <span class="ver-chip">6.76</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#languages">Languages</a>
+      <a class="here" href="themes.html">Themes</a>
+      <a href="achievements.html">Achievements</a>
+      <a href="index.html#built">Built here</a>
+      <a href="index.html#install">Install</a>
+    </div>
+    <a class="ghost" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</nav>
+
+<header class="top">
+  <div class="wrap">
+    <span class="eyebrow">24 colorschemes</span>
+    <h1>Same buffer.<br>24 ways to read it.</h1>
+    <p class="lead">Every theme below ships with SupraVim — nothing to download. They all render the
+      same piece of Vala, so what changes between two cards is only the colour.</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap tools">
+    <div class="seg" role="group" aria-label="Filter themes by background">
+      <span class="seg-thumb" aria-hidden="true"></span>
+      <button type="button" data-filter="all" aria-pressed="true">All <span>24</span></button>
+      <button type="button" data-filter="dark" aria-pressed="false">Dark <span>21</span></button>
+      <button type="button" data-filter="light" aria-pressed="false">Light <span>3</span></button>
+    </div>
+    <div class="find">
+      <input id="q" type="search" placeholder="Filter by name" aria-label="Filter themes by name" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="group" id="g-supra">
+    <h2>Made for SupraVim <em>written for the distribution</em> <b>8</b></h2>
+    <div class="grid">
+<button type="button" class="card" data-name="supracool" data-mode="dark" data-disp="SupraCool" style="--t-bg:#242b38; --t-fg:#a5b0c5; --t-comment:#546178; --t-str:#97ca72; --t-num:#d99a5e; --t-kw:#ca72e4; --t-fn:#5ab0f6; --t-type:#ebc275; --t-const:#4dbdcb; --t-ln:#4b566c; --t-sbg:#2d3343; --t-sfg:#a5b0c5">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#ca72e4"></i><i style="background:#5ab0f6"></i><i style="background:#ebc275"></i><i style="background:#97ca72"></i><i style="background:#d99a5e"></i><i style="background:#546178"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraCool</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraCool</span>
+    <code class="cs">supracool</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="supradark" data-mode="dark" data-disp="SupraDark" style="--t-bg:#282c34; --t-fg:#abb2bf; --t-comment:#5c6370; --t-str:#98c379; --t-num:#d19a66; --t-kw:#c678dd; --t-fn:#61afef; --t-type:#e5c07b; --t-const:#56b6c2; --t-ln:#525865; --t-sbg:#31353f; --t-sfg:#abb2bf">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#c678dd"></i><i style="background:#61afef"></i><i style="background:#e5c07b"></i><i style="background:#98c379"></i><i style="background:#d19a66"></i><i style="background:#5c6370"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraDark</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraDark</span>
+    <code class="cs">supradark</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="supradeep" data-mode="dark" data-disp="SupraDeep" style="--t-bg:#1a212e; --t-fg:#93a4c3; --t-comment:#455574; --t-str:#8bcd5b; --t-num:#dd9046; --t-kw:#c75ae8; --t-fn:#41a7fc; --t-type:#efbd5d; --t-const:#34bfd0; --t-ln:#3d4a67; --t-sbg:#21283b; --t-sfg:#93a4c3">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#c75ae8"></i><i style="background:#41a7fc"></i><i style="background:#efbd5d"></i><i style="background:#8bcd5b"></i><i style="background:#dd9046"></i><i style="background:#455574"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraDeep</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraDeep</span><span class="tag default">default</span>
+    <code class="cs">supradeep</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="supraevening" data-mode="dark" data-disp="SupraEvening" style="--t-bg:#323237; --t-fg:#dcdfe8; --t-comment:#7183bd; --t-str:#f2a0a0; --t-num:#f2b45f; --t-kw:#f2e86e; --t-fn:#80a0ff; --t-type:#7ce08a; --t-const:#f2a0a0; --t-ln:#5c6072; --t-sbg:#3e3e46; --t-sfg:#dcdfe8">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#f2e86e"></i><i style="background:#80a0ff"></i><i style="background:#7ce08a"></i><i style="background:#f2a0a0"></i><i style="background:#f2b45f"></i><i style="background:#7183bd"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraEvening</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraEvening</span>
+    <code class="cs">supraevening</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="supralight" data-mode="light" data-disp="SupraLight" style="--t-bg:#fafafa; --t-fg:#383a42; --t-comment:#a0a1a7; --t-str:#50a14f; --t-num:#c18401; --t-kw:#a626a4; --t-fn:#4078f2; --t-type:#986801; --t-const:#0184bc; --t-ln:#b2b3b7; --t-sbg:#f0f0f0; --t-sfg:#383a42">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#a626a4"></i><i style="background:#4078f2"></i><i style="background:#986801"></i><i style="background:#50a14f"></i><i style="background:#c18401"></i><i style="background:#a0a1a7"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraLight</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraLight</span>
+    <code class="cs">supralight</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="supraonedark" data-mode="dark" data-disp="SupraOneDark" style="--t-bg:#1f2329; --t-fg:#a0a8b7; --t-comment:#535965; --t-str:#8ebd6b; --t-num:#cc9057; --t-kw:#bf68d9; --t-fn:#4fa6ed; --t-type:#e2b86b; --t-const:#48b0bd; --t-ln:#495162; --t-sbg:#282c34; --t-sfg:#a0a8b7">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#bf68d9"></i><i style="background:#4fa6ed"></i><i style="background:#e2b86b"></i><i style="background:#8ebd6b"></i><i style="background:#cc9057"></i><i style="background:#535965"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraOneDark</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraOneDark</span>
+    <code class="cs">supraonedark</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="suprawarm" data-mode="dark" data-disp="SupraWarm" style="--t-bg:#2c2d30; --t-fg:#b1b4b9; --t-comment:#646568; --t-str:#99bc80; --t-num:#c99a6e; --t-kw:#c27fd7; --t-fn:#68aee8; --t-type:#dfbe81; --t-const:#5fafb9; --t-ln:#595a5e; --t-sbg:#35373b; --t-sfg:#b1b4b9">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#c27fd7"></i><i style="background:#68aee8"></i><i style="background:#dfbe81"></i><i style="background:#99bc80"></i><i style="background:#c99a6e"></i><i style="background:#646568"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraWarm</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraWarm</span>
+    <code class="cs">suprawarm</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="suprawarmer" data-mode="dark" data-disp="SupraWarmer" style="--t-bg:#232326; --t-fg:#a7aab0; --t-comment:#5a5b5e; --t-str:#8fb573; --t-num:#c49060; --t-kw:#bb70d2; --t-fn:#57a5e5; --t-type:#dbb671; --t-const:#51a8b3; --t-ln:#505054; --t-sbg:#2c2d31; --t-sfg:#a7aab0">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#bb70d2"></i><i style="background:#57a5e5"></i><i style="background:#dbb671"></i><i style="background:#8fb573"></i><i style="background:#c49060"></i><i style="background:#5a5b5e"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>SupraWarmer</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">SupraWarmer</span>
+    <code class="cs">suprawarmer</code>
+  </div>
+</button>
+    </div>
+  </section>
+
+  <section class="group" id="g-ports">
+    <h2>Ports <em>classics, retuned to match the rest</em> <b>16</b></h2>
+    <div class="grid">
+<button type="button" class="card" data-name="atom" data-mode="dark" data-disp="Atom" style="--t-bg:#1b1e26; --t-fg:#c8d0dd; --t-comment:#565d6b; --t-str:#8fd08a; --t-num:#e0a066; --t-kw:#6aa9f0; --t-fn:#e0c986; --t-type:#5fc9d6; --t-const:#e0a066; --t-ln:#474b56; --t-sbg:#c8d0dd; --t-sfg:#454954">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#6aa9f0"></i><i style="background:#e0c986"></i><i style="background:#5fc9d6"></i><i style="background:#8fd08a"></i><i style="background:#e0a066"></i><i style="background:#565d6b"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Atom</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Atom</span>
+    <code class="cs">atom</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="catppuccin_frappe" data-mode="dark" data-disp="Catppuccin Frappé" style="--t-bg:#303446; --t-fg:#C6D0F5; --t-comment:#737994; --t-str:#A6D189; --t-num:#EF9F76; --t-kw:#F4B8E4; --t-fn:#8CAAEE; --t-type:#8CAAEE; --t-const:#EF9F76; --t-ln:#51576D; --t-sbg:#292C3C; --t-sfg:#C6D0F5">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#F4B8E4"></i><i style="background:#8CAAEE"></i><i style="background:#8CAAEE"></i><i style="background:#A6D189"></i><i style="background:#EF9F76"></i><i style="background:#737994"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Catppuccin Frappé</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Catppuccin Frappé</span>
+    <code class="cs">catppuccin_frappe</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="catppuccin_latte" data-mode="light" data-disp="Catppuccin Latte" style="--t-bg:#EFF1F5; --t-fg:#4C4F69; --t-comment:#9CA0B0; --t-str:#40A02B; --t-num:#FE640B; --t-kw:#EA76CB; --t-fn:#1E66F5; --t-type:#1E66F5; --t-const:#FE640B; --t-ln:#BCC0CC; --t-sbg:#E6E9EF; --t-sfg:#4C4F69">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#EA76CB"></i><i style="background:#1E66F5"></i><i style="background:#1E66F5"></i><i style="background:#40A02B"></i><i style="background:#FE640B"></i><i style="background:#9CA0B0"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Catppuccin Latte</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Catppuccin Latte</span>
+    <code class="cs">catppuccin_latte</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="catppuccin_macchiato" data-mode="dark" data-disp="Catppuccin Macchiato" style="--t-bg:#24273A; --t-fg:#CAD3F5; --t-comment:#6E738D; --t-str:#A6DA95; --t-num:#F5A97F; --t-kw:#F5BDE6; --t-fn:#8AADF4; --t-type:#8AADF4; --t-const:#F5A97F; --t-ln:#494D64; --t-sbg:#1E2030; --t-sfg:#CAD3F5">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#F5BDE6"></i><i style="background:#8AADF4"></i><i style="background:#8AADF4"></i><i style="background:#A6DA95"></i><i style="background:#F5A97F"></i><i style="background:#6E738D"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Catppuccin Macchiato</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Catppuccin Macchiato</span>
+    <code class="cs">catppuccin_macchiato</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="catppuccin_mocha" data-mode="dark" data-disp="Catppuccin Mocha" style="--t-bg:#1E1E2E; --t-fg:#CDD6F4; --t-comment:#6C7086; --t-str:#A6E3A1; --t-num:#FAB387; --t-kw:#F5C2E7; --t-fn:#89B4FA; --t-type:#89B4FA; --t-const:#FAB387; --t-ln:#45475A; --t-sbg:#181825; --t-sfg:#CDD6F4">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#F5C2E7"></i><i style="background:#89B4FA"></i><i style="background:#89B4FA"></i><i style="background:#A6E3A1"></i><i style="background:#FAB387"></i><i style="background:#6C7086"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Catppuccin Mocha</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Catppuccin Mocha</span>
+    <code class="cs">catppuccin_mocha</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="dracula" data-mode="dark" data-disp="Dracula" style="--t-bg:#282A36; --t-fg:#F8F8F2; --t-comment:#6272A4; --t-str:#F1FA8C; --t-num:#BD93F9; --t-kw:#BD93F9; --t-fn:#50FA7B; --t-type:#8BE9FD; --t-const:#FF79C6; --t-ln:#6272A4; --t-sbg:#4d4f58; --t-sfg:#F8F8F2">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#BD93F9"></i><i style="background:#50FA7B"></i><i style="background:#8BE9FD"></i><i style="background:#F1FA8C"></i><i style="background:#BD93F9"></i><i style="background:#6272A4"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Dracula</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Dracula</span>
+    <code class="cs">dracula</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="gruvbox" data-mode="dark" data-disp="Gruvbox" style="--t-bg:#282828; --t-fg:#ebdbb2; --t-comment:#928374; --t-str:#b8bb26; --t-num:#d18599; --t-kw:#8cbf7a; --t-fn:#ebd9b3; --t-type:#fc8017; --t-const:#b8ba24; --t-ln:#7c6f64; --t-sbg:#ebdbb2; --t-sfg:#504945">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#8cbf7a"></i><i style="background:#ebd9b3"></i><i style="background:#fc8017"></i><i style="background:#b8bb26"></i><i style="background:#d18599"></i><i style="background:#928374"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Gruvbox</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Gruvbox</span>
+    <code class="cs">gruvbox</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="iceberg" data-mode="dark" data-disp="Iceberg" style="--t-bg:#161821; --t-fg:#c6c8d1; --t-comment:#6b7089; --t-str:#89b8c2; --t-num:#a093c7; --t-kw:#84a0c6; --t-fn:#84a0c6; --t-type:#84a0c6; --t-const:#a093c7; --t-ln:#444b71; --t-sbg:#17171b; --t-sfg:#818596">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#84a0c6"></i><i style="background:#84a0c6"></i><i style="background:#84a0c6"></i><i style="background:#89b8c2"></i><i style="background:#a093c7"></i><i style="background:#6b7089"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Iceberg</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Iceberg</span>
+    <code class="cs">iceberg</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="kyotonight" data-mode="dark" data-disp="Kyoto Night" style="--t-bg:#1a1b26; --t-fg:#a9b1d6; --t-comment:#565f89; --t-str:#9ece6a; --t-num:#ff9e64; --t-kw:#7aa2f7; --t-fn:#7dcfff; --t-type:#73daca; --t-const:#cfc9c2; --t-ln:#414868; --t-sbg:#414868; --t-sfg:#7aa2f7">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#7aa2f7"></i><i style="background:#7dcfff"></i><i style="background:#73daca"></i><i style="background:#9ece6a"></i><i style="background:#ff9e64"></i><i style="background:#565f89"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Kyoto Night</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Kyoto Night</span>
+    <code class="cs">kyotonight</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="onedark" data-mode="dark" data-disp="One Dark" style="--t-bg:#282C34; --t-fg:#ABB2BF; --t-comment:#5C6370; --t-str:#98C379; --t-num:#D19A66; --t-kw:#C678DD; --t-fn:#61AFEF; --t-type:#E5C07B; --t-const:#56B6C2; --t-ln:#4B5263; --t-sbg:#2C323C; --t-sfg:#ABB2BF">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#C678DD"></i><i style="background:#61AFEF"></i><i style="background:#E5C07B"></i><i style="background:#98C379"></i><i style="background:#D19A66"></i><i style="background:#5C6370"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>One Dark</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">One Dark</span>
+    <code class="cs">onedark</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="rosepine" data-mode="dark" data-disp="Rosé Pine" style="--t-bg:#191724; --t-fg:#e0def4; --t-comment:#6e6a86; --t-str:#f6c177; --t-num:#f6c177; --t-kw:#31748f; --t-fn:#ebbcba; --t-type:#9ccfd8; --t-const:#f6c177; --t-ln:#6e6a86; --t-sbg:#1f1d2e; --t-sfg:#908caa">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#31748f"></i><i style="background:#ebbcba"></i><i style="background:#9ccfd8"></i><i style="background:#f6c177"></i><i style="background:#f6c177"></i><i style="background:#6e6a86"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Rosé Pine</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Rosé Pine</span>
+    <code class="cs">rosepine</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="rosepine_dawn" data-mode="light" data-disp="Rosé Pine Dawn" style="--t-bg:#faf4ed; --t-fg:#575279; --t-comment:#9893a5; --t-str:#ea9d34; --t-num:#ea9d34; --t-kw:#286983; --t-fn:#d7827e; --t-type:#56949f; --t-const:#ea9d34; --t-ln:#9893a5; --t-sbg:#fffaf3; --t-sfg:#797593">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#286983"></i><i style="background:#d7827e"></i><i style="background:#56949f"></i><i style="background:#ea9d34"></i><i style="background:#ea9d34"></i><i style="background:#9893a5"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Rosé Pine Dawn</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Rosé Pine Dawn</span>
+    <code class="cs">rosepine_dawn</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="rosepine_moon" data-mode="dark" data-disp="Rosé Pine Moon" style="--t-bg:#232136; --t-fg:#e0def4; --t-comment:#6e6a86; --t-str:#f6c177; --t-num:#f6c177; --t-kw:#3e8fb0; --t-fn:#ea9a97; --t-type:#9ccfd8; --t-const:#f6c177; --t-ln:#6e6a86; --t-sbg:#2a273f; --t-sfg:#908caa">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#3e8fb0"></i><i style="background:#ea9a97"></i><i style="background:#9ccfd8"></i><i style="background:#f6c177"></i><i style="background:#f6c177"></i><i style="background:#6e6a86"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Rosé Pine Moon</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Rosé Pine Moon</span>
+    <code class="cs">rosepine_moon</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="tokyonight" data-mode="dark" data-disp="Tokyo Night" style="--t-bg:#1a1b26; --t-fg:#a9b1d6; --t-comment:#444B6A; --t-str:#E0AF68; --t-num:#ad8ee6; --t-kw:#F7768E; --t-fn:#9ECE6A; --t-type:#7AA2F7; --t-const:#FF9E64; --t-ln:#444B6A; --t-sbg:#32344a; --t-sfg:#a9b1d6">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#F7768E"></i><i style="background:#9ECE6A"></i><i style="background:#7AA2F7"></i><i style="background:#E0AF68"></i><i style="background:#ad8ee6"></i><i style="background:#444B6A"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Tokyo Night</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Tokyo Night</span>
+    <code class="cs">tokyonight</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="tokyostorm" data-mode="dark" data-disp="Tokyo Storm" style="--t-bg:#24283b; --t-fg:#a9b1d6; --t-comment:#444B6A; --t-str:#E0AF68; --t-num:#ad8ee6; --t-kw:#F7768E; --t-fn:#9ECE6A; --t-type:#7AA2F7; --t-const:#FF9E64; --t-ln:#444B6A; --t-sbg:#333954; --t-sfg:#a9b1d6">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#F7768E"></i><i style="background:#9ECE6A"></i><i style="background:#7AA2F7"></i><i style="background:#E0AF68"></i><i style="background:#ad8ee6"></i><i style="background:#444B6A"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>Tokyo Storm</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">Tokyo Storm</span>
+    <code class="cs">tokyostorm</code>
+  </div>
+</button>
+<button type="button" class="card" data-name="vscode" data-mode="dark" data-disp="VS Code" style="--t-bg:#1e1e1e; --t-fg:#d4d4d4; --t-comment:#6a9955; --t-str:#ce9178; --t-num:#b5cea8; --t-kw:#569cd6; --t-fn:#dcdcaa; --t-type:#4ec9b0; --t-const:#4fc1ff; --t-ln:#6e7681; --t-sbg:#2a2a2a; --t-sfg:#d4d4d4">
+  <div class="win">
+    <div class="bar"><span class="file">Plugin.vala</span><span class="sw"><i style="background:#569cd6"></i><i style="background:#dcdcaa"></i><i style="background:#4ec9b0"></i><i style="background:#ce9178"></i><i style="background:#b5cea8"></i><i style="background:#6a9955"></i></span></div>
+    <pre class="code"><span class="ln"> 1</span><span class="c">// resolve a plugin from the store</span>
+<span class="ln"> 2</span><span class="k">public </span><span class="t">Plugin? </span><span class="f">find </span>(<span class="t">string </span><span class="x">name</span>) {
+<span class="ln"> 3</span>  <span class="k">var </span><span class="x">tried </span>= <span class="n">0</span>;
+<span class="ln"> 4</span>  <span class="k">foreach </span>(<span class="k">var </span><span class="x">p </span><span class="k">in </span><span class="x">plugins</span>) {
+<span class="ln"> 5</span>    <span class="x">tried</span>++;
+<span class="ln"> 6</span>    <span class="k">if </span>(<span class="x">p</span>.<span class="x">name </span>== <span class="x">name</span>)
+<span class="ln"> 7</span>      <span class="k">return </span><span class="x">p</span>;
+<span class="ln"> 8</span>  }
+<span class="ln"> 9</span>  <span class="f">print </span>(<span class="s">"missed %d\n"</span>, <span class="x">tried</span>);
+<span class="ln">10</span>  <span class="k">return </span><span class="v">null</span>;
+<span class="ln">11</span>}</pre>
+    <div class="status"><span>NORMAL</span><span>VS Code</span></div>
+  </div>
+  <div class="meta">
+    <span class="nm">VS Code</span>
+    <code class="cs">vscode</code>
+  </div>
+</button>
+    </div>
+  </section>
+
+  <p class="empty" id="empty" hidden>No theme matches that name.</p>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
+  <div class="modal-in">
+    <div class="modal-head">
+      <h3 id="m-title">—</h3>
+      <button type="button" class="x" id="m-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="big"></div>
+    <div class="apply">
+      <p>Switch to it:</p>
+      <div class="strip">
+        <span class="prompt">$</span>
+        <code id="m-cmd">supravim --theme supradeep</code>
+        <button type="button" id="m-copy">COPY</button>
+      </div>
+      <p class="hint">The setting persists. You can also press <kbd>F12</kbd> in Vim and pick it under <b>Theme</b>.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-end">
+    <a href="index.html">← Back to SupraVim</a>
+    <span>SupraVim 6.76</span>
+    <span>GPL-3.0</span>
+    <a href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("stuck", window.scrollY > 8); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var q = document.getElementById("q");
+  var empty = document.getElementById("empty");
+  var mode = "all";
+
+  function apply() {
+    var term = q.value.trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (c) {
+      var okMode = mode === "all" || c.dataset.mode === mode;
+      var okTerm = !term
+        || c.dataset.name.indexOf(term) !== -1
+        || c.dataset.disp.toLowerCase().indexOf(term) !== -1;
+      var show = okMode && okTerm;
+      c.hidden = !show;
+      if (show) { shown++; }
+    });
+    /* hide a group whose cards are all filtered out */
+    document.querySelectorAll(".group").forEach(function (g) {
+      var any = g.querySelector(".card:not([hidden])");
+      g.hidden = !any;
+    });
+    empty.hidden = shown !== 0;
+  }
+
+  var segButtons = Array.prototype.slice.call(document.querySelectorAll(".seg button"));
+  var thumb = document.querySelector(".seg-thumb");
+
+  function moveThumb() {
+    var on = segButtons.filter(function (b) {
+      return b.getAttribute("aria-pressed") === "true";
+    })[0];
+    if (!on) { return; }
+    thumb.style.setProperty("--x", on.offsetLeft + "px");
+    thumb.style.setProperty("--w", on.offsetWidth + "px");
+  }
+
+  segButtons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.filter;
+      segButtons.forEach(function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      moveThumb();
+      apply();
+    });
+  });
+
+  moveThumb();
+  requestAnimationFrame(function () { thumb.classList.add("ready"); });
+  window.addEventListener("resize", moveThumb);
+  /* webfonts land after first paint and change the label widths */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(moveThumb); }
+
+  q.addEventListener("input", apply);
+
+  /* "/" focuses the filter, the way it would in Vim */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "/" && document.activeElement !== q && !modal.classList.contains("open")) {
+      e.preventDefault();
+      q.focus();
+    }
+  });
+
+  /* ---- modal ---- */
+  var modal = document.getElementById("modal");
+  var big = document.getElementById("big");
+  var mTitle = document.getElementById("m-title");
+  var mCmd = document.getElementById("m-cmd");
+  var mCopy = document.getElementById("m-copy");
+  var lastFocus = null;
+
+  function open(card) {
+    lastFocus = card;
+    mTitle.textContent = card.dataset.disp;
+    mCmd.textContent = "supravim --theme " + card.dataset.name;
+    big.innerHTML = card.querySelector(".win").outerHTML;
+    big.firstChild.setAttribute("style", card.getAttribute("style"));
+    modal.hidden = false;
+    requestAnimationFrame(function () { modal.classList.add("open"); });
+    document.body.style.overflow = "hidden";
+    document.getElementById("m-close").focus();
+  }
+
+  function close() {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+    setTimeout(function () { modal.hidden = true; }, 200);
+    if (lastFocus) { lastFocus.focus(); }
+  }
+
+  cards.forEach(function (c) {
+    c.addEventListener("click", function () { open(c); });
+  });
+
+  document.getElementById("m-close").addEventListener("click", close);
+  modal.addEventListener("click", function (e) { if (e.target === modal) { close(); } });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal.classList.contains("open")) { close(); }
+  });
+
+  mCopy.addEventListener("click", function () {
+    navigator.clipboard.writeText(mCmd.textContent).then(function () {
+      mCopy.textContent = "COPIED";
+      setTimeout(function () { mCopy.textContent = "COPY"; }, 1400);
+    });
+  });
+})();
+</script>
+

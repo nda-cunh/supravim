@@ -1,0 +1,639 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Themes — SupraVim</title>
+<meta name="description" content="{{TOTAL}} colorschemes shipped with SupraVim, each previewed on the same Vala buffer. {{NDARK}} dark, {{NLIGHT}} light.">
+<link rel="icon" href="supravim.svg">
+<link rel="canonical" href="https://supravim.dev/themes.html">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://supravim.dev/themes.html">
+<meta property="og:site_name" content="SupraVim">
+<meta property="og:title" content="SupraVim themes — {{TOTAL}} colorschemes">
+<meta property="og:description" content="{{TOTAL}} colorschemes shipped with SupraVim, each previewed on the same Vala buffer. {{NDARK}} dark, {{NLIGHT}} light.">
+<meta property="og:image" content="https://supravim.dev/img/general.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+/* palette lifted from the supradeep colorscheme (data/supravim/vim/colors/supradeep.vim) */
+:root {
+  --bg:       #0e131c;
+  --bg-2:     #141b24;
+  --surface:  #1a212e;
+  --surface-2:#21283b;
+  --raised:   #2a324a;
+  --line:     #263049;
+  --line-2:   #313c58;
+
+  --fg:       #93a4c3;
+  --fg-hi:    #dbe3f0;
+  --dim:      #7787a6;
+
+  --blue:     #41a7fc;
+  --cyan:     #34bfd0;
+  --green:    #8bcd5b;
+  --gold:     #efbd5d;
+  --violet:   #c75ae8;
+
+  --mono: "JetBrains Mono", "Fira Code", "SF Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --pad: clamp(1.1rem, 4vw, 2rem);
+  --wide: 1200px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(65,167,252,.20), transparent 60%),
+    radial-gradient(900px 600px at 100% 8%,   rgba(52,191,208,.10), transparent 60%),
+    radial-gradient(800px 600px at 0% 30%,    rgba(199,90,232,.07), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 45%);
+}
+
+.aurora { position: fixed; inset: -25%; z-index: -1; pointer-events: none; overflow: hidden; }
+/* deliberately static. Two versions of a drifting aurora were tried and both
+   cost too much: animating scale() re-blurs all three blobs every frame, and
+   even translate-only motion keeps the nav's backdrop-filter re-blurring its
+   backdrop for the whole life of the page. Do not animate this layer. */
+.aurora i {
+  position: absolute; display: block; border-radius: 50%;
+  filter: blur(70px); opacity: .22;
+}
+.aurora i:nth-child(1) {
+  width: 46vw; height: 46vw; top: 2%; left: 8%;
+  background: radial-gradient(circle, var(--blue), transparent 68%);
+}
+.aurora i:nth-child(2) {
+  width: 40vw; height: 40vw; top: 26%; right: 6%;
+  background: radial-gradient(circle, var(--cyan), transparent 68%);
+}
+.aurora i:nth-child(3) {
+  width: 34vw; height: 34vw; bottom: 6%; left: 30%;
+  background: radial-gradient(circle, var(--violet), transparent 70%);
+  opacity: .14;
+}
+
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ---------------- nav ---------------- */
+
+nav {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: rgba(14,19,28,.72);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s, background .25s;
+}
+nav.stuck { border-bottom-color: var(--line); background: rgba(14,19,28,.9); }
+
+.nav-in { display: flex; align-items: center; gap: 1.6rem; height: 62px; }
+.mark { display: flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--fg-hi); letter-spacing: -.02em; }
+.mark svg { width: 26px; height: 26px; display: block; }
+.nav-links { display: flex; gap: 1.5rem; margin-left: auto; font-size: .9rem; }
+.nav-links a { color: var(--dim); transition: color .18s; }
+.nav-links a:hover, .nav-links a.here { color: var(--fg-hi); }
+
+.ver-chip {
+  font-family: var(--mono); font-size: .68rem; font-weight: 600; letter-spacing: .04em;
+  color: var(--blue); padding: .2em .55em;
+  border: 1px solid rgba(65,167,252,.3); background: rgba(65,167,252,.1);
+  border-radius: 6px; margin-left: .15rem;
+}
+
+.ghost {
+  font-size: .84rem; font-weight: 600; padding: .5em 1.05em; border-radius: 8px;
+  border: 1px solid var(--line-2); color: var(--fg-hi);
+  transition: background .18s, border-color .18s;
+}
+.ghost:hover { background: var(--surface-2); border-color: var(--dim); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-family: var(--mono); font-size: .72rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--blue);
+  padding: .4em .9em;
+  border: 1px solid rgba(65,167,252,.28); background: rgba(65,167,252,.08);
+  border-radius: 100px;
+}
+
+h1, h2 { color: var(--fg-hi); letter-spacing: -.03em; line-height: 1.08; margin: 0; }
+h1 { font-size: clamp(2.3rem, 6vw, 3.9rem); font-weight: 800; }
+.lead { color: var(--dim); font-size: clamp(1rem, 2vw, 1.12rem); max-width: 58ch; margin: 1rem 0 0; }
+code, kbd { font-family: var(--mono); }
+
+kbd {
+  color: var(--fg-hi); background: var(--surface-2); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 5px; padding: .1em .45em; font-size: .82em;
+}
+
+/* ---------------- head ---------------- */
+
+.top { padding: clamp(3rem, 8vw, 5rem) 0 clamp(1.6rem, 4vw, 2.4rem); }
+.top .eyebrow { margin-bottom: 1.2rem; }
+
+/* ---------------- toolbar ---------------- */
+
+/* the band carries the background and spans the page on its own, so it needs no
+   100vw trick — vw counts the scrollbar and overflows by its width */
+.toolbar {
+  position: sticky; top: 62px; z-index: 40;
+  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+  /* nearly opaque already, so a backdrop blur here bought almost nothing while
+     repainting a full-width strip on every scroll frame — the nav above still
+     has one, and one layer of glass is enough */
+  background: linear-gradient(rgba(14,19,28,.96), rgba(14,19,28,.9));
+}
+/* fade the rule out at both ends: a full-width hairline would just be the top
+   edge of another rectangle */
+.toolbar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+
+.tools {
+  display: flex; flex-wrap: wrap; gap: .8rem; align-items: center;
+  padding-top: .85rem; padding-bottom: .85rem;
+}
+
+.seg {
+  position: relative; display: flex; gap: .1rem; padding: .28rem;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 100px;
+}
+/* the pill slides between the three options; JS writes its position and width
+   because the labels have different lengths */
+.seg-thumb {
+  position: absolute; top: .28rem; bottom: .28rem; left: 0;
+  width: var(--w, 0px); transform: translateX(var(--x, 0px));
+  border-radius: 100px; background: var(--raised);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+/* the class lands after the first placement, so the pill does not grow out of
+   nothing on load — it only animates once the user picks a filter */
+.seg-thumb.ready {
+  transition: transform .3s cubic-bezier(.32,.72,.3,1), width .3s cubic-bezier(.32,.72,.3,1);
+}
+.seg button {
+  position: relative; z-index: 1;
+  font: inherit; font-size: .84rem; font-weight: 600;
+  color: var(--dim); background: none; border: 0; cursor: pointer;
+  padding: .42em 1.05em; border-radius: 100px;
+  transition: color .2s;
+}
+.seg button:hover { color: var(--fg-hi); }
+.seg button[aria-pressed="true"] { color: var(--fg-hi); }
+.seg button span { font-family: var(--mono); font-size: .78em; opacity: .55; margin-left: .45em; }
+.seg button[aria-pressed="true"] span { opacity: .75; }
+
+@media (prefers-reduced-motion: reduce) { .seg-thumb.ready { transition: none; } }
+
+.find { position: relative; margin-left: auto; }
+.find input {
+  font: inherit; font-family: var(--mono); font-size: .85rem;
+  color: var(--fg-hi); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 100px; padding: .55em 2.2em .55em 1.05em; width: 15rem; max-width: 42vw;
+  transition: border-color .16s;
+}
+.find input::placeholder { color: var(--dim); }
+.find input:focus { outline: none; border-color: var(--blue); }
+.find kbd { position: absolute; right: .5em; top: 50%; transform: translateY(-50%); pointer-events: none; }
+.find input:not(:placeholder-shown) + kbd { opacity: 0; }
+
+/* ---------------- groups + grid ---------------- */
+
+.group { margin-bottom: clamp(2.6rem, 6vw, 4.2rem); }
+.group > h2 {
+  font-size: 1.02rem; font-weight: 700; letter-spacing: .01em;
+  display: flex; align-items: baseline; gap: .7rem; margin-bottom: 1.2rem;
+  padding-bottom: .8rem; border-bottom: 1px solid var(--line);
+}
+.group > h2 em { font-style: normal; color: var(--dim); font-weight: 500; font-size: .84rem; }
+.group > h2 b { font-family: var(--mono); font-size: .78rem; color: var(--blue); font-weight: 600; margin-left: auto; }
+
+.grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+@media (max-width: 379px) { .grid { grid-template-columns: 1fr; } }
+
+/* ---------------- card ---------------- */
+
+/* grid and flex children default to min-width:auto, which lets the pre-formatted
+   code widen its column instead of being clipped — force them to shrink */
+.grid > .card, .card .win, .card .code, .card .bar { min-width: 0; }
+
+.card {
+  font: inherit; text-align: left; padding: 0; cursor: pointer;
+  background: none; border: 0;
+  display: flex; flex-direction: column; gap: .7rem;
+}
+.card .win {
+  border: 1px solid var(--line);
+  border-radius: 12px; overflow: hidden;
+  background: var(--t-bg);
+  transition: transform .2s ease, border-color .2s, box-shadow .2s;
+}
+.card:hover .win, .card:focus-visible .win {
+  transform: translateY(-4px);
+  border-color: var(--line-2);
+  box-shadow: 0 14px 34px rgba(0,0,0,.42);
+}
+
+.card .bar {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5em .75em;
+  background: color-mix(in srgb, var(--t-bg) 88%, var(--t-fg));
+  border-bottom: 1px solid color-mix(in srgb, var(--t-bg) 76%, var(--t-fg));
+}
+.card .file { font-family: var(--mono); font-size: .68rem; color: var(--t-fg); opacity: .75; }
+.card .sw { display: flex; gap: .28em; margin-left: auto; }
+.card .sw i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+
+.card .code {
+  margin: 0; padding: .85em .9em 1em;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.62;
+  color: var(--t-fg);
+  white-space: pre; overflow: hidden;
+}
+.card .code .ln { color: var(--t-ln); opacity: .8; display: inline-block; width: 2.2em; user-select: none; }
+.card .code .c { color: var(--t-comment); font-style: italic; }
+.card .code .k { color: var(--t-kw); }
+.card .code .t { color: var(--t-type); }
+.card .code .f { color: var(--t-fn); }
+.card .code .s { color: var(--t-str); }
+.card .code .n { color: var(--t-num); }
+.card .code .v { color: var(--t-const); }
+.card .code .x { color: var(--t-fg); }
+
+.card .status {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .32em .8em;
+  font-family: var(--mono); font-size: .62rem; font-weight: 600; letter-spacing: .06em;
+  background: var(--t-sbg); color: var(--t-sfg);
+}
+.card .status span:last-child { opacity: .7; text-transform: none; letter-spacing: 0; }
+
+.card .meta { display: flex; align-items: center; gap: .55rem; padding: 0 .15rem; }
+.card .nm { color: var(--fg-hi); font-weight: 600; font-size: .92rem; }
+.card .cs { margin-left: auto; font-size: .72rem; color: var(--dim); }
+.card:hover .cs { color: var(--fg); }
+
+.tag {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  padding: .22em .5em; border-radius: 5px;
+}
+.tag.default { color: var(--green); background: rgba(139,205,91,.12); border: 1px solid rgba(139,205,91,.3); }
+
+.card[hidden] { display: none; }
+
+/* The widest line needs ~312px at 11.5px. Scale the code to the column itself
+   rather than to the viewport, since the number of columns varies.
+   Declared after the .card rules above: at equal specificity, order decides. */
+.card .win { container-type: inline-size; }
+@container (max-width: 300px) { .card .code { font-size: 10.5px; } }
+@container (max-width: 268px) { .card .code { font-size: 9.5px; } }
+
+.empty { color: var(--dim); font-family: var(--mono); font-size: .9rem; padding: 2rem 0; }
+.empty[hidden] { display: none; }
+
+/* ---------------- modal ---------------- */
+
+.modal {
+  position: fixed; inset: 0; z-index: 80;
+  display: grid; place-items: center;
+  padding: var(--pad);
+  background: rgba(6,9,14,.78);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.modal.open { opacity: 1; pointer-events: auto; }
+.modal-in {
+  width: min(760px, 100%);
+  max-height: 88vh; overflow: auto;
+  background: var(--surface); border: 1px solid var(--line-2);
+  border-radius: 16px; padding: clamp(1.1rem, 3vw, 1.7rem);
+  transform: translateY(8px) scale(.99);
+  transition: transform .2s;
+}
+.modal.open .modal-in { transform: none; }
+
+.modal-head { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.1rem; }
+.modal-head h3 { margin: 0; font-size: 1.25rem; color: var(--fg-hi); letter-spacing: -.02em; }
+.modal-head .x {
+  margin-left: auto; font: inherit; cursor: pointer;
+  background: none; border: 1px solid var(--line-2); color: var(--dim);
+  width: 32px; height: 32px; border-radius: 8px; line-height: 1;
+  transition: color .16s, border-color .16s;
+}
+.modal-head .x:hover { color: var(--fg-hi); border-color: var(--dim); }
+
+#big .win { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--t-bg); }
+#big .bar { display: flex; align-items: center; gap: .6rem; padding: .6em .9em;
+  background: color-mix(in srgb, var(--t-bg) 88%, var(--t-fg));
+  border-bottom: 1px solid color-mix(in srgb, var(--t-bg) 76%, var(--t-fg)); }
+#big .file { font-family: var(--mono); font-size: .76rem; color: var(--t-fg); opacity: .75; }
+#big .sw { display: flex; gap: .34em; margin-left: auto; }
+#big .sw i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+#big .code {
+  margin: 0; padding: 1.1em 1.2em 1.3em;
+  font-family: var(--mono); font-size: 14px; line-height: 1.7;
+  color: var(--t-fg); white-space: pre; overflow-x: auto;
+}
+#big .code .ln { color: var(--t-ln); opacity: .8; display: inline-block; width: 2.4em; user-select: none; }
+#big .code .c { color: var(--t-comment); font-style: italic; }
+#big .code .k { color: var(--t-kw); }
+#big .code .t { color: var(--t-type); }
+#big .code .f { color: var(--t-fn); }
+#big .code .s { color: var(--t-str); }
+#big .code .n { color: var(--t-num); }
+#big .code .v { color: var(--t-const); }
+#big .code .x { color: var(--t-fg); }
+#big .status { display: flex; justify-content: space-between; padding: .4em 1em;
+  font-family: var(--mono); font-size: .7rem; font-weight: 600; letter-spacing: .06em;
+  background: var(--t-sbg); color: var(--t-sfg); }
+
+.apply { margin-top: 1.2rem; }
+.apply p { margin: 0 0 .6rem; color: var(--dim); font-size: .88rem; }
+.strip {
+  display: flex; align-items: center; gap: .7rem;
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 10px; padding: .7em .9em;
+  font-family: var(--mono); font-size: .88rem;
+  width: fit-content; max-width: 100%;
+}
+.strip .prompt { color: var(--green); font-weight: 700; }
+.strip code { color: var(--fg-hi); overflow-x: auto; min-width: 0; }
+.strip button {
+  margin-left: .4rem; font: inherit; font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+  cursor: pointer; color: var(--dim); background: var(--surface-2);
+  border: 1px solid var(--line-2); border-radius: 6px; padding: .35em .7em;
+  transition: color .16s, border-color .16s;
+}
+.strip button:hover { color: var(--fg-hi); border-color: var(--dim); }
+.hint { margin-top: .9rem; color: var(--dim); font-size: .84rem; }
+
+/* ---------------- footer ---------------- */
+
+footer { border-top: 1px solid var(--line); padding: clamp(2.4rem, 6vw, 3.4rem) 0; margin-top: 2rem; }
+.foot-end {
+  display: flex; flex-wrap: wrap; gap: .6rem 1.6rem;
+  font-size: .82rem; color: var(--dim);
+}
+.foot-end a:hover { color: var(--fg-hi); }
+
+@media (max-width: 860px) {
+  .nav-in { gap: 1rem; }
+  .nav-links { gap: 1.05rem; font-size: .85rem; }
+}
+
+@media (max-width: 800px) {
+  .nav-links { display: none; }
+}
+
+@media (max-width: 700px) {
+  .tools { top: 0; }
+  .find { margin-left: 0; }
+  .find input { width: 100%; max-width: none; }
+  .find { flex: 1 1 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="index.html">
+      <svg viewBox="0 0 700 700" aria-hidden="true">
+        <path fill="#282c33" d="m132.25 557.57-.12-136.17 120.2 136.1z"/>
+        <path fill="#3e4351" d="m131.8 557.29 114.37 129.63H458.5l108.05-129.68Z"/>
+        <path fill="#8f713f" d="m133.82 141.73 112.49 73.44v-73.21Z"/>
+        <path fill="#8f713f" d="m457.06 557.65.12-73.2 109.8 73.38z"/>
+        <path fill="#e4bf7c" d="m566.62 557.91-1.64-136.56-431.54-280.02v133.44z"/>
+        <path fill="#1e3829" d="m566.6 141.2.32 124.07-111.1-124.09z"/>
+        <path fill="#98c37b" d="M132.45 141.33 247.15 9.2h202.47l116.96 132Z"/>
+      </svg>
+      SupraVim
+      <span class="ver-chip">6.76</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#languages">Languages</a>
+      <a class="here" href="themes.html">Themes</a>
+      <a href="achievements.html">Achievements</a>
+      <a href="index.html#built">Built here</a>
+      <a href="index.html#install">Install</a>
+    </div>
+    <a class="ghost" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</nav>
+
+<header class="top">
+  <div class="wrap">
+    <span class="eyebrow">{{TOTAL}} colorschemes</span>
+    <h1>Same buffer.<br>{{TOTAL}} ways to read it.</h1>
+    <p class="lead">Every theme below ships with SupraVim — nothing to download. They all render the
+      same piece of Vala, so what changes between two cards is only the colour.</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap tools">
+    <div class="seg" role="group" aria-label="Filter themes by background">
+      <span class="seg-thumb" aria-hidden="true"></span>
+      <button type="button" data-filter="all" aria-pressed="true">All <span>{{TOTAL}}</span></button>
+      <button type="button" data-filter="dark" aria-pressed="false">Dark <span>{{NDARK}}</span></button>
+      <button type="button" data-filter="light" aria-pressed="false">Light <span>{{NLIGHT}}</span></button>
+    </div>
+    <div class="find">
+      <input id="q" type="search" placeholder="Filter by name" aria-label="Filter themes by name" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="group" id="g-supra">
+    <h2>Made for SupraVim <em>written for the distribution</em> <b>{{NSUPRA}}</b></h2>
+    <div class="grid">
+{{CARDS_SUPRA}}
+    </div>
+  </section>
+
+  <section class="group" id="g-ports">
+    <h2>Ports <em>classics, retuned to match the rest</em> <b>{{NPORTS}}</b></h2>
+    <div class="grid">
+{{CARDS_PORTS}}
+    </div>
+  </section>
+
+  <p class="empty" id="empty" hidden>No theme matches that name.</p>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
+  <div class="modal-in">
+    <div class="modal-head">
+      <h3 id="m-title">—</h3>
+      <button type="button" class="x" id="m-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="big"></div>
+    <div class="apply">
+      <p>Switch to it:</p>
+      <div class="strip">
+        <span class="prompt">$</span>
+        <code id="m-cmd">supravim --theme supradeep</code>
+        <button type="button" id="m-copy">COPY</button>
+      </div>
+      <p class="hint">The setting persists. You can also press <kbd>F12</kbd> in Vim and pick it under <b>Theme</b>.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-end">
+    <a href="index.html">← Back to SupraVim</a>
+    <span>SupraVim 6.76</span>
+    <span>GPL-3.0</span>
+    <a href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("stuck", window.scrollY > 8); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var q = document.getElementById("q");
+  var empty = document.getElementById("empty");
+  var mode = "all";
+
+  function apply() {
+    var term = q.value.trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (c) {
+      var okMode = mode === "all" || c.dataset.mode === mode;
+      var okTerm = !term
+        || c.dataset.name.indexOf(term) !== -1
+        || c.dataset.disp.toLowerCase().indexOf(term) !== -1;
+      var show = okMode && okTerm;
+      c.hidden = !show;
+      if (show) { shown++; }
+    });
+    /* hide a group whose cards are all filtered out */
+    document.querySelectorAll(".group").forEach(function (g) {
+      var any = g.querySelector(".card:not([hidden])");
+      g.hidden = !any;
+    });
+    empty.hidden = shown !== 0;
+  }
+
+  var segButtons = Array.prototype.slice.call(document.querySelectorAll(".seg button"));
+  var thumb = document.querySelector(".seg-thumb");
+
+  function moveThumb() {
+    var on = segButtons.filter(function (b) {
+      return b.getAttribute("aria-pressed") === "true";
+    })[0];
+    if (!on) { return; }
+    thumb.style.setProperty("--x", on.offsetLeft + "px");
+    thumb.style.setProperty("--w", on.offsetWidth + "px");
+  }
+
+  segButtons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.filter;
+      segButtons.forEach(function (o) {
+        o.setAttribute("aria-pressed", String(o === b));
+      });
+      moveThumb();
+      apply();
+    });
+  });
+
+  moveThumb();
+  requestAnimationFrame(function () { thumb.classList.add("ready"); });
+  window.addEventListener("resize", moveThumb);
+  /* webfonts land after first paint and change the label widths */
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(moveThumb); }
+
+  q.addEventListener("input", apply);
+
+  /* "/" focuses the filter, the way it would in Vim */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "/" && document.activeElement !== q && !modal.classList.contains("open")) {
+      e.preventDefault();
+      q.focus();
+    }
+  });
+
+  /* ---- modal ---- */
+  var modal = document.getElementById("modal");
+  var big = document.getElementById("big");
+  var mTitle = document.getElementById("m-title");
+  var mCmd = document.getElementById("m-cmd");
+  var mCopy = document.getElementById("m-copy");
+  var lastFocus = null;
+
+  function open(card) {
+    lastFocus = card;
+    mTitle.textContent = card.dataset.disp;
+    mCmd.textContent = "supravim --theme " + card.dataset.name;
+    big.innerHTML = card.querySelector(".win").outerHTML;
+    big.firstChild.setAttribute("style", card.getAttribute("style"));
+    modal.hidden = false;
+    requestAnimationFrame(function () { modal.classList.add("open"); });
+    document.body.style.overflow = "hidden";
+    document.getElementById("m-close").focus();
+  }
+
+  function close() {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+    setTimeout(function () { modal.hidden = true; }, 200);
+    if (lastFocus) { lastFocus.focus(); }
+  }
+
+  cards.forEach(function (c) {
+    c.addEventListener("click", function () { open(c); });
+  });
+
+  document.getElementById("m-close").addEventListener("click", close);
+  modal.addEventListener("click", function (e) { if (e.target === modal) { close(); } });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal.classList.contains("open")) { close(); }
+  });
+
+  mCopy.addEventListener("click", function () {
+    navigator.clipboard.writeText(mCmd.textContent).then(function () {
+      mCopy.textContent = "COPIED";
+      setTimeout(function () { mCopy.textContent = "COPY"; }, 1400);
+    });
+  });
+})();
+</script>
