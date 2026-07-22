@@ -427,9 +427,10 @@ vnoremap <silent> <A-Right> :<C-u><ScriptCmd>Utils.MoveCharRight('v')<CR><cr>
 vnoremap <silent> <A-Left>  :<C-u><ScriptCmd>Utils.MoveCharLeft('v')<CR><cr>
 
 # Fuzzy Finder
-nnoremap <silent> <leader>fc			<scriptcmd>FuzzyClip<cr>
+nnoremap <silent> <leader>fc		<scriptcmd>FuzzyClip<cr>
+nnoremap <silent> <leader>fd		<scriptcmd>FuzzyLspDiag<cr>
+nnoremap <silent> <leader>ft		<scriptcmd>FuzzySupraTags<cr>
 nnoremap <silent> <leader>f<f5>		<scriptcmd>FuzzyMake<cr>
-# nnoremap <silent> <leader>t			<scriptcmd>FuzzySupraTags<cr>
 
 # SupraVim Settings
 inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
