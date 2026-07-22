@@ -7,7 +7,7 @@ stages:
   image: alpine:latest
   before_script:
     - apk add --no-cache vim
-    - vim --version | head -1
+    - vim --version | sed -n 1p
   rules:
     - changes:
         - vimrc.in

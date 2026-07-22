@@ -23,10 +23,14 @@ require_vim() {
 		echo "vim not found in PATH" >&2
 		exit 127
 	fi
-	if ! "$VIM" --version | head -1 | grep -q 'Vi IMproved 9'; then
-		echo "vim 9 required, got: $("$VIM" --version | head -1)" >&2
+	version_line=$("$VIM" --version | sed -n 1p)
+	case "$version_line" in
+	*"Vi IMproved 9"*) ;;
+	*)
+		echo "vim 9 required, got: $version_line" >&2
 		exit 1
-	fi
+		;;
+	esac
 }
 
 make_sandbox() {
@@ -37,7 +41,7 @@ make_sandbox() {
 }
 
 vim_version() {
-	sed -n 's/^ *version *: *.\([0-9.]*\).*/\1/p' "$ROOT/meson.build" | head -1
+	sed -n 's/^ *version *: *.\([0-9.]*\).*/\1/p' "$ROOT/meson.build" | sed -n 1p
 }
 
 render_vimrc() {
