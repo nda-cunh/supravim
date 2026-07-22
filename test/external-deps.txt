@@ -1,0 +1,6 @@
+bundle/supravim/autoload/fuzzbox/_extensions/fuzzyclip.vim
+bundle/supravim/autoload/fuzzbox/_extensions/fuzzydiag.vim
+bundle/supravim/autoload/fuzzbox/_extensions/fuzzymake.vim
+bundle/supravim/autoload/fuzzbox/_extensions/fuzzymark.vim
+bundle/supravim/autoload/fuzzbox/_extensions/fuzzytags.vim
+bundle/supravim/autoload/suprasearch.vim
