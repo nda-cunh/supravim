@@ -6,6 +6,7 @@ status=0
 
 "$DIR/smoke.sh" || status=1
 "$DIR/compile.sh" || status=1
+"$DIR/unit.sh" || status=1
 
 echo
 if [ "$status" -eq 0 ]; then

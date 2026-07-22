@@ -25,6 +25,11 @@ compile:
   script:
     - ./test/compile.sh
 
+unit:
+  extends: .vim_test
+  script:
+    - ./test/unit.sh
+
 pages:
   stage: deploy
   image: alpine:latest
