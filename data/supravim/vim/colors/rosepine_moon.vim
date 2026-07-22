@@ -13,8 +13,7 @@ set background=dark
 hi clear
 g:colors_name = 'rosepine_moon'
 
-var t_Co = str2nr(exists('&t_Co') && !has('gui_running') ? (&t_Co ?? 0) : -1)
-var italics = (&t_ZH != '' && &t_ZH != '[7m') || has('gui_running')
+var t_Co = 256
 
 hi! link Cursor IncSearch
 hi! link CurSearch IncSearch
@@ -67,14 +66,6 @@ else
 	hi StatusLine guifg=#908caa guibg=#2a273f gui=NONE cterm=NONE
 	hi TabLine guifg=#908caa guibg=#2a273f gui=NONE cterm=NONE
 	hi TabLineFill guifg=NONE guibg=#2a273f gui=NONE cterm=NONE
-endif
-if !italics 
-	hi Comment guifg=#6e6a86 guibg=NONE gui=NONE cterm=NONE
-else
-	hi Comment guifg=#6e6a86 guibg=NONE gui=NONE cterm=NONE
-	if !italics
-		hi Comment gui=NONE cterm=NONE
-	endif
 endif
 hi ColorColumn guifg=NONE guibg=#393552 gui=NONE cterm=NONE
 hi Conceal guifg=NONE guibg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
@@ -153,14 +144,6 @@ hi htmlH2 guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
 hi htmlH3 guifg=#ea9a97 guibg=NONE gui=NONE cterm=NONE
 hi htmlH4 guifg=#f6c177 guibg=NONE gui=NONE cterm=NONE
 hi htmlH5 guifg=#3e8fb0 guibg=NONE gui=NONE cterm=NONE
-if !italics 
-	hi htmlItalic guifg=NONE guibg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
-else
-	hi htmlItalic guifg=NONE guibg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
-	if !italics
-		hi htmlItalic gui=NONE cterm=NONE
-	endif
-endif
 hi htmlLink guifg=#c4a7e7 guibg=NONE gui=NONE cterm=NONE
 hi htmlTag guifg=#908caa guibg=NONE gui=NONE cterm=NONE
 hi htmlTagN guifg=#e0def4 guibg=NONE gui=NONE cterm=NONE
@@ -173,14 +156,6 @@ hi markdownH4 guifg=#f6c177 guibg=NONE gui=NONE cterm=NONE
 hi markdownH5 guifg=#3e8fb0 guibg=NONE gui=NONE cterm=NONE
 hi markdownH6 guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
 hi markdownLinkText guifg=#c4a7e7 guibg=NONE gui=NONE cterm=NONE
-if !italics 
-	hi mkdCode guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
-else
-	hi mkdCode guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
-	if !italics
-		hi mkdCode gui=NONE cterm=NONE
-	endif
-endif
 hi mkdCodeDelimiter guifg=#ea9a97 guibg=NONE gui=NONE cterm=NONE
 hi mkdCodeEnd guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
 hi mkdCodeStart guifg=#9ccfd8 guibg=NONE gui=NONE cterm=NONE
@@ -231,14 +206,6 @@ if t_Co >= 256
 		hi StatusLine ctermfg=103 ctermbg=235 cterm=NONE
 		hi TabLine ctermfg=103 ctermbg=235 cterm=NONE
 		hi TabLineFill ctermfg=NONE ctermbg=235 cterm=NONE
-	endif
-	if !italics 
-		hi Comment ctermfg=60 ctermbg=NONE cterm=NONE
-	else
-		hi Comment ctermfg=60 ctermbg=NONE cterm=NONE
-		if !italics
-			hi Comment cterm=NONE
-		endif
 	endif
 	hi ColorColumn ctermfg=NONE ctermbg=237 cterm=NONE
 	hi Conceal ctermfg=NONE ctermbg=NONE cterm=NONE
@@ -318,14 +285,6 @@ if t_Co >= 256
 	hi htmlH3 ctermfg=174 ctermbg=NONE cterm=NONE
 	hi htmlH4 ctermfg=222 ctermbg=NONE cterm=NONE
 	hi htmlH5 ctermfg=31 ctermbg=NONE cterm=NONE
-	if !italics 
-		hi htmlItalic ctermfg=NONE ctermbg=NONE cterm=NONE
-	else
-		hi htmlItalic ctermfg=NONE ctermbg=NONE cterm=NONE
-		if !italics
-			hi htmlItalic cterm=NONE
-		endif
-	endif
 	hi htmlLink ctermfg=183 ctermbg=NONE cterm=NONE
 	hi htmlTag ctermfg=103 ctermbg=NONE cterm=NONE
 	hi htmlTagN ctermfg=189 ctermbg=NONE cterm=NONE
@@ -338,14 +297,6 @@ if t_Co >= 256
 	hi markdownH5 ctermfg=31 ctermbg=NONE cterm=NONE
 	hi markdownH6 ctermfg=152 ctermbg=NONE cterm=NONE
 	hi markdownLinkText ctermfg=183 ctermbg=NONE cterm=NONE
-	if !italics 
-		hi mkdCode ctermfg=152 ctermbg=NONE cterm=NONE
-	else
-		hi mkdCode ctermfg=152 ctermbg=NONE cterm=NONE
-		if !italics
-			hi mkdCode cterm=NONE
-		endif
-	endif
 	hi mkdCodeDelimiter ctermfg=174 ctermbg=NONE cterm=NONE
 	hi mkdCodeEnd ctermfg=152 ctermbg=NONE cterm=NONE
 	hi mkdCodeStart ctermfg=152 ctermbg=NONE cterm=NONE

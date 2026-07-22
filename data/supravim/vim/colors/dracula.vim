@@ -10,10 +10,6 @@ endif
 
 g:colors_name = 'dracula'
 
-if !(has('termguicolors') && &termguicolors) && !has('gui_running') && &t_Co != 256
-	finish
-endif
-
 if has('terminal')
 	g:terminal_ansi_colors = []
 	for i in range(16)
