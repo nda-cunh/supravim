@@ -30,7 +30,7 @@ Or through the package manager:
 suprapack install supravim
 ```
 
-**Requirements**: Vim 9.0+, [Suprapack](https://gitlab.com/nda-cunh/suprapack), glib-networking.
+**Requirements**: Vim 9.1.1010, [Suprapack](https://gitlab.com/nda-cunh/suprapack), glib-networking.
 A [Nerd Font](https://www.nerdfonts.com/) is optional but makes the icons render — `suprapack search -ttf`.
 
 **macOS**: read the [macOS guide](https://gitlab.com/nda-cunh/SupraVim/-/wikis/Mac-Os) first, then:
