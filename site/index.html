@@ -130,6 +130,18 @@ nav.stuck { border-bottom-color: var(--line); background: rgba(14,19,28,.9); }
 .nav-links { display: flex; gap: 1.5rem; margin-left: auto; font-size: .9rem; }
 .nav-links a { color: var(--dim); transition: color .18s; }
 .nav-links a:hover { color: var(--fg-hi); }
+.nav-toggle {
+  display: none;
+  flex-direction: column; justify-content: center; gap: 5px;
+  margin-left: auto;
+  width: 40px; height: 40px; padding: 0 8px;
+  background: none; border: 0; cursor: pointer;
+}
+.nav-toggle span { display: block; height: 2px; border-radius: 2px; background: var(--fg-hi); transition: transform .22s, opacity .18s; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-gitlab { display: none; }
 
 .ver-chip {
   font-family: var(--mono);
@@ -482,7 +494,22 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
   .nav-links { gap: 1.05rem; font-size: .85rem; }
 }
 @media (max-width: 800px) {
-  .nav-links { display: none; }
+  .nav-in { gap: .9rem; }
+  .ghost { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-links {
+    display: none;
+    position: absolute; left: 0; right: 0; top: 62px;
+    flex-direction: column; gap: 0; margin-left: 0;
+    font-size: .95rem;
+    max-height: calc(100vh - 62px); overflow-y: auto;
+    padding: .35rem 0 .7rem;
+    background: rgba(14,19,28,.98);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: .8rem clamp(1.1rem, 5vw, 1.6rem); }
+  .nav-gitlab { display: block; }
 }
 
 @media (max-width: 700px) {
@@ -516,7 +543,10 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
       SupraVim
       <span class="ver-chip">6.76</span>
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
       <a href="#features">Features</a>
       <a href="#languages">Languages</a>
       <a href="themes.html">Themes</a>
@@ -524,6 +554,7 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
       <a href="#built">Built here</a>
       <a href="#install">Install</a>
       <a href="#changelog">Changelog</a>
+      <a class="nav-gitlab" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
     </div>
     <a class="ghost" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
   </div>
@@ -898,5 +929,34 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
   } catch (e) {
     document.querySelectorAll(".rv").forEach(function (el) { el.classList.add("in"); });
   }
+})();
+</script>
+
+<script>
+(function () {
+  var t = document.querySelector(".nav-toggle");
+  var p = document.getElementById("nav-links");
+  if (!t || !p) { return; }
+  function close() {
+    t.setAttribute("aria-expanded", "false");
+    t.setAttribute("aria-label", "Open menu");
+    p.classList.remove("open");
+  }
+  t.addEventListener("click", function () {
+    var open = t.getAttribute("aria-expanded") === "true";
+    if (open) { close(); return; }
+    t.setAttribute("aria-expanded", "true");
+    t.setAttribute("aria-label", "Close menu");
+    p.classList.add("open");
+  });
+  p.addEventListener("click", function (e) {
+    if (e.target.closest("a")) { close(); }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && p.classList.contains("open")) { close(); t.focus(); }
+  });
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 800) { close(); }
+  });
 })();
 </script>
