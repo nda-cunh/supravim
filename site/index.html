@@ -487,12 +487,8 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
 .rv { opacity: 0; transform: translateY(18px); transition: opacity .65s cubic-bezier(.2,.7,.3,1), transform .65s cubic-bezier(.2,.7,.3,1); }
 .rv.in { opacity: 1; transform: none; }
 
-/* seven nav links only just fit above 860px — tighten the gaps below that,
-   and drop the links entirely under 800px where they no longer fit at all */
-@media (max-width: 940px) {
-  .nav-in { gap: 1rem; }
-  .nav-links { gap: 1.05rem; font-size: .85rem; }
-}
+/* drop the links into the burger under 800px, where the mark, the links and
+   the GitLab button stop fitting side by side */
 @media (max-width: 800px) {
   .nav-in { gap: .9rem; }
   .ghost { display: none; }
@@ -547,13 +543,8 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
       <span></span><span></span><span></span>
     </button>
     <div class="nav-links" id="nav-links">
-      <a href="#features">Features</a>
-      <a href="#languages">Languages</a>
       <a href="themes.html">Themes</a>
       <a href="achievements.html">Achievements</a>
-      <a href="#built">Built here</a>
-      <a href="#install">Install</a>
-      <a href="#changelog">Changelog</a>
       <a class="nav-gitlab" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
     </div>
     <a class="ghost" href="https://gitlab.com/nda-cunh/SupraVim">GitLab</a>
