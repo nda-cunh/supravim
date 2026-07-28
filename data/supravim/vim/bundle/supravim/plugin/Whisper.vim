@@ -8,7 +8,7 @@ import autoload 'supravim/Whisper.vim' as Whisper
 g:loaded_whisper = 1
 
 g:whisper_desc = get(g:, 'whisper_desc', {})
-g:whisper_delay = get(g:, 'whisper_delay', 300)
+g:whisper_delay = get(g:, 'whisper_delay', 80)
 g:whisper_ignore = get(g:, 'whisper_ignore', [])
 g:whisper_width = get(g:, 'whisper_width', 60)
 g:whisper_hint = get(g:, 'whisper_hint', true)
