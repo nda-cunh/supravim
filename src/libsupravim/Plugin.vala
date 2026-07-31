@@ -29,7 +29,8 @@ namespace Supravim.Plugin {
 
 		if (!plugins.add_from_url (url, name))
 			throw new SupravimError.ALREADY_EXISTS ("Plugin %s already exists".printf (name));
-		Process.spawn_command_line_sync (@"git clone --depth=1 $url $HOME/.vim/bundle/$name", null, null, out wait);
+		string target_dir = Environment.get_home_dir () + "/.vim/bundle/" + name;
+		Process.spawn_sync (null, {"git", "clone", "--depth", "1", url, target_dir}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, out wait);
 		if (wait != 0) {
 			plugins.remove_from_name (name);
 			throw new SpawnError.FAILED ("git clone returned %d for %s".printf (wait, name));
