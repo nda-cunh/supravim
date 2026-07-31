@@ -1,3 +1,6 @@
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SupraVim — Vim, fully equipped</title>
@@ -444,6 +447,17 @@ code, kbd { font-family: var(--mono); }
 .strip.big { margin: 0; width: fit-content; max-width: 100%; font-size: clamp(.78rem, 1.6vw, .95rem); padding: .8rem .8rem .8rem 1.3rem; }
 .needs { font-size: .88rem; color: var(--dim); margin: 1rem 0 2.4rem; }
 
+.sums { margin: 1.2rem 0 0; display: grid; gap: .35rem; }
+.sums dt { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+.sums div { display: grid; grid-template-columns: minmax(90px, auto) minmax(0, 1fr); gap: 1rem; align-items: baseline; }
+.sums dd { margin: 0; min-width: 0; }
+.sums code { font-size: .74rem; color: var(--fg); overflow-x: auto; white-space: nowrap; display: block; scrollbar-width: none; }
+.sums code::-webkit-scrollbar { display: none; }
+
+@media (max-width: 560px) {
+  .sums div { grid-template-columns: 1fr; gap: .15rem; }
+}
+
 .rows { display: grid; gap: .5rem; }
 .row {
   display: grid;
@@ -521,6 +535,8 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
   .aurora { display: none; }
 }
 </style>
+</head>
+<body>
 
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 
@@ -795,6 +811,17 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
       <button type="button" data-copy="curl https://supravim.dev/install | sh">COPY</button>
     </div>
 
+    <dl class="sums">
+      <div>
+        <dt>SHA-256 install</dt>
+        <dd><code>e0358eafb72ae349b7ae4c8a4a28afd2fe375afb49c38eae04fcfea0af3e8f5e</code></dd>
+      </div>
+      <div>
+        <dt>SHA-256 macos</dt>
+        <dd><code>99d1fa13da726d761655f07d62b7bb498e2784c19d9f170c013deda0ee5821d2</code></dd>
+      </div>
+    </dl>
+
     <p class="needs">Needs Vim 9.0+, Suprapack and glib-networking.</p>
 
     <div class="rows">
@@ -951,3 +978,6 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
   });
 })();
 </script>
+
+</body>
+</html>
