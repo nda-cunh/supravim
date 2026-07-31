@@ -29,8 +29,10 @@ public class IpcConnection : SocketClient {
 		Memory.copy(&opcode, header, 4);
 		Memory.copy(&length, &header[4], 4);
 
+		if (length <= 0)
+			return "";
 		var payload = new uint8[length + 1];
-			input.read_all(payload[0:length], null);
+		input.read_all(payload[0:length], null);
 
 		return (string)payload;
 	}
