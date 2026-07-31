@@ -19,7 +19,7 @@ public class Command {
 	public void OnMetric (string message) {
 		uint8 buffer[128];
 		int64 delta = 0;
-		message.scanf ("Metric: %s %lld", buffer, out delta);
+		message.scanf ("Metric: %127s %lld", buffer, out delta);
 		unowned string name = (string) buffer;
 		if (name != "")
 			ach.add_metric (name, delta);
@@ -27,7 +27,7 @@ public class Command {
 
 	public void OnAch (string message) {
 		uint8 buffer[128];
-		message.scanf ("Ach: %s", buffer);
+		message.scanf ("Ach: %127s", buffer);
 		unowned string id = (string) buffer;
 		if (id != "")
 			ach.force_unlock (id);
@@ -47,7 +47,7 @@ public class Command {
 
 			unowned string filetype = (string)buffer1;
 			unowned string filename = (string)buffer2;
-			message.scanf ("OpenFile: %[^|]|%s", buffer1, buffer2);
+			message.scanf ("OpenFile: %[^|]|%127s", buffer1, buffer2);
 			if (filetype == "")
 				return;
 
@@ -147,7 +147,7 @@ public class Command {
 	public void OnInstall (string message) {
 		uint8 buffer1[128];
 		uint8 buffer2[128];
-		message.scanf ("Install: %s %s", buffer1, buffer2);
+		message.scanf ("Install: %127s %127s", buffer1, buffer2);
 		unowned string lsp_name = (string)buffer1;
 		unowned string package_name = (string)buffer2;
 
