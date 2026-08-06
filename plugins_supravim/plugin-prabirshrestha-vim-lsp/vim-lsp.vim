@@ -2,7 +2,7 @@ vim9script
 
 import autoload 'supraconfig.vim' as SupraConfig
 
-# --- Helper pour rafraîchir le LSP lors d'un changement d'option ---
+# --- Helper to refresh the LSP when an option changes ---
 def RefreshLsp()
     silent! call lsp#disable()
     timer_start(100, (_) => {
@@ -15,7 +15,7 @@ enddef
 
 autocmd User lsp_setup doautocmd User LspIsReady 
 
-# --- Déclaration des Groupes ---
+# --- Group declarations ---
 SupraConfig.RegisterGroup('lsp', 'Language Server Protocol: completion, diagnostics and code intelligence')
 SupraConfig.RegisterGroup('lsp/diagnostics', 'Options for diagnostic messages and errors')
 SupraConfig.RegisterGroup('lsp/diagnostics/echo', 'Diagnostic messages shown in the command line')

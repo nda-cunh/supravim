@@ -117,7 +117,7 @@ export def LspFormat()
         var view = winsaveview()
         normal! gg=G
         winrestview(view)
-        echo "SupraVim: Formatage natif (LSP non supporté)"
+        echo "SupraVim: native formatting (LSP not supported)"
     endif
 enddef
 
