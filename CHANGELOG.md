@@ -1,3 +1,8 @@
+# 6.77
+- Add SupraTreeFocus command
+- Add options for supranorminette
+- fix scrollbar visible when saving in supratree
+
 # 6.76
 - Switch the default theme to supradeep
 - Add a new supraevening theme and normalize the highlight styles
