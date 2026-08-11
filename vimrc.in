@@ -300,59 +300,64 @@ SupraConfig.RegisterMany([
     # --- THEME STYLES ---
     {
         id: 'theme/style/function',
-        type: 'string',
+		type: 'multiple_choice',
+		choice: ['none', 'bold', 'italic', 'underline'],
         default: 'none',
-        lore: 'Style for functions none, bold, italic, underline', 
+        lore: 'Style for functions', 
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Function', v)
 		}
     },
     {
         id: 'theme/style/type',
-        type: 'string',
+		type: 'multiple_choice',
+		choice: ['none', 'bold', 'italic', 'underline'],
         default: 'none',
-        lore: 'Style for types none, bold, italic, underline',
+        lore: 'Style for types',
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Type', v)
 		}
     },
     {
         id: 'theme/style/variable',
-        type: 'string',
+		type: 'multiple_choice',
+		choice: ['none', 'bold', 'italic', 'underline'],
         default: 'none',
-        lore: 'Style for variables none, bold, italic, underline',
+        lore: 'Style for variables',
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Variable', v)
 		}
     },
     {
         id: 'theme/style/keyword',
-        type: 'string',
+		type: 'multiple_choice',
+		choice: ['none', 'bold', 'italic', 'underline'],
         default: 'none',
-        lore: 'Style for keywords none, bold, italic, underline',
+        lore: 'Style for keywords',
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Keyword', v)
 		}
     },
     {
         id: 'theme/style/comment',
-        type: 'string',
+		type: 'multiple_choice',
+		choice: ['none', 'bold', 'italic', 'underline'],
         default: 'italic',
-        lore: 'Style for comments none, bold, italic, underline',
+        lore: 'Style for comments',
         handler: (v) => {
 			Options.ChangeColorStyleStatic('Comment', v)
 		}
     },
 	{
 		id: 'theme/style/string',
-		type: 'string',
+		type: 'multiple_choice',
+		choice: ['none', 'bold', 'italic', 'underline'],
 		default: 'none',
-		lore: 'Style for strings none, bold, italic, underline',
+		lore: 'Style for strings',
 		handler: (v) => {
 			Options.ChangeColorStyleStatic('String', v)
 		}
 	},
-
 ])
 
 #------------- Cursor Parts ------------"
