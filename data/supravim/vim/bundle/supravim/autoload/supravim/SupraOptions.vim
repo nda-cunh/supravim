@@ -61,6 +61,22 @@ export def ChangeSupravimTheme(theme: string, typemode: string)
 	nontext_bg = synIDattr(synIDtrans(hlID('NonText')), 'bg#')
 enddef
 
+const STYLE_ATTRS = ['bold', 'italic', 'underline', 'undercurl',
+	'strikethrough', 'reverse', 'inverse', 'standout']
+
 export def ChangeColorStyleStatic(style: string, value: string)
-	exec 'hi! ' .. style .. ' gui=' .. value .. ' cterm=' .. value
+	var styles: dict<bool> = {}
+	for attr in split(value, ',')
+		if STYLE_ATTRS->index(attr) >= 0
+			styles[attr] = true
+		endif
+	endfor
+
+	var attrs = get(hlget(style, true), 0, {})
+	if attrs->has_key('cleared')
+		attrs->remove('cleared')
+	endif
+	attrs->extend({name: style, force: true,
+		gui: styles, cterm: styles, term: styles})
+	hlset([attrs])
 enddef

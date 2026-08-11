@@ -11,14 +11,6 @@ set t_Co=256
 
 g:colors_name = "supracool"
 
-if !exists("g:supracool_termcolors")
-	g:supracool_termcolors = 256
-endif
-
-if !exists("g:supracool_terminal_italics")
-	g:supracool_terminal_italics = 0
-endif
-
 hi Comment guifg=#546178 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
 hi Constant guifg=#4dbdcb guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
 hi String guifg=#97ca72 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE

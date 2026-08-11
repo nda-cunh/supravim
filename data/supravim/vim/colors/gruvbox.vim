@@ -83,7 +83,7 @@ hi GruvboxPurpleSign guifg=#d3869b guibg=#3c3836 guisp=NONE gui=NONE ctermfg=175
 hi GruvboxAquaSign guifg=#8ec07c guibg=#3c3836 guisp=NONE gui=NONE ctermfg=108 ctermbg=237 cterm=NONE
 hi GruvboxOrangeSign guifg=#fe8019 guibg=#3c3836 guisp=NONE gui=NONE ctermfg=208 ctermbg=237 cterm=NONE
 hi Underlined guifg=#83a598 guibg=NONE guisp=NONE gui=NONE ctermfg=109 ctermbg=NONE cterm=NONE
-hi Cursor guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Cursor guifg=NONE guibg=#fabd2f guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
 hi Comment guifg=#928374 guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE
 hi Todo guifg=fg guibg=bg guisp=NONE gui=NONE ctermfg=223 ctermbg=235 cterm=NONE
 hi Error guifg=#fb4934 guibg=bg guisp=NONE gui=NONE ctermfg=167 ctermbg=235 cterm=NONE
@@ -120,6 +120,7 @@ hi vimCommentTitle guifg=#a89984 guibg=NONE guisp=NONE gui=NONE ctermfg=246 cter
 hi clojureRegexpCharClass guifg=#bdae93 guibg=NONE guisp=NONE gui=NONE ctermfg=248 ctermbg=NONE cterm=NONE
 hi markdownItalic guifg=#bdae93 guibg=NONE guisp=NONE gui=NONE ctermfg=248 ctermbg=NONE cterm=NONE
 hi markdownLinkText guifg=#928374 guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE
+
 hi! link SpecialKey GruvboxBg2
 hi! link EndOfBuffer NonText
 hi! link NonText GruvboxBg2

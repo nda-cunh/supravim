@@ -11,14 +11,6 @@ set t_Co=256
 
 g:colors_name = "supradeep"
 
-if !exists("g:supradeep_termcolors")
-	g:supradeep_termcolors = 256
-endif
-
-if !exists("g:supradeep_terminal_italics")
-	g:supradeep_terminal_italics = 0
-endif
-
 hi Comment guifg=#455574 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
 hi Constant guifg=#34bfd0 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
 hi String guifg=#8bcd5b guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE

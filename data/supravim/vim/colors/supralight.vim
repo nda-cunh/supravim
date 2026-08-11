@@ -11,14 +11,6 @@ set t_Co=256
 
 g:colors_name = "supralight"
 
-if !exists("g:supralight_termcolors")
-	g:supralight_termcolors = 256
-endif
-
-if !exists("g:supralight_terminal_italics")
-	g:supralight_terminal_italics = 0
-endif
-
 hi Comment guifg=#a0a1a7 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
 hi Constant guifg=#0184bc guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
 hi String guifg=#50a14f guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE

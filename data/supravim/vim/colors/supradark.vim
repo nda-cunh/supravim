@@ -11,14 +11,6 @@ set t_Co=256
 
 g:colors_name = "supradark"
 
-if !exists("g:supradark_termcolors")
-	g:supradark_termcolors = 256
-endif
-
-if !exists("g:supradark_terminal_italics")
-	g:supradark_terminal_italics = 0
-endif
-
 hi Comment guifg=#5c6370 guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
 hi Constant guifg=#56b6c2 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
 hi String guifg=#98c379 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE

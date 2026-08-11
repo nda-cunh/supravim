@@ -11,14 +11,6 @@ set t_Co=256
 
 g:colors_name = "suprawarmer"
 
-if !exists("g:suprawarmer_termcolors")
-	g:suprawarmer_termcolors = 256
-endif
-
-if !exists("g:suprawarmer_terminal_italics")
-	g:suprawarmer_terminal_italics = 0
-endif
-
 hi Comment guifg=#5a5b5e guibg=NONE guisp=NONE gui=NONE ctermfg=59 ctermbg=NONE cterm=NONE
 hi Constant guifg=#51a8b3 guibg=NONE guisp=NONE gui=NONE ctermfg=38 ctermbg=NONE cterm=NONE
 hi String guifg=#8fb573 guibg=NONE guisp=NONE gui=NONE ctermfg=114 ctermbg=NONE cterm=NONE

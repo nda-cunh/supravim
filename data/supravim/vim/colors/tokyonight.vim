@@ -64,7 +64,7 @@ hi MatchParen guifg=NONE guibg=#3b3d57 guisp=NONE gui=NONE ctermfg=NONE ctermbg=
 hi ToolbarLine guifg=#a9b1d6 guibg=#2a2b3d guisp=NONE gui=NONE ctermfg=250 ctermbg=236 cterm=NONE
 hi ToolbarButton guifg=#1a1b26 guibg=#7da6ff guisp=NONE gui=NONE ctermfg=235 ctermbg=110 cterm=NONE
 hi Terminal guifg=#a9b1d6 guibg=#1a1b26 guisp=NONE gui=NONE ctermfg=250 ctermbg=235 cterm=NONE
-hi Cursor guifg=NONE guibg=NONE guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Cursor guifg=NONE guibg=#7AA2F7 guisp=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
 hi Whitespace guifg=#3b3d57 guibg=NONE guisp=NONE gui=NONE ctermfg=237 ctermbg=NONE cterm=NONE
 hi Debug guifg=#E0AF68 guibg=NONE guisp=NONE gui=NONE ctermfg=179 ctermbg=NONE cterm=NONE
 hi debugPC guifg=#1a1b26 guibg=#9ECE6A guisp=NONE gui=NONE ctermfg=235 ctermbg=107 cterm=NONE
@@ -198,6 +198,7 @@ hi SignatureMarkerText guifg=#F7768E guibg=#232433 guisp=NONE gui=NONE ctermfg=2
 hi UndotreeSavedBig guifg=#F7768E guibg=NONE guisp=NONE gui=NONE ctermfg=203 ctermbg=NONE cterm=NONE
 hi QuickScopePrimary guifg=#9ECE6A guibg=NONE guisp=NONE gui=NONE ctermfg=107 ctermbg=NONE cterm=NONE
 hi QuickScopeSecondary guifg=#7AA2F7 guibg=NONE guisp=NONE gui=NONE ctermfg=110 ctermbg=NONE cterm=NONE
+
 hi! link CurSearch Search
 hi! link CursorLineSign SignColumn
 hi! link CursorLineFold FoldColumn

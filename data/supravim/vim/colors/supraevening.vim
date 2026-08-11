@@ -11,14 +11,6 @@ set t_Co=256
 
 g:colors_name = "supraevening"
 
-if !exists("g:supraevening_termcolors")
-	g:supraevening_termcolors = 256
-endif
-
-if !exists("g:supraevening_terminal_italics")
-	g:supraevening_terminal_italics = 0
-endif
-
 hi Comment guifg=#7183bd guibg=NONE guisp=NONE gui=NONE ctermfg=67 ctermbg=NONE cterm=NONE
 hi Constant guifg=#f2a0a0 guibg=NONE guisp=NONE gui=NONE ctermfg=217 ctermbg=NONE cterm=NONE
 hi String guifg=#f2a0a0 guibg=NONE guisp=NONE gui=NONE ctermfg=217 ctermbg=NONE cterm=NONE

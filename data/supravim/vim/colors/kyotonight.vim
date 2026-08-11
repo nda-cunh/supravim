@@ -268,6 +268,7 @@ hi VimwikiHeader5 guifg=#7dcfff guibg=NONE guisp=NONE gui=NONE ctermfg=12 ctermb
 hi VimwikiHeader6 guifg=#7dcfff guibg=NONE guisp=NONE gui=NONE ctermfg=12 ctermbg=NONE cterm=NONE
 hi VimwikiLink guifg=#7dcfff guibg=NONE guisp=NONE gui=NONE ctermfg=12 ctermbg=NONE cterm=NONE
 hi yamlKey guifg=#73daca guibg=NONE guisp=NONE gui=NONE ctermfg=6 ctermbg=NONE cterm=NONE
+
 hi! link CurSearch Search
 hi! link CursorLineSign SignColumn
 hi! link CursorLineFold FoldColumn
