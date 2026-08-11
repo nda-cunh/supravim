@@ -9,12 +9,29 @@ var group_registry: dict<string> = {}
 # -----------------------------------------
 # {
 #   id: string,       # The unique identifier (must match the JSON key)
-#   type: string,     # 'bool', 'string', 'number', 'choice' (for your CLI)
+#   type: string,     # 'bool', 'string', 'number', 'choice', 'multiple_choice' (for your CLI)
+#   choice: list<string>, # Required when type is 'choice'/'multiple_choice': the allowed values
+#                         # 'multiple_choice' values are stored as a comma separated string
 #   lore: string,     # The description shown to the user
 #   default: any,     # The default value when absent from the JSON
 #   spawn: func,      # (optional) Function run only once, but does not call handler() at startup
 #   handler: func,    # The function run: (val) => { ... }
 # }
+
+####################
+# MULTIPLE CHOICE  #
+####################
+
+def SplitChoices(value: any): list<string>
+	if type(value) == v:t_list
+		return copy(value)
+	endif
+	return filter(map(split($'{value}', ','), (_, v) => trim(v)), (_, v) => !empty(v))
+enddef
+
+def JoinChoices(values: list<string>): string
+	return join(values, ',')
+enddef
 
 ####################
 # PUBLIC FUNCTIONS #
@@ -27,12 +44,26 @@ export def Register(option: dict<any>)
 		return
 	endif
 
+	var opt_type = get(option, 'type', '')
+	if opt_type == 'choice' || opt_type == 'multiple_choice'
+		var opts = get(option, 'choice', [])
+		if type(opts) != v:t_list || empty(opts)
+			echom printf(gettext("Option '%s' of type '%s' requires a non-empty 'choice' list", "supravim"), option.id, opt_type)
+			return
+		endif
+	endif
+
     if user_settings == null
 		InitCache()
 	endif
-    
+
 	registry[option.id] = option
 	var val_to_apply: any = get(user_settings, option.id, get(option, 'default', ''))
+	if opt_type == 'choice' && index(option.choice, val_to_apply) == -1
+		val_to_apply = get(option, 'default', option.choice[0])
+	elseif opt_type == 'multiple_choice'
+		val_to_apply = JoinChoices(filter(SplitChoices(val_to_apply), (_, v) => index(option.choice, v) != -1))
+	endif
 	try
 		current_values[option.id] = val_to_apply
 		if has_key(option, 'spawn')
@@ -76,9 +107,39 @@ def SpawnFunction(id: string, value: any)
     endif
 enddef
 
+def IsAllowed(id: string, value: any): bool
+	var opt_type = get(registry[id], 'type', '')
+	if opt_type == 'multiple_choice'
+		for part in SplitChoices(value)
+			if index(registry[id].choice, part) == -1
+				echom printf(gettext("Invalid value '%s', expected one of: %s", "supravim"),
+					part, join(registry[id].choice, ', '))
+				return false
+			endif
+		endfor
+		return true
+	endif
+	if opt_type != 'choice'
+		return true
+	endif
+	if index(registry[id].choice, value) == -1
+		echom printf(gettext("Invalid value '%s', expected one of: %s", "supravim"),
+			value, join(registry[id].choice, ', '))
+		return false
+	endif
+	return true
+enddef
+
+def Normalize(id: string, value: any): any
+	if get(registry[id], 'type', '') == 'multiple_choice'
+		return JoinChoices(SplitChoices(value))
+	endif
+	return value
+enddef
+
 export def Update(id: string, value: any)
-    if has_key(registry, id)
-        Apply(id, value)
+    if has_key(registry, id) && IsAllowed(id, value)
+        Apply(id, Normalize(id, value))
         Save()
     endif
 enddef
@@ -99,8 +160,8 @@ export def UpdateWithString(id: string, value: string)
 enddef
 
 export def UpdateWithoutApply(id: string, value: any)
-	if has_key(registry, id)
-		current_values[id] = value
+	if has_key(registry, id) && IsAllowed(id, value)
+		current_values[id] = Normalize(id, value)
 		Save()
 	endif
 enddef
@@ -138,6 +199,9 @@ export def PrintRegister()
             default: opt.default,
             current: get(current_values, id, opt.default)
         }
+        if opt.type == 'choice' || opt.type == 'multiple_choice'
+            options_map[id].choice = opt.choice
+        endif
     endfor
 
     # ON EMBALLE TOUT DANS UN SEUL PAQUET

@@ -6,10 +6,11 @@ namespace Supravim {
 		public string value;
 		public string type;
 		public string default_value;
+		public string[] choice;
 
 		public static SupravimOption empty () {
 			return SupravimOption () {
-				id = "", lore = "", value = "", type = "", default_value = ""
+				id = "", lore = "", value = "", type = "", default_value = "", choice = {}
 			};
 		}
 	}
@@ -55,6 +56,17 @@ namespace Supravim {
 			}
 		}
 
+		private static string[] value_to_choice (YYJson.Value? v) {
+			string[] result = {};
+			if (v == null || v.get_type () != YYJson.Type.ARR) return result;
+			for (size_t i = 0; i < v.arr_size (); i++) {
+				unowned var item = v.arr_get (i);
+				if (item == null) continue;
+				result += value_to_string (item);
+			}
+			return result;
+		}
+
 		public static List<SupravimOption?> parse_full_package (string json) {
 			group_lores = new HashTable<string, SupravimGroup?> (str_hash, str_equal);
 			var options_list = new List<SupravimOption?> ();
@@ -96,12 +108,14 @@ namespace Supravim {
 						unowned var current_v = entry.obj_get ("current");
 						unowned var type_v    = entry.obj_get ("type");
 						unowned var default_v = entry.obj_get ("default");
+						unowned var choice_v  = entry.obj_get ("choice");
 
 						opt.id            = (id_v      != null ? id_v.get_str ()      : null) ?? "";
 						opt.lore          = tr ((lore_v    != null ? lore_v.get_str ()    : null) ?? "");
 						opt.value         = value_to_string (current_v);
 						opt.type          = (type_v    != null ? type_v.get_str ()    : null) ?? "";
 						opt.default_value = value_to_string (default_v);
+						opt.choice        = value_to_choice (choice_v);
 
 						options_list.append (opt);
 					}
