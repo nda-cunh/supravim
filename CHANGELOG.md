@@ -1,3 +1,11 @@
+# 6.78
+- Add the SupraIndent plugin
+- Add a `multiple_choice` option type: several values can be combined and are stored as a comma separated string
+- Validate `choice` and `multiple_choice` values on update, and reject unknown ones with an explicit message
+- Theme styles (function, type, variable, keyword, comment, string) are now multiple choice and can be combined
+- `ChangeColorStyleStatic` now keeps the existing highlight colors instead of clearing them
+- Fix the cursor color in the gruvbox, tokyonight and tokyostorm themes
+
 # 6.77
 - Add SupraTreeFocus command
 - Add options for supranorminette
