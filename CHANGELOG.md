@@ -43,8 +43,16 @@
 - SupraMake: add a full SupraPop panel on `<leader><F5>` — fuzzy rule search (focused on open),
   live command preview, per-rule arguments, `--run`/valgrind toggles and a `make -n` dry-run preview
 - SupraMake: remember each rule's arguments and options per project
-- SupraMake: `<F5>` now replays the last launched rule with its saved arguments
 - SupraMake: move the `<F5>`/`<F6>`/`<F7>` mappings to the vimrc
+- SupraMake: the panel has a second page, Command, to run any shell line instead of a rule
+  (`<C-t>` to switch, or a click on the tabs; `:Make !<cmd>` from the command line)
+- SupraMake: named slots — each mapping remembers its own rule or command per project;
+  `<F5>`/`<F6>`/`<F7>` replay their slot, `<leader>` + the same key opens the panel on it
+- SupraMake: `^S` opens the slot manager — pick, rename, create or delete a slot
+- SupraMake: per-project history of the free commands, walked with `↑`/`↓` in the field
+- SupraMake: `Quickfix` and `Auto-close` options for free commands, remembered by the slot
+- SupraMake: a command starting with `:` runs inside Vim instead of the shell
+- FuzzyMake (`<leader>f<F5>`) now lists the slots and their exact command line instead of the rules
 - Add export/import of the SupraVim config as a .supravim archive
 - Migrate the supravim json config to a nested directory
 - SupraSearch: add ghost completion and search toggles in the popup

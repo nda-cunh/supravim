@@ -431,6 +431,14 @@ nnoremap <silent> <A-Left>  <ScriptCmd>Utils.MoveCharLeft('n')<CR>
 vnoremap <silent> <A-Right> :<C-u><ScriptCmd>Utils.MoveCharRight('v')<CR><cr>
 vnoremap <silent> <A-Left>  :<C-u><ScriptCmd>Utils.MoveCharLeft('v')<CR><cr>
 
+# SupraMake
+nnoremap <silent> <F5>			<scriptcmd>Make.RunSlot('F5')<cr>
+nnoremap <silent> <F6>			<scriptcmd>Make.RunSlot('F6')<cr>
+nnoremap <silent> <F7>			<scriptcmd>Make.RunSlot('F7')<cr>
+nnoremap <silent> <leader><F5>		<scriptcmd>Make.Panel('F5')<cr>
+nnoremap <silent> <leader><F6>		<scriptcmd>Make.Panel('F6')<cr>
+nnoremap <silent> <leader><F7>		<scriptcmd>Make.Panel('F7')<cr>
+
 # Fuzzy Finder
 nnoremap <silent> <leader>fc		<scriptcmd>FuzzyClip<cr>
 nnoremap <silent> <leader>fd		<scriptcmd>FuzzyLspDiag<cr>
