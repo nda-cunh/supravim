@@ -4,3 +4,4 @@ bundle/supravim/autoload/fuzzbox/_extensions/fuzzymake.vim
 bundle/supravim/autoload/fuzzbox/_extensions/fuzzymark.vim
 bundle/supravim/autoload/fuzzbox/_extensions/fuzzytags.vim
 bundle/supravim/autoload/suprasearch.vim
+bundle/supravim/autoload/SupraMake.vim
