@@ -151,6 +151,9 @@ namespace LspServer {
 		var seen = new HashTable<string, bool> (str_hash, str_equal);
 
 		// From ~/.config/supravim/lsp.d/
+		foreach (Lsp s in load_from_dir (
+				Path.build_filename (Environment.get_user_config_dir (), "supravim", "lsp.d"), seen))
+			servers += s;
 
 		// From ~/.local/share/supravim/lsp.d/
 		foreach (Lsp s in load_from_dir (
