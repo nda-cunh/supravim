@@ -22,11 +22,11 @@ if empty(prop_type_get('WhisperKey'))
 endif
 
 def Install()
-	if empty(maparg(Whisper.Leader(), 'n'))
+	if empty(maparg(keytrans(Whisper.Leader()), 'n'))
 		execute printf('nnoremap <silent> %s <scriptcmd>Whisper.Whisper()<cr>', keytrans(Whisper.Leader()))
 	endif
 	for root in g:whisper_roots
-		if empty(maparg(root, 'n'))
+		if empty(maparg(keytrans(root), 'n'))
 			execute printf('nnoremap <silent> %s <scriptcmd>Whisper.Whisper(%s)<cr>', keytrans(root), string(root))
 		endif
 	endfor

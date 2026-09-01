@@ -18,6 +18,14 @@ def Describe(m: dict<any>): string
 	return empty(s) ? m.lhs : s
 enddef
 
+def Rhs(seq: string): string
+	return maparg(keytrans(seq), 'n')
+enddef
+
+def MapDict(seq: string): dict<any>
+	return maparg(keytrans(seq), 'n', false, true)
+enddef
+
 def Mappings(flux: string): list<dict<any>>
 	var found: list<dict<any>> = []
 	for m in maplist()
@@ -66,7 +74,7 @@ def Entries(flux: string, origin: string): list<dict<any>>
 			desc: leaf ? Describe(m) : GroupDesc(flux .. key, key),
 		}
 	endfor
-	var self = flux == origin ? {} : maparg(flux, 'n', false, true)
+	var self = flux == origin ? {} : MapDict(flux)
 	if !empty(self)
 		seen["\<CR>"] = {
 			key: "\<CR>",
@@ -172,6 +180,7 @@ enddef
 export def Whisper(root: string = '')
 	var cnt = v:count > 0 ? string(v:count) : ''
 	var origin = empty(root) ? Leader() : root
+	var keys = [origin]
 	var flux = origin
 	var winid = 0
 	var replay = ''
@@ -195,14 +204,15 @@ export def Whisper(root: string = '')
 			if key == "\<Esc>" || key == "\<C-c>"
 				break
 			endif
-			if key == "\<CR>" && flux != origin && !empty(maparg(flux, 'n'))
-					&& empty(maparg(flux .. key, 'n')) && empty(Mappings(flux .. key))
+			if key == "\<CR>" && flux != origin && !empty(Rhs(flux))
+					&& empty(Rhs(flux .. key)) && empty(Mappings(flux .. key))
 				replay = flux
 				break
 			endif
-			if key == "\<BS>" && flux != origin
-					&& empty(maparg(flux .. key, 'n')) && empty(Mappings(flux .. key))
-				flux = flux[: -2]
+			if key == "\<BS>" && len(keys) > 1
+					&& empty(Rhs(flux .. key)) && empty(Mappings(flux .. key))
+				remove(keys, -1)
+				flux = join(keys, '')
 				if winid != 0
 					popup_close(winid)
 				endif
@@ -210,10 +220,11 @@ export def Whisper(root: string = '')
 				redraw
 				continue
 			endif
-			flux ..= key
+			add(keys, key)
+			flux = join(keys, '')
 			var deeper = Mappings(flux)
 			if empty(deeper)
-				if empty(maparg(flux, 'n'))
+				if empty(Rhs(flux))
 					feedkeys(cnt .. flux, 'n')
 				else
 					replay = flux
