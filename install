@@ -45,7 +45,7 @@ if [ -n "$missing_commands" ] || [ -n "$missing_libs" ]; then
 	printf '\n'
 	printf '\033[93;1mUbuntu/Debian: \033[0m\033[93mapt install glib-networking git make zstd libglib2.0-dev valac pkg-config\033[0m\n'
 	printf '\033[96;1mArchLinux: \033[0m\033[96mpacman -S glib-networking git make zstd glib2 vala pkgconf\033[0m\n'
-	printf '\033[95;1mFedora: \033[0m\033[95msudo dnf install glib-networking git pkgconf-pkg-config glib2-devel vala make zstd\033[0m\n'
+	printf '\033[94;1mFedora: \033[0m\033[94msudo dnf install glib-networking git pkgconf-pkg-config glib2-devel vala make zstd\033[0m\n'
 	printf '\033[95;1mmacOS: \033[0m\033[95mbrew install glib-networking git make zstd glib vala pkg-config\033[0m\n'
 	exit 1
 fi
