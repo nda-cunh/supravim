@@ -1,5 +1,5 @@
 vim9script
-# supra-gui: background=#21222C include=#FF79C6 stdio=#F1FA8C typedef=#FF79C6 struct=#FF79C6 type_s=#F8F8F2 scope=#F8F8F2 float=#8BE9FD function=#F8F8F2 format=#FF79C6 text=#F1FA8C integer=#BD93F9
+# supra-gui: background=#15161D include=#FF79C6 stdio=#DEE783 typedef=#FF79C6 struct=#FF79C6 type_s=#F2F2EC scope=#F2F2EC float=#86DFF3 function=#F2F2EC format=#FF79C6 text=#DEE783 integer=#C9A6FA
 
 scriptencoding utf8
 
@@ -12,129 +12,129 @@ if exists('syntax_on')
 	syntax reset
 endif
 
-g:colors_name = 'dracula'
+g:colors_name = 'supradracula'
 
 # Terminal
 g:terminal_ansi_colors = [
-    '#21222C', '#FF5555', '#50FA7B', '#F1FA8C',
-    '#BD93F9', '#FF79C6', '#8BE9FD', '#F8F8F2',
-    '#6272A4', '#FF6E6E', '#69FF94', '#FFFFA5',
-    '#D6ACFF', '#FF92DF', '#A4FFFF', '#FFFFFF'
+    '#15161D', '#FF8989', '#4DEF77', '#DEE783',
+    '#C9A6FA', '#FF79C6', '#86DFF3', '#F2F2EC',
+    '#9B97D0', '#FFA3A3', '#74F395', '#E5EC9E',
+    '#D5BAFB', '#FF96D3', '#A1E6F6', '#FFFFFF'
 ]
 
-hi DraculaBgLight guifg=NONE guibg=#343746 guisp=NONE gui=NONE ctermfg=NONE ctermbg=237 cterm=NONE
-hi DraculaBgLighter guifg=NONE guibg=#424450 guisp=NONE gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
-hi DraculaBgDark guifg=NONE guibg=#21222C guisp=NONE gui=NONE ctermfg=NONE ctermbg=235 cterm=NONE
-hi DraculaBgDarker guifg=NONE guibg=#191A21 guisp=NONE gui=NONE ctermfg=NONE ctermbg=234 cterm=NONE
-hi DraculaFg guifg=#F8F8F2 guibg=NONE guisp=NONE gui=NONE ctermfg=253 ctermbg=NONE cterm=NONE
-hi DraculaFgUnderline guifg=#F8F8F2 guibg=NONE guisp=NONE gui=underline ctermfg=253 ctermbg=NONE cterm=underline
-hi DraculaFgBold guifg=#F8F8F2 guibg=NONE guisp=NONE gui=bold ctermfg=253 ctermbg=NONE cterm=bold
-hi DraculaFgStrikethrough guifg=#F8F8F2 guibg=NONE guisp=NONE gui=strikethrough ctermfg=253 ctermbg=NONE cterm=strikethrough
-hi DraculaComment guifg=#6272A4 guibg=NONE guisp=NONE gui=NONE ctermfg=61 ctermbg=NONE cterm=NONE
-hi DraculaCommentBold guifg=#6272A4 guibg=NONE guisp=NONE gui=bold ctermfg=61 ctermbg=NONE cterm=bold
-hi DraculaSelection guifg=NONE guibg=#44475A guisp=NONE gui=NONE ctermfg=NONE ctermbg=239 cterm=NONE
-hi DraculaSubtle guifg=#424450 guibg=NONE guisp=NONE gui=NONE ctermfg=238 ctermbg=NONE cterm=NONE
-hi DraculaCyan guifg=#8BE9FD guibg=NONE guisp=NONE gui=NONE ctermfg=117 ctermbg=NONE cterm=NONE
-hi DraculaCyanItalic guifg=#8BE9FD guibg=NONE guisp=NONE gui=italic ctermfg=117 ctermbg=NONE cterm=italic
-hi DraculaCyanInverse guifg=#8BE9FD guibg=#282A36 guisp=NONE gui=inverse ctermfg=117 ctermbg=236 cterm=inverse
-hi DraculaGreen guifg=#50FA7B guibg=NONE guisp=NONE gui=NONE ctermfg=84 ctermbg=NONE cterm=NONE
-hi DraculaGreenBold guifg=#50FA7B guibg=NONE guisp=NONE gui=bold ctermfg=84 ctermbg=NONE cterm=bold
-hi DraculaGreenItalic guifg=#50FA7B guibg=NONE guisp=NONE gui=italic ctermfg=84 ctermbg=NONE cterm=italic
-hi DraculaGreenItalicUnderline guifg=#50FA7B guibg=NONE guisp=NONE gui=italic,underline ctermfg=84 ctermbg=NONE cterm=italic,underline
-hi DraculaGreenInverse guifg=#50FA7B guibg=#282A36 guisp=NONE gui=inverse ctermfg=84 ctermbg=236 cterm=inverse
+hi DraculaBgLight guifg=NONE guibg=#242633 guisp=NONE gui=NONE ctermfg=NONE ctermbg=235 cterm=NONE
+hi DraculaBgLighter guifg=NONE guibg=#2E3040 guisp=NONE gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi DraculaBgDark guifg=NONE guibg=#15161D guisp=NONE gui=NONE ctermfg=NONE ctermbg=233 cterm=NONE
+hi DraculaBgDarker guifg=NONE guibg=#101116 guisp=NONE gui=NONE ctermfg=NONE ctermbg=232 cterm=NONE
+hi DraculaFg guifg=#F2F2EC guibg=NONE guisp=NONE gui=NONE ctermfg=255 ctermbg=NONE cterm=NONE
+hi DraculaFgUnderline guifg=#F2F2EC guibg=NONE guisp=NONE gui=underline ctermfg=255 ctermbg=NONE cterm=underline
+hi DraculaFgBold guifg=#F2F2EC guibg=NONE guisp=NONE gui=bold ctermfg=255 ctermbg=NONE cterm=bold
+hi DraculaFgStrikethrough guifg=#F2F2EC guibg=NONE guisp=NONE gui=strikethrough ctermfg=255 ctermbg=NONE cterm=strikethrough
+hi DraculaComment guifg=#9B97D0 guibg=NONE guisp=NONE gui=NONE ctermfg=104 ctermbg=NONE cterm=NONE
+hi DraculaCommentBold guifg=#9B97D0 guibg=NONE guisp=NONE gui=bold ctermfg=104 ctermbg=NONE cterm=bold
+hi DraculaSelection guifg=NONE guibg=#3B3E52 guisp=NONE gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
+hi DraculaSubtle guifg=#2E3040 guibg=NONE guisp=NONE gui=NONE ctermfg=236 ctermbg=NONE cterm=NONE
+hi DraculaCyan guifg=#86DFF3 guibg=NONE guisp=NONE gui=NONE ctermfg=117 ctermbg=NONE cterm=NONE
+hi DraculaCyanItalic guifg=#86DFF3 guibg=NONE guisp=NONE gui=italic ctermfg=117 ctermbg=NONE cterm=italic
+hi DraculaCyanInverse guifg=#86DFF3 guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=117 ctermbg=234 cterm=inverse
+hi DraculaGreen guifg=#4DEF77 guibg=NONE guisp=NONE gui=NONE ctermfg=84 ctermbg=NONE cterm=NONE
+hi DraculaGreenBold guifg=#4DEF77 guibg=NONE guisp=NONE gui=bold ctermfg=84 ctermbg=NONE cterm=bold
+hi DraculaGreenItalic guifg=#4DEF77 guibg=NONE guisp=NONE gui=italic ctermfg=84 ctermbg=NONE cterm=italic
+hi DraculaGreenItalicUnderline guifg=#4DEF77 guibg=NONE guisp=NONE gui=italic,underline ctermfg=84 ctermbg=NONE cterm=italic,underline
+hi DraculaGreenInverse guifg=#4DEF77 guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=84 ctermbg=234 cterm=inverse
 hi DraculaOrange guifg=#FFB86C guibg=NONE guisp=NONE gui=NONE ctermfg=215 ctermbg=NONE cterm=NONE
 hi DraculaOrangeBold guifg=#FFB86C guibg=NONE guisp=NONE gui=bold ctermfg=215 ctermbg=NONE cterm=bold
 hi DraculaOrangeItalic guifg=#FFB86C guibg=NONE guisp=NONE gui=italic ctermfg=215 ctermbg=NONE cterm=italic
 hi DraculaOrangeBoldItalic guifg=#FFB86C guibg=NONE guisp=NONE gui=bold,italic ctermfg=215 ctermbg=NONE cterm=bold,italic
-hi DraculaOrangeInverse guifg=#FFB86C guibg=#282A36 guisp=NONE gui=inverse ctermfg=215 ctermbg=236 cterm=inverse
+hi DraculaOrangeInverse guifg=#FFB86C guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=215 ctermbg=234 cterm=inverse
 hi DraculaPink guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
 hi DraculaPinkItalic guifg=#FF79C6 guibg=NONE guisp=NONE gui=italic ctermfg=212 ctermbg=NONE cterm=italic
-hi DraculaPinkInverse guifg=#FF79C6 guibg=#282A36 guisp=NONE gui=inverse ctermfg=212 ctermbg=236 cterm=inverse
-hi DraculaPurple guifg=#BD93F9 guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
-hi DraculaPurpleBold guifg=#BD93F9 guibg=NONE guisp=NONE gui=bold ctermfg=141 ctermbg=NONE cterm=bold
-hi DraculaPurpleItalic guifg=#BD93F9 guibg=NONE guisp=NONE gui=italic ctermfg=141 ctermbg=NONE cterm=italic
-hi DraculaPurpleInverse guifg=#BD93F9 guibg=#282A36 guisp=NONE gui=inverse ctermfg=141 ctermbg=236 cterm=inverse
-hi DraculaRed guifg=#FF5555 guibg=NONE guisp=NONE gui=NONE ctermfg=203 ctermbg=NONE cterm=NONE
-hi DraculaRedInverse guifg=#FF5555 guibg=#282A36 guisp=NONE gui=inverse ctermfg=203 ctermbg=236 cterm=inverse
-hi DraculaYellow guifg=#F1FA8C guibg=NONE guisp=NONE gui=NONE ctermfg=228 ctermbg=NONE cterm=NONE
-hi DraculaYellowItalic guifg=#F1FA8C guibg=NONE guisp=NONE gui=italic ctermfg=228 ctermbg=NONE cterm=italic
-hi DraculaYellowInverse guifg=#F1FA8C guibg=#282A36 guisp=NONE gui=inverse ctermfg=228 ctermbg=236 cterm=inverse
-hi DraculaError guifg=#FF5555 guibg=NONE guisp=#FF5555 gui=NONE ctermfg=203 ctermbg=NONE cterm=NONE
-hi DraculaErrorLine guifg=#FF5555 guibg=NONE guisp=#FF5555 gui=undercurl ctermfg=203 ctermbg=NONE cterm=undercurl
+hi DraculaPinkInverse guifg=#FF79C6 guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=212 ctermbg=234 cterm=inverse
+hi DraculaPurple guifg=#C9A6FA guibg=NONE guisp=NONE gui=NONE ctermfg=183 ctermbg=NONE cterm=NONE
+hi DraculaPurpleBold guifg=#C9A6FA guibg=NONE guisp=NONE gui=bold ctermfg=183 ctermbg=NONE cterm=bold
+hi DraculaPurpleItalic guifg=#C9A6FA guibg=NONE guisp=NONE gui=italic ctermfg=183 ctermbg=NONE cterm=italic
+hi DraculaPurpleInverse guifg=#C9A6FA guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=183 ctermbg=234 cterm=inverse
+hi DraculaRed guifg=#FF8989 guibg=NONE guisp=NONE gui=NONE ctermfg=210 ctermbg=NONE cterm=NONE
+hi DraculaRedInverse guifg=#FF8989 guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=210 ctermbg=234 cterm=inverse
+hi DraculaYellow guifg=#DEE783 guibg=NONE guisp=NONE gui=NONE ctermfg=186 ctermbg=NONE cterm=NONE
+hi DraculaYellowItalic guifg=#DEE783 guibg=NONE guisp=NONE gui=italic ctermfg=186 ctermbg=NONE cterm=italic
+hi DraculaYellowInverse guifg=#DEE783 guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=186 ctermbg=234 cterm=inverse
+hi DraculaError guifg=#FF8989 guibg=NONE guisp=#FF8989 gui=NONE ctermfg=210 ctermbg=NONE cterm=NONE
+hi DraculaErrorLine guifg=#FF8989 guibg=NONE guisp=#FF8989 gui=undercurl ctermfg=210 ctermbg=NONE cterm=undercurl
 hi DraculaWarnLine guifg=#FFB86C guibg=NONE guisp=#FFB86C gui=undercurl ctermfg=215 ctermbg=NONE cterm=undercurl
-hi DraculaInfoLine guifg=#8BE9FD guibg=NONE guisp=#8BE9FD gui=undercurl ctermfg=117 ctermbg=NONE cterm=undercurl
-hi DraculaTodo guifg=#8BE9FD guibg=NONE guisp=NONE gui=bold,inverse ctermfg=117 ctermbg=NONE cterm=bold,inverse
-hi DraculaBoundary guifg=#6272A4 guibg=#21222C guisp=NONE gui=NONE ctermfg=61 ctermbg=235 cterm=NONE
-hi DraculaWinSeparator guifg=#6272A4 guibg=#21222C guisp=NONE gui=NONE ctermfg=61 ctermbg=235 cterm=NONE
-hi DraculaLink guifg=#8BE9FD guibg=NONE guisp=NONE gui=underline ctermfg=117 ctermbg=NONE cterm=underline
+hi DraculaInfoLine guifg=#86DFF3 guibg=NONE guisp=#86DFF3 gui=undercurl ctermfg=117 ctermbg=NONE cterm=undercurl
+hi DraculaTodo guifg=#86DFF3 guibg=NONE guisp=NONE gui=bold,inverse ctermfg=117 ctermbg=NONE cterm=bold,inverse
+hi DraculaBoundary guifg=#9B97D0 guibg=#15161D guisp=NONE gui=NONE ctermfg=104 ctermbg=233 cterm=NONE
+hi DraculaWinSeparator guifg=#9B97D0 guibg=#15161D guisp=NONE gui=NONE ctermfg=104 ctermbg=233 cterm=NONE
+hi DraculaLink guifg=#86DFF3 guibg=NONE guisp=NONE gui=underline ctermfg=117 ctermbg=NONE cterm=underline
 hi DraculaDiffChange guifg=#FFB86C guibg=NONE guisp=NONE gui=NONE ctermfg=215 ctermbg=NONE cterm=NONE
-hi DraculaDiffDelete guifg=#FF5555 guibg=#21222C guisp=NONE gui=NONE ctermfg=203 ctermbg=235 cterm=NONE
-hi DraculaDiffText guifg=#282A36 guibg=#FFB86C guisp=NONE gui=NONE ctermfg=236 ctermbg=215 cterm=NONE
-hi DraculaInlayHint guifg=#6272A4 guibg=#21222C guisp=NONE gui=NONE ctermfg=61 ctermbg=235 cterm=NONE
-hi Normal guifg=#F8F8F2 guibg=#282A36 guisp=NONE gui=NONE ctermfg=253 ctermbg=236 cterm=NONE
-hi StatusLine guifg=#F8F8F2 guibg=#424450 guisp=NONE gui=bold ctermfg=253 ctermbg=238 cterm=bold
-hi StatusLineNC guifg=#6272A4 guibg=#343746 guisp=NONE gui=NONE ctermfg=61 ctermbg=237 cterm=NONE
-hi StatusLineTerm guifg=#F8F8F2 guibg=#424450 guisp=NONE gui=bold ctermfg=253 ctermbg=238 cterm=bold
-hi StatusLineTermNC guifg=#6272A4 guibg=#343746 guisp=NONE gui=NONE ctermfg=61 ctermbg=237 cterm=NONE
-hi WildMenu guifg=#282A36 guibg=#BD93F9 guisp=NONE gui=bold ctermfg=236 ctermbg=141 cterm=bold
-hi CursorLine guifg=NONE guibg=#424450 guisp=NONE gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
+hi DraculaDiffDelete guifg=#FF8989 guibg=#15161D guisp=NONE gui=NONE ctermfg=210 ctermbg=233 cterm=NONE
+hi DraculaDiffText guifg=#1B1C25 guibg=#FFB86C guisp=NONE gui=NONE ctermfg=234 ctermbg=215 cterm=NONE
+hi DraculaInlayHint guifg=#9B97D0 guibg=#15161D guisp=NONE gui=NONE ctermfg=104 ctermbg=233 cterm=NONE
+hi Normal guifg=#F2F2EC guibg=#1B1C25 guisp=NONE gui=NONE ctermfg=255 ctermbg=234 cterm=NONE
+hi StatusLine guifg=#F2F2EC guibg=#2E3040 guisp=NONE gui=bold ctermfg=255 ctermbg=236 cterm=bold
+hi StatusLineNC guifg=#9B97D0 guibg=#242633 guisp=NONE gui=NONE ctermfg=104 ctermbg=235 cterm=NONE
+hi StatusLineTerm guifg=#F2F2EC guibg=#2E3040 guisp=NONE gui=bold ctermfg=255 ctermbg=236 cterm=bold
+hi StatusLineTermNC guifg=#9B97D0 guibg=#242633 guisp=NONE gui=NONE ctermfg=104 ctermbg=235 cterm=NONE
+hi WildMenu guifg=#1B1C25 guibg=#C9A6FA guisp=NONE gui=bold ctermfg=234 ctermbg=183 cterm=bold
+hi CursorLine guifg=NONE guibg=#2E3040 guisp=NONE gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
 hi! link DraculaSearch DraculaGreenInverse
 hi! link ColorColumn DraculaBgDark
 hi! link CursorColumn CursorLine
-hi CursorLineNr guifg=#F1FA8C guibg=NONE guisp=NONE gui=NONE ctermfg=228 ctermbg=NONE cterm=NONE
+hi CursorLineNr guifg=#FFB86C guibg=#2E3040 guisp=NONE gui=bold ctermfg=215 ctermbg=236 cterm=bold
 hi! link DiffAdd DraculaGreen
 hi! link DiffAdded DraculaGreen
 hi! link DiffChange DraculaDiffChange
 hi! link DiffDelete DraculaDiffDelete
 hi! link DiffRemoved DraculaRed
 hi! link DiffText DraculaDiffText
-hi Directory guifg=#BD93F9 guibg=NONE guisp=NONE gui=bold ctermfg=141 ctermbg=NONE cterm=bold
+hi Directory guifg=#C9A6FA guibg=NONE guisp=NONE gui=bold ctermfg=183 ctermbg=NONE cterm=bold
 hi! link ErrorMsg DraculaRedInverse
 hi! link FoldColumn DraculaSubtle
 hi! link Folded DraculaBoundary
 hi! link IncSearch DraculaOrangeInverse
-hi LineNr guifg=#6272A4 guibg=NONE guisp=NONE gui=NONE ctermfg=61 ctermbg=NONE cterm=NONE
+hi LineNr guifg=#726F99 guibg=NONE guisp=NONE gui=NONE ctermfg=60 ctermbg=NONE cterm=NONE
 hi! link MoreMsg DraculaFgBold
 hi! link NonText DraculaSubtle
-hi Pmenu guifg=NONE guibg=#21222C guisp=NONE gui=NONE ctermfg=NONE ctermbg=235 cterm=NONE
+hi Pmenu guifg=NONE guibg=#15161D guisp=NONE gui=NONE ctermfg=NONE ctermbg=233 cterm=NONE
 hi! link PmenuSbar DraculaBgDark
 hi! link PmenuSel DraculaSelection
 hi! link PmenuThumb DraculaSelection
-hi PmenuMatch guifg=#8BE9FD guibg=#21222C guisp=NONE gui=NONE ctermfg=117 ctermbg=235 cterm=NONE
-hi PmenuMatchSel guifg=#8BE9FD guibg=#44475A guisp=NONE gui=NONE ctermfg=117 ctermbg=239 cterm=NONE
+hi PmenuMatch guifg=#86DFF3 guibg=#15161D guisp=NONE gui=NONE ctermfg=117 ctermbg=233 cterm=NONE
+hi PmenuMatchSel guifg=#86DFF3 guibg=#3B3E52 guisp=NONE gui=NONE ctermfg=117 ctermbg=238 cterm=NONE
 hi! link Question DraculaFgBold
-hi Search guifg=#50FA7B guibg=#282A36 guisp=NONE gui=inverse ctermfg=84 ctermbg=236 cterm=inverse
-hi SignColumn guifg=#6272A4 guibg=NONE guisp=NONE gui=NONE ctermfg=61 ctermbg=NONE cterm=NONE
+hi Search guifg=#4DEF77 guibg=#1B1C25 guisp=NONE gui=inverse ctermfg=84 ctermbg=234 cterm=inverse
+hi SignColumn guifg=#9B97D0 guibg=NONE guisp=NONE gui=NONE ctermfg=104 ctermbg=NONE cterm=NONE
 hi! link TabLine DraculaBoundary
 hi! link TabLineFill DraculaBgDark
 hi! link TabLineSel Normal
-hi Title guifg=#50FA7B guibg=NONE guisp=NONE gui=bold ctermfg=84 ctermbg=NONE cterm=bold
+hi Title guifg=#4DEF77 guibg=NONE guisp=NONE gui=bold ctermfg=84 ctermbg=NONE cterm=bold
 hi! link VertSplit DraculaWinSeparator
-hi Visual guifg=NONE guibg=#44475A guisp=NONE gui=NONE ctermfg=NONE ctermbg=239 cterm=NONE
+hi Visual guifg=NONE guibg=#3B3E52 guisp=NONE gui=NONE ctermfg=NONE ctermbg=238 cterm=NONE
 hi! link VisualNOS Visual
 hi! link WarningMsg DraculaOrangeInverse
-hi MatchParen guifg=#50FA7B guibg=NONE guisp=NONE gui=underline ctermfg=84 ctermbg=NONE cterm=underline
-hi Conceal guifg=#8BE9FD guibg=NONE guisp=NONE gui=NONE ctermfg=117 ctermbg=NONE cterm=NONE
+hi MatchParen guifg=#4DEF77 guibg=NONE guisp=NONE gui=underline ctermfg=84 ctermbg=NONE cterm=underline
+hi Conceal guifg=#86DFF3 guibg=NONE guisp=NONE gui=NONE ctermfg=117 ctermbg=NONE cterm=NONE
 hi! link SpecialKey DraculaPink
-hi Comment guifg=#6272A4 guibg=NONE guisp=NONE gui=NONE ctermfg=61 ctermbg=NONE cterm=NONE
-hi Underlined guifg=#F8F8F2 guibg=NONE guisp=NONE gui=underline ctermfg=253 ctermbg=NONE cterm=underline
-hi Todo guifg=#8BE9FD guibg=NONE guisp=NONE gui=bold,inverse ctermfg=117 ctermbg=NONE cterm=bold,inverse
+hi Comment guifg=#9B97D0 guibg=NONE guisp=NONE gui=NONE ctermfg=104 ctermbg=NONE cterm=NONE
+hi Underlined guifg=#F2F2EC guibg=NONE guisp=NONE gui=underline ctermfg=255 ctermbg=NONE cterm=underline
+hi Todo guifg=#86DFF3 guibg=NONE guisp=NONE gui=bold,inverse ctermfg=117 ctermbg=NONE cterm=bold,inverse
 hi! link Added DiffAdded
 hi! link Changed DiffChange
 hi! link Removed DiffRemoved
-hi Error guifg=#FF5555 guibg=NONE guisp=#FF5555 gui=NONE ctermfg=203 ctermbg=NONE cterm=NONE
+hi Error guifg=#FF8989 guibg=NONE guisp=#FF8989 gui=NONE ctermfg=210 ctermbg=NONE cterm=NONE
 hi! link SpellBad DraculaErrorLine
 hi! link SpellLocal DraculaWarnLine
 hi! link SpellCap DraculaInfoLine
 hi! link SpellRare DraculaInfoLine
-hi Constant guifg=#BD93F9 guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
-hi String guifg=#F1FA8C guibg=NONE guisp=NONE gui=NONE ctermfg=228 ctermbg=NONE cterm=NONE
+hi Constant guifg=#C9A6FA guibg=NONE guisp=NONE gui=NONE ctermfg=183 ctermbg=NONE cterm=NONE
+hi String guifg=#DEE783 guibg=NONE guisp=NONE gui=NONE ctermfg=186 ctermbg=NONE cterm=NONE
 hi Character guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
-hi Number guifg=#BD93F9 guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
-hi Boolean guifg=#BD93F9 guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
-hi Float guifg=#BD93F9 guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
-hi Identifier guifg=#F8F8F2 guibg=NONE guisp=NONE gui=NONE ctermfg=253 ctermbg=NONE cterm=NONE
-hi Function guifg=#50FA7B guibg=NONE guisp=NONE gui=NONE ctermfg=84 ctermbg=NONE cterm=NONE
+hi Number guifg=#C9A6FA guibg=NONE guisp=NONE gui=NONE ctermfg=183 ctermbg=NONE cterm=NONE
+hi Boolean guifg=#C9A6FA guibg=NONE guisp=NONE gui=NONE ctermfg=183 ctermbg=NONE cterm=NONE
+hi Float guifg=#C9A6FA guibg=NONE guisp=NONE gui=NONE ctermfg=183 ctermbg=NONE cterm=NONE
+hi Identifier guifg=#F2F2EC guibg=NONE guisp=NONE gui=NONE ctermfg=255 ctermbg=NONE cterm=NONE
+hi Function guifg=#4DEF77 guibg=NONE guisp=NONE gui=NONE ctermfg=84 ctermbg=NONE cterm=NONE
 hi Statement guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
 hi Conditional guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
 hi Repeat guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
@@ -150,7 +150,7 @@ hi! link PreCondit DraculaPink
 hi StorageClass guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
 hi Structure guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
 hi Typedef guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
-hi Type guifg=#8BE9FD guibg=NONE guisp=NONE gui=italic ctermfg=117 ctermbg=NONE cterm=italic
+hi Type guifg=#86DFF3 guibg=NONE guisp=NONE gui=italic ctermfg=117 ctermbg=NONE cterm=italic
 hi! link Delimiter DraculaFg
 hi Special guifg=#FF79C6 guibg=NONE guisp=NONE gui=NONE ctermfg=212 ctermbg=NONE cterm=NONE
 hi! link SpecialComment DraculaCyanItalic
@@ -454,7 +454,7 @@ hi! link GitGutterChange DiffChange
 hi! link GitGutterDelete DiffDelete
 
 # SupraVim
-hi Cursor guifg=#282A36 guibg=#FFB86C guisp=NONE gui=NONE ctermfg=236 ctermbg=215 cterm=NONE
-hi Terminal guifg=#F8F8F2 guibg=#282A36 guisp=NONE gui=NONE ctermfg=253 ctermbg=236 cterm=NONE
+hi Cursor guifg=#1B1C25 guibg=#FFB86C guisp=NONE gui=NONE ctermfg=234 ctermbg=215 cterm=NONE
+hi Terminal guifg=#F2F2EC guibg=#1B1C25 guisp=NONE gui=NONE ctermfg=255 ctermbg=234 cterm=NONE
 hi! link Variable DraculaFg
 hi! link WinSeparator DraculaWinSeparator
