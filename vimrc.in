@@ -460,7 +460,6 @@ cmap <c-v>	<c-r>"
 
 #---------------      Terminal        ---------------"
 tnoremap <C-q> exit<CR>
-tnoremap <F3> clear -x ; norminette<CR>
 tnoremap <F5> supramake run<CR>
 tnoremap <F6> supramake run2<CR>
 tnoremap <F7> supramake run3<CR>
