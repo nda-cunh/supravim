@@ -472,7 +472,7 @@ def Run(rule: string, run: bool, valgrind: bool, args: string)
 enddef
 
 export def RunCmd(cmdline: string, qf: bool = true, close: bool = false)
-	const line = trim(cmdline)
+	const line = expandcmd(trim(cmdline))
 	if line == ''
 		return
 	endif
