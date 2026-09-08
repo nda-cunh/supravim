@@ -1,0 +1,123 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+      - '[0-9]*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.meson.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: meson
+        run: |
+          version=$(sed -n "/version[[:space:]]*:/ { s/.*version[[:space:]]*:[[:space:]]*'\([^']*\)'.*/\1/p; q; }" meson.build)
+          if [ -z "$version" ]; then
+            echo "unable to read the project version from meson.build" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "meson.build version: $version"
+
+      - if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$tag" != "${{ steps.meson.outputs.version }}" ]; then
+            echo "tag $GITHUB_REF_NAME does not match meson.build version ${{ steps.meson.outputs.version }}" >&2
+            exit 1
+          fi
+
+  build:
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            arch: amd64-linux
+          - runner: ubuntu-24.04-arm
+            arch: arm64-linux
+          - runner: macos-15
+            arch: arm64-darwin
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          if [ "$(uname -s)" = "Darwin" ]; then
+            brew install vala meson ninja zstd glib pkg-config fakeroot
+          else
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends \
+              valac meson ninja-build zstd fakeroot pkg-config \
+              libglib2.0-dev libglib2.0-dev-bin git make
+          fi
+
+      - name: Build suprapack
+        run: |
+          git clone https://gitlab.com/nda-cunh/suprapack --depth=1 "$RUNNER_TEMP/suprapack"
+          make -C "$RUNNER_TEMP/suprapack" suprapack
+          echo "$RUNNER_TEMP/suprapack" >> "$GITHUB_PATH"
+
+      - name: Build the package
+        run: |
+          command -v suprapack
+          meson setup build \
+            --prefix="$PWD/usr" \
+            --libdir="$PWD/usr/lib" \
+            --bindir="$PWD/usr/bin"
+          ninja -C build install
+
+      - name: Collect the package
+        id: collect
+        run: |
+          mkdir -p dist
+          found=0
+          for pkg in *.suprapack; do
+            [ -e "$pkg" ] || continue
+            mv "$pkg" dist/
+            found=1
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "no .suprapack was produced for ${{ matrix.arch }}" >&2
+            exit 1
+          fi
+          ls -lh dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: suprapack-${{ matrix.arch }}
+          path: dist/*.suprapack
+          if-no-files-found: error
+
+  release:
+    needs: [version, build]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: suprapack-*
+          merge-multiple: true
+
+      - run: ls -lh dist/
+
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "SupraVim ${{ needs.version.outputs.version }}" \
+            --generate-notes \
+            dist/*.suprapack
