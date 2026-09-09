@@ -2,7 +2,7 @@
 # SupraVim 
 #########################
 
-project('supravim', ['c', 'vala'], version : '6.80.0',
+project('supravim', ['c', 'vala'], version : '6.81.0',
   meson_version : '>=1.11.0',
   default_options : [
     'warning_level=0',
@@ -69,15 +69,11 @@ suprapack_bin = find_program('suprapack', required: false)
 
 meson.add_install_script('suprapack_build.sh')
 
-if suprapack_bin.found() and get_option('suprapack') == true
+if get_option('suprapack') == true
   description = 'a makefile compatibility layer. it can do it for you meson|make|none'
   info_file = configure_file(input : 'data/info.in', output : 'info', configuration : conf_data)
 
   install_data(info_file, install_dir: '.')
-  meson.add_install_script(
-    'sh', '-c', 'cd .. && suprapack build "$MESON_INSTALL_DESTDIR_PREFIX" --install || echo "Suprapack failed, manual install needed "'
-  )
 else
-  # On utilise l'objet 'post_install_script' pour que Meson trouve le bon chemin
   meson.add_install_script('data/post_install')
 endif
