@@ -4,21 +4,41 @@ main() {
 	init_meson_path
 
 	cd "$(mktemp -d)" || exit 1
+	path_build=$PWD
 	echo "####################################################################"
-	echo "Created temporary directory: $PWD"
+	echo "Created temporary directory: $path_build"
 	echo "####################################################################"
+
+	create_suprapack
 
 	git clone https://gitlab.com/supraproject/supramake supramake --depth 1
 	git clone https://gitlab.com/supraproject/suprabear suprabear --depth 1
 	git clone https://gitlab.com/nda-cunh/makeheader.git makeheader --depth 1
 	git clone https://gitlab.com/nda-cunh/supravim supravim --depth 1
-	git clone https://gitlab.com/nda-cunh/supravim-gui supravim-gui --depth 1
+	# git clone https://gitlab.com/nda-cunh/supravim-gui supravim-gui --depth 1
 
 	create_package supramake
 	create_package suprabear
-	create_package supravim-gui
 	create_package makeheader
 	create_package supravim
+	# TODO suprapack-gui need supravim installed
+	# create_package supravim-gui
+
+	echo "All build package is build successfully and located in $path_build"
+}
+
+create_suprapack() {
+	git clone https://gitlab.com/nda-cunh/suprapack --depth 1
+
+	prevdir=$PWD
+	cd suprapack || exit 1
+
+	$MESON_CMD
+	DESTDIR="$PWD" meson install --skip-subproject -C build
+	SUPRAPACK_PATH="$PWD/usr/bin/suprapack"
+	echo "Suprapack is build successfully and located in $SUPRAPACK_PATH"
+	$SUPRAPACK_PATH build $PWD/usr --build-output "$prevdir"
+	cd "$prevdir" || exit 1
 }
 
 create_package() {
@@ -27,6 +47,7 @@ create_package() {
 	cd "$1" || exit 1
 	$MESON_CMD
 	DESTDIR="$PWD" meson install --skip-subproject -C build
+	$SUPRAPACK_PATH build $PWD/usr --build-output "$prevdir"
 	cd "$prevdir" || exit 1
 }
 
@@ -58,7 +79,7 @@ check_dependencies() {
 
 init_meson_path() {
 	OS=$(uname -s)
-	MESON_CMD='meson build --prefix=/usr --libdir=lib --buildtype=release --strip'
+	MESON_CMD='meson build --prefix=/usr --libdir=lib --buildtype=release -Dsuprapack=true --strip'
 	if [ $OS = "Darwin" ]; then
 		MESON_CMD="$MESON_CMD -Dc_link_args='-Wl,-rpath,"@loader_path/../lib"'"
 		# On MacOs check if Homebrew is installed and install required packages
