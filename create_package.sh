@@ -15,14 +15,13 @@ main() {
 	git clone https://gitlab.com/supraproject/suprabear suprabear --depth 1
 	git clone https://gitlab.com/nda-cunh/makeheader.git makeheader --depth 1
 	git clone https://gitlab.com/nda-cunh/supravim supravim --depth 1
-	# git clone https://gitlab.com/nda-cunh/supravim-gui supravim-gui --depth 1
+	git clone https://gitlab.com/nda-cunh/supravim-gui supravim-gui --depth 1
 
 	create_package supramake
 	create_package suprabear
 	create_package makeheader
 	create_package supravim
-	# TODO suprapack-gui need supravim installed
-	# create_package supravim-gui
+	create_package supravim-gui
 
 	echo "All build package is build successfully and located in $path_build"
 }
