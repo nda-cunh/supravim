@@ -2,7 +2,7 @@
 
 install_supravim() {
 	is_42_school
-	export PATH="$TMPDIR/suprapack:$PWD:$PATH"
+	export PATH="$WORKDIR/suprapack:$PWD:$PATH"
 	printf '\033[93;1mInstalling supravim...\033[0m\n'
 	# if IS42 is true, install plugin-norminette plugin-42formatter
 	if [ "$IS42" = "true" ]; then
@@ -72,20 +72,26 @@ is_42_school() {
 }
 
 install_suprapack() {
-	cd "$TMPDIR" || exit 1
-	git clone https://gitlab.com/nda-cunh/suprapack --depth=1
-	cd suprapack || exit 1
-	MESON_CMD='meson build --prefix=/usr --libdir=lib --buildtype=release -Dsuprapack=true --strip'
-	if [ $(uname) = "Darwin" ]; then
-		MESON_CMD="$MESON_CMD -Dc_link_args='-Wl,-rpath,@loader_path/../lib'"
-	elif [ $(uname) = "Linux" ]; then
-		MESON_CMD="$MESON_CMD -Dc_link_args='-Wl,-rpath,\$ORIGIN/../lib'"
+	# test install suprapack without compiling with the install of suprapack
+	curl https://gitlab.com/nda-cunh/suprapack/-/raw/master/install | sh
+
+	if ! command -v suprapack >/dev/null 2>&1; then
+		git clone https://gitlab.com/nda-cunh/suprapack --depth=1
+		cd suprapack || exit 1
+		MESON_CMD='meson build --prefix=/usr --libdir=lib --buildtype=release -Dsuprapack=true --strip'
+		if [ $(uname) = "Darwin" ]; then
+			MESON_CMD="$MESON_CMD -Dc_link_args='-Wl,-rpath,@loader_path/../lib'"
+		elif [ $(uname) = "Linux" ]; then
+			MESON_CMD="$MESON_CMD -Dc_link_args='-Wl,-rpath,\$ORIGIN/../lib'"
+		fi
+		$MESON_CMD
+		DESTDIR="$PWD" meson install --skip-subproject -C build
+		SUPRAPACK_PATH="$PWD/usr/bin/suprapack"
+		$SUPRAPACK_PATH build --no-fakeroot $PWD/usr --install
+		cd "$PREVDIR" || exit 1
+	else
+		SUPRAPACK_PATH=$(command -v suprapack)
 	fi
-	$MESON_CMD
-	DESTDIR="$PWD" meson install --skip-subproject -C build
-	SUPRAPACK_PATH="$PWD/usr/bin/suprapack"
-	$SUPRAPACK_PATH build --no-fakeroot $PWD/usr --install
-	cd "$PREVDIR" || exit 1
 }
 
 
@@ -111,7 +117,8 @@ main(){
 	fi
 
 	check_dependencies_suprapack
-	TMPDIR=$(mktemp -d)
+	cd "$WORKDIR" || exit 1
+	WORKDIR=$(mktemp -d)
 	PREVDIR=$PWD
 
 	install_suprapack
