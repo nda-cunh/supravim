@@ -534,6 +534,10 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
   .rv { opacity: 1; transform: none; }
   .aurora { display: none; }
 }
+.wrap img {
+  display: block;
+  margin: 0 auto;
+}
 </style>
 </head>
 <body>
@@ -543,16 +547,8 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
 <nav id="nav">
   <div class="wrap nav-in">
     <a class="mark" href="#top">
-      <svg viewBox="0 0 700 700" aria-hidden="true">
-        <path fill="#282c33" d="m132.25 557.57-.12-136.17 120.2 136.1z"/>
-        <path fill="#3e4351" d="m131.8 557.29 114.37 129.63H458.5l108.05-129.68Z"/>
-        <path fill="#8f713f" d="m133.82 141.73 112.49 73.44v-73.21Z"/>
-        <path fill="#8f713f" d="m457.06 557.65.12-73.2 109.8 73.38z"/>
-        <path fill="#e4bf7c" d="m566.62 557.91-1.64-136.56-431.54-280.02v133.44z"/>
-        <path fill="#1e3829" d="m566.6 141.2.32 124.07-111.1-124.09z"/>
-        <path fill="#98c37b" d="M132.45 141.33 247.15 9.2h202.47l116.96 132Z"/>
-      </svg>
-      SupraVim
+		<img src="data/supravim.svg" style="height:28px;"></img>
+		SupraVim
       <span class="ver-chip">6.80</span>
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
@@ -570,7 +566,8 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
 <!-- ============ HERO ============ -->
 <header class="hero" id="top">
   <div class="wrap">
-    <h1>Vim, fully equipped.</h1>
+	<!-- <img src="data/logo.svg"></img> -->
+	<h1>Vim, fully equipped.</h1>
     <p class="lead">200+ plugins, coding stats and 35 languages, ready on first launch. Written in Vim9 and Vala.</p>
 
     <div class="strip">
@@ -579,10 +576,10 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
       <button type="button" data-copy="curl https://supravim.dev/install | sh">COPY</button>
     </div>
 
-    <div class="cta">
-      <a class="btn primary" href="#install">Install SupraVim</a>
-      <a class="btn" href="https://gitlab.com/nda-cunh/SupraVim/-/wikis/home">Read the wiki</a>
-    </div>
+    <!-- <div class="cta"> -->
+      <!-- <a class="btn primary" href="#install">Install SupraVim</a> -->
+      <!-- <a class="btn" href="https://gitlab.com/nda-cunh/SupraVim/-/wikis/home">Read the wiki</a> -->
+    <!-- </div> -->
 
     <div class="shot-wrap">
       <div class="frame">
@@ -787,12 +784,6 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
       <div><b>SupraAchievements</b><span>The achievements engine</span></div>
     </div>
 
-    <p class="play">
-      <span>And while the build runs:</span>
-      <span class="cmd">:Snake</span>
-      <span class="cmd">:Pacman</span>
-      <span>Yes, really. They're written in Vim9script too.</span>
-    </p>
   </div>
 </section>
 
@@ -814,11 +805,11 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
     <dl class="sums">
       <div>
         <dt>SHA-256 install</dt>
-        <dd><code>e0358eafb72ae349b7ae4c8a4a28afd2fe375afb49c38eae04fcfea0af3e8f5e</code></dd>
+		<dd><code>17f23ca03c4c2356a9624e5c43ca97d937f9d257d7de67ac07453d0634c0265b</code></dd>
       </div>
       <div>
-        <dt>SHA-256 macos</dt>
-        <dd><code>99d1fa13da726d761655f07d62b7bb498e2784c19d9f170c013deda0ee5821d2</code></dd>
+        <dt>SHA-256 build_package</dt>
+        <dd><code>75982466823c6cfbfc3705210992473ee4b949c7f2d9335ce75b4add9d23c8bb</code></dd>
       </div>
     </dl>
 
@@ -826,7 +817,7 @@ footer { border-top: 1px solid var(--line); padding: 3rem 0 2rem; }
 
     <div class="rows">
       <div class="row"><span class="lbl">With suprapack</span><code>suprapack install supravim</code></div>
-      <div class="row"><span class="lbl">macOS</span><code>curl https://supravim.dev/macos | sh</code></div>
+      <div class="row"><span class="lbl">Build All Packages</span><code>curl https://supravim.dev/build_package| sh</code></div>
       <div class="row"><span class="lbl">Update</span><code>suprapack update supravim</code></div>
       <div class="row"><span class="lbl">Remove</span><code>suprapack remove supravim</code></div>
     </div>
