@@ -485,8 +485,8 @@ if executable('suprapack') == 0
 endif
 set noautochdir
 silent! exec 'cd ' .. expand('%:p:h')
-silent! var project_root = system('suprabear -p')
-var suprabear_return = v:shell_error
+silent! var project_root = system('supramake --project-path')
+# PERF var suprabear_return = v:shell_error
 silent! exec 'chdir ' .. project_root
 set autoindent
 set backspace=indent,eol,start
