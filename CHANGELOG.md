@@ -1,3 +1,7 @@
+# 6.81
+- Add support for MacOS Darwin (Arm64 and x86_64)
+- Add suppot for Linux (x86_64 and aarch64)
+
 # 6.80
 - SupraMake: builds run asynchronously in a terminal popup, with the output parsed into the quickfix list (gcc/clang/vala)
 - SupraMake: full SupraPop panel on `<leader><F5>` — fuzzy rule search, live command preview, per-rule arguments, `--run`/valgrind toggles and a `make -n` dry-run
@@ -6,13 +10,13 @@
 - FuzzyMake (`<leader>f<F5>`) now lists the slots and their exact command line instead of the rules
 - Add the supradracula theme and refresh the dracula palette
 - Add a standalone `install` script and improve the dependency checks
+
+# 6.79
 - LSP servers are now also loaded from `~/.config/supravim/lsp.d/`
 - Fix whisper mappings by going through `keytrans`
 - Remove the terminal norminette mapping from `<F3>`
 - Update the settings and stats screenshots on the web page
 
-# 6.79
-    // touche pas ici
 # 6.78
 - Add the SupraIndent plugin
 - Add a `multiple_choice` option type: several values can be combined and are stored as a comma separated string

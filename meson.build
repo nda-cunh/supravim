@@ -18,7 +18,7 @@ add_project_arguments('-DGETTEXT_PACKAGE="' + meson.project_name() + '"', langua
 vapi_dir = meson.current_source_dir() / 'vapi'
 add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 
-description = 'un supraediteur sur vim'
+description = 'Enhance your Vim with more supra features'
 
 
 ###################################
@@ -70,7 +70,6 @@ suprapack_bin = find_program('suprapack', required: false)
 meson.add_install_script('suprapack_build.sh')
 
 if get_option('suprapack') == true
-  description = 'a makefile compatibility layer. it can do it for you meson|make|none'
   info_file = configure_file(input : 'data/info.in', output : 'info', configuration : conf_data)
 
   install_data(info_file, install_dir: '.')

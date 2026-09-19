@@ -37,7 +37,7 @@ pages:
     - cp -r site public
     # short install endpoints — one source of truth, no copy to keep in sync
     - cp install.sh public/install
-    - cp create_package.sh public/macos
+    - cp create_package.sh public/build_package
   artifacts:
     paths:
       - public
