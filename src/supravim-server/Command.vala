@@ -16,21 +16,40 @@ public class Command {
 		Idle.add(SupraVim.main_loop);
 	}
 
-	public void OnMetric (string message) {
-		uint8 buffer[128];
-		int64 delta = 0;
-		message.scanf ("Metric: %127s %lld", buffer, out delta);
-		unowned string name = (string) buffer;
-		if (name != "")
-			ach.add_metric (name, delta);
+	private static string[] tokens (string payload) {
+		string[] result = {};
+		foreach (unowned string t in payload.strip ().split (" ")) {
+			if (t != "")
+				result += t;
+		}
+		return result;
 	}
 
+	private static bool is_clean (string s, int max_len) {
+		if (s.length == 0 || s.length > max_len)
+			return false;
+		for (int i = 0; i < s.length; i++) {
+			if (s[i] < 0x20 || s[i] == 0x7f)
+				return false;
+		}
+		return true;
+	}
+
+	// Format: Metric: <name> [<delta>]
+	public void OnMetric (string message) {
+		var parts = tokens (message.substring ("Metric:".length));
+		if (parts.length < 1 || !is_clean (parts[0], 127))
+			return;
+		int64 delta = parts.length > 1 ? int64.parse (parts[1]) : 0;
+		ach.add_metric (parts[0], delta);
+	}
+
+	// Format: Ach: <id>
 	public void OnAch (string message) {
-		uint8 buffer[128];
-		message.scanf ("Ach: %127s", buffer);
-		unowned string id = (string) buffer;
-		if (id != "")
-			ach.force_unlock (id);
+		var parts = tokens (message.substring ("Ach:".length));
+		if (parts.length < 1 || !is_clean (parts[0], 127))
+			return;
+		ach.force_unlock (parts[0]);
 	}
 
 	public void OnBeat () {
@@ -42,16 +61,17 @@ public class Command {
 	}
 
 	public void OnOpenFile (string message) {
-			uint8 buffer1[128];
-			uint8 buffer2[128];
+		// Format: OpenFile: <filetype>|<filename>
+		string payload = message.substring ("OpenFile: ".length).strip ();
+		int sep = payload.index_of_char ('|');
+		if (sep < 1)
+			return;
+		string filetype = payload[0:sep];
+		string filename = payload[sep + 1:];
+		if (!is_clean (filetype, 64) || !is_clean (filename, 255))
+			return;
 
-			unowned string filetype = (string)buffer1;
-			unowned string filename = (string)buffer2;
-			message.scanf ("OpenFile: %[^|]|%127s", buffer1, buffer2);
-			if (filetype == "")
-				return;
-
-			ach.add_lang (filetype);
+		ach.add_lang (filetype);
 
 #if DISCORD_PRESENCE
 			SupraVim.discord?.open_file (filetype, filename);
@@ -145,11 +165,11 @@ public class Command {
 
 	// Format:  Install: <lsp_name> <package_name>
 	public void OnInstall (string message) {
-		uint8 buffer1[128];
-		uint8 buffer2[128];
-		message.scanf ("Install: %127s %127s", buffer1, buffer2);
-		unowned string lsp_name = (string)buffer1;
-		unowned string package_name = (string)buffer2;
+		var parts = tokens (message.substring ("Install:".length));
+		if (parts.length < 2 || !is_clean (parts[0], 127) || !is_clean (parts[1], 127))
+			return;
+		string lsp_name = parts[0];
+		string package_name = parts[1];
 
 		try {
 			// Install the LSP if is not null

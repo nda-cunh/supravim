@@ -37,7 +37,13 @@ def OpenNewFile()
 	if filetype == ''
 		filetype = expand('%:e')
 	endif
-	ch_sendraw(supravim_server, "OpenFile: " .. filetype ..  "|" .. expand('%:p:t') .. "\n")
+	filetype = substitute(filetype, '[^A-Za-z0-9_.+-]', '', 'g')
+	if filetype == ''
+		return
+	endif
+	filetype = filetype[ : 63]
+	const filename = substitute(expand('%:p:t'), '[[:cntrl:]]', '', 'g')
+	ch_sendraw(supravim_server, "OpenFile: " .. filetype ..  "|" .. filename .. "\n")
 enddef
 
 def ReadySupravimServer()
@@ -46,7 +52,7 @@ enddef
 
 export def Send(msg: string): bool
 	if supravim_server->job_status() == 'run'
-		ch_sendraw(supravim_server, msg .. "\n")
+		ch_sendraw(supravim_server, substitute(msg, '[\r\n]', ' ', 'g') .. "\n")
 		return true
 	endif
 	return false
