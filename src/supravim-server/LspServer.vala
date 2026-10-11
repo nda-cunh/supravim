@@ -127,6 +127,8 @@ namespace LspServer {
 	public void install_lsp (string name) throws Error {
 		foreach (Lsp lsp in get_all_servers ()) {
 			if (lsp.name == name) {
+				if (lsp.command_help == null)
+					throw new ErrorLsp.INSTALL_ERROR ("No install command defined for '%s'", name);
 				if (lsp.command_help.has_prefix ("npm ")) {
 					npm_install (lsp);
 				}

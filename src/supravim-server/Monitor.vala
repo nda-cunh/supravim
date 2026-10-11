@@ -91,7 +91,7 @@ public class MyMonitor {
 		});
 		monitors = {};
 
-		if (path[path.length - 1] == '/')
+		if (path.length > 1 && path[path.length - 1] == '/')
 			path = path.substring (0, path.length - 1);
 		if (path == Environment.get_home_dir ())
 			depth_max = 4;

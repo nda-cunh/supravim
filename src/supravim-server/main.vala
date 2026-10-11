@@ -19,7 +19,7 @@ public class SupraVim {
 #endif
 
 	private SupraVim (string [] args) throws Error {
-		monitor = new MyMonitor (args[1]);
+		monitor = new MyMonitor (args.length > 1 ? args[1] : Environment.get_current_dir ());
 		stdin = new StdinStream ();
 		command = new Command (args.length > 1 ? args[1] : "");
 
