@@ -53,16 +53,25 @@ namespace Supravim.Cfg {
 		DirUtils.create_with_parents (bundle, 0755);
 		for (int i = 0; i < (int) plugins.size; i++) {
 			var p = plugins.get (i);
+			// the plugin list may come from an untrusted archive
+			if (!Plugin.is_valid_name (p.name) || p.url.has_prefix ("-")) {
+				warning ("Skipping plugin with invalid name or url: '%s'", p.name);
+				continue;
+			}
 			string dest = Path.build_filename (bundle, p.name);
 			if (FileUtils.test (dest, FileTest.IS_DIR))
 				continue;
-			int wait;
+			int wait = 0;
 			if (p.pinned != null) {
-				Process.spawn_command_line_sync ("git clone '%s' '%s'".printf (p.url, dest), null, null, out wait);
-				if (wait == 0)
-					Process.spawn_command_line_sync ("git -C '%s' checkout %s".printf (dest, p.pinned));
+				Process.spawn_sync (null, {"git", "clone", "--", p.url, dest}, null, SpawnFlags.SEARCH_PATH, null, null, null, out wait);
+				if (wait == 0) {
+					if (Regex.match_simple ("^[0-9a-fA-F]{4,64}\\z", p.pinned))
+						Process.spawn_sync (null, {"git", "-C", dest, "checkout", p.pinned}, null, SpawnFlags.SEARCH_PATH, null, null, null, null);
+					else
+						warning ("Ignoring invalid pinned commit for %s", p.name);
+				}
 			} else {
-				Process.spawn_command_line_sync ("git clone --depth=1 '%s' '%s'".printf (p.url, dest), null, null, out wait);
+				Process.spawn_sync (null, {"git", "clone", "--depth=1", "--", p.url, dest}, null, SpawnFlags.SEARCH_PATH, null, null, null, out wait);
 			}
 			if (wait != 0)
 				warning ("Failed to clone plugin %s", p.name);
@@ -81,7 +90,7 @@ namespace Supravim.Cfg {
 			while ((info = en.next_file ()) != null)
 				copy_recursive (src.get_child (info.get_name ()), dest.get_child (info.get_name ()));
 		} else {
-			src.copy (dest, FileCopyFlags.OVERWRITE);
+			src.copy (dest, FileCopyFlags.OVERWRITE | FileCopyFlags.NOFOLLOW_SYMLINKS);
 		}
 	}
 
@@ -135,9 +144,7 @@ namespace Supravim.Cfg {
 			);
 
 			int wait;
-			Process.spawn_command_line_sync (
-				"tar czf '%s' -C '%s' supravim".printf (path, tmp), null, null, out wait
-			);
+			Process.spawn_sync (null, {"tar", "czf", path, "-C", tmp, "supravim"}, null, SpawnFlags.SEARCH_PATH, null, null, null, out wait);
 			if (wait != 0)
 				throw new SupravimError.UNKNOWN_ERROR ("tar failed while creating %s".printf (path));
 		} finally {
@@ -157,9 +164,7 @@ namespace Supravim.Cfg {
 		string tmp = DirUtils.make_tmp ("supravim-import-XXXXXX");
 		try {
 			int wait;
-			Process.spawn_command_line_sync (
-				"tar xzf '%s' -C '%s'".printf (in_path, tmp), null, null, out wait
-			);
+			Process.spawn_sync (null, {"tar", "xzf", in_path, "-C", tmp}, null, SpawnFlags.SEARCH_PATH, null, null, null, out wait);
 			if (wait != 0)
 				throw new SupravimError.UNKNOWN_ERROR ("tar failed while extracting %s".printf (in_path));
 
@@ -181,8 +186,21 @@ namespace Supravim.Cfg {
 			if (FileUtils.test (lv_path, FileTest.EXISTS))
 				FileUtils.get_contents (lv_path, out last_version);
 
-			remove_recursive (File.new_for_path (cfg));
-			copy_recursive (File.new_for_path (stage), File.new_for_path (cfg));
+			// keep the previous config until the new one is fully in place
+			var cfg_file = File.new_for_path (cfg);
+			var bak_file = File.new_for_path (cfg + ".bak");
+			remove_recursive (bak_file);
+			bool had_cfg = FileUtils.test (cfg, FileTest.EXISTS);
+			if (had_cfg)
+				cfg_file.move (bak_file, FileCopyFlags.NONE);
+			try {
+				copy_recursive (File.new_for_path (stage), cfg_file);
+			} catch (Error e) {
+				remove_recursive (cfg_file);
+				if (had_cfg)
+					bak_file.move (cfg_file, FileCopyFlags.NONE);
+				throw e;
+			}
 
 			if (last_version != null)
 				FileUtils.set_contents (Path.build_filename (cfg, "last_version.txt"), last_version);

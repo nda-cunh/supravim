@@ -8,15 +8,34 @@ namespace Supravim.Plugin {
 		return input;
 	}
 
+	// Plugin names must be valid directory names, and must not contain any characters that could be used to escape
+	internal bool is_valid_name (string name) {
+		return /^[A-Za-z0-9_][A-Za-z0-9._+@-]*\z/.match (name);
+	}
+
+	// Plugin names end up in file paths: refuse anything that could escape ~/.vim/bundle
+	internal void validate_name (string name) throws Error {
+		if (!is_valid_name (name))
+			throw new SupravimError.BAD_VALUE ("Invalid plugin name '%s'".printf (name));
+	}
+
+	private string bundle_dir (string name) {
+		return Path.build_filename (Environment.get_home_dir (), ".vim", "bundle", name);
+	}
+
+	// No shell and no word splitting: $HOME or a name containing spaces/quotes stays one argument
+	private void git_pull (string name) throws Error {
+		validate_name (name);
+		Process.spawn_sync (null, {"git", "-C", bundle_dir (name), "pull"}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, null);
+	}
+
 	private string get_head_commit (string name) {
-		string out_str = "";
+		string? out_str = null;
 		try {
-			Process.spawn_command_line_sync (
-				@"git -C $HOME/.vim/bundle/$name rev-parse --short HEAD",
-				out out_str
-			);
+			validate_name (name);
+			Process.spawn_sync (null, {"git", "-C", bundle_dir (name), "rev-parse", "--short", "HEAD"}, null, GLib.SpawnFlags.SEARCH_PATH, null, out out_str, null, null);
 		} catch (Error e) {}
-		return out_str._strip ();
+		return out_str != null ? out_str.strip () : "";
 	}
 
 	public void add (string raw_url) throws Error {
@@ -27,10 +46,13 @@ namespace Supravim.Plugin {
 		string name = url[idx + 1:];
 		name._delimit (".", '\0');
 
+		if (url.has_prefix ("-"))
+			throw new SupravimError.BAD_VALUE ("Invalid plugin url '%s'".printf (url));
+		validate_name (name);
 		if (!plugins.add_from_url (url, name))
 			throw new SupravimError.ALREADY_EXISTS ("Plugin %s already exists".printf (name));
 		string target_dir = Environment.get_home_dir () + "/.vim/bundle/" + name;
-		Process.spawn_sync (null, {"git", "clone", "--depth", "1", url, target_dir}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, out wait);
+		Process.spawn_sync (null, {"git", "clone", "--depth", "1", "--", url, target_dir}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, out wait);
 		if (wait != 0) {
 			plugins.remove_from_name (name);
 			throw new SpawnError.FAILED ("git clone returned %d for %s".printf (wait, name));
@@ -47,7 +69,10 @@ namespace Supravim.Plugin {
 		var plugins = new PluginsLst ();
 		if (!plugins.remove_from_name (name))
 			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
-		Process.spawn_command_line_sync (@"rm -rf $HOME/.vim/bundle/$name");
+		if (is_valid_name (name))
+			Process.spawn_sync (null, {"rm", "-rf", "--", bundle_dir (name)}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, null);
+		else
+			warning ("Plugin name '%s' is not a valid directory name, nothing deleted on disk", name);
 	}
 
 	public void disable (string name) throws Error {
@@ -76,7 +101,12 @@ namespace Supravim.Plugin {
 			var item = plugins.get (i);
 			if (item.pinned != null)
 				continue;
-			Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$(item.name) pull");
+			try {
+				git_pull (item.name);
+			} catch (Error e) {
+				warning ("Skipping %s: %s", item.name, e.message);
+				continue;
+			}
 			string commit = get_head_commit (item.name);
 			if (commit != "")
 				item.installed_commit = commit;
@@ -90,7 +120,7 @@ namespace Supravim.Plugin {
 			throw new SupravimError.NOT_FOUND ("Plugin %s not found".printf (name));
 		if (entry.pinned != null)
 			throw new SupravimError.BAD_VALUE ("Plugin %s is pinned at %s — use --unpin-plugin first".printf (name, entry.pinned));
-		Process.spawn_command_line_sync (@"git -C $HOME/.vim/bundle/$name pull");
+		git_pull (name);
 		string commit = get_head_commit (name);
 		if (commit != "")
 			entry.installed_commit = commit;
