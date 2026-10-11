@@ -5,7 +5,7 @@ print_ascii_line() {
 }
 
 print_ascii() {
-	cat $PKGDIR/share/supravim/supravim_ascii
+	cat "$PKGDIR/share/supravim/supravim_ascii"
 	printf '╭─────────────────────────────────────────────────────────╮\n'
 	printf '│ If you like my work, please star the project on GitHub: │\n'
 	printf '│ Link: \e[1;94mhttps://github.com/nda-cunh/supravim\e[;0m              │\n'
@@ -17,11 +17,11 @@ print_ascii() {
 create_folder_undo () {
 	DIR="$HOME/.cache/vim/"
 
-	mkdir -p "$DIR/undo" 2>/dev/null | true
-	chmod 755 -R "$DIR" 2>/dev/null | true
+	mkdir -p "$DIR/undo" 2>/dev/null || true
+	chmod 755 -R "$DIR" 2>/dev/null || true
 	# bug for 42 school (nfs)
-	mkdir -p "$DIR/undo" 2>/dev/null | true
-	chmod 755 -R "$DIR" 2>/dev/null | true
+	mkdir -p "$DIR/undo" 2>/dev/null || true
+	chmod 755 -R "$DIR" 2>/dev/null || true
 }
 
 main() {
@@ -29,16 +29,20 @@ main() {
 	if [ -z "$PKGDIR" ]; then
 		PKGDIR="$MESON_INSTALL_DESTDIR_PREFIX"
 	fi
-	# Remove View (mkview)
-	rm -rf $HOME/.vim/view/
-	# Remove old vimrc and vim folder
-	rm -rf $HOME/.vimrc $HOME/.vim
-	ln -sf $PKGDIR/share/supravim/vim $HOME/.vim
-	ln -sf $PKGDIR/share/supravim/vimrc $HOME/.vimrc
-	$PKGDIR/bin/supravim --apply-config 2>/dev/null | true
+	rm -rf "$HOME/.vim/view/"
+	stamp=$(date +%Y%m%d%H%M%S)
+	for f in "$HOME/.vimrc" "$HOME/.vim"; do
+		if [ -e "$f" ] && [ ! -L "$f" ]; then
+			mv "$f" "$f.bak-$stamp" && printf 'Backup: %s -> %s\n' "$f" "$f.bak-$stamp"
+		fi
+	done
+	rm -f "$HOME/.vimrc" "$HOME/.vim"
+	ln -sf "$PKGDIR/share/supravim/vim" "$HOME/.vim"
+	ln -sf "$PKGDIR/share/supravim/vimrc" "$HOME/.vimrc"
+	"$PKGDIR/bin/supravim" --apply-config 2>/dev/null || true
 	print_ascii
 	create_folder_undo
-	git config --global core.editor "vim" | true
+	git config --global core.editor "vim" || true
 }
 
 main
