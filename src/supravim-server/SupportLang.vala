@@ -38,12 +38,14 @@ public class SupportLang {
 	}
 
 
-	public static bool install_package (string package_name) {
+	public static bool install_package (string package_name) throws Error {
 		foreach (var support in SupportLang.all_packages) {
 			if (support.package_name == package_name) {
 				string dev_null;
 				int wait_status;
 				Process.spawn_command_line_sync ("suprapack install " + support.package_name + " --yes", out dev_null, out dev_null, out wait_status);
+				if (wait_status != 0)
+					throw new ErrorLsp.INSTALL_ERROR ("Error running suprapack\r(suprapack install %s --yes)", support.package_name);
 				foreach (var filetype in support.allowed.split (",")) {
 					is_loaded[filetype] = support;
 				}

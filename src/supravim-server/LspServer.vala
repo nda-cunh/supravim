@@ -76,7 +76,13 @@ namespace LspServer {
 	public int run_command (string command) {
 		int wait_status;
 		string dev_null;
-		Process.spawn_command_line_sync (command, out dev_null, out dev_null, out wait_status);
+		try {
+			Process.spawn_command_line_sync (command, out dev_null, out dev_null, out wait_status);
+		}
+		catch (Error e) {
+			warning ("Cannot run '%s': %s", command, e.message);
+			return -1;
+		}
 		return wait_status;
 	}
 
@@ -212,6 +218,8 @@ namespace LspServer {
 		lsp.name    = name_v.get_str ();
 		lsp.command = command_v.get_str ();
 		lsp.allowed = allowed_v.get_str ();
+		if (lsp.name == null || lsp.command == null || lsp.allowed == null)
+			throw new ErrorLsp.INVALID_LSP ("name, command and allowed must be strings in %s", path);
 
 		unowned var test_v = root.obj_get ("test_command");
 		if (test_v != null)
