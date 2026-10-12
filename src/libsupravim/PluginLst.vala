@@ -83,7 +83,12 @@ namespace Supravim.Plugin {
 			string contents;
 			FileUtils.get_contents (filename, out contents);
 			var doc = YYJson.Doc.read (contents, contents.length);
-			if (doc == null) return;
+			if (doc == null) {
+				string backup = filename + ".corrupt";
+				warning ("%s is not valid JSON, moved to %s", filename, backup);
+				FileUtils.rename (filename, backup);
+				return;
+			}
 
 			unowned var root = doc.get_root ();
 			unowned var arr  = root.obj_get ("plugins");
@@ -96,6 +101,7 @@ namespace Supravim.Plugin {
 				unowned var url_v     = e.obj_get ("url");
 				unowned var enabled_v = e.obj_get ("enabled");
 				if (name_v == null || url_v == null) continue;
+				if (name_v.get_str () == null || url_v.get_str () == null) continue;
 
 				var entry = new PluginEntry (
 					name_v.get_str (),
@@ -113,8 +119,11 @@ namespace Supravim.Plugin {
 				if (added_v  != null) entry.added_at         = added_v.get_str ();
 				if (groups_v != null) {
 					string[] glist = {};
-					for (size_t j = 0; j < groups_v.arr_size (); j++)
-						glist += groups_v.arr_get (j).get_str ();
+					for (size_t j = 0; j < groups_v.arr_size (); j++) {
+						unowned var g = groups_v.arr_get (j);
+						if (g != null && g.get_str () != null)
+							glist += g.get_str ();
+					}
 					if (glist.length > 0)
 						entry.groups = string.joinv (",", glist);
 				}
