@@ -340,8 +340,9 @@ public class Main {
 				var sb = new StrvBuilder ();
 				sb.add ("vim");
 				sb.addv(args[1:]);
-				Process.spawn_sync (null, sb.end(), Environ.get(), SpawnFlags.SEARCH_PATH + SpawnFlags.CHILD_INHERITS_STDIN, null);
-				return 0;
+				int status;
+				Process.spawn_sync (null, sb.end(), Environ.get(), SpawnFlags.SEARCH_PATH | SpawnFlags.CHILD_INHERITS_STDIN, null, null, null, out status);
+				return Process.if_exited (status) ? Process.exit_status (status) : 1;
 			}
 			return result == true ? 0 : 1;
 		} catch (Error e) {
