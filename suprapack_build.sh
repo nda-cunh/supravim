@@ -10,7 +10,7 @@ clone() {
 	rm -rf "$BASE_NAME/.git"
 	rm -rf "$BASE_NAME/test"
 	rm -rf "$BASE_NAME/.github"
-	rm -rf "$BASE_NAME/*.md"
+	rm -rf "$BASE_NAME"/*.md
 	rm -rf "$BASE_NAME/LICENSE"
 	rm -rf "$BASE_NAME/CONTRIBUTING.md"
 }
