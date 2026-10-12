@@ -26,7 +26,10 @@ namespace Supravim.Plugin {
 	// No shell and no word splitting: $HOME or a name containing spaces/quotes stays one argument
 	private void git_pull (string name) throws Error {
 		validate_name (name);
-		Process.spawn_sync (null, {"git", "-C", bundle_dir (name), "pull"}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, null);
+		int wait;
+		Process.spawn_sync (null, {"git", "-C", bundle_dir (name), "pull"}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, out wait);
+		if (wait != 0)
+			throw new SpawnError.FAILED ("git pull returned %d for %s".printf (wait, name));
 	}
 
 	private string get_head_commit (string name) {
@@ -52,7 +55,12 @@ namespace Supravim.Plugin {
 		if (!plugins.add_from_url (url, name))
 			throw new SupravimError.ALREADY_EXISTS ("Plugin %s already exists".printf (name));
 		string target_dir = Environment.get_home_dir () + "/.vim/bundle/" + name;
-		Process.spawn_sync (null, {"git", "clone", "--depth", "1", "--", url, target_dir}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, out wait);
+		try {
+			Process.spawn_sync (null, {"git", "clone", "--depth", "1", "--", url, target_dir}, null, GLib.SpawnFlags.SEARCH_PATH, null, null, null, out wait);
+		} catch (Error e) {
+			plugins.remove_from_name (name);
+			throw e;
+		}
 		if (wait != 0) {
 			plugins.remove_from_name (name);
 			throw new SpawnError.FAILED ("git clone returned %d for %s".printf (wait, name));
