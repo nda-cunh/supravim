@@ -31,13 +31,18 @@ namespace Supravim {
 			string output;
 			string errput;
 			string name_used;
-			FileUtils.open_tmp ("tmp_vim_redir_XXXXXXXX", out name_used);
-			Process.spawn_command_line_sync (
-				@"vim -es -u ~/.vimrc -c 'redir! > $name_used | call supraconfig#PrintRegister() | redir END' -c 'q'",
-				out output, out errput
-			);
-			FileUtils.get_contents (name_used, out output);
-			FileUtils.remove (name_used);
+			// open_tmp () returns an open descriptor: close it, vim writes the file by name
+			new UnixInputStream (FileUtils.open_tmp ("tmp_vim_redir_XXXXXXXX", out name_used), true).close ();
+			try {
+				Process.spawn_sync (null,
+					{"vim", "-es", "-u", rc_path, "-c", @"redir! > $name_used | call supraconfig#PrintRegister() | redir END", "-c", "q"},
+					null, SpawnFlags.SEARCH_PATH, null, out output, out errput, null
+				);
+				FileUtils.get_contents (name_used, out output);
+			}
+			finally {
+				FileUtils.remove (name_used);
+			}
 			return parse_full_package (output);
 		}
 

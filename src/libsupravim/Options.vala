@@ -1,11 +1,18 @@
 namespace Supravim.Options {
 
+	private string vim_string (string s) throws Error {
+		for (int i = 0; i < s.length; i++) {
+			if (s[i] < 0x20 || s[i] == 0x7f)
+				throw new SupravimError.BAD_VALUE ("Invalid control character in '%s'".printf (s.escape ()));
+		}
+		return "\"" + s.replace ("\\", "\\\\").replace ("\"", "\\\"") + "\"";
+	}
+
 	public void update_value (string key, string value) throws Error {
-		string trash;
-		var cmd = "vim -es -u ~/.vimrc -c 'call supraconfig#UpdateWithStringWithoutApply(";
-		cmd += "\""+key+"\", \""+value+"\"";
-		cmd += ")' -c 'q'";
-		Process.spawn_command_line_sync (cmd, out trash, out trash);
+		string out_str;
+		string err_str;
+		string call = "call supraconfig#UpdateWithStringWithoutApply(" + vim_string (key) + ", " + vim_string (value) + ")";
+		Process.spawn_sync (null, {"vim", "-es", "-u", rc_path, "-c", call, "-c", "q"}, null, SpawnFlags.SEARCH_PATH, null, out out_str, out err_str, null);
 	}
 
 	public void reset_value (string key) throws Error {
