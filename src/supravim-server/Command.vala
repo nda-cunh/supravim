@@ -11,7 +11,12 @@ public class Command {
 	// Commands
 	////////////////////////////////////////////
 
+	private bool quit_requested = false;
+
 	public void OnQuit () {
+		if (quit_requested)
+			return;
+		quit_requested = true;
 		ach.on_quit ();
 		Idle.add(SupraVim.main_loop);
 	}

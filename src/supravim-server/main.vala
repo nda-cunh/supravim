@@ -32,6 +32,7 @@ public class SupraVim {
 	private async void run () {
 		main_loop = run.callback;
 		stdin.onStdin.connect (getInputRaw);
+		stdin.onClose.connect (() => command.OnQuit ());
 
 		yield;
 	}
