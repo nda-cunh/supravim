@@ -34,7 +34,8 @@ public class Command {
 		if (s.length == 0 || s.length > max_len)
 			return false;
 		for (int i = 0; i < s.length; i++) {
-			if (s[i] < 0x20 || s[i] == 0x7f)
+			uint8 c = (uint8) s[i];
+			if (c < 0x20 || c == 0x7f)
 				return false;
 		}
 		return true;
