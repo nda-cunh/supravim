@@ -1,5 +1,6 @@
 public class Command {
 	private HashTable<string, bool> lspServerEverLoad = new HashTable<string, bool> (str_hash, str_equal);
+	private bool lsp_ready = false;
 	private SList<string> LspReady = new SList<string> ();
 	public Achievements ach;
 
@@ -198,13 +199,14 @@ public class Command {
 	/////////////////////////////////////////
 
 	private void send_lsp_to_server (string lsp_str) {
-		if (LspReady != null)
+		if (!lsp_ready)
 			LspReady.append (lsp_str);
 		else
 			print ("LspGetServer@#@%s\n", lsp_str);
 	}
 
 	private void Ready () {
+		lsp_ready = true;
 		foreach (unowned string lsp in LspReady) {
 			print ("LspGetServer@#@%s\n", lsp);
 		}
