@@ -1,6 +1,8 @@
 [CCode (cname = "getpid", cheader_filename = "unistd.h")]
 public extern int getpid ();
 
+private const int MAX_PACKET_SIZE = 65536;
+
 public class IpcConnection : SocketClient {
 	public IpcConnection (string ipc_path) throws Error {
 		var unix_socket_address = new UnixSocketAddress(ipc_path);
@@ -16,13 +18,17 @@ public class IpcConnection : SocketClient {
 		Memory.copy(header, &opcode, 4);
 		Memory.copy(&header[4], &data.length, 4);
 
-        yield output.write_async(header);
-        yield output.write_async(data);
+        size_t written;
+        yield output.write_all_async(header, Priority.DEFAULT, null, out written);
+        yield output.write_all_async(data, Priority.DEFAULT, null, out written);
     }
 
 	public async string recv_packet() throws Error {
 		uint8 header[8];
-		yield input.read_async(header, Priority.DEFAULT, null);
+		size_t read;
+		yield input.read_all_async(header, Priority.DEFAULT, null, out read);
+		if (read != 8)
+			throw new IOError.FAILED ("Discord IPC: connection closed");
 
 		int opcode = 0;
 		int length = 0;
@@ -31,8 +37,10 @@ public class IpcConnection : SocketClient {
 
 		if (length <= 0)
 			return "";
+		if (length > MAX_PACKET_SIZE)
+			throw new IOError.INVALID_ARGUMENT ("Discord IPC: packet too large (%d bytes)".printf (length));
 		var payload = new uint8[length + 1];
-		input.read_all(payload[0:length], null);
+		yield input.read_all_async(payload[0:length], Priority.DEFAULT, null, out read);
 
 		return (string)payload;
 	}
@@ -42,6 +50,28 @@ public class IpcConnection : SocketClient {
 	private InputStream input;
 }
  
+// Escape a string for use inside a JSON string literal (file names can contain " or \\)
+private string json_escape (string s) {
+	var sb = new StringBuilder.sized (s.length + 8);
+	for (int i = 0; i < s.length; i++) {
+		uint8 c = (uint8) s[i];
+		switch (c) {
+			case '"':  sb.append ("\\\""); break;
+			case '\\': sb.append ("\\\\"); break;
+			case '\n': sb.append ("\\n"); break;
+			case '\r': sb.append ("\\r"); break;
+			case '\t': sb.append ("\\t"); break;
+			default:
+				if (c < 0x20)
+					sb.append_printf ("\\u%04x", c);
+				else
+					sb.append_c ((char) c);
+				break;
+		}
+	}
+	return sb.str;
+}
+
 public class DiscordIpc {
 	IpcConnection socket_client;
 	string client_id;
@@ -86,7 +116,7 @@ public class DiscordIpc {
 				"large_url": "https://gitlab.com/nda-cunh/SupraVim"
 			}
 		}
-		""".printf(state, details, start_time, large_image, large_text);
+		""".printf(json_escape (state), json_escape (details), start_time, json_escape (large_image), json_escape (large_text));
 
 		var activity_json = """ 
 		{
