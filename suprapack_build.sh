@@ -31,7 +31,7 @@ clone "https://github.com/nda-cunh/dvd.vim"
 clone "https://github.com/nda-cunh/SupraIndent"
 # External plugins
 clone "https://github.com/Donaldttt/fuzzyy"
-clone "https://github.com/vim-airline/vim-airline"
+clone "https://github.com/nda-cunh/vim-airline.git"
 clone "https://github.com/hrsh7th/vim-vsnip"
 clone "https://github.com/hrsh7th/vim-vsnip-integ"
 

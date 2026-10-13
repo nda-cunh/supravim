@@ -1,3 +1,34 @@
+# 6.82
+- Fix Scrollbar
+- Fix bug airline with vim9script
+- Stop build process on clone failure and expand markdown glob support
+- Queue LSP requests until vim is ready to prevent race conditions
+- Escape Discord activity JSON and bound IPC packet size for security
+- Handle non-ASCII file names in command validation
+- Escape vim option values and close temp redir file handles to prevent leaks
+- Handle spawn failures and validate LSP package config in server
+- Handle stdin close and prevent duplicate quit signals
+- Forward vim exit status from spawned processes in CLI
+- Remove plugin registration when git clone or pull fails
+- Move invalid plugin list JSON to corrupt backup for recovery
+- Quote install paths and preserve existing vimrc backups during build
+- Validate plugin names and replace shell string spawning for security
+- Guard against missing LSP install commands and null arguments
+- Sanitize command payloads and tighten server message parsing
+- Replace suprabear with supramake for project path detection
+- Update install script and CI artifacts path for macOS package creation
+- Update logo and favicon to new SVG design
+- Use workdir for suprapack install and add bootstrap fallback
+- Include supravim-gui in package creation
+- Remove release workflow (temporarily)
+- Switch installer to meson and add dependency checks
+- Add suprapack packaging and enable build option
+- Simplify suprapack install handling and bump version to 6.81.0
+- Refactor package script to use meson install and improve platform checks
+- Add workflow to build and publish release packages
+- Expand command in runcmd to handle shell variables
+- Update fedora install command color
+
 # 6.81
 - Add support for MacOS Darwin (Arm64 and x86_64)
 - Add suppot for Linux (x86_64 and aarch64)
