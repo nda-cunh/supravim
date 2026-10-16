@@ -19,47 +19,205 @@ export def LspServerActivate()
 enddef
 
 export def RenameSymbol()
-	const line_pt = line('.')
-	const col_pt = col('.')
-	var all_servers = lsp#get_allowed_servers()
-	var can_rename_lsp = false
-	for server in all_servers
-		var value = lsp#capabilities#has_rename_provider(server)
-		if value == 1
-			can_rename_lsp = true
-			break
+	const bufnr = bufnr('%')
+	const position = {line: line('.') - 1, character: strutf16len(strpart(getline('.'), 0, col('.') - 1))}
+	const cword = expand('<cword>')
+	const servers = lsp#get_allowed_servers()->filter((_, s) => lsp#capabilities#has_rename_provider(s))
+
+	if empty(servers)
+		OpenRenamePopup(cword, (name) => RenameInBuffer(cword, name))
+		return
+	endif
+
+	const server = servers[0]
+	if !lsp#capabilities#has_rename_prepare_provider(server)
+		OpenRenamePopup(cword, (name) => SendRename(server, bufnr, position, name))
+		return
+	endif
+
+	lsp#send_request(server, {
+		method: 'textDocument/prepareRename',
+		params: {
+			textDocument: lsp#get_text_document_identifier(bufnr),
+			position: position,
+		},
+		bufnr: bufnr,
+		on_notification: (data) => OnPrepareRename(server, bufnr, position, cword, data),
+	})
+enddef
+
+def OpenRenamePopup(default: string, Callback: func(string))
+	var popup = PopupInput.Input.new({width: 16, prompt: '➜ ', title_pos: 'left', title: '󰑕 Rename', line: "cursor-3", col: "cursor+1", moved: 'WORD'})
+	popup.SetInput(default)
+	popup.AddEventInputEnter((p) => {
+		const name = p.GetInput()
+		popup.Close()
+		if empty(name) || name ==# default
+			return
 		endif
+		Callback(name)
+	})
+enddef
+
+def RenameInBuffer(old: string, name: string)
+	if empty(old)
+		return
+	endif
+	const view = winsaveview()
+	silent! execute $'keeppatterns :%s/\V\<{escape(old, '/\')}\>/{escape(name, '/\&~')}/g'
+	winrestview(view)
+	silent! update
+enddef
+
+def ResponseError(data: any): string
+	if type(data) != v:t_dict || !has_key(data, 'response')
+		return string(data)
+	endif
+	if lsp#client#is_error(data.response)
+		return lsp#client#error_message(data.response)
+	endif
+	return ''
+enddef
+
+def OnPrepareRename(server: string, bufnr: number, position: dict<any>, cword: string, data: any)
+	const err = ResponseError(data)
+	if !empty(err)
+		lsp#utils#error($'Rename: {err}')
+		return
+	endif
+
+	const result = get(data.response, 'result', v:null)
+	if type(result) != v:t_dict || empty(result)
+		lsp#utils#warning('Rename: nothing to rename here')
+		return
+	endif
+
+	var default = cword
+	if !empty(get(result, 'placeholder', ''))
+		default = result.placeholder
+	elseif has_key(result, 'start') || has_key(result, 'range')
+		const range = get(result, 'range', result)
+		if range.start.line == range.end.line
+			const text = get(getbufline(bufnr, range.start.line + 1), 0, '')
+			const s = LspCharToByte(text, range.start.character)
+			const e = LspCharToByte(text, range.end.character)
+			default = strpart(text, s, e - s)
+		endif
+	endif
+
+	timer_start(0, (_) => OpenRenamePopup(default, (name) => SendRename(server, bufnr, position, name)))
+enddef
+
+def SendRename(server: string, bufnr: number, position: dict<any>, name: string)
+	lsp#send_request(server, {
+		method: 'textDocument/rename',
+		params: {
+			textDocument: lsp#get_text_document_identifier(bufnr),
+			position: position,
+			newName: name,
+		},
+		bufnr: bufnr,
+		on_notification: (data) => OnRename(data),
+	})
+enddef
+
+def OnRename(data: any)
+	const err = ResponseError(data)
+	if !empty(err)
+		lsp#utils#error($'Rename: {err}')
+		return
+	endif
+
+	const result = get(data.response, 'result', v:null)
+	if type(result) != v:t_dict || empty(result)
+		lsp#utils#warning('Rename: the server returned no changes')
+		return
+	endif
+
+	const view = winsaveview()
+	const changed = ApplyWorkspaceEdit(result)
+	winrestview(view)
+	silent! wall
+	echo $'Renamed: {changed} file(s) modified'
+enddef
+
+def ApplyWorkspaceEdit(edit: dict<any>): number
+	var count = 0
+	if type(get(edit, 'documentChanges', v:null)) == v:t_list
+		for change in edit.documentChanges
+			if has_key(change, 'kind')
+				lsp#utils#warning($'Rename: resource operation "{change.kind}" ignored')
+				continue
+			endif
+			ApplyTextEdits(change.textDocument.uri, change.edits)
+			count += 1
+		endfor
+	elseif type(get(edit, 'changes', v:null)) == v:t_dict
+		for [uri, edits] in items(edit.changes)
+			ApplyTextEdits(uri, edits)
+			count += 1
+		endfor
+	endif
+	return count
+enddef
+
+def LspCharToByte(text: string, character: number): number
+	if character <= 0
+		return 0
+	endif
+	const idx = byteidx(text, character, true)
+	return idx < 0 ? len(text) : idx
+enddef
+
+def ApplyTextEdits(uri: string, edits: list<dict<any>>)
+	if empty(edits)
+		return
+	endif
+
+	const bufnr = bufadd(lsp#utils#uri_to_path(uri))
+	bufload(bufnr)
+	setbufvar(bufnr, '&buflisted', true)
+
+	const last = len(getbufline(bufnr, 1, '$'))
+	var resolved: list<dict<any>> = []
+	for edit in edits
+		var sl = edit.range.start.line + 1
+		var el = edit.range.end.line + 1
+		var sline = get(getbufline(bufnr, sl), 0, '')
+		var eline = get(getbufline(bufnr, el), 0, '')
+		var sc = LspCharToByte(sline, edit.range.start.character)
+		var ec = LspCharToByte(eline, edit.range.end.character)
+		if el > last
+			el = last
+			eline = get(getbufline(bufnr, el), 0, '')
+			ec = len(eline)
+		endif
+		if sl > last
+			sl = last
+			sline = eline
+			sc = len(sline)
+		endif
+		resolved->add({sl: sl, sc: sc, el: el, ec: ec, text: edit.newText})
 	endfor
 
-	var popup = PopupInput.Input.new({width: 16, prompt: '➜ ', title_pos: 'left', title: '󰑕 Rename', line: "cursor-3", col: "cursor+1", moved: 'WORD'})
-	var cword = expand('<cword>')
-	popup.SetInput(cword)
+	sort(resolved, (a, b) => a.sl != b.sl ? b.sl - a.sl : b.sc - a.sc)
 
-	if can_rename_lsp == false
-		popup.AddEventInputEnter((p) => {
-			var line = p.GetInput()
-			popup.Close()
-			silent! execute ':%s/' .. cword .. '/' .. line .. '/g'
-			w!
-		})
-		return
-	else
-		popup.AddEventInputEnter((p) => {
-			var line = p.GetInput()
-			popup.Close()
-			feedkeys("\<esc>:LspRename\<cr>", "n")
-			timer_start(100, (_) => {
-				var i = strcharlen(expand('<cword>'))
-				for j in range(0, i - 1)
-					feedkeys("\<bs>", "n")
-				endfor
-				feedkeys(line .. "\<cr>", "n")
-				timer_start(500, (_) => {
-					wall!
-				})
-			})
-		})
-	endif
+	for r in resolved
+		const prefix = strpart(get(getbufline(bufnr, r.sl), 0, ''), 0, r.sc)
+		const suffix = strpart(get(getbufline(bufnr, r.el), 0, ''), r.ec)
+		var lines = split(substitute(r.text, "\r\n\\=", "\n", 'g'), "\n", true)
+		lines[0] = prefix .. lines[0]
+		lines[-1] = lines[-1] .. suffix
+
+		const old_count = r.el - r.sl + 1
+		const new_count = len(lines)
+		if new_count < old_count
+			deletebufline(bufnr, r.sl + new_count, r.el)
+		elseif new_count > old_count
+			appendbufline(bufnr, r.el, lines[old_count : ])
+		endif
+		setbufline(bufnr, r.sl, lines[: min([old_count, new_count]) - 1])
+	endfor
 enddef
 
 # --- Helper internal functions ---
