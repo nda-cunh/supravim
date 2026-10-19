@@ -19,7 +19,7 @@ check_dependencies_suprapack() {
 	missing_libs=""
 	missing_commands=""
 
-	for cmd in valac meson ninja make zstd pkg-config; do
+	for cmd in make zstd pkg-config; do
 		if ! command -v "$cmd" >/dev/null 2>&1; then
 			missing_commands="$missing_commands $cmd"
 		fi
