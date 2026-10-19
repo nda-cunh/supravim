@@ -28,3 +28,5 @@ noremap <expr> <left>  Konami(3) ?? '<left>'
 noremap <expr> <right> Konami(4) ?? '<right>'
 noremap <expr> b       Konami(5) ?? 'b'
 noremap <expr> a       Konami(6) ?? 'a'
+sunmap b
+sunmap a
