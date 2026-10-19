@@ -26,7 +26,7 @@ for t in "$TESTDIR"/unit/t_*.vim; do
 	cat "$t" "$TESTDIR/driver.vim" > "$run"
 	rm -f "$REPORT"
 
-	"$VIM" -es -N -i NONE -u NONE --not-a-term \
+	"$VIM_BIN" -es -N -i NONE -u NONE --not-a-term \
 		--cmd 'syntax enable' \
 		--cmd "set rtp^=$RTP" \
 		--cmd "source $TESTDIR/stubs/commands.vim" \

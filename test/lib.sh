@@ -1,6 +1,6 @@
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 TESTDIR="$ROOT/test"
-VIM=${VIM_BIN:-vim}
+VIM_BIN=${VIM_BIN:-vim}
 
 RED=''
 GREEN=''
@@ -19,11 +19,11 @@ skip() { printf '%sskip%s  %s\n' "$YELLOW" "$RESET" "$1"; }
 info() { printf '\n== %s ==\n' "$1"; }
 
 require_vim() {
-	if ! command -v "$VIM" >/dev/null 2>&1; then
+	if ! command -v "$VIM_BIN" >/dev/null 2>&1; then
 		echo "vim not found in PATH" >&2
 		exit 127
 	fi
-	version_line=$("$VIM" --version | sed -n 1p)
+	version_line=$("$VIM_BIN" --version | sed -n 1p)
 	case "$version_line" in
 	*"Vi IMproved 9"*) ;;
 	*)

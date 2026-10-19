@@ -32,7 +32,7 @@ for f in $(find . -type f -name '*.vim' | sed 's|^\./||' | sort); do
 	rm -f "$LOG"
 	printf '\ndefcompile\n' >> "$STAGE/vim/$f"
 
-	if "$VIM" -es -N -i NONE -u NONE --not-a-term \
+	if "$VIM_BIN" -es -N -i NONE -u NONE --not-a-term \
 		--cmd 'syntax enable' \
 		--cmd "set rtp^=$RTP" \
 		--cmd "source $TESTDIR/stubs/commands.vim" \

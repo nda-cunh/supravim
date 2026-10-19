@@ -18,7 +18,7 @@ status=0
 
 info "startup smoke test"
 
-"$VIM" -N -i NONE -u "$VIMRC" --not-a-term \
+"$VIM_BIN" -N -i NONE -u "$VIMRC" --not-a-term \
 	--cmd "source $TESTDIR/stubs/commands.vim" \
 	-c 'qa!' </dev/null >/dev/null 2>"$ERR" || true
 
@@ -37,7 +37,7 @@ info "colorscheme load test"
 for c in "$ROOT"/data/supravim/vim/colors/*.vim; do
 	name=$(basename "$c" .vim)
 	rm -f "$LOG"
-	if "$VIM" -es -N -i NONE -u NONE --not-a-term \
+	if "$VIM_BIN" -es -N -i NONE -u NONE --not-a-term \
 		--cmd 'syntax enable' \
 		--cmd 'set termguicolors' \
 		--cmd "set rtp^=$TESTDIR/stubs,$ROOT/data/supravim/vim" \
