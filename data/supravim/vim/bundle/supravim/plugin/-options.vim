@@ -11,7 +11,7 @@ supraconfig#RegisterMany([
 	{
 		id: 'ft_count_line',
 		type: 'bool',
-		default: true,
+		default: false,
 		lore: 'Enable the count line feature',
 		handler: (v) => {
 			Ft_count_line.SimpleSupravimChangeOption(v)
