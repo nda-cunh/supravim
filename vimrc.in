@@ -442,6 +442,7 @@ nnoremap <silent> <leader><F7>		<scriptcmd>Make.Panel('F7')<cr>
 # Fuzzy Finder
 nnoremap <silent> <leader>fc		<scriptcmd>FuzzyClip<cr>
 nnoremap <silent> <leader>fd		<scriptcmd>FuzzyLspDiag<cr>
+nnoremap <silent> <leader>fm		<scriptcmd>FuzzyMark<cr>
 nnoremap <silent> <leader>ft		<scriptcmd>FuzzySupraTags<cr>
 nnoremap <silent> <leader>f<f5>		<scriptcmd>FuzzyMake<cr>
 
