@@ -100,11 +100,13 @@ export def Apply(id: string, value: any)
 enddef
 
 def SpawnFunction(id: string, value: any)
-    if has_key(registry, id)
-        current_values[id] = value
-        var val_str = (type(value) == v:t_bool ? $'{value}' : value)
-        registry[id].spawn(value)
-    endif
+	# Skip if the spawn function is null
+	if registry[id].spawn ==# null_function
+		return
+	endif
+	current_values[id] = value
+	var val_str = (type(value) == v:t_bool ? $'{value}' : value)
+	registry[id].spawn(value)
 enddef
 
 def IsAllowed(id: string, value: any): bool
