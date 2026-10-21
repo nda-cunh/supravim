@@ -74,6 +74,7 @@ is_42_school() {
 install_suprapack() {
 	# test install suprapack without compiling with the install of suprapack
 	curl https://gitlab.com/nda-cunh/suprapack/-/raw/master/install | sh
+	export PATH=$PATH:$HOME/.local/bin
 
 	if ! command -v suprapack >/dev/null 2>&1; then
 		git clone https://gitlab.com/nda-cunh/suprapack --depth=1
