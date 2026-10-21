@@ -348,16 +348,9 @@ def HasCodeAction(line: number): bool
 enddef
 
 def LspMenuActionRunSupraMenu(col: number, line: number)
-	# move to the position to ensure the code action menu is relevant to the
 	cursor(line, col)
-	silent! feedkeys(":LspCodeAction --ui=float", 'n')
-	# HACK supra truc bizarre
-	timer_start(200, (_) => {
-		feedkeys("\<cr>", 'n')
-	})
+	execute 'LspCodeAction --ui=float'
 enddef
-
-const SID = expand('<SID>')
 
 def MenuActionLsp(ctx: dict<any>): dict<any>
     const col = ctx.col
@@ -370,9 +363,8 @@ def MenuActionLsp(ctx: dict<any>): dict<any>
         rows: [
             {
                 label: 'Lsp Code Actions',
-				cmd: $'<cmd>call {SID}LspMenuActionRunSupraMenu(' .. ctx.col .. ', ' .. ctx.line .. ')<cr>',
+				cmd: () => LspMenuActionRunSupraMenu(ctx.col, ctx.line),
                 icon: '⚡',
-                type: 'n'
             }
         ]
     }

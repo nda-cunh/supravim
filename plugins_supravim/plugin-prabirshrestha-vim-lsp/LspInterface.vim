@@ -314,6 +314,9 @@ const Window = vital#lsp#import('VS.Vim.Window')
 const Buffer = vital#lsp#import('VS.Vim.Buffer')
 
 export def BalloonPopup(): string
+	if id_popup > 0 && getmousepos().winid == id_popup
+		return ''
+	endif
 	const servers = filter(lsp#get_allowed_servers(), 'lsp#capabilities#has_hover_provider(v:val)')
 	const pos = {'character': v:beval_col - 1, 'line': v:beval_lnum - 1}
 	const request = {
@@ -349,6 +352,7 @@ export def BalloonPopup(): string
 enddef
 
 var id_popup: number = -1
+var hover_timer: number = -1
 
 def Show_hover(server_name: string, request: dict<any>, response: dict<any>)
     if !has_key(response, 'result') || empty(response.result) || empty(response.result.contents)
@@ -395,8 +399,9 @@ def Show_hover(server_name: string, request: dict<any>, response: dict<any>)
         zindex: 300,
         wrap: 1,
         fixed: 1,
-        mousemoved: [v:beval_lnum, v:beval_col, v:beval_col],
+        callback: (_, _) => timer_stop(hover_timer),
     })
+	WatchHover(v:beval_winid, v:beval_lnum, v:beval_col)
 
 	# close the popup if mode changed 
 	augroup SupraLspHoverPopup
@@ -424,6 +429,35 @@ def Show_hover(server_name: string, request: dict<any>, response: dict<any>)
 			silent normal! gg
         })
     endif
+enddef
+
+def WatchHover(winid: number, lnum: number, col: number)
+	const text = get(getbufline(winbufnr(winid), lnum), 0, '')
+	const start = col - strlen(matchstr(strpart(text, 0, col - 1), '\k*$'))
+	const end = col + max([strlen(matchstr(strpart(text, col - 1), '^\k*')) - 1, 0])
+	var entered = false
+	var away = 0
+	timer_stop(hover_timer)
+	hover_timer = timer_start(100, (t) => {
+		if popup_getoptions(id_popup) == {}
+			timer_stop(t)
+			return
+		endif
+		const mouse = getmousepos()
+		if mouse.winid == id_popup
+			entered = true
+			away = 0
+		elseif entered
+			popup_close(id_popup)
+		elseif mouse.winid == winid && mouse.line == lnum && mouse.column >= start && mouse.column <= end
+			away = 0
+		else
+			away += 1
+			if away >= 3
+				popup_close(id_popup)
+			endif
+		endif
+	}, {repeat: -1})
 enddef
 
 def GetContents(contents: any): list<string> 
