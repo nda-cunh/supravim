@@ -1,4 +1,5 @@
-#6.83
+# 6.83
+- New **Right-Click** Popup Menu
 - Fix autopairs
 - Fix plugin-norminette (bump to 3.1)
 - Add `<leader>fm` keymap for fuzzy marks search (`FuzzyMark`)
@@ -6,7 +7,6 @@
 - Disable the count line feature by default
 - Implement workspace rename edits handling in the LSP server
 - Update vim-airline repo URL
-- Guard null spawn functions in config apply
 - Drop unnecessary dependency checks from installer
 - Remove obsolete plugin-autobear files
 - Consolidate GitLab CI test jobs into a single runner
