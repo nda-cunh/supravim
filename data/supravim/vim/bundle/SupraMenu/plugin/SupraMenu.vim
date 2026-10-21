@@ -9,101 +9,120 @@ g:supra_menu_loaded = 1
 import autoload 'SupraMenu.vim'
 
 noremap <RightMouse>			<scriptcmd>SupraMenu.Open()<cr>
+inoremap <RightMouse>			<esc><scriptcmd>SupraMenu.Open()<cr>
+
+def Highlights()
+	hi def link SupraMenu Normal
+	hi def link SupraMenuBorder Normal
+	hi def link SupraMenuSeparator Comment
+	hi def link SupraMenuShortcut Comment
+	hi def link SupraMenuDisabled NonText
+enddef
+
+Highlights()
+au ColorScheme * Highlights()
 
 ##########
-# Format of the row
+# Format of a block: { priority: number, rows: list<Row> }
+# priority: higher number means displayed first
+#
+# Format of a row
 # {
-#     label: string ->  The label to display
-#     cmd: string -> The command to execute when the row is selected
+#     label: string -> The label to display
 #     icon: string -> The icon to display (can be empty)
-#     priority: number -> The priority of the row (higher number means higher priority)
-#     type: char -> 'n' = normal, 'v' = visual, 'i' = insert, 'c' = command 'a' = all modes
+#     cmd: func() | string -> The function to call, or the keys to feed
+#     modes: string -> 'n', 'v' or 'nv' (default 'n', children inherit it)
+#     shortcut: string -> Hint displayed on the right
+#     enabled: bool -> false greys out the row (default true)
+#     children: list<Row> -> Submenu
 # }
+# Separator: { sep: true }
 ##########
 
 const LspBlock = {
-    priority: 900,
-    rows: [
-        { label: 'Show References', cmd: '<esc>:LspReferences<cr>', icon: '󰈻', type: 'n' }
-    ]
+	priority: 900,
+	rows: [
+	{
+		label: 'Lsp', icon: '󰅩', children: [
+			{ label: 'Show References', cmd: '<esc>:LspReferences<cr>', icon: '󰈻', shortcut: 'gr' },
+			{ label: 'Rename Symbol', cmd: '<F2>',      icon: '󰏫', shortcut: 'F2' },
+			{ label: 'Show Signature', cmd: '<C-space>', icon: '󰌶', shortcut: 'Ctrl+<space>' },
+			{ sep: true },
+			{ sep: true },
+			{ label: 'Go to Definition', cmd: 'gd', icon: '󰌶', shortcut: 'gd' },
+			{ label: 'Go to Declaration', cmd: 'gD', icon: '󰌶', shortcut: 'gD' },
+			{ label: 'Go to Type Definition', cmd: 'gT', icon: '󰌶', shortcut: 'gT' },
+			{ label: 'Go to Implementation', cmd: 'gi', icon: '󰌶', shortcut: 'gi' },
+			{ sep: true },
+			{ label: 'Code Actions', cmd: 'ga', icon: '󰌶', shortcut: 'ga' },
+		]
+	}
+	]
 }
 
 const SystemBlock = {
-    priority: 800,
-    rows: [
-        { label: 'Save All',  cmd: ':wall<CR>',      icon: '󰆓', type: 'n' },
-        { label: 'Auto Norm', cmd: '<leader><F2>', icon: '󰉶', type: 'n' }
-    ]
+	priority: 800,
+	rows: [
+		{ label: 'Save All',  cmd: ':wall<CR>',    icon: '󰆓' },
+		{ label: 'Auto Norm', cmd: '<leader><F2>', icon: '󰉶' }
+	]
 }
 
 const EditionBlock = {
-    priority: 700,
-    rows: [
-		{ label: 'Copy',       cmd: 'y',         icon: '󰆏', type: 'v' },
-		{ label: 'Cut',        cmd: 'd',         icon: '󰆐', type: 'v' },
-		{ label: 'Paste',      cmd: 'p',         icon: '󰅍', type: 'v' },
-		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', type: 'v' },
-		{ type: 's'},
-		{ label: 'Equalize',   cmd: '=',         icon: '󰉼', type: 'v' },
-		{ label: 'Uppercase',  cmd: 'gU',        icon: '󰬶', type: 'v' },
-		{ label: 'Lowercase',  cmd: 'gu',        icon: '󰬵', type: 'v' },
-		{ label: 'sort Ascending',  cmd: ':sort<cr>',      icon: '', type: 'v' },
-		{ label: 'sort Descending', cmd: ':sort!<cr>',     icon: '', type: 'v' },
-		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', type: 'n' },
-		{ label: 'Paste',      cmd: 'p',         icon: '󰅍', type: 'n' },
-        { label: 'Undo',       cmd: 'u',         icon: '󰕌', type: 'n' },
-        { label: 'Redo',       cmd: '<C-r>',     icon: '󰑎', type: 'n' },
-    ]
+	priority: 700,
+	rows: [
+		{ label: 'Copy',       cmd: 'y',         icon: '󰆏', modes: 'v' },
+		{ label: 'Cut',        cmd: 'd',         icon: '󰆐', modes: 'v' },
+		{ label: 'Paste',      cmd: 'p',         icon: '󰅍', modes: 'nv' },
+		{ label: 'Select All', cmd: '<esc>ggVG', icon: '󰒅', modes: 'nv' },
+		{ sep: true },
+		{ label: 'Undo',       cmd: 'u',         icon: '󰕌', shortcut: 'u' },
+		{ label: 'Redo',       cmd: '<C-r>',     icon: '󰑎', shortcut: 'C-r' },
+		{ label: 'Transform', icon: '󰬴', modes: 'v', children: [
+			{ label: 'Equalize',        cmd: '=',          icon: '󰉼' },
+			{ label: 'Uppercase',       cmd: 'gU',         icon: '󰬶' },
+			{ label: 'Lowercase',       cmd: 'gu',         icon: '󰬵' },
+			{ sep: true },
+			{ label: 'Sort Ascending',  cmd: ':sort<cr>',  icon: '' },
+			{ label: 'Sort Descending', cmd: ':sort!<cr>', icon: '' },
+		] },
+	]
 }
 
 const DebugBlock = {
-    priority: 600,
-    rows: [
-        { label: 'Debug',                cmd: ':Gdbs<cr>', icon: '󰃤', type: 'n' },
-        { label: 'Rename Symbol <F2>',   cmd: '<F2>',     icon: '󰏫', type: 'n' }
-    ]
-}
-
-const FoldingBlock = {
-    priority: 500,
-    rows: [
-        { label: 'FoldToggle',  cmd: 'za', icon: '󱊄', type: 'n' },
-        { label: 'Fold All',    cmd: 'zM', icon: '󱊅', type: 'n' },
-        { label: 'UnFold All',  cmd: 'zR', icon: '󱊆', type: 'n' }
-    ]
+	priority: 600,
+	rows: [
+		# { label: 'Debug',         cmd: ':Gdbs<cr>', icon: '󰃤' },
+		{ label: 'Folding', icon: '󱊄', children: [
+			{ label: 'Toggle',     cmd: 'za', icon: '󱊄', shortcut: 'za' },
+			{ label: 'Fold All',   cmd: 'zM', icon: '󱊅', shortcut: 'zM' },
+			{ label: 'UnFold All', cmd: 'zR', icon: '󱊆', shortcut: 'zR' },
+		] },
+	]
 }
 
 const SettingsBlock = {
-    priority: -1,
-    rows: [
-        { label: 'SupraVim Settings', cmd: ':call SettingsSupravim()<CR>', icon: '󰒓', type: 'n' }
-    ]
+	priority: -1,
+	rows: [
+		{ label: 'SupraVim Settings', cmd: () => g:SettingsSupravim(), icon: '󰒓', shortcut: 'F12' }
+	]
 }
 
-SupraMenu.Register((_: dict<any>): dict<any> => {
-    return LspBlock
-})
+def Echo(msg: string)
+	echomsg msg
+enddef
 
-SupraMenu.Register((_: dict<any>): dict<any> => {
-    return SystemBlock
-})
 
-SupraMenu.Register((_: dict<any>): dict<any> => {
-    return EditionBlock
-})
-
-SupraMenu.Register((_: dict<any>): dict<any> => {
-    return DebugBlock
-})
-
-SupraMenu.Register((_: dict<any>): dict<any> => {
-    return SettingsBlock
-})
+SupraMenu.Register(LspBlock)
+SupraMenu.Register(SystemBlock)
+SupraMenu.Register(EditionBlock)
+SupraMenu.Register(DebugBlock)
+SupraMenu.Register(SettingsBlock)
 
 def Loaded()
 	timer_start(500, (_) => {
 		silent! doautocmd User SupraMenuLoaded
 	})
 enddef
-		
+
 au VimEnter * call Loaded()

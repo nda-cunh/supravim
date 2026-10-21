@@ -450,8 +450,6 @@ nnoremap <silent> <leader>f<f5>		<scriptcmd>FuzzyMake<cr>
 inoremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 noremap <F12>	<scriptcmd>call SettingsSupravim()<cr>
 # Mouse
-nnoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
-inoremap <RightMouse> <esc><LeftMouse><esc><RightMouse>
 nnoremap <c-leftmouse>	<leftmouse><scriptcmd>g:LspDefinition()<cr>
 
 #---------------      Command        ---------------"

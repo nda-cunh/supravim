@@ -26,9 +26,9 @@ def MenuSearch(ctx: dict<any>): dict<any>
         rows: [
             {
                 label: 'Search selection',
-                cmd: $':vim9cmd call suprasearch#SupraSearchMenu()<cr>',
+                cmd: ':vim9cmd call suprasearch#SupraSearchMenu()<cr>',
                 icon: '󱈄',
-                type: 'v'
+                modes: 'v'
             }
         ]
     }

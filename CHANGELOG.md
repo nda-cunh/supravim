@@ -1,3 +1,16 @@
+#6.83
+- Fix autopairs
+- Fix plugin-norminette (bump to 3.1)
+- Add `<leader>fm` keymap for fuzzy marks search (`FuzzyMark`)
+- Unmap `a` and `b` in select mode
+- Disable the count line feature by default
+- Implement workspace rename edits handling in the LSP server
+- Update vim-airline repo URL
+- Guard null spawn functions in config apply
+- Drop unnecessary dependency checks from installer
+- Remove obsolete plugin-autobear files
+- Consolidate GitLab CI test jobs into a single runner
+
 # 6.82
 - Fix Scrollbar
 - Fix bug airline with vim9script
