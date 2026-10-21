@@ -1,5 +1,5 @@
 pkgname=plugin-norminette
-pkgver=3.0
+pkgver=3.1
 arch=('any')
 depends=('supravim')
 pkgdesc='press <Space><F3> to disable/enable plugin for norminette support'
