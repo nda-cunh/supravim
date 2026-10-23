@@ -381,6 +381,9 @@ enddef
 
 export def Open()
 	Close()
+	if win_gettype() == 'popup'
+		return
+	endif
 	if exists('*g:SupraAchMetric')
 		call g:SupraAchMetric('rightclick', 1)
 	endif
