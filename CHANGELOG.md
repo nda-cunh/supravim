@@ -15,6 +15,12 @@
 - Rework the 42 header: automatically resolve header merge conflicts and remove the old 42 plugin cleanly
 - Add `stdheader/refresh`, `stdheader/user` and `stdheader/mail` options
 - Fix the 42 header comment style: it now follows the file type instead of always using `/* */`
+- Show the count line next to the closing `}` of the function
+- Fix the count line ignoring functions with a multi-line signature
+- Fix the count line missing when the closing `}` is on the first visible line
+- Fix the count line resetting the cursor column when moving vertically
+- Fix the count line not working after being disabled then re-enabled
+- Optimize the count line: skip the update when the buffer and the view have not changed
 
 # 6.82
 - Fix Scrollbar

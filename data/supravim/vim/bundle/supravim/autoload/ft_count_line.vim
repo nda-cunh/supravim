@@ -1,38 +1,38 @@
 vim9script
 
 const SkipQuotesAndComments = "synIDattr(synID(line('.'), col('.'), 1), 'name') =~? 'string\\|comment'"
+var generation = 0
 
 export def Ft_count_line()
-	const position = getpos('.')
-	const end_view_line = line('w$')
-	const begin_view_line = line('w0')
-
-	var lst = prop_list(begin_view_line, {types: ['ft_count_line'], end_lnum: end_view_line})
-	for item in lst
-		call prop_remove(item)
-	endfor
-	if end_view_line - begin_view_line < 3
+	const first = line('w0')
+	const last = line('w$')
+	const key = [generation, bufnr(), b:changedtick, first, last]
+	if get(w:, 'ft_count_line_key', []) == key
 		return
 	endif
-	cursor(begin_view_line, 1)
+	w:ft_count_line_key = key
 
-	while true
-		const idx = search('^}', '', line('w$'))
-		if idx == 0
-			break
-		endif
-		const i = searchpair("{", '', '}', 'bnW', SkipQuotesAndComments)
-		# check if it's a function
-		if stridx(getline(i), ')') == -1 && stridx(getline(i - 1), ')') == -1
+	prop_remove({type: 'ft_count_line', all: true}, first, last)
+	if last - first < 3
+		return
+	endif
+
+	const view = winsaveview()
+	for lnum in range(first, last)
+		if getline(lnum)[0] != '}'
 			continue
 		endif
-		const diff = (idx - i) - 1
-		if i == 0
+		cursor(lnum, 1)
+		const open = searchpair('{', '', '}', 'bnW', SkipQuotesAndComments)
+		if open == 0
 			continue
 		endif
-		call prop_add(idx, 0, {text: "---- FUNCTION LINES: " .. (diff) .. ' ----', type: 'ft_count_line', text_align: 'after', text_padding_left: 1})
-	endwhile
-	call setpos('.', position)
+		if stridx(getline(open), ')') == -1 && stridx(getline(open - 1), ')') == -1
+			continue
+		endif
+		prop_add(lnum, 0, {text: '---- FUNCTION LINES: ' .. (lnum - open - 1) .. ' ----', type: 'ft_count_line', text_align: 'after', text_padding_left: 1})
+	endfor
+	winrestview(view)
 enddef
 
 export def EnableAugroup()
@@ -43,19 +43,23 @@ export def EnableAugroup()
 enddef
 
 export def SimpleSupravimChangeOption(value: bool)
+	generation += 1
 	if value == true
 		hi! Ft_count_line cterm=bold
-		call prop_type_add("ft_count_line", {highlight: "Ft_count_line"})
-		call Ft_count_line()
-		call EnableAugroup()
+		if empty(prop_type_get('ft_count_line'))
+			prop_type_add('ft_count_line', {highlight: 'Ft_count_line'})
+		endif
+		Ft_count_line()
+		EnableAugroup()
 	else
-		try 
-		var lst = prop_list(1, {types: ['ft_count_line'], end_lnum: line('$')})
-		for item in lst
-			call prop_remove(item)
+		if exists('#Ft_count_line')
+			autocmd! Ft_count_line
+		endif
+		if empty(prop_type_get('ft_count_line'))
+			return
+		endif
+		for buf in getbufinfo({bufloaded: true})
+			prop_remove({type: 'ft_count_line', bufnr: buf.bufnr, all: true})
 		endfor
-		auto! Ft_count_line
-		catch
-		endtry
 	endif
 enddef
