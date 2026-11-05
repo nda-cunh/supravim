@@ -56,7 +56,7 @@ namespace Supravim.Ach {
 		}
 
 		public bool is_max_metric (string name) {
-			return name in max_metrics;
+			return name in max_metrics || name.has_suffix ("_score");
 		}
 
 		public unowned Def? get_by_id (string id) {
