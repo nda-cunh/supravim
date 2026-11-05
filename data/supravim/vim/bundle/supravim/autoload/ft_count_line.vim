@@ -23,18 +23,14 @@ export def Ft_count_line()
 		endif
 		const i = searchpair("{", '', '}', 'bnW', SkipQuotesAndComments)
 		# check if it's a function
-		const line_text = getline(i)
-		if stridx(line_text, '(') == -1 || stridx(line_text, ')') == -1
-			const prev_line_text = getline(i - 1)
-			if stridx(prev_line_text, '(') == -1 || stridx(prev_line_text, ')') == -1
-				continue
-			endif
+		if stridx(getline(i), ')') == -1 && stridx(getline(i - 1), ')') == -1
+			continue
 		endif
 		const diff = (idx - i) - 1
 		if i == 0
 			continue
 		endif
-		call prop_add(idx, 0, {text: "---- FUNCTION LINES: " .. (diff) .. ' ----', type: 'ft_count_line', text_align: 'below'})
+		call prop_add(idx, 0, {text: "---- FUNCTION LINES: " .. (diff) .. ' ----', type: 'ft_count_line', text_align: 'after', text_padding_left: 1})
 	endwhile
 	call setpos('.', position)
 enddef
