@@ -31,10 +31,10 @@ endif
 
 syntax match cType display "\zs\w\+\ze\*\?\s\+[*_a-zA-Z0-9]\+\s*[;|=]"
 syntax match Type display "^\s*\zs\w\+\ze\(\s*\*\|\s\)\+[a-zA-Z0-9_:]\+\s*("
-syntax match cFunction display "\<\h\w*\>[=+*/%&|^!<>\[\]]*\ze\s*(.*)" 
+syntax match cFunction display "\<\h\w*\>\ze\s*("
 syntax match cConstant  display "\<\u[A-Z0-9_]*\>"
 
-syntax match cOperator display /\%(>>>=\|<<=\|>>=\|\.\.\.\|++\|--\|<=\|>=\|==\|!=\|&&\|||\|<<\|>>\|+=\|-=\|*=\|\/=\|%=\|&=\||=\|^=\|-\%(\d\)\@!\|[^-]>\|=\|[+*/%&|^!<=]\)/
+syntax match cOperator display "\.\.\.\|-\d\@!\|[+*/%&|^!<=>]"
 syntax match cOperator display "->\w*" contains=cMember
 syntax match cMember display "\(\.\|->\)\zs\h\w*\ze" contained
 

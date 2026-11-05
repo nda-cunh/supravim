@@ -1,9 +1,31 @@
+# 6.84
+- Rework the 42 header: automatically resolve header merge conflicts and remove the old 42 plugin cleanly
+- Add `stdheader/refresh`, `stdheader/user` and `stdheader/mail` options
+- The 42 header is now updated on save by default (disable it with `stdheader/refresh`)
+- Fix the 42 header comment style: it now follows the file type instead of always using `/* */`
+- Support more file types in the 42 header (`.tpp`, `.ipp`, `.cxx`, `.go`, `.rs`, `.java`, `.kt`, `.kts`, `.css`, `.scss`, `.ts`, `.asm`, `.nasm`, `.s`)
+- Fix `<C-F5>` (Termdebug): no more startup failure or duplicate gdb session
+- Rename the dvd.vim `:Stop` command to `:DvDStop` to avoid a conflict with Termdebug
+- Show the count line next to the closing `}` of the function
+- Fix the count line ignoring functions with a multi-line signature
+- Fix the count line missing when the closing `}` is on the first visible line
+- Fix the count line resetting the cursor column when moving vertically
+- Fix the count line not working after being disabled then re-enabled
+- Optimize the count line: skip the update when the buffer and the view have not changed
+- Fix C/C++ syntax: highlight functions with a multi-line signature or call
+- Fix C/C++ syntax: `a>b` no longer colors `a` as an operator and `>>` is fully highlighted
+- Fix C/C++ syntax: `x=(a + b)` is no longer highlighted as a function, and `table[(i)]` no longer shows a false error
+- Fix C++ syntax: comparisons like `a < b && b > (c)` are no longer highlighted as template calls
+- Fix C++ syntax: support nested templates like `foo<std::vector<int>>(x)`
+- Fix C++ syntax: `static_cast` and other casts are now highlighted as casts
+- Improve C++ syntax: highlight type names after `class`, `struct`, `enum`, `union` and `typename`, reference types like `Foo &x` and templated types like `std::vector<int> v`
+- Improve C++ syntax: recognize `operator()`, `operator new` and conversion operators
+- Optimize C/C++ syntax highlighting: simplify the operator, number, cast and string patterns
+
 # 6.83
 - New **Right-Click** Popup Menu
 - Fix autopairs
 - Fix plugin-norminette (bump to 3.1)
-- Fix `<C-F5>` (Termdebug): no more startup failure or duplicate gdb session
-- Rename the dvd.vim `:Stop` command to `:DvDStop` to avoid a conflict with Termdebug
 - Add `<leader>fm` keymap for fuzzy marks search (`FuzzyMark`)
 - Unmap `a` and `b` in select mode
 - Disable the count line feature by default
@@ -12,15 +34,6 @@
 - Drop unnecessary dependency checks from installer
 - Remove obsolete plugin-autobear files
 - Consolidate GitLab CI test jobs into a single runner
-- Rework the 42 header: automatically resolve header merge conflicts and remove the old 42 plugin cleanly
-- Add `stdheader/refresh`, `stdheader/user` and `stdheader/mail` options
-- Fix the 42 header comment style: it now follows the file type instead of always using `/* */`
-- Show the count line next to the closing `}` of the function
-- Fix the count line ignoring functions with a multi-line signature
-- Fix the count line missing when the closing `}` is on the first visible line
-- Fix the count line resetting the cursor column when moving vertically
-- Fix the count line not working after being disabled then re-enabled
-- Optimize the count line: skip the update when the buffer and the view have not changed
 
 # 6.82
 - Fix Scrollbar
