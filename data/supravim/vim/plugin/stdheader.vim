@@ -12,9 +12,9 @@ final asciiart = [
 			'    ###   ########.fr    '
 			]
 
-final start = '/*'
-final end = '*/'
-final fill = '*'
+var start = '#'
+var end = '#'
+var fill = '*'
 final length = 80
 final margin = 5
 
@@ -23,28 +23,28 @@ var option_user = ''
 var option_mail = ''
 
 final types = {
-	'\.c$\|\.h$\|\.cc$\|\.hh$\|\.cpp$\|\.hpp$\|\.php|\.vala$\': ['/*', '*/', '*'],
+	'\.c$\|\.h$\|\.cc$\|\.hh$\|\.cpp$\|\.hpp$\|\.tpp$\|\.ipp$\|\.cxx$\|\.php$\|\.vala$\|\.go$\|\.rs$\|\.java$\|\.kt$\|\.kts$\|\.css$\|\.scss$': ['/*', '*/', '*'],
 	'\.htm$\|\.html$\|\.xml$': ['<!--', '-->', '*'],
-	'\.js$': ['//', '//', '*'],
+	'\.js$\|\.ts$': ['//', '//', '*'],
 	'\.tex$': ['%', '%', '*'],
 	'\.ml$\|\.mli$\|\.mll$\|\.mly$': ['(*', '*)', '*'],
-	'\.vim$\|\vimrc$': ['"', '"', '*'],
-	'\.el$\|\emacs$': [';', ';', '*'],
+	'\.vim$\|vimrc$': ['"', '"', '*'],
+	'\.el$\|emacs$\|\.asm$\|\.nasm$\|\.s$': [';', ';', '*'],
 	'\.f90$\|\.f95$\|\.f03$\|\.f$\|\.for$': ['!', '!', '/']
 }
 
 def Filetype()
 	var f = Filename()
 
-	var _start = '#'
-	var _end	= '#'
-	var _fill = '*'
+	start = '#'
+	end = '#'
+	fill = '*'
 
 	for type in keys(types)
 		if f =~ type
-			_start = types[type][0]
-			_end = types[type][1]
-			_fill = types[type][2]
+			start = types[type][0]
+			end = types[type][1]
+			fill = types[type][2]
 		endif
 	endfor
 enddef

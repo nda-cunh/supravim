@@ -1108,6 +1108,23 @@ msgid ""
 "Automatically generate the compile_commands.json file for Makefile projects"
 msgstr ""
 
+#. data/supravim/vim/plugin/stdheader.vim
+#: tools/translatable-strings.c
+msgid "Options related to the 42 header"
+msgstr ""
+
+#: tools/translatable-strings.c
+msgid "Update the 42 header when saving (if disabled, only with F1)"
+msgstr ""
+
+#: tools/translatable-strings.c
+msgid "User name of the 42 header (empty: g:user42 or $USER)"
+msgstr ""
+
+#: tools/translatable-strings.c
+msgid "Email of the 42 header (empty: g:mail42 or $MAIL)"
+msgstr ""
+
 #. plugins_supravim/plugin-github-copilot/supravim_copilot.vim
 #: tools/translatable-strings.c:420
 msgid "GitHub Copilot completion on startup"

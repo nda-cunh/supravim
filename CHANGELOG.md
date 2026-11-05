@@ -2,6 +2,8 @@
 - New **Right-Click** Popup Menu
 - Fix autopairs
 - Fix plugin-norminette (bump to 3.1)
+- Fix `<C-F5>` (Termdebug): no more startup failure or duplicate gdb session
+- Rename the dvd.vim `:Stop` command to `:DvDStop` to avoid a conflict with Termdebug
 - Add `<leader>fm` keymap for fuzzy marks search (`FuzzyMark`)
 - Unmap `a` and `b` in select mode
 - Disable the count line feature by default
@@ -10,6 +12,9 @@
 - Drop unnecessary dependency checks from installer
 - Remove obsolete plugin-autobear files
 - Consolidate GitLab CI test jobs into a single runner
+- Rework the 42 header: automatically resolve header merge conflicts and remove the old 42 plugin cleanly
+- Add `stdheader/refresh`, `stdheader/user` and `stdheader/mail` options
+- Fix the 42 header comment style: it now follows the file type instead of always using `/* */`
 
 # 6.82
 - Fix Scrollbar
