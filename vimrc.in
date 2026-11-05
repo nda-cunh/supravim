@@ -383,7 +383,6 @@ inoremap <c-q>		<cmd>q!<CR>
 noremap <c-q>		<cmd>q!<CR>
 inoremap <c-s>		<cmd>w!<CR><esc>
 noremap <c-s>		<cmd>w!<CR><esc>
-nnoremap <C-F5> 	<cmd>Termdebug -n <CR>
 nnoremap <F2> 		<ScriptCmd>call g:RenameSymbol()<CR>
 inoremap <F2> 		<ScriptCmd>call g:RenameSymbol()<CR>
 nnoremap <leader>v		:vs<cr>

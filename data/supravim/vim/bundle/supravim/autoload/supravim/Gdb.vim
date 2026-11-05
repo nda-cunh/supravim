@@ -1,9 +1,10 @@
 vim9script
 
 export def Gdbf()
-    packadd! termdebug
-	runtime pack/dist/opt/termdebug/plugin/termdebug.vim
-	g:termdebug_wide = 1
+	if !exists(':Termdebug')
+		packadd termdebug
+	endif
+	g:termdebug_config = extend(get(g:, 'termdebug_config', {}), {wide: 1})
 
     var save_sb = &splitbelow
     var save_sr = &splitright
