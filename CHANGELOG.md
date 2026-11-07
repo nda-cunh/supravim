@@ -21,6 +21,24 @@
 - Improve C++ syntax: highlight type names after `class`, `struct`, `enum`, `union` and `typename`, reference types like `Foo &x` and templated types like `std::vector<int> v`
 - Improve C++ syntax: recognize `operator()`, `operator new` and conversion operators
 - Optimize C/C++ syntax highlighting: simplify the operator, number, cast and string patterns
+- Add a faster Vim script syntax, rewritten in vim9script: jumping in a Vim9 file is about 4x faster
+- Improve Vim script syntax: highlight function names and calls, classes, enums, modules, members, dictionary keys, parameters, constants and `<q-args>`
+- Fix Vim script syntax: `s.kind = 1`, `s1 = 2` and `si.x = 3` are no longer highlighted as `:substitute`
+- Vim script syntax: only load the embedded Lua and Python highlighting when the file uses them
+- Add a Python syntax, rewritten in vim9script: highlight function and method calls, attributes, parameters, class names and constants
+- Optimize Python syntax: remove the costly `@` operator patterns, decorators are now only matched at the start of a line
+- Add a Makefile syntax, rewritten in vim9script: highlight automatic variables (`$@`, `$<`, `$^`), assignment operators, `export`/`override` variables and recipe commands
+- Add a Meson syntax, rewritten in vim9script: highlight function and method calls, keyword arguments, variables, operators, f-strings and `@0@`/`@name@` placeholders
+- Add a C3 syntax, written in vim9script: highlight compile-time keywords and identifiers, attributes, macros, builtins, labels, module paths, nested comments, raw strings, byte literals and `<* *>` doc contracts
+- Add C3 file type detection for `.c3`, `.c3i` and `.c3t`
+- Add C3 indentation: support `$if`/`$else`/`$endif` and other compile-time blocks, `case`/`default`, multi-line signatures and calls, doc comments and raw strings
+- Add an HTML syntax, rewritten in vim9script: jumping in a file is about 2x faster, only load the embedded CSS, JavaScript and VBScript highlighting when the file uses them
+- Improve HTML syntax: highlight all attributes (`x-custom`, `@click`, `:key`) and tags (`<my-element>`, `<path>`), and `<!DOCTYPE>` is no longer highlighted as a comment
+- Add a CSS syntax, rewritten in vim9script: fix wrong colors after a jump in a stylesheet and speed up editing
+- Improve CSS syntax: highlight all properties, `@layer`, `@container`, `@property`, `@scope`, `clamp()`, `min()`, `max()`, `color-mix()` and vendor-prefixed properties
+- Add a Nim syntax, written in vim9script: about 3x faster, the embedded C highlighting is only loaded when the file uses `emit` or `codegenDecl`
+- Improve Nim syntax: highlight the names of `func`, `method`, `iterator`, `template`, `macro` and `converter`, function and method calls, members, types, constants, booleans, `echo` and `result`
+- Fix Nim syntax: `nim_emit_syntax` no longer always loads C, `"a\\"` and `\x41` are handled correctly, and `0xFF` is no longer highlighted as a float
 
 # 6.83
 - New **Right-Click** Popup Menu
