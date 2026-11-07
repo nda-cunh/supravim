@@ -40,7 +40,13 @@ def InitCount()
 	b:sa_lines = line('$')
 enddef
 
-def OnTextChanged()
+var flush_timer = 0
+
+def Flush()
+	if flush_timer != 0
+		timer_stop(flush_timer)
+		flush_timer = 0
+	endif
 	if !exists('b:sa_chars')
 		InitCount()
 		return
@@ -49,24 +55,35 @@ def OnTextChanged()
 	var c = get(wc, 'chars', 0)
 	var w = get(wc, 'words', 0)
 	var l = line('$')
-	if c - b:sa_chars > 80
-		b:sa_chars = c
-		b:sa_words = w
-		b:sa_lines = l
-		return
-	endif
-	if c - b:sa_chars > 0
-		SendMetric('chars', c - b:sa_chars)
-	endif
-	if w - b:sa_words > 0
-		SendMetric('words', w - b:sa_words)
-	endif
-	if l - b:sa_lines > 0
-		SendMetric('lines', l - b:sa_lines)
+	if c - b:sa_chars <= 100
+		if c - b:sa_chars > 0
+			SendMetric('chars', c - b:sa_chars)
+		endif
+		if w - b:sa_words > 0
+			SendMetric('words', w - b:sa_words)
+		endif
+		if l - b:sa_lines > 0
+			SendMetric('lines', l - b:sa_lines)
+		endif
 	endif
 	b:sa_chars = c
 	b:sa_words = w
 	b:sa_lines = l
+enddef
+
+def OnTextChanged()
+	if flush_timer == 0
+		flush_timer = timer_start(5000, (_) => {
+			flush_timer = 0
+			Flush()
+		})
+	endif
+enddef
+
+def FlushPending()
+	if flush_timer != 0
+		Flush()
+	endif
 enddef
 
 var mode_since: list<any> = []
@@ -209,6 +226,7 @@ export def Setup()
 	augroup SupraAchievements
 		autocmd!
 		autocmd TextChanged,TextChangedI * OnTextChanged()
+		autocmd BufLeave,QuitPre * FlushPending()
 		autocmd CursorMoved,CursorMovedI * OnBeat()
 		autocmd BufEnter * InitCount()
 		autocmd InsertEnter * OnInsertEnter()
