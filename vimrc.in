@@ -581,7 +581,12 @@ g:airline#extensions#tabline#right_alt_sep = '╱'
 g:airline_experimental = 1
 g:supraicons_airline_enable = true
 # ----------------- FuzzBox ------------------
-g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
+if has('image_popup') == 0
+	g:fuzzbox_files_exclude_file = ['*.o', '*.png', '*.jpg', '*.gif', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
+else
+	g:fuzzbox_image_preview = true
+	g:fuzzbox_files_exclude_file = ['*.o', 'compile_commands.json', '*.beam', '*.so', '*.exe', '*.dll', '*.dump', '*.core', '*.swn', '*.swp', '*.a', '*.out']
+endif
 g:fuzzbox_files_exclude_dir = ['build', '*.cache', '.git', '.hg', '.svn', '.rebar', '.eunit']
 g:fuzzbox_devicons_color_func = 'SupraIcons#Palette#Apply'
 g:fuzzbox_scrollbar = 0
