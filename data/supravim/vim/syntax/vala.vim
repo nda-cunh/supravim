@@ -116,7 +116,11 @@ else
   b:vala_minlines = 50
 endif
 
-exec "syn sync ccomment valaComment minlines=" .. b:vala_minlines
+if search('"""', 'nw') > 0
+  syn sync fromstart
+else
+  exec "syn sync ccomment valaComment minlines=" .. b:vala_minlines
+endif
 
 syn region valaBlock			start="{" end="}" transparent fold
 
